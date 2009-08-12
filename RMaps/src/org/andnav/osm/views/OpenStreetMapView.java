@@ -421,7 +421,9 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 						viewHeight_2);
 				this.mTouchMapOffsetX = 0;
 				this.mTouchMapOffsetY = 0;
+				//newCenter.setCoordsE6(this.mLatitudeE6, this.mLongitudeE6-5000000);
 				this.setMapCenter(newCenter); // Calls invalidate
+				//Log.i(DEBUGTAG, ""+this.mLongitudeE6);
 		}
 
 		return super.onTouchEvent(event);
@@ -507,7 +509,7 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 						+ (y * tileSizePx);
 				c.drawBitmap(currentMapTile, tileLeft, tileTop, this.mPaint);
 
-				if (DEBUGMODE) {
+				/*if (DEBUGMODE)*/ {
 					c.drawLine(tileLeft, tileTop, tileLeft + tileSizePx, tileTop, this.mPaint);
 					c.drawLine(tileLeft, tileTop, tileLeft, tileTop + tileSizePx, this.mPaint);
 					c.drawText("y x = "+mapTileCoords[MAPTILE_LATITUDE_INDEX]+" "+mapTileCoords[MAPTILE_LONGITUDE_INDEX]+" zoom "+zoomLevel, tileLeft+5, tileTop+15, this.mPaint);
@@ -523,8 +525,8 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 		if (this.mMaxiMap != null) // If this is a MiniMap
 			c.drawRect(0, 0, viewWidth - 1, viewHeight - 1, this.mPaint);
 
-		final long endMs = System.currentTimeMillis();
-		Log.i(DEBUGTAG, "Rendering overall: " + (endMs - startMs) + "ms");
+		//final long endMs = System.currentTimeMillis();
+		//Log.i(DEBUGTAG, "Rendering overall: " + (endMs - startMs) + "ms");
 	}
 
 	// ===========================================================
@@ -623,16 +625,18 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 		 */
 		public GeoPoint fromPixels(float x, float y) {
 			/* Subtract the offset caused by touch. */
-			Log.d(DEBUGTAG, "x = "+x+" mTouchMapOffsetX = "+OpenStreetMapView.this.mTouchMapOffsetX+"   ");
+			//Log.d(DEBUGTAG, "x = "+x+" mTouchMapOffsetX = "+OpenStreetMapView.this.mTouchMapOffsetX+"   ");
 			
 			x -= OpenStreetMapView.this.mTouchMapOffsetX; 
 			y -= OpenStreetMapView.this.mTouchMapOffsetY;
 			
-			int asd = Util.x2lon(centerMapTileCoords[0]*tileSizePx+(int)x-upperLeftCornerOfCenterMapTile.x, zoomLevel, tileSizePx);
+			int xx = centerMapTileCoords[0]*tileSizePx+(int)x-upperLeftCornerOfCenterMapTile.x; 
+			int asd = Util.x2lon(xx, zoomLevel, tileSizePx);
 			GeoPoint p = bb.getGeoPointOfRelativePositionWithLinearInterpolation(x / viewWidth, y
 					/ viewHeight);
 			
-			Log.d(DEBUGTAG, "lon "+p.getLongitudeE6()+" "+asd+"   ");
+			Log.d(DEBUGTAG, "lon "+p.getLongitudeE6()+" "+xx+" "+asd+" OffsetX = "+OpenStreetMapView.this.mTouchMapOffsetX);
+			Log.d(DEBUGTAG, "	"+centerMapTileCoords[0]+" "+tileSizePx+" "+x+" "+upperLeftCornerOfCenterMapTile.x);
 			p.setLongitudeE6(asd);
 			
 			//for(int i =0; i<=tileSizePx*(1<<zoomLevel); i++){int Q = Util.x2lon(i, zoomLevel, tileSizePx);Log.d(DEBUGTAG, "lon "+i+" "+Q);}
