@@ -9,6 +9,8 @@ import org.andnav.osm.views.util.OpenStreetMapRendererInfo;
 import android.location.Location;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -41,9 +43,16 @@ public class MainView  extends OpenStreetMapActivity implements OpenStreetMapCon
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState, false); // Pass true here to actually contribute to OSM!
         
+        // Полноэкранный режим
+        //getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+        //        WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        
+        // Без заголовка окна
+        //requestWindowFeature(Window.FEATURE_NO_TITLE);
+        
         final RelativeLayout rl = new RelativeLayout(this);
         
-        this.mOsmv = new OpenStreetMapView(this, OpenStreetMapRendererInfo.MAPNIK);
+        this.mOsmv = new OpenStreetMapView(this, OpenStreetMapRendererInfo.YANDEXMAP);//CLOUDMADESTANDARDTILES);//MAPNIK);
         rl.addView(this.mOsmv, new RelativeLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
         
         /* SingleLocation-Overlay */
