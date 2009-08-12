@@ -96,10 +96,10 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 		if(this.mPending.contains(aTileURLString))
 			return;
 
-		//final String formattedTileURLString = OpenStreetMapTileNameFormatter.format(aTileURLString);
-		//final InputStream in = new BufferedInputStream(OpenStreetMapTileFilesystemProvider.this.mCtx.openFileInput(formattedTileURLString), 8192);
-		final String formattedTileURLString = aTileURLString.replace("http://tile.openstreetmap.org", "/sdcard/rmaps/maps/mapnik")+".andnav";
-		final InputStream in = new BufferedInputStream(new FileInputStream(formattedTileURLString), 8192);
+		final String formattedTileURLString = OpenStreetMapTileNameFormatter.format(aTileURLString);
+		final InputStream in = new BufferedInputStream(OpenStreetMapTileFilesystemProvider.this.mCtx.openFileInput(formattedTileURLString), 8192);
+		//final String formattedTileURLString = aTileURLString.replace("http://tile.openstreetmap.org", "/sdcard/rmaps/maps/mapnik")+".andnav";
+		//final InputStream in = new BufferedInputStream(new FileInputStream(formattedTileURLString), 8192);
 
 		this.mPending.add(aTileURLString);
 

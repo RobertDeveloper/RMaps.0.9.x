@@ -496,6 +496,8 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 				/* Construct a URLString, which represents the MapTile. */
 				final String tileURLString = this.mRendererInfo.getTileURLString(mapTileCoords,
 						zoomLevel);
+				
+				Log.i(DEBUGTAG, tileURLString);
 
 				/* Draw the MapTile 'i tileSizePx' above of the centerMapTile */
 				final Bitmap currentMapTile = this.mTileProvider.getMapTile(tileURLString);
