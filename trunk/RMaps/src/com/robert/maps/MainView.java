@@ -56,7 +56,7 @@ public class MainView  extends OpenStreetMapActivity implements OpenStreetMapCon
         
         final RelativeLayout rl = new RelativeLayout(this);
         
-        this.mOsmv = new OpenStreetMapView(this, OpenStreetMapRendererInfo.FILESASGIS);//FILEMAPNIK);//YANDEXMAP);//OSMARENDER);//MAPNIK);
+        this.mOsmv = new OpenStreetMapView(this, OpenStreetMapRendererInfo.MAPNIK);//FILEMAPNIK);//YANDEXMAP);//OSMARENDER);//MAPNIK);
         rl.addView(this.mOsmv, new RelativeLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
         
         /* SingleLocation-Overlay */
