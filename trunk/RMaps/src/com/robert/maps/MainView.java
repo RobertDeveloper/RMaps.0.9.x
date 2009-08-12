@@ -1,16 +1,21 @@
 package com.robert.maps;
 
 import org.andnav.osm.OpenStreetMapActivity;
+import org.andnav.osm.util.TypeConverter;
 import org.andnav.osm.util.constants.OpenStreetMapConstants;
 import org.andnav.osm.views.OpenStreetMapView;
+import org.andnav.osm.views.controller.OpenStreetMapViewController;
 import org.andnav.osm.views.overlay.OpenStreetMapViewSimpleLocationOverlay;
 import org.andnav.osm.views.util.OpenStreetMapRendererInfo;
 
+import android.content.Context;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -21,11 +26,11 @@ public class MainView  extends OpenStreetMapActivity implements OpenStreetMapCon
 	// Constants
 	// ===========================================================
 	
-//	private static final int MENU_ZOOMIN_ID = Menu.FIRST;
-//	private static final int MENU_ZOOMOUT_ID = MENU_ZOOMIN_ID + 1;
-//	private static final int MENU_RENDERER_ID = MENU_ZOOMOUT_ID + 1;
-//	private static final int MENU_ANIMATION_ID = MENU_RENDERER_ID + 1;
-//	private static final int MENU_MINIMAP_ID = MENU_ANIMATION_ID + 1;
+	//private static final int MENU_ZOOMIN_ID = Menu.FIRST;
+	//private static final int MENU_ZOOMOUT_ID = MENU_ZOOMIN_ID + 1;
+	//private static final int MENU_RENDERER_ID = MENU_ZOOMOUT_ID + 1;
+	//private static final int MENU_ANIMATION_ID = MENU_RENDERER_ID + 1;
+	//private static final int MENU_MINIMAP_ID = MENU_ANIMATION_ID + 1;
 
 	// ===========================================================
 	// Fields
@@ -52,7 +57,7 @@ public class MainView  extends OpenStreetMapActivity implements OpenStreetMapCon
         
         final RelativeLayout rl = new RelativeLayout(this);
         
-        this.mOsmv = new OpenStreetMapView(this, OpenStreetMapRendererInfo.YANDEXMAP);//CLOUDMADESTANDARDTILES);//MAPNIK);
+        this.mOsmv = new OpenStreetMapView(this, OpenStreetMapRendererInfo.YANDEXMAP);//FILEMAPNIK);//YANDEXMAP);//CLOUDMADESTANDARDTILES);//MAPNIK);
         rl.addView(this.mOsmv, new RelativeLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
         
         /* SingleLocation-Overlay */
@@ -117,12 +122,48 @@ public class MainView  extends OpenStreetMapActivity implements OpenStreetMapCon
 */        
         this.setContentView(rl);
     }
+    
+    private static final int menu_mylocation = Menu.FIRST;
+    
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		super.onCreateOptionsMenu(menu);
+		
+		// Group ID
+		int groupId = 0;
+		// Unique menu item identifier. Used for event handling.
+		int menuItemId = menu_mylocation;
+		// The order position of the item
+		int menuItemOrder = Menu.NONE;
+		// Text to be displayed for this menu item.
+		int menuItemText = R.string.menu_mylocation;
+		// Create the menu item and keep a reference to it.
+		MenuItem menuItem = menu.add(groupId, menuItemId, menuItemOrder, menuItemText);
+		
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		super.onOptionsItemSelected(item);
+
+		switch (item.getItemId()) {
+		case (menu_mylocation):
+			final LocationManager lm = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+			this.mOsmv.getController().animateTo(TypeConverter.locationToGeoPoint(lm.getLastKnownLocation("gps")), OpenStreetMapViewController.AnimationType.MIDDLEPEAKSPEED, OpenStreetMapViewController.ANIMATION_SMOOTHNESS_HIGH, OpenStreetMapViewController.ANIMATION_DURATION_DEFAULT);
+			//this.mOsmv.getController().animateTo(52370816, 9735936, OpenStreetMapViewController.AnimationType.MIDDLEPEAKSPEED, OpenStreetMapViewController.ANIMATION_SMOOTHNESS_HIGH, OpenStreetMapViewController.ANIMATION_DURATION_DEFAULT); // Hannover
+			return true;
+		}
+
+		return false;
+	}
 
 
 	@Override
 	public void onLocationChanged(Location loc) {
-		// TODO Auto-generated method stub
-		
+		this.mMyLocationOverlay.setLocation(TypeConverter.locationToGeoPoint(loc));
+		this.mOsmv.getController().animateTo(TypeConverter.locationToGeoPoint(loc), OpenStreetMapViewController.AnimationType.MIDDLEPEAKSPEED, OpenStreetMapViewController.ANIMATION_SMOOTHNESS_HIGH, OpenStreetMapViewController.ANIMATION_DURATION_DEFAULT);
+		//Log.i(DEBUGTAG, "onLocationChanged");
 	}
 
 	@Override
@@ -130,5 +171,7 @@ public class MainView  extends OpenStreetMapActivity implements OpenStreetMapCon
 		// TODO Auto-generated method stub
 		
 	}
+
+    
 
 }

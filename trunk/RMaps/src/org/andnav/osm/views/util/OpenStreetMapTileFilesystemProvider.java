@@ -4,7 +4,7 @@ package org.andnav.osm.views.util;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.FileInputStream;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -16,6 +16,8 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 import org.andnav.osm.exceptions.EmptyCacheException;
 import org.andnav.osm.util.constants.OpenStreetMapConstants;
@@ -63,6 +65,8 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 	protected final OpenStreetMapTileCache mCache;
 
 	protected HashSet<String> mPending = new HashSet<String>();
+	
+	protected ZipFile mAndNavZipFile;
 
 	// ===========================================================
 	// Constructors
@@ -88,8 +92,68 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 	// Getter & Setter
 	// ===========================================================
 	
+	public void setAndNavZipFile(final String aFileName){
+		final File fileZip = new File(aFileName);
+		if(fileZip.exists() == false){
+			Log.i(DEBUGTAG, "AndNav ZIP file "+aFileName+" not found");
+		} else{
+			try {
+				mAndNavZipFile = new ZipFile(fileZip);
+			} catch (IOException e) {
+				Log.e(DEBUGTAG, "Error Loading AndNav ZIP file. Exception: " + e.getClass().getSimpleName(), e);
+			}
+		}
+	}
+	
 	public int getCurrentFSCacheByteSize() {
 		return this.mCurrentFSCacheByteSize;
+	}
+	
+	public void loadMapTileFromZipCash(final String aTileURLString, final Handler callback) throws IOException{
+		if(this.mPending.contains(aTileURLString))
+			return;
+
+		final String formattedTileURLString = OpenStreetMapTileNameFormatter.format(aTileURLString);
+		final ZipEntry ze = mAndNavZipFile.getEntry(aTileURLString);
+		final InputStream in = new BufferedInputStream(mAndNavZipFile.getInputStream(ze), 8192);
+		
+		this.mPending.add(aTileURLString);
+
+		this.mThreadPool.execute(new Runnable(){
+			public void run() {
+				OutputStream out = null;
+				try {
+					// File exists, otherwise a FileNotFoundException would have been thrown
+					OpenStreetMapTileFilesystemProvider.this.mDatabase.incrementUse(formattedTileURLString);
+
+					final ByteArrayOutputStream dataStream = new ByteArrayOutputStream();
+					out = new BufferedOutputStream(dataStream, StreamUtils.IO_BUFFER_SIZE);
+					StreamUtils.copy(in, out);
+					out.flush();
+					
+					final byte[] data = dataStream.toByteArray();
+					final Bitmap bmp = BitmapFactory.decodeByteArray(data, 0, data.length); // , BITMAPLOADOPTIONS);
+
+					OpenStreetMapTileFilesystemProvider.this.mCache.putTile(aTileURLString, bmp);
+
+					final Message successMessage = Message.obtain(callback, MAPTILEFSLOADER_SUCCESS_ID);
+					successMessage.sendToTarget();
+					
+					if(DEBUGMODE)
+						Log.d(DEBUGTAG, "Loaded: " + aTileURLString + " to MemCache.");
+				} catch (IOException e) {
+					final Message failMessage = Message.obtain(callback, MAPTILEFSLOADER_FAIL_ID);
+					failMessage.sendToTarget();
+					if(DEBUGMODE)
+						Log.e(DEBUGTAG, "Error Loading MapTile from FS. Exception: " + e.getClass().getSimpleName(), e);
+				} finally {
+					StreamUtils.closeStream(in);
+					StreamUtils.closeStream(out);
+				}
+				
+				OpenStreetMapTileFilesystemProvider.this.mPending.remove(aTileURLString);
+			}
+		});
 	}
 
 	public void loadMapTileToMemCacheAsync(final String aTileURLString, final Handler callback) throws FileNotFoundException{
