@@ -80,7 +80,7 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 	public OpenStreetMapView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		this.mRendererInfo = DEFAULTRENDERER;
-		this.mTileProvider = new OpenStreetMapTileProvider(context, new SimpleInvalidationHandler());
+		this.mTileProvider = new OpenStreetMapTileProvider(context, new SimpleInvalidationHandler(), mRendererInfo);
 	}
 
 	/**
@@ -93,7 +93,7 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 	public OpenStreetMapView(final Context context, final OpenStreetMapRendererInfo aRendererInfo) {
 		super(context);
 		this.mRendererInfo = aRendererInfo;
-		this.mTileProvider = new OpenStreetMapTileProvider(context, new SimpleInvalidationHandler());
+		this.mTileProvider = new OpenStreetMapTileProvider(context, new SimpleInvalidationHandler(), aRendererInfo);
 	}
 
 	/**
@@ -497,10 +497,10 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 				final String tileURLString = this.mRendererInfo.getTileURLString(mapTileCoords,
 						zoomLevel);
 				
-				Log.i(DEBUGTAG, tileURLString);
+				//Log.i(DEBUGTAG, tileURLString);
 
 				/* Draw the MapTile 'i tileSizePx' above of the centerMapTile */
-				final Bitmap currentMapTile = this.mTileProvider.getMapTile(tileURLString);
+				final Bitmap currentMapTile = this.mTileProvider.getMapTile(tileURLString, this.mRendererInfo.TILE_SOURCE_TYPE);
 				final int tileLeft = this.mTouchMapOffsetX + centerMapTileScreenLeft
 						+ (x * tileSizePx);
 				final int tileTop = this.mTouchMapOffsetY + centerMapTileScreenTop

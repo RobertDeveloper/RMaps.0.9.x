@@ -33,18 +33,23 @@ public class OpenStreetMapTileProvider implements OpenStreetMapConstants, OpenSt
 	protected OpenStreetMapTileDownloader mTileDownloader;
 	private Handler mLoadCallbackHandler = new LoadCallbackHandler();
 	private Handler mDownloadFinishedListenerHander;
+	protected OpenStreetMapRendererInfo mRendererInfo;
 
 	// ===========================================================
 	// Constructors
 	// ===========================================================
 	
-	public OpenStreetMapTileProvider(final Context ctx, final Handler aDownloadFinishedListener) {
+	public OpenStreetMapTileProvider(final Context ctx, final Handler aDownloadFinishedListener, final OpenStreetMapRendererInfo aRendererInfo) {
 		this.mCtx = ctx;
 		this.mLoadingMapTile = BitmapFactory.decodeResource(ctx.getResources(), R.drawable.maptile_loading);
 		this.mTileCache = new OpenStreetMapTileCache();
 		this.mFSTileProvider = new OpenStreetMapTileFilesystemProvider(ctx, 4 * 1024 * 1024, this.mTileCache); // 4MB FSCache
 		this.mTileDownloader = new OpenStreetMapTileDownloader(ctx, this.mFSTileProvider);
 		this.mDownloadFinishedListenerHander = aDownloadFinishedListener;
+		this.mRendererInfo = aRendererInfo;
+		if(aRendererInfo.TILE_SOURCE_TYPE == 1){ // AndNav ZIP file
+			mFSTileProvider.setAndNavZipFile(aRendererInfo.BASEURL);
+		}
 	}
 
 	// ===========================================================
@@ -60,7 +65,9 @@ public class OpenStreetMapTileProvider implements OpenStreetMapConstants, OpenSt
 	// ===========================================================
 
 	public Bitmap getMapTile(final String aTileURLString){
-		Log.i(DEBUGTAG, "MapTileCache succeded for: " + aTileURLString);
+		return getMapTile(aTileURLString, 0);
+	}
+	public Bitmap getMapTile(final String aTileURLString, final int aTypeCash){
 		
 		Bitmap ret = this.mTileCache.getMapTile(aTileURLString);
 		if(ret != null){
@@ -70,7 +77,11 @@ public class OpenStreetMapTileProvider implements OpenStreetMapConstants, OpenSt
 			if(DEBUGMODE)
 				Log.i(DEBUGTAG, "Cache failed, trying from FS.");
 			try {
-				this.mFSTileProvider.loadMapTileToMemCacheAsync(aTileURLString, this.mLoadCallbackHandler);
+				if(aTypeCash == 1)
+					this.mFSTileProvider.loadMapTileFromZipCash(aTileURLString, this.mLoadCallbackHandler);
+				else
+					this.mFSTileProvider.loadMapTileToMemCacheAsync(aTileURLString, this.mLoadCallbackHandler);
+				
 				ret = this.mLoadingMapTile;
 			} catch (Exception e) {
 				if(DEBUGMODE)
