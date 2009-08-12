@@ -229,7 +229,7 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 	
 	private BoundingBoxE6 getBoundingBox(final int pViewWidth, final int pViewHeight){	
 		/* Get the center MapTile which is above this.mLatitudeE6 and this.mLongitudeE6 .*/
-		final int[] centerMapTileCoords = Util.getMapTileFromCoordinates(this.mLatitudeE6, this.mLongitudeE6, this.mZoomLevel, null);
+		final int[] centerMapTileCoords = Util.getMapTileFromCoordinates(this.mLatitudeE6, this.mLongitudeE6, this.mZoomLevel, null, this.mRendererInfo.PROJECTION);
 		
 		final BoundingBoxE6 tmp = Util.getBoundingBoxFromMapTile(centerMapTileCoords, this.mZoomLevel);
 		
@@ -445,7 +445,7 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 		 * this.mLongitudeE6 .
 		 */
 		final int[] centerMapTileCoords = Util.getMapTileFromCoordinates(this.mLatitudeE6,
-				this.mLongitudeE6, zoomLevel, null);
+				this.mLongitudeE6, zoomLevel, null, this.mRendererInfo.PROJECTION);
 
 		/*
 		 * Calculate the Latitude/Longitude on the left-upper ScreenCoords of
@@ -510,6 +510,7 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 				if (DEBUGMODE) {
 					c.drawLine(tileLeft, tileTop, tileLeft + tileSizePx, tileTop, this.mPaint);
 					c.drawLine(tileLeft, tileTop, tileLeft, tileTop + tileSizePx, this.mPaint);
+					c.drawText("y x = "+mapTileCoords[MAPTILE_LATITUDE_INDEX]+" "+mapTileCoords[MAPTILE_LONGITUDE_INDEX]+" zoom "+zoomLevel, tileLeft+5, tileTop+15, this.mPaint);
 				}
 			}
 		}
@@ -606,7 +607,7 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 			 */
 			centerMapTileCoords = Util.getMapTileFromCoordinates(
 					OpenStreetMapView.this.mLatitudeE6, OpenStreetMapView.this.mLongitudeE6,
-					zoomLevel, null);
+					zoomLevel, null, OpenStreetMapView.this.mRendererInfo.PROJECTION);
 			upperLeftCornerOfCenterMapTile = getUpperLeftCornerOfCenterMapTileInScreen(
 					centerMapTileCoords, tileSizePx, null);
 
@@ -671,7 +672,7 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 			final Point out = (reuse != null) ? reuse : new Point();
 
 			final int[] underGeopointTileCoords = Util.getMapTileFromCoordinates(
-					in.getLatitudeE6(), in.getLongitudeE6(), zoomLevel, null);
+					in.getLatitudeE6(), in.getLongitudeE6(), zoomLevel, null, OpenStreetMapView.this.mRendererInfo.PROJECTION);
 
 			/*
 			 * Calculate the Latitude/Longitude on the left-upper ScreenCoords
@@ -725,7 +726,7 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 			for (GeoPoint gp : in) {
 				i++;
 				final int[] underGeopointTileCoords = Util.getMapTileFromCoordinates(gp
-						.getLatitudeE6(), gp.getLongitudeE6(), zoomLevel, null);
+						.getLatitudeE6(), gp.getLongitudeE6(), zoomLevel, null, OpenStreetMapView.this.mRendererInfo.PROJECTION);
 
 				/*
 				 * Calculate the Latitude/Longitude on the left-upper

@@ -57,7 +57,7 @@ public class MainView  extends OpenStreetMapActivity implements OpenStreetMapCon
         
         final RelativeLayout rl = new RelativeLayout(this);
         
-        this.mOsmv = new OpenStreetMapView(this, OpenStreetMapRendererInfo.YANDEXMAP);//FILEMAPNIK);//YANDEXMAP);//CLOUDMADESTANDARDTILES);//MAPNIK);
+        this.mOsmv = new OpenStreetMapView(this, OpenStreetMapRendererInfo.YANDEXMAP);//FILEMAPNIK);//YANDEXMAP);//OSMARENDER);//MAPNIK);
         rl.addView(this.mOsmv, new RelativeLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
         
         /* SingleLocation-Overlay */
@@ -150,7 +150,9 @@ public class MainView  extends OpenStreetMapActivity implements OpenStreetMapCon
 		switch (item.getItemId()) {
 		case (menu_mylocation):
 			final LocationManager lm = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
-			this.mOsmv.getController().animateTo(TypeConverter.locationToGeoPoint(lm.getLastKnownLocation("gps")), OpenStreetMapViewController.AnimationType.MIDDLEPEAKSPEED, OpenStreetMapViewController.ANIMATION_SMOOTHNESS_HIGH, OpenStreetMapViewController.ANIMATION_DURATION_DEFAULT);
+			final Location loc = lm.getLastKnownLocation("gps");
+			if(loc != null)
+				this.mOsmv.getController().animateTo(TypeConverter.locationToGeoPoint(loc), OpenStreetMapViewController.AnimationType.MIDDLEPEAKSPEED, OpenStreetMapViewController.ANIMATION_SMOOTHNESS_HIGH, OpenStreetMapViewController.ANIMATION_DURATION_DEFAULT);
 			//this.mOsmv.getController().animateTo(52370816, 9735936, OpenStreetMapViewController.AnimationType.MIDDLEPEAKSPEED, OpenStreetMapViewController.ANIMATION_SMOOTHNESS_HIGH, OpenStreetMapViewController.ANIMATION_DURATION_DEFAULT); // Hannover
 			return true;
 		}

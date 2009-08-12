@@ -4,6 +4,8 @@ package org.andnav.osm.views.util;
 import org.andnav.osm.util.BoundingBoxE6;
 import org.andnav.osm.views.util.constants.OpenStreetMapViewConstants;
 
+import android.util.Log;
+
 /**
  * 
  * @author Nicolas Gramlich
@@ -34,16 +36,27 @@ public class Util implements OpenStreetMapViewConstants{
 	// Methods
 	// ===========================================================
 	
-	public static int[] getMapTileFromCoordinates(final int aLat, final int aLon, final int zoom, final int[] reuse) {
-		return getMapTileFromCoordinates(aLat / 1E6, aLon / 1E6, zoom, reuse);
+	public static int[] getMapTileFromCoordinates(final int aLat, final int aLon, final int zoom, final int[] reuse, final int aProjection) {
+		return getMapTileFromCoordinates(aLat / 1E6, aLon / 1E6, zoom, reuse, aProjection);
 	}
 	
-	public static int[] getMapTileFromCoordinates(final double aLat, final double aLon, final int zoom, final int[] aUseAsReturnValue) {
+	public static int[] getMapTileFromCoordinates(final double aLat, final double aLon, final int zoom, final int[] aUseAsReturnValue, final int aProjection) {
 		final int[] out = (aUseAsReturnValue != null) ? aUseAsReturnValue : new int[2];
-
-		out[MAPTILE_LATITUDE_INDEX] = (int) Math.floor((1 - Math.log(Math.tan(aLat * Math.PI / 180) + 1 / Math.cos(aLat * Math.PI / 180)) / Math.PI) / 2 * (1 << zoom));
+		
+		if(aProjection == 1)
+			out[MAPTILE_LATITUDE_INDEX] = (int) Math.floor((1 - Math.log(Math.tan(aLat * Math.PI / 180) + 1 / Math.cos(aLat * Math.PI / 180)) / Math.PI) / 2 * (1 << zoom));
+		else {
+			final double E2 = (double) aLat*Math.PI/180;
+			final long sradiusa = 6378137;
+			final long sradiusb = 6356752;
+			final double J2 = (double) Math.sqrt(sradiusa*sradiusa-sradiusb*sradiusb)/sradiusa;
+			final double M2 = (double) Math.log((1+Math.sin(E2))/(1-Math.sin(E2)))/2-J2*Math.log((1+J2*Math.sin(E2))/(1-J2*Math.sin(E2)))/2;
+			final double B2 = (double)(1 << zoom);	
+			out[MAPTILE_LATITUDE_INDEX] = (int) Math.floor(B2/2-M2*B2/2/Math.PI);
+		}
+		
 		out[MAPTILE_LONGITUDE_INDEX] = (int) Math.floor((aLon + 180) / 360 * (1 << zoom));
-
+		
 		return out;
 	}
 	
@@ -59,9 +72,36 @@ public class Util implements OpenStreetMapViewConstants{
 		return (x / Math.pow(2.0, aZoom) * 360.0) - 180;
 	}
 
-	private static double tile2lat(int y, int aZoom) {
-		final double n = Math.PI - ((2.0 * Math.PI * y) / Math.pow(2.0, aZoom));
-		return 180.0 / Math.PI * Math.atan(0.5 * (Math.exp(n) - Math.exp(-n)));
+	private static double tile2lat(int y, int aZoom /*, final int aProjection*/) {
+		final int aProjection = 2;
+		
+		if (aProjection == 1) {
+			final double n = Math.PI
+					- ((2.0 * Math.PI * y) / Math.pow(2.0, aZoom));
+			return 180.0 / Math.PI
+					* Math.atan(0.5 * (Math.exp(n) - Math.exp(-n)));
+		} else {
+			final double MerkElipsK=0.0000001;
+			final long sradiusa = 6378137;
+			final long sradiusb = 6356752;
+			final double FExct = (double) Math.sqrt(sradiusa*sradiusa-sradiusb*sradiusb)/sradiusa;
+			final int TilesAtZoom = 1 << aZoom;
+			double result = (y - TilesAtZoom / 2) / -(TilesAtZoom / (2*Math.PI));
+			result = (2 * Math.atan(Math.exp(result)) - Math.PI / 2) * 180 / Math.PI;
+			double Zu = result / (180 / Math.PI);
+			double yy = ((y) - TilesAtZoom / 2);
+			
+  			double Zum1 = Zu;
+			Zu = Math.asin(1-((1+Math.sin(Zum1))*Math.pow(1-FExct*Math.sin(Zum1),FExct))/(Math.exp((2*yy)/-(TilesAtZoom/(2*Math.PI)))*Math.pow(1+FExct*Math.sin(Zum1),FExct)));
+			while(Math.abs(Zum1 - Zu) >= MerkElipsK){
+	  			Zum1 = Zu;
+				Zu = Math.asin(1-((1+Math.sin(Zum1))*Math.pow(1-FExct*Math.sin(Zum1),FExct))/(Math.exp((2*yy)/-(TilesAtZoom/(2*Math.PI)))*Math.pow(1+FExct*Math.sin(Zum1),FExct)));
+			}
+
+			result = Zu*180/Math.PI;
+
+			return result;
+		}
 	}
 
 	// ===========================================================
