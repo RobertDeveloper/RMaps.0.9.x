@@ -47,7 +47,7 @@ public class OpenStreetMapTileProvider implements OpenStreetMapConstants, OpenSt
 		this.mTileDownloader = new OpenStreetMapTileDownloader(ctx, this.mFSTileProvider);
 		this.mDownloadFinishedListenerHander = aDownloadFinishedListener;
 		this.mRendererInfo = aRendererInfo;
-		if(aRendererInfo.TILE_SOURCE_TYPE == 1){ // AndNav ZIP file
+		if(aRendererInfo.TILE_SOURCE_TYPE != 0){ // AndNav ZIP file
 			mFSTileProvider.setAndNavZipFile(aRendererInfo.BASEURL);
 		}
 	}
@@ -77,10 +77,10 @@ public class OpenStreetMapTileProvider implements OpenStreetMapConstants, OpenSt
 			if(DEBUGMODE)
 				Log.i(DEBUGTAG, "Cache failed, trying from FS.");
 			try {
-				if(aTypeCash == 1)
-					this.mFSTileProvider.loadMapTileFromZipCash(aTileURLString, this.mLoadCallbackHandler);
-				else
+				if(aTypeCash == 0)
 					this.mFSTileProvider.loadMapTileToMemCacheAsync(aTileURLString, this.mLoadCallbackHandler);
+				else
+					this.mFSTileProvider.loadMapTileFromZipCash(aTileURLString, this.mLoadCallbackHandler);
 				
 				ret = this.mLoadingMapTile;
 			} catch (Exception e) {

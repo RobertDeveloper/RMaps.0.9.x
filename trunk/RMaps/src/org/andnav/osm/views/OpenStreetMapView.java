@@ -623,11 +623,21 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 		 */
 		public GeoPoint fromPixels(float x, float y) {
 			/* Subtract the offset caused by touch. */
-			x -= OpenStreetMapView.this.mTouchMapOffsetX;
+			Log.d(DEBUGTAG, "x = "+x+" mTouchMapOffsetX = "+OpenStreetMapView.this.mTouchMapOffsetX+"   ");
+			
+			x -= OpenStreetMapView.this.mTouchMapOffsetX; 
 			y -= OpenStreetMapView.this.mTouchMapOffsetY;
-
-			return bb.getGeoPointOfRelativePositionWithLinearInterpolation(x / viewWidth, y
+			
+			int asd = Util.x2lon(centerMapTileCoords[0]*tileSizePx+(int)x-upperLeftCornerOfCenterMapTile.x, zoomLevel, tileSizePx);
+			GeoPoint p = bb.getGeoPointOfRelativePositionWithLinearInterpolation(x / viewWidth, y
 					/ viewHeight);
+			
+			Log.d(DEBUGTAG, "lon "+p.getLongitudeE6()+" "+asd+"   ");
+			p.setLongitudeE6(asd);
+			
+			//for(int i =0; i<=tileSizePx*(1<<zoomLevel); i++){int Q = Util.x2lon(i, zoomLevel, tileSizePx);Log.d(DEBUGTAG, "lon "+i+" "+Q);}
+
+			return p;
 		}
 
 		private static final int EQUATORCIRCUMFENCE = 40075004;

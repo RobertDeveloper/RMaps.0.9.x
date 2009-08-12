@@ -12,7 +12,6 @@ import android.content.Context;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -57,7 +56,7 @@ public class MainView  extends OpenStreetMapActivity implements OpenStreetMapCon
         
         final RelativeLayout rl = new RelativeLayout(this);
         
-        this.mOsmv = new OpenStreetMapView(this, OpenStreetMapRendererInfo.YANDEXMAP);//FILEMAPNIK);//YANDEXMAP);//OSMARENDER);//MAPNIK);
+        this.mOsmv = new OpenStreetMapView(this, OpenStreetMapRendererInfo.FILESASGIS);//FILEMAPNIK);//YANDEXMAP);//OSMARENDER);//MAPNIK);
         rl.addView(this.mOsmv, new RelativeLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
         
         /* SingleLocation-Overlay */

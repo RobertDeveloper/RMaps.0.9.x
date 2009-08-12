@@ -113,7 +113,7 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 		if(this.mPending.contains(aTileURLString))
 			return;
 
-		final String formattedTileURLString = OpenStreetMapTileNameFormatter.format(aTileURLString);
+		final String formattedTileURLString = aTileURLString.replace("/", "_");
 		final ZipEntry ze = mAndNavZipFile.getEntry(aTileURLString);
 		final InputStream in = new BufferedInputStream(mAndNavZipFile.getInputStream(ze), 8192);
 		

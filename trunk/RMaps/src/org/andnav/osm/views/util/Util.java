@@ -72,33 +72,106 @@ public class Util implements OpenStreetMapViewConstants{
 		return (x / Math.pow(2.0, aZoom) * 360.0) - 180;
 	}
 
-	private static double tile2lat(int y, int aZoom /*, final int aProjection*/) {
-		final int aProjection = 2;
-		
+	private static double tile2lat(int y, int aZoom) {
+		final int aProjection = 1;
+
 		if (aProjection == 1) {
 			final double n = Math.PI
 					- ((2.0 * Math.PI * y) / Math.pow(2.0, aZoom));
 			return 180.0 / Math.PI
 					* Math.atan(0.5 * (Math.exp(n) - Math.exp(-n)));
 		} else {
-			final double MerkElipsK=0.0000001;
+			final double MerkElipsK = 0.0000001;
 			final long sradiusa = 6378137;
 			final long sradiusb = 6356752;
-			final double FExct = (double) Math.sqrt(sradiusa*sradiusa-sradiusb*sradiusb)/sradiusa;
+			final double FExct = (double) Math.sqrt(sradiusa * sradiusa
+					- sradiusb * sradiusb)
+					/ sradiusa;
 			final int TilesAtZoom = 1 << aZoom;
-			double result = (y - TilesAtZoom / 2) / -(TilesAtZoom / (2*Math.PI));
-			result = (2 * Math.atan(Math.exp(result)) - Math.PI / 2) * 180 / Math.PI;
+			double result = (y - TilesAtZoom / 2)
+					/ -(TilesAtZoom / (2 * Math.PI));
+			result = (2 * Math.atan(Math.exp(result)) - Math.PI / 2) * 180
+					/ Math.PI;
 			double Zu = result / (180 / Math.PI);
 			double yy = ((y) - TilesAtZoom / 2);
-			
-  			double Zum1 = Zu;
-			Zu = Math.asin(1-((1+Math.sin(Zum1))*Math.pow(1-FExct*Math.sin(Zum1),FExct))/(Math.exp((2*yy)/-(TilesAtZoom/(2*Math.PI)))*Math.pow(1+FExct*Math.sin(Zum1),FExct)));
-			while(Math.abs(Zum1 - Zu) >= MerkElipsK){
-	  			Zum1 = Zu;
-				Zu = Math.asin(1-((1+Math.sin(Zum1))*Math.pow(1-FExct*Math.sin(Zum1),FExct))/(Math.exp((2*yy)/-(TilesAtZoom/(2*Math.PI)))*Math.pow(1+FExct*Math.sin(Zum1),FExct)));
+
+			double Zum1 = Zu;
+			Zu = Math
+					.asin(1
+							- ((1 + Math.sin(Zum1)) * Math.pow(1 - FExct
+									* Math.sin(Zum1), FExct))
+							/ (Math.exp((2 * yy)
+									/ -(TilesAtZoom / (2 * Math.PI))) * Math
+									.pow(1 + FExct * Math.sin(Zum1), FExct)));
+			while (Math.abs(Zum1 - Zu) >= MerkElipsK) {
+				Zum1 = Zu;
+				Zu = Math
+						.asin(1
+								- ((1 + Math.sin(Zum1)) * Math.pow(1 - FExct
+										* Math.sin(Zum1), FExct))
+								/ (Math.exp((2 * yy)
+										/ -(TilesAtZoom / (2 * Math.PI))) * Math
+										.pow(1 + FExct * Math.sin(Zum1), FExct)));
 			}
 
-			result = Zu*180/Math.PI;
+			result = Zu * 180 / Math.PI;
+
+			return result;
+		}
+	}
+
+	public static int x2lon(int x, int aZoom, final int MAPTILE_SIZEPX) {
+		int px = MAPTILE_SIZEPX * (1 << aZoom);
+		if (x < 0)
+			x = px + x;
+		if (x > px)
+			x = x - px;
+		return (int) (1E6 * (((double)x / px * 360.0) - 180));
+	}
+
+	public static double y2lat(int y, int aZoom, final int MAPTILE_SIZEPX) {
+		final int aProjection = 1;
+
+		if (aProjection == 1) {
+			final double n = Math.PI
+					- ((2.0 * Math.PI * y) / MAPTILE_SIZEPX * Math.pow(2.0, aZoom));
+			return 180.0 / Math.PI
+					* Math.atan(0.5 * (Math.exp(n) - Math.exp(-n)));
+		} else {
+			final double MerkElipsK = 0.0000001;
+			final long sradiusa = 6378137;
+			final long sradiusb = 6356752;
+			final double FExct = (double) Math.sqrt(sradiusa * sradiusa
+					- sradiusb * sradiusb)
+					/ sradiusa;
+			final int TilesAtZoom = 1 << aZoom;
+			double result = (y - TilesAtZoom / 2)
+					/ -(TilesAtZoom / (2 * Math.PI));
+			result = (2 * Math.atan(Math.exp(result)) - Math.PI / 2) * 180
+					/ Math.PI;
+			double Zu = result / (180 / Math.PI);
+			double yy = ((y) - TilesAtZoom / 2);
+
+			double Zum1 = Zu;
+			Zu = Math
+					.asin(1
+							- ((1 + Math.sin(Zum1)) * Math.pow(1 - FExct
+									* Math.sin(Zum1), FExct))
+							/ (Math.exp((2 * yy)
+									/ -(TilesAtZoom / (2 * Math.PI))) * Math
+									.pow(1 + FExct * Math.sin(Zum1), FExct)));
+			while (Math.abs(Zum1 - Zu) >= MerkElipsK) {
+				Zum1 = Zu;
+				Zu = Math
+						.asin(1
+								- ((1 + Math.sin(Zum1)) * Math.pow(1 - FExct
+										* Math.sin(Zum1), FExct))
+								/ (Math.exp((2 * yy)
+										/ -(TilesAtZoom / (2 * Math.PI))) * Math
+										.pow(1 + FExct * Math.sin(Zum1), FExct)));
+			}
+
+			result = Zu * 180 / Math.PI;
 
 			return result;
 		}
