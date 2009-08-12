@@ -3,6 +3,8 @@ package org.andnav.osm.views.util;
 
 import org.andnav.osm.views.util.constants.OpenStreetMapViewConstants;
 
+import android.util.Log;
+
 /**
  * 
  * @author Nicolas Gramlich
@@ -17,6 +19,7 @@ public enum OpenStreetMapRendererInfo {
 	//CLOUDMADESTANDARDTILES("http://tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/2/256/", "Cloudmade (Standard tiles)", ".jpg", 18, 256);
 	CLOUDMADESTANDARDTILES("http://mt.google.com/mt?v=w2.95&hl=ru/", "Cloudmade (Standard tiles)", ".png", 17, 256, 1, 0, 1),
 	FILEMAPNIK("/sdcard/rmaps/maps/mapnik.zip", "Mapnik (cash .zip)", ".png.andnav", 18, 256, 0, 1, 1),
+	FILESASGIS("/sdcard/rmaps/maps/yamap.zip", "Yandex map (sasgis cash .zip)", ".jpg", 18, 256, 2, 2, 2),
 	YANDEXMAP("http://vec.maps.yandex.net/tiles?l=map&v=2.6.0&x=", "Yandex.Maps", "", 18, 256, 2, 0, 2);
 	
 	
@@ -27,7 +30,7 @@ public enum OpenStreetMapRendererInfo {
 	public final String BASEURL, NAME, IMAGE_FILENAMEENDING;
 	public final int ZOOM_MAXLEVEL, MAPTILE_SIZEPX, 
 	URL_BUILDER_TYPE, // 0 - OSM, 1 - Google, 2 - Yandex 
-	TILE_SOURCE_TYPE, // 0 - internet, 1 - AndNav ZIP file
+	TILE_SOURCE_TYPE, // 0 - internet, 1 - AndNav ZIP file, 2 - SASGIS ZIP file
 	PROJECTION; // 1-меркатор на сфероид, 2- на эллипсоид
 	
 	// ===========================================================
@@ -49,13 +52,29 @@ public enum OpenStreetMapRendererInfo {
 		return MAPNIK;
 	}
 	
+	private String getQRTS(int x, int y, int zoomLevel){
+		final char[][] M_TSQR = {{'q','t'},{'r','s'}};
+		int i;
+		int mask;
+
+		String result = "t";
+		mask = 1 << zoomLevel;
+		x = x % mask;
+		if (x < 0) x += mask;
+		for (i = 2; i <= zoomLevel+1; i++){
+			mask = mask >> 1;
+		    result += M_TSQR[((x & mask) > 0)? 1 : 0][((y & mask) > 0)? 1 : 0];
+		}
+		return result;
+	}
+	
 	// ===========================================================
 	// Methods
 	// ===========================================================
 	
 	public String getTileURLString(final int[] tileID, final int zoomLevel){
 		switch(this.TILE_SOURCE_TYPE){
-		case 0:
+		case 0: // 0 - internet
 			switch(this.URL_BUILDER_TYPE){
 				case 0: // OSM
 					return new StringBuilder().append(this.BASEURL)
@@ -98,12 +117,19 @@ public enum OpenStreetMapRendererInfo {
 					.append(this.IMAGE_FILENAMEENDING)
 					.toString();
 			}
-		case 1: 
+		case 1: // 1 - AndNav ZIP file
 			return new StringBuilder().append(zoomLevel)
 			.append("/")
 			.append(tileID[OpenStreetMapViewConstants.MAPTILE_LONGITUDE_INDEX])
 			.append("/")
 			.append(tileID[OpenStreetMapViewConstants.MAPTILE_LATITUDE_INDEX])
+			.append(this.IMAGE_FILENAMEENDING)
+			.toString();
+		case 2: // 2 - SASGIS ZIP file
+			return new StringBuilder()
+			.append(0).append(zoomLevel+1).reverse().delete(2, 3).reverse()
+			.append("/")
+			.append(getQRTS(tileID[OpenStreetMapViewConstants.MAPTILE_LONGITUDE_INDEX], tileID[OpenStreetMapViewConstants.MAPTILE_LATITUDE_INDEX], zoomLevel))
 			.append(this.IMAGE_FILENAMEENDING)
 			.toString();
 		default:
