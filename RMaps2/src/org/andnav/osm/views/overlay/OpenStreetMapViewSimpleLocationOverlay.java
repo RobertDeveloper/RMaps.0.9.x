@@ -37,7 +37,7 @@ public class OpenStreetMapViewSimpleLocationOverlay extends OpenStreetMapViewOve
 
 	protected final Bitmap PERSON_ICON;
 	private Drawable mArrow;
-	private Drawable mStop;
+	//private Drawable mStop;
 	/** Coordinates the feet of the person are located. */
 	protected final android.graphics.Point PERSON_HOTSPOT = new android.graphics.Point(24,39);
 
@@ -57,7 +57,7 @@ public class OpenStreetMapViewSimpleLocationOverlay extends OpenStreetMapViewOve
 	public OpenStreetMapViewSimpleLocationOverlay(final Context ctx){
 		this.PERSON_ICON = BitmapFactory.decodeResource(ctx.getResources(), R.drawable.person);
 		this.mArrow = ctx.getResources().getDrawable(R.drawable.arrow);
-		this.mStop = ctx.getResources().getDrawable(R.drawable.arrow_stop);
+		//this.mStop = ctx.getResources().getDrawable(R.drawable.arrow_stop);
 
 		mPaintAccurasyFill = new Paint();
 		mPaintAccurasyFill.setAntiAlias(true);
@@ -70,7 +70,7 @@ public class OpenStreetMapViewSimpleLocationOverlay extends OpenStreetMapViewOve
 		mPaintAccurasyBorder.setColor(0xFF90B8D8);
 
 		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(ctx);
-		mPrefAccuracy = Integer.parseInt(pref.getString("pref_accuracy", "1").replace("\"", "")); 
+		mPrefAccuracy = Integer.parseInt(pref.getString("pref_accuracy", "1").replace("\"", ""));
 	}
 
 	// ===========================================================
