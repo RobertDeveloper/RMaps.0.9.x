@@ -30,6 +30,8 @@ import android.content.res.Resources;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.os.PowerManager;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -63,6 +65,9 @@ public class MainView extends OpenStreetMapActivity implements OpenStreetMapCons
 	private boolean mFullScreen;
 	private boolean mShowTitle;
 	private String mStatusListener = "";
+	private boolean mAutoFollow = true;
+	private Handler mCallbackHandler = new MainActivityCallbackHandler();
+	private ImageView ivAutoFollow;
 
 	// ===========================================================
 	// Constructors
@@ -78,6 +83,7 @@ public class MainView extends OpenStreetMapActivity implements OpenStreetMapCons
  		final RelativeLayout rl = new RelativeLayout(this);
         OpenStreetMapRendererInfo RendererInfo = getRendererInfo(getResources(), getPreferences(Activity.MODE_PRIVATE), "mapnik");
         this.mOsmv = new OpenStreetMapView(this, RendererInfo);
+        this.mOsmv.setMainActivityCallbackHandler(mCallbackHandler);
         rl.addView(this.mOsmv, new RelativeLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
 
         /* SingleLocation-Overlay */
@@ -93,6 +99,24 @@ public class MainView extends OpenStreetMapActivity implements OpenStreetMapCons
         /* ZoomControls */
         {
         	final boolean sideBottom = pref.getBoolean("pref_bottomzoomcontrol", false);
+
+	        /* Create a ImageView with a zoomIn-Icon. */
+	        ivAutoFollow = new ImageView(this);
+	        ivAutoFollow.setImageResource(R.drawable.autofollow);
+	        ivAutoFollow.setVisibility(ImageView.INVISIBLE);
+	        /* Create RelativeLayoutParams, that position in in the top right corner. */
+	        final RelativeLayout.LayoutParams followParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+	        followParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+	        followParams.addRule(!sideBottom ? RelativeLayout.ALIGN_PARENT_BOTTOM : RelativeLayout.ALIGN_PARENT_TOP);
+	        rl.addView(ivAutoFollow, followParams);
+
+	        ivAutoFollow.setOnClickListener(new OnClickListener(){
+				// @Override
+				public void onClick(View v) {
+					setAutoFollow(true);
+					setLastKnownLocation();
+				}
+	        });
 
 	        /* Create a ImageView with a zoomIn-Icon. */
 	        final ImageView ivZoomIn = new ImageView(this);
@@ -197,32 +221,13 @@ public class MainView extends OpenStreetMapActivity implements OpenStreetMapCons
 
 		switch (item.getItemId()) {
 		case (R.id.settings):
-			//startActivity(new Intent(this, MainPreferences.class));
 			startActivityForResult(new Intent(this, MainPreferences.class), 12345);
 			return true;
 		case (R.id.mapselector):
 			return true;
-//		case (R.id.gotocenter):
-//			this.mOsmv
-//			.getController()
-//			.animateTo(
-//					new GeoPoint(60061388,30307222),
-//					OpenStreetMapViewController.AnimationType.MIDDLEPEAKSPEED,
-//					OpenStreetMapViewController.ANIMATION_SMOOTHNESS_HIGH,
-//					OpenStreetMapViewController.ANIMATION_DURATION_DEFAULT);
-//			return true;
 		case (R.id.mylocation):
-			//Log.e(DEBUGTAG, "orientation" + getResources().getConfiguration().orientation);
-			final LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-			final Location loc = lm.getLastKnownLocation("gps");
-			if (loc != null)
-				this.mOsmv
-						.getController()
-						.animateTo(
-								TypeConverter.locationToGeoPoint(loc),
-								OpenStreetMapViewController.AnimationType.MIDDLEPEAKSPEED,
-								OpenStreetMapViewController.ANIMATION_SMOOTHNESS_HIGH,
-								OpenStreetMapViewController.ANIMATION_DURATION_DEFAULT);
+			setAutoFollow(true);
+			setLastKnownLocation();
 			return true;
 		default:
  			OpenStreetMapRendererInfo RendererInfo = getRendererInfo(getResources(), getPreferences(Activity.MODE_PRIVATE), (String)item.getTitleCondensed());
@@ -241,10 +246,50 @@ public class MainView extends OpenStreetMapActivity implements OpenStreetMapCons
 
 	}
 
+	private void setLastKnownLocation() {
+		final LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+		final Location loc1 = lm.getLastKnownLocation("gps");
+		final Location loc2 = lm.getLastKnownLocation("network");
+		Location loc = null;
+		if(loc1 == null && loc2 != null)
+			loc = loc2;
+		else if (loc1 != null && loc2 == null)
+			loc = loc1;
+		else
+			loc = loc1.getTime() > loc2.getTime() ? loc1 : loc2;
+
+		if (loc != null)
+			this.mOsmv
+					.getController()
+					.animateTo(
+							TypeConverter.locationToGeoPoint(loc),
+							OpenStreetMapViewController.AnimationType.MIDDLEPEAKSPEED,
+							OpenStreetMapViewController.ANIMATION_SMOOTHNESS_HIGH,
+							OpenStreetMapViewController.ANIMATION_DURATION_DEFAULT);
+	}
+
+	private void setAutoFollow(boolean autoFollow) {
+		if (mAutoFollow != autoFollow) {
+			mAutoFollow = autoFollow;
+
+			if (autoFollow) {
+				ivAutoFollow.setVisibility(ImageView.INVISIBLE);
+				Toast.makeText(this, R.string.auto_follow_enabled, Toast.LENGTH_SHORT).show();
+			} else {
+				ivAutoFollow.setVisibility(ImageView.VISIBLE);
+				Toast.makeText(this, R.string.auto_follow_disabled, Toast.LENGTH_SHORT).show();
+			}
+		}
+	}
+
 	@Override
 	public void onLocationChanged(Location loc) {
 		this.mMyLocationOverlay.setLocation(loc);
-		this.mOsmv.getController().animateTo(TypeConverter.locationToGeoPoint(loc), OpenStreetMapViewController.AnimationType.MIDDLEPEAKSPEED, OpenStreetMapViewController.ANIMATION_SMOOTHNESS_HIGH, OpenStreetMapViewController.ANIMATION_DURATION_DEFAULT);
+
+		if(mAutoFollow)
+			this.mOsmv.getController().animateTo(TypeConverter.locationToGeoPoint(loc), OpenStreetMapViewController.AnimationType.MIDDLEPEAKSPEED, OpenStreetMapViewController.ANIMATION_SMOOTHNESS_HIGH, OpenStreetMapViewController.ANIMATION_DURATION_DEFAULT);
+		else
+			this.mOsmv.invalidate();
 	}
 
 	@Override
@@ -395,5 +440,20 @@ public class MainView extends OpenStreetMapActivity implements OpenStreetMapCons
 			rightText.setText(mStatusListener + " " + (1+mOsmv.getZoomLevel()));
 		}
 	}
+
+	private class MainActivityCallbackHandler extends Handler{
+		@Override
+		public void handleMessage(final Message msg) {
+			final int what = msg.what;
+			switch(what){
+				case R.id.user_moved_map:
+					Log.d(DEBUGTAG, "user_moved_map");
+					setAutoFollow(false);
+					break;
+			}
+		}
+	}
+
+
 
 }

@@ -60,6 +60,8 @@
 	<string name="tar">.tar</string>
 
 	<string name="no_traffic">On this zoom traffic info are unavailable</string>
+	<string name="auto_follow_enabled">Auto-Follow Enabled</string>
+	<string name="auto_follow_disabled">Auto-Follow Disabled</string>
 
 
 </resources>

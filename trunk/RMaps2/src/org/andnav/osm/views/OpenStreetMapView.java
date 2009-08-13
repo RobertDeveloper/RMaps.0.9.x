@@ -17,6 +17,8 @@ import org.andnav.osm.views.util.OpenStreetMapTileProvider;
 import org.andnav.osm.views.util.Util;
 import org.andnav.osm.views.util.constants.OpenStreetMapViewConstants;
 
+import com.robert.maps.R;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -67,6 +69,7 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 	private OpenStreetMapViewController mController;
 	private int mMiniMapOverriddenVisibility = NOT_SET;
 	private int mMiniMapZoomDiff = NOT_SET;
+	private Handler mCallbackHandler;
 
 	// ===========================================================
 	// Constructors
@@ -431,6 +434,10 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 				this.mTouchMapOffsetX = (int) event.getX() - this.mTouchDownX;
 				this.mTouchMapOffsetY = (int) event.getY() - this.mTouchDownY;
 				invalidate();
+
+				final Message successMessage = Message.obtain(mCallbackHandler, R.id.user_moved_map);
+				successMessage.sendToTarget();
+
 				return true;
 			case MotionEvent.ACTION_UP:
 				final int viewWidth_2 = this.getWidth() / 2;
@@ -874,6 +881,11 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 			// Auto-generated method stub
 			return false;
 		}
+
+	}
+
+	public void setMainActivityCallbackHandler(Handler callbackHandler) {
+		this.mCallbackHandler = callbackHandler;
 
 	}
 
