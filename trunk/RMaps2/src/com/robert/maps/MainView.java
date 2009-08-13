@@ -110,7 +110,7 @@ public class MainView extends OpenStreetMapActivity implements OpenStreetMapCons
 					setTitle();
 
 					if(MainView.this.mOsmv.getZoomLevel() > 16 && MainView.this.mOsmv.getRenderer().YANDEX_TRAFFIC_ON == 1)
-						Toast.makeText(MainView.this, "В этом масштабе пробк недоступна", Toast.LENGTH_LONG).show();
+						Toast.makeText(MainView.this, R.string.no_traffic, Toast.LENGTH_SHORT).show();
 				}
 	        });
 	        ivZoomIn.setOnLongClickListener(new OnLongClickListener(){
