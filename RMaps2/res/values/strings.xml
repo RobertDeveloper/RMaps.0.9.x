@@ -59,6 +59,7 @@
 	<string name="mnm">.mnm</string>
 	<string name="tar">.tar</string>
 
+	<string name="no_traffic">On this zoom traffic info are unavailable</string>
 
 
 </resources>
