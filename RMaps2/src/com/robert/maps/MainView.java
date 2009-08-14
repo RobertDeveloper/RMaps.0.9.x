@@ -27,6 +27,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -68,7 +72,24 @@ public class MainView extends OpenStreetMapActivity implements OpenStreetMapCons
 	private boolean mAutoFollow = true;
 	private Handler mCallbackHandler = new MainActivityCallbackHandler();
 	private ImageView ivAutoFollow;
+	private CompassView mCompassView;
+	private SensorManager mOrientationSensorManager;
+	private boolean mCompassEnabled;
+	
+	private final SensorEventListener mListener = new SensorEventListener() {
 
+		public void onAccuracyChanged(Sensor sensor, int accuracy) {
+			// Auto-generated method stub
+			
+		}
+
+		public void onSensorChanged(SensorEvent event) {
+			mCompassView.setAzimuth(event.values[0]);
+			mCompassView.invalidate();
+		}
+		
+	};
+	
 	// ===========================================================
 	// Constructors
 	// ===========================================================
@@ -78,6 +99,7 @@ public class MainView extends OpenStreetMapActivity implements OpenStreetMapCons
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState, false); // Pass true here to actually contribute to OSM!
 
+		mOrientationSensorManager = (SensorManager)getSystemService(Context.SENSOR_SERVICE);
        	final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
 
  		final RelativeLayout rl = new RelativeLayout(this);
@@ -96,11 +118,19 @@ public class MainView extends OpenStreetMapActivity implements OpenStreetMapCons
 	        this.mOsmv.getOverlays().add(mMyLocationOverlay);
         }
 
-        /* ZoomControls */
         {
         	final boolean sideBottom = pref.getBoolean("pref_bottomzoomcontrol", false);
 
-	        /* Create a ImageView with a zoomIn-Icon. */
+            /* Compass */
+        	mCompassView = new CompassView(this);
+	        mCompassView.setVisibility(mCompassEnabled ? View.VISIBLE : View.INVISIBLE);
+	        /* Create RelativeLayoutParams, that position in in the top right corner. */
+	        final RelativeLayout.LayoutParams compassParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+	        compassParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+	        compassParams.addRule(!sideBottom ? RelativeLayout.ALIGN_PARENT_BOTTOM : RelativeLayout.ALIGN_PARENT_TOP);
+	        rl.addView(mCompassView, compassParams);
+        	
+            /* AutoFollow */
 	        ivAutoFollow = new ImageView(this);
 	        ivAutoFollow.setImageResource(R.drawable.autofollow);
 	        ivAutoFollow.setVisibility(ImageView.INVISIBLE);
@@ -118,6 +148,7 @@ public class MainView extends OpenStreetMapActivity implements OpenStreetMapCons
 				}
 	        });
 
+	        /* ZoomControls */
 	        /* Create a ImageView with a zoomIn-Icon. */
 	        final ImageView ivZoomIn = new ImageView(this);
 	        ivZoomIn.setImageResource(R.drawable.zoom_in);
@@ -224,6 +255,15 @@ public class MainView extends OpenStreetMapActivity implements OpenStreetMapCons
 			startActivityForResult(new Intent(this, MainPreferences.class), 12345);
 			return true;
 		case (R.id.mapselector):
+			return true;
+		case (R.id.compass):
+			mCompassEnabled = !mCompassEnabled;
+			mCompassView.setVisibility(mCompassEnabled ? View.VISIBLE : View.INVISIBLE);
+			if(mCompassEnabled)
+				mOrientationSensorManager.registerListener(mListener, mOrientationSensorManager
+					.getDefaultSensor(Sensor.TYPE_ORIENTATION), SensorManager.SENSOR_DELAY_UI);
+			else
+				mOrientationSensorManager.unregisterListener(mListener);
 			return true;
 		case (R.id.mylocation):
 			setAutoFollow(true);
@@ -371,11 +411,14 @@ public class MainView extends OpenStreetMapActivity implements OpenStreetMapCons
 		editor.putInt("Latitude", mOsmv.getMapCenterLatitudeE6());
 		editor.putInt("Longitude", mOsmv.getMapCenterLongitudeE6());
 		editor.putInt("ZoomLevel", mOsmv.getZoomLevel());
+		editor.putBoolean("CompassEnabled", mCompassEnabled);
 		editor.commit();
 
 		if (myWakeLock != null) {
 			myWakeLock.release();
 		}
+		
+		mOrientationSensorManager.unregisterListener(mListener);
 
 		super.onPause();
 	}
@@ -393,6 +436,10 @@ public class MainView extends OpenStreetMapActivity implements OpenStreetMapCons
 		} else {
 			myWakeLock = null;
 		}
+		
+		if(mCompassEnabled)
+			mOrientationSensorManager.registerListener(mListener, mOrientationSensorManager
+				.getDefaultSensor(Sensor.TYPE_ORIENTATION), SensorManager.SENSOR_DELAY_UI);
 	}
 
 	private OpenStreetMapRendererInfo getRendererInfo(final Resources aRes, final SharedPreferences aPref, final String aName){
@@ -417,7 +464,10 @@ public class MainView extends OpenStreetMapActivity implements OpenStreetMapCons
 
 		mOsmv.setZoomLevel(settings.getInt("ZoomLevel", 0));
 		mOsmv.setMapCenter(settings.getInt("Latitude", 0), settings.getInt("Longitude", 0));
-
+		
+		mCompassEnabled = settings.getBoolean("CompassEnabled", false);
+		mCompassView.setVisibility(mCompassEnabled ? View.VISIBLE : View.INVISIBLE);
+		
 		setTitle();
 	}
 

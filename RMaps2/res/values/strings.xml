@@ -54,6 +54,7 @@
     <string name="menu_exit">Exit</string>
 	<string name="menu_mylocation">My location</string>
 	<string name="menu_mapselector">Maps</string>
+	<string name="menu_compass">Compass</string>
 
 
 	<string name="mnm">.mnm</string>
