@@ -237,6 +237,7 @@ public class MainView extends OpenStreetMapActivity implements OpenStreetMapCons
 	        getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.main_title);
 
 		restoreUIState();
+
     }
 
 	@Override
@@ -450,6 +451,7 @@ public class MainView extends OpenStreetMapActivity implements OpenStreetMapCons
 		editor.putInt("Longitude", mOsmv.getMapCenterLongitudeE6());
 		editor.putInt("ZoomLevel", mOsmv.getZoomLevel());
 		editor.putBoolean("CompassEnabled", mCompassEnabled);
+		editor.putString("app_version", (String) getText(R.string.app_version));
 		editor.commit();
 
 		if (myWakeLock != null) {
@@ -507,6 +509,10 @@ public class MainView extends OpenStreetMapActivity implements OpenStreetMapCons
 		mCompassView.setVisibility(mCompassEnabled ? View.VISIBLE : View.INVISIBLE);
 
 		setTitle();
+
+		final String app_version = (String) getText(R.string.app_version);
+		if(!settings.getString("app_version", "").equalsIgnoreCase(app_version))
+			showDialog(R.id.whatsnew);
 	}
 
 	@Override

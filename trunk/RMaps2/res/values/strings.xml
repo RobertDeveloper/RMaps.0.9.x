@@ -65,6 +65,7 @@
 	<string name="auto_follow_enabled">Auto-Follow Enabled</string>
 	<string name="auto_follow_disabled">Auto-Follow Disabled</string>
 
+	<string name="app_version">v.0.5.5</string>
     <string name="about_dialog_text">RMaps v.0.5.5\n
     \n
 ©2009 Robert.Developer\n
@@ -75,9 +76,7 @@ All rights reserved\n
 Questions, sentences mail to robertk506@gmail.ru\n
 \n
 How to and FAQ you can find on http://robertdeveloper.blogspot.com/\n
-    </string>
-    <string name="about_dialog_whats_new">What's new</string>
-    <string name="about_dialog_close">Close</string>
+</string>
 <string name="whats_new_dialog_text">
 v.0.5.4\n
 + Enable/Disable auto-follow mode\n
@@ -98,5 +97,7 @@ v.0.5.2\n
 + Disconnecting from GPS at window turning off\n
 \n
 </string>
+    <string name="about_dialog_whats_new">What's new</string>
+    <string name="about_dialog_close">Close</string>
 
 </resources>
