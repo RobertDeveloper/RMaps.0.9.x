@@ -55,6 +55,7 @@
 	<string name="menu_mylocation">My location</string>
 	<string name="menu_mapselector">Maps</string>
 	<string name="menu_compass">Compass</string>
+    <string name="menu_about">About</string>
 
 
 	<string name="mnm">.mnm</string>
@@ -64,5 +65,38 @@
 	<string name="auto_follow_enabled">Auto-Follow Enabled</string>
 	<string name="auto_follow_disabled">Auto-Follow Disabled</string>
 
+    <string name="about_dialog_text">RMaps v.0.5.5\n
+    \n
+©2009 Robert.Developer\n
+Osmdroid  by Nicolas Gramlich\n
+App icon by Everaldo Coelho\n
+All rights reserved\n
+\n
+Questions, sentences mail to robertk506@gmail.ru\n
+\n
+How to and FAQ you can find on http://robertdeveloper.blogspot.com/\n
+    </string>
+    <string name="about_dialog_whats_new">What's new</string>
+    <string name="about_dialog_close">Close</string>
+<string name="whats_new_dialog_text">
+v.0.5.4\n
++ Enable/Disable auto-follow mode\n
++ Top/Bottom position of zoom buttons\n
++ Center and Zoom in on double tap map\n
++ Predefined zoom value for long press on zoom buttons\n
+\n
+v.0.5.3\n
++ Network provider usage while gps it is not ready yet\n
++ Status current provider in window title (test look)\n
++ Fast\slow update current location\n
++ Switch off auto reindexing (if you had problems after reboot)\n
+\n
+v.0.5.2\n
++ Update Google.Map URL\n
++ Support png images in tar files\n
++ Monitoring GPS turn on/off\n
++ Disconnecting from GPS at window turning off\n
+\n
+</string>
 
 </resources>

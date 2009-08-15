@@ -23,7 +23,10 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
@@ -254,6 +257,9 @@ public class MainView extends OpenStreetMapActivity implements OpenStreetMapCons
 		case (R.id.settings):
 			startActivityForResult(new Intent(this, MainPreferences.class), 12345);
 			return true;
+		case (R.id.about):
+			showDialog(R.id.about);
+			return true;
 		case (R.id.mapselector):
 			return true;
 		case (R.id.compass):
@@ -284,6 +290,38 @@ public class MainView extends OpenStreetMapActivity implements OpenStreetMapCons
 			return true;
 		}
 
+	}
+
+	@Override
+	protected Dialog onCreateDialog(int id) {
+		switch (id) {
+		case R.id.whatsnew:
+			return new AlertDialog.Builder(this) //.setIcon( R.drawable.alert_dialog_icon)
+					.setTitle(R.string.about_dialog_whats_new)
+					.setMessage(R.string.whats_new_dialog_text)
+					.setNegativeButton(R.string.about_dialog_close, new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int whichButton) {
+
+							/* User clicked Cancel so do some stuff */
+						}
+					}).create();
+		case R.id.about:
+			return new AlertDialog.Builder(this) //.setIcon(R.drawable.alert_dialog_icon)
+					.setTitle(R.string.menu_about)
+					.setMessage(R.string.about_dialog_text)
+					.setPositiveButton(R.string.about_dialog_whats_new, new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int whichButton) {
+
+							showDialog(R.id.whatsnew);
+						}
+					}).setNegativeButton(R.string.about_dialog_close, new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int whichButton) {
+
+							/* User clicked Cancel so do some stuff */
+						}
+					}).create();
+		}
+		return null;
 	}
 
 	private void setLastKnownLocation() {

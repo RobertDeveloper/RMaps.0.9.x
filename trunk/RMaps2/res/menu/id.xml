@@ -2,4 +2,5 @@
 <menu
   xmlns:android="http://schemas.android.com/apk/res/android">
 <item android:id="@+id/user_moved_map"></item>
+<item android:id="@+id/whatsnew"></item>
 </menu>
