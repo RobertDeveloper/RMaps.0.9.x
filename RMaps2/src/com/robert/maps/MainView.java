@@ -75,21 +75,21 @@ public class MainView extends OpenStreetMapActivity implements OpenStreetMapCons
 	private CompassView mCompassView;
 	private SensorManager mOrientationSensorManager;
 	private boolean mCompassEnabled;
-	
+
 	private final SensorEventListener mListener = new SensorEventListener() {
 
 		public void onAccuracyChanged(Sensor sensor, int accuracy) {
 			// Auto-generated method stub
-			
+
 		}
 
 		public void onSensorChanged(SensorEvent event) {
 			mCompassView.setAzimuth(event.values[0]);
 			mCompassView.invalidate();
 		}
-		
+
 	};
-	
+
 	// ===========================================================
 	// Constructors
 	// ===========================================================
@@ -122,14 +122,14 @@ public class MainView extends OpenStreetMapActivity implements OpenStreetMapCons
         	final boolean sideBottom = pref.getBoolean("pref_bottomzoomcontrol", false);
 
             /* Compass */
-        	mCompassView = new CompassView(this);
+        	mCompassView = new CompassView(this, sideBottom);
 	        mCompassView.setVisibility(mCompassEnabled ? View.VISIBLE : View.INVISIBLE);
 	        /* Create RelativeLayoutParams, that position in in the top right corner. */
 	        final RelativeLayout.LayoutParams compassParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
 	        compassParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
 	        compassParams.addRule(!sideBottom ? RelativeLayout.ALIGN_PARENT_BOTTOM : RelativeLayout.ALIGN_PARENT_TOP);
 	        rl.addView(mCompassView, compassParams);
-        	
+
             /* AutoFollow */
 	        ivAutoFollow = new ImageView(this);
 	        ivAutoFollow.setImageResource(R.drawable.autofollow);
@@ -417,7 +417,7 @@ public class MainView extends OpenStreetMapActivity implements OpenStreetMapCons
 		if (myWakeLock != null) {
 			myWakeLock.release();
 		}
-		
+
 		mOrientationSensorManager.unregisterListener(mListener);
 
 		super.onPause();
@@ -436,7 +436,7 @@ public class MainView extends OpenStreetMapActivity implements OpenStreetMapCons
 		} else {
 			myWakeLock = null;
 		}
-		
+
 		if(mCompassEnabled)
 			mOrientationSensorManager.registerListener(mListener, mOrientationSensorManager
 				.getDefaultSensor(Sensor.TYPE_ORIENTATION), SensorManager.SENSOR_DELAY_UI);
@@ -464,10 +464,10 @@ public class MainView extends OpenStreetMapActivity implements OpenStreetMapCons
 
 		mOsmv.setZoomLevel(settings.getInt("ZoomLevel", 0));
 		mOsmv.setMapCenter(settings.getInt("Latitude", 0), settings.getInt("Longitude", 0));
-		
+
 		mCompassEnabled = settings.getBoolean("CompassEnabled", false);
 		mCompassView.setVisibility(mCompassEnabled ? View.VISIBLE : View.INVISIBLE);
-		
+
 		setTitle();
 	}
 
