@@ -56,6 +56,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.RelativeLayout.LayoutParams;
 
+import com.robert.maps.utils.Ut;
+
 public class MainView extends OpenStreetMapActivity implements OpenStreetMapConstants {
 	// ===========================================================
 	// Constants
@@ -309,7 +311,8 @@ public class MainView extends OpenStreetMapActivity implements OpenStreetMapCons
 		case R.id.about:
 			return new AlertDialog.Builder(this) //.setIcon(R.drawable.alert_dialog_icon)
 					.setTitle(R.string.menu_about)
-					.setMessage(R.string.about_dialog_text)
+					.setMessage(getText(R.string.app_name) + " v." + Ut.getAppVersion(this) + "\n\n"
+							+ getText(R.string.about_dialog_text))
 					.setPositiveButton(R.string.about_dialog_whats_new, new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int whichButton) {
 
@@ -430,7 +433,7 @@ public class MainView extends OpenStreetMapActivity implements OpenStreetMapCons
 				if(pref.getBoolean("pref_predefmaps_"+nnm.getNamedItem("id").getNodeValue(), true) && !ItIsLayer){
 					MenuItem item = submenu.add(nnm.getNamedItem("name").getNodeValue());
 					item.setTitleCondensed(nnm.getNamedItem("id").getNodeValue());
-					//Log.e(DEBUGTAG, nnm.getNamedItem("name").getNodeValue());
+					Log.e(DEBUGTAG, nnm.getNamedItem("name").getNodeValue());
 				}
 			}
 		} catch (SAXException e1) {
@@ -451,7 +454,7 @@ public class MainView extends OpenStreetMapActivity implements OpenStreetMapCons
 		editor.putInt("Longitude", mOsmv.getMapCenterLongitudeE6());
 		editor.putInt("ZoomLevel", mOsmv.getZoomLevel());
 		editor.putBoolean("CompassEnabled", mCompassEnabled);
-		editor.putString("app_version", (String) getText(R.string.app_version));
+		editor.putString("app_version", Ut.getAppVersion(this));
 		editor.commit();
 
 		if (myWakeLock != null) {
@@ -510,8 +513,7 @@ public class MainView extends OpenStreetMapActivity implements OpenStreetMapCons
 
 		setTitle();
 
-		final String app_version = (String) getText(R.string.app_version);
-		if(!settings.getString("app_version", "").equalsIgnoreCase(app_version))
+		if(!settings.getString("app_version", "").equalsIgnoreCase(Ut.getAppVersion(this)))
 			showDialog(R.id.whatsnew);
 	}
 
