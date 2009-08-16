@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="hello">Hello World, OpenStreetMapViewer</string>
-    <string name="app_name">RMaps</string>
-    <string name="app_name_itemizedoverlay">OSMViewer ItemizedOverlay</string>
-    
-    <string name="unknown">Unknown</string>
-</resources>
