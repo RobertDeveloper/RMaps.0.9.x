@@ -65,9 +65,7 @@
 	<string name="auto_follow_enabled">Auto-Follow Enabled</string>
 	<string name="auto_follow_disabled">Auto-Follow Disabled</string>
 
-	<string name="app_version">v.0.5.5</string>
-    <string name="about_dialog_text">RMaps v.0.5.5\n
-    \n
+    <string name="about_dialog_text">
 ©2009 Robert.Developer\n
 Osmdroid  by Nicolas Gramlich\n
 App icon by Everaldo Coelho\n
