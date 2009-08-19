@@ -550,6 +550,11 @@ public class MainView extends OpenStreetMapActivity implements OpenStreetMapCons
 		}
 	}
 
+	@Override
+	public boolean onSearchRequested() {
+        startSearch("", false, null, false);
+		return true;
+	}
 
 
 }

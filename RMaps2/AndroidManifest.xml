@@ -12,14 +12,23 @@
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
-        </activity>
+        <meta-data android:name="android.app.default_searchable" android:value=".SearchResultActivity"></meta-data>
+
+</activity>
         <activity android:name="MainPreferences">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
             </intent-filter>
         </activity>
         
-    </application>
+    <activity android:name="SearchResultActivity"><intent-filter><action android:name="android.intent.action.MAIN"></action>
+</intent-filter>
+<intent-filter><action android:name="android.intent.action.SEARCH"></action>
+<category android:name="android.intent.category.DEFAULT"></category>
+</intent-filter>
+<meta-data android:resource="@xml/searchable" android:name="android.app.searchable"></meta-data>
+</activity>
+</application>
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
     <uses-sdk android:minSdkVersion="3"/>
 </manifest>
