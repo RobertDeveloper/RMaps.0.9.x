@@ -100,7 +100,12 @@ v.0.5.2\n
 + Disconnecting from GPS at window turning off\n
 \n
 </string>
+
     <string name="about_dialog_whats_new">What's new</string>
     <string name="about_dialog_close">Close</string>
 
+
+
+    <string name="search_label">Address:</string>
+    <string name="search_hint">e.g. Abbey Road, London</string>
 </resources>

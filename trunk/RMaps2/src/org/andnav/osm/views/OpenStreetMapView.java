@@ -457,6 +457,8 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 	@Override
 	public void onDraw(final Canvas c) {
 		final long startMs = System.currentTimeMillis();
+//		c.save();
+//		c.rotate(45);
 
 		/*
 		 * Do some calculations and drag attributes to local variables to save
@@ -551,6 +553,8 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 		this.mPaint.setStyle(Style.STROKE);
 		if (this.mMaxiMap != null) // If this is a MiniMap
 			c.drawRect(0, 0, viewWidth - 1, viewHeight - 1, this.mPaint);
+
+//		c.restore();
 
 		final long endMs = System.currentTimeMillis();
 		if (DEBUGMODE)
