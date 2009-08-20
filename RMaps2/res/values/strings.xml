@@ -56,6 +56,7 @@
 	<string name="menu_mapselector">Maps</string>
 	<string name="menu_compass">Compass</string>
     <string name="menu_about">About</string>
+    <string name="menu_search">Search</string>
 
 
 	<string name="mnm">.mnm</string>
@@ -79,26 +80,26 @@ How to and FAQ you can find on http://robertdeveloper.blogspot.com/\n
 v.0.5.5\n
 + Compass on the map\n
 + About dialog\n
-+ What's new dialog\n
-\n
-v.0.5.4\n
-+ Enable/Disable auto-follow mode\n
-+ Top/Bottom position of zoom buttons\n
-+ Center and Zoom in on double tap map\n
-+ Predefined zoom value for long press on zoom buttons\n
-\n
-v.0.5.3\n
-+ Network provider usage while gps it is not ready yet\n
-+ Status current provider in window title (test look)\n
-+ Fast\slow update current location\n
-+ Switch off auto reindexing (if you had problems after reboot)\n
-\n
-v.0.5.2\n
-+ Update Google.Map URL\n
-+ Support png images in tar files\n
-+ Monitoring GPS turn on/off\n
-+ Disconnecting from GPS at window turning off\n
-\n
++ What's new dialog
+
+v.0.5.4
++ Enable/Disable auto-follow mode
++ Top/Bottom position of zoom buttons
++ Center and Zoom in on double tap map
++ Predefined zoom value for long press on zoom buttons
+
+v.0.5.3
++ Network provider usage while gps it is not ready yet
++ Status current provider in window title (test look)
++ Fast\slow update current location
++ Switch off auto reindexing (if you had problems after reboot)
+
+v.0.5.2
++ Update Google.Map URL
++ Support png images in tar files
++ Monitoring GPS turn on/off
++ Disconnecting from GPS at window turning off
+
 </string>
 
     <string name="about_dialog_whats_new">What's new</string>
