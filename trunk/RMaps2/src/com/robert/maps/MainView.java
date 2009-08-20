@@ -257,6 +257,9 @@ public class MainView extends OpenStreetMapActivity implements OpenStreetMapCons
 		super.onOptionsItemSelected(item);
 
 		switch (item.getItemId()) {
+		case (R.id.search):
+			onSearchRequested();
+			return true;
 		case (R.id.settings):
 			startActivityForResult(new Intent(this, MainPreferences.class), 12345);
 			return true;
@@ -337,6 +340,8 @@ public class MainView extends OpenStreetMapActivity implements OpenStreetMapCons
 			loc = loc2;
 		else if (loc1 != null && loc2 == null)
 			loc = loc1;
+		else if (loc1 == null && loc2 == null)
+			loc = null;
 		else
 			loc = loc1.getTime() > loc2.getTime() ? loc1 : loc2;
 
