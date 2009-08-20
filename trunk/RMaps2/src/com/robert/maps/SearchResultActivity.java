@@ -49,7 +49,7 @@ public class SearchResultActivity extends Activity {
 		OutputStream out = null;
 
 		try {
-			in = new BufferedInputStream(new URL("http://ajax.googleapis.com/ajax/services/search/local?v=1.0&q=" + queryString).openStream(), StreamUtils.IO_BUFFER_SIZE);
+			in = new BufferedInputStream(new URL("http://ajax.googleapis.com/ajax/services/search/local?v=1.0&q=" + queryString + "&key=ABQIAAAAuGNgHVLd5kgLL0dg4gxBCRQpDmmpk8q921mRIPG4qgOvy0T09hQeXgriFfxGyJEsGXrlS9NOA5oQAA").openStream(), StreamUtils.IO_BUFFER_SIZE);
 
 			final ByteArrayOutputStream dataStream = new ByteArrayOutputStream();
 			out = new BufferedOutputStream(dataStream, StreamUtils.IO_BUFFER_SIZE);
