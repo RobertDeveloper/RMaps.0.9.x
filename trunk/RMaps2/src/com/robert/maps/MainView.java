@@ -1,21 +1,31 @@
 package com.robert.maps;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URL;
+import java.net.URLEncoder;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.andnav.osm.OpenStreetMapActivity;
+import org.andnav.osm.util.GeoPoint;
 import org.andnav.osm.util.TypeConverter;
 import org.andnav.osm.util.constants.OpenStreetMapConstants;
 import org.andnav.osm.views.OpenStreetMapView;
 import org.andnav.osm.views.controller.OpenStreetMapViewController;
 import org.andnav.osm.views.overlay.OpenStreetMapViewSimpleLocationOverlay;
 import org.andnav.osm.views.util.OpenStreetMapRendererInfo;
+import org.andnav.osm.views.util.StreamUtils;
 import org.andnav.osm.views.util.Util;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -25,6 +35,7 @@ import org.xml.sax.SAXException;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -240,6 +251,11 @@ public class MainView extends OpenStreetMapActivity implements OpenStreetMapCons
 
 		restoreUIState();
 
+        final Intent queryIntent = getIntent();
+        final String queryAction = queryIntent.getAction();
+        if (Intent.ACTION_SEARCH.equals(queryAction)) {
+            doSearchQuery(queryIntent);
+        }
     }
 
 	@Override
@@ -560,6 +576,55 @@ public class MainView extends OpenStreetMapActivity implements OpenStreetMapCons
         startSearch("", false, null, false);
 		return true;
 	}
+
+	@Override
+	protected void onNewIntent(Intent intent) {
+		super.onNewIntent(intent);
+
+        final Intent queryIntent = getIntent();
+        final String queryAction = queryIntent.getAction();
+        if (Intent.ACTION_SEARCH.equals(queryAction)) {
+            doSearchQuery(queryIntent);
+//        	Ut.dd("onNewIntent");
+        }
+	}
+
+	private void doSearchQuery(Intent queryIntent) {
+        final String queryString = queryIntent.getStringExtra(SearchManager.QUERY).replace(" ", "%20");
+
+		InputStream in = null;
+		OutputStream out = null;
+
+		try {
+			URL url = new URL("http://ajax.googleapis.com/ajax/services/search/local?v=1.0&hl=ru&q="
+					+ URLEncoder.encode(queryString, "UTF-8") + "");
+			Ut.dd(url.toString());
+			in = new BufferedInputStream(url.openStream(), StreamUtils.IO_BUFFER_SIZE);
+
+			final ByteArrayOutputStream dataStream = new ByteArrayOutputStream();
+			out = new BufferedOutputStream(dataStream, StreamUtils.IO_BUFFER_SIZE);
+			StreamUtils.copy(in, out);
+			out.flush();
+
+			String str = dataStream.toString();
+			JSONObject json = new JSONObject(str);
+			//Ut.dd(json.toString(4)); //
+			JSONArray results = (JSONArray) ((JSONObject) json.get("responseData")).get("results");
+			//Ut.dd("results.length="+results.length());
+			JSONObject res = results.getJSONObject(0);
+			Ut.dd(res.toString(4));
+
+			this.mOsmv.setZoomLevel(res.getInt("accuracy")+1);
+			this.mOsmv.getController().animateTo(new GeoPoint((int)(res.getDouble("lat")* 1E6), (int)(res.getDouble("lng")* 1E6)), OpenStreetMapViewController.AnimationType.MIDDLEPEAKSPEED, OpenStreetMapViewController.ANIMATION_SMOOTHNESS_HIGH, OpenStreetMapViewController.ANIMATION_DURATION_DEFAULT);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			StreamUtils.closeStream(in);
+			StreamUtils.closeStream(out);
+		}
+	}
+
 
 
 }

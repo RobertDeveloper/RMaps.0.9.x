@@ -14,6 +14,8 @@ import android.app.Activity;
 import android.app.SearchManager;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.widget.TextView;
 
 public class SearchResultActivity extends Activity {
@@ -43,13 +45,13 @@ public class SearchResultActivity extends Activity {
 }
 
 	private void doSearchQuery(Intent queryIntent) {
-        final String queryString = queryIntent.getStringExtra(SearchManager.QUERY);
+        final String queryString = queryIntent.getStringExtra(SearchManager.QUERY).replace(" ", "%20");
 
 		InputStream in = null;
 		OutputStream out = null;
 
 		try {
-			in = new BufferedInputStream(new URL("http://ajax.googleapis.com/ajax/services/search/local?v=1.0&q=" + queryString + "&key=ABQIAAAAuGNgHVLd5kgLL0dg4gxBCRQpDmmpk8q921mRIPG4qgOvy0T09hQeXgriFfxGyJEsGXrlS9NOA5oQAA").openStream(), StreamUtils.IO_BUFFER_SIZE);
+			in = new BufferedInputStream(new URL("http://ajax.googleapis.com/ajax/services/search/local?v=1.0&q=" + queryString + "").openStream(), StreamUtils.IO_BUFFER_SIZE);
 
 			final ByteArrayOutputStream dataStream = new ByteArrayOutputStream();
 			out = new BufferedOutputStream(dataStream, StreamUtils.IO_BUFFER_SIZE);
