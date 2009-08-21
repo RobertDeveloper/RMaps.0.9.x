@@ -91,6 +91,13 @@ public class OpenStreetMapViewSimpleLocationOverlay extends OpenStreetMapViewOve
 		this.mSpeed = loc.getSpeed();
 	}
 
+	public void setLocation(final GeoPoint geopoint){
+		this.mLocation = geopoint;
+		this.mAccuracy = 0;
+		this.mBearing = 0;
+		this.mSpeed = 0;
+	}
+
 	// ===========================================================
 	// Methods from SuperClass/Interfaces
 	// ===========================================================

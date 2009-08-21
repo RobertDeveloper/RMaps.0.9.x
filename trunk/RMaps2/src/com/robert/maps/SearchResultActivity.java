@@ -14,8 +14,6 @@ import android.app.Activity;
 import android.app.SearchManager;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.widget.TextView;
 
 public class SearchResultActivity extends Activity {
