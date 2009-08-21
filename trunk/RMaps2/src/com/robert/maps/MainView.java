@@ -375,15 +375,21 @@ public class MainView extends OpenStreetMapActivity implements OpenStreetMapCons
 	}
 
 	private void setAutoFollow(boolean autoFollow) {
+		setAutoFollow(autoFollow, false);
+	}
+
+	private void setAutoFollow(boolean autoFollow, final boolean supressToast) {
 		if (mAutoFollow != autoFollow) {
 			mAutoFollow = autoFollow;
 
 			if (autoFollow) {
 				ivAutoFollow.setVisibility(ImageView.INVISIBLE);
-				Toast.makeText(this, R.string.auto_follow_enabled, Toast.LENGTH_SHORT).show();
+				if(!supressToast)
+					Toast.makeText(this, R.string.auto_follow_enabled, Toast.LENGTH_SHORT).show();
 			} else {
 				ivAutoFollow.setVisibility(ImageView.VISIBLE);
-				Toast.makeText(this, R.string.auto_follow_disabled, Toast.LENGTH_SHORT).show();
+				if(!supressToast)
+					Toast.makeText(this, R.string.auto_follow_disabled, Toast.LENGTH_SHORT).show();
 			}
 		}
 	}
@@ -622,9 +628,11 @@ public class MainView extends OpenStreetMapActivity implements OpenStreetMapCons
 			JSONObject res = results.getJSONObject(0);
 			//Ut.dd(res.toString(4));
 
+			setAutoFollow(false, true);
 			this.mMyLocationOverlay.setLocation(new GeoPoint((int)(res.getDouble("lat")* 1E6), (int)(res.getDouble("lng")* 1E6)));
 			this.mOsmv.setZoomLevel((int) (2 * res.getInt("accuracy")));
 			this.mOsmv.getController().animateTo(new GeoPoint((int)(res.getDouble("lat")* 1E6), (int)(res.getDouble("lng")* 1E6)), OpenStreetMapViewController.AnimationType.MIDDLEPEAKSPEED, OpenStreetMapViewController.ANIMATION_SMOOTHNESS_HIGH, OpenStreetMapViewController.ANIMATION_DURATION_DEFAULT);
+
 			setTitle();
 
 		} catch (Exception e) {
