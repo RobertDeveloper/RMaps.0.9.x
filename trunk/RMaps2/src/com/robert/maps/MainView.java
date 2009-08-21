@@ -620,11 +620,12 @@ public class MainView extends OpenStreetMapActivity implements OpenStreetMapCons
 			JSONArray results = (JSONArray) ((JSONObject) json.get("responseData")).get("results");
 			//Ut.dd("results.length="+results.length());
 			JSONObject res = results.getJSONObject(0);
-			Ut.dd(res.toString(4));
+			//Ut.dd(res.toString(4));
 
 			this.mMyLocationOverlay.setLocation(new GeoPoint((int)(res.getDouble("lat")* 1E6), (int)(res.getDouble("lng")* 1E6)));
-			this.mOsmv.setZoomLevel(res.getInt("accuracy")+1);
+			this.mOsmv.setZoomLevel((int) (2 * res.getInt("accuracy")));
 			this.mOsmv.getController().animateTo(new GeoPoint((int)(res.getDouble("lat")* 1E6), (int)(res.getDouble("lng")* 1E6)), OpenStreetMapViewController.AnimationType.MIDDLEPEAKSPEED, OpenStreetMapViewController.ANIMATION_SMOOTHNESS_HIGH, OpenStreetMapViewController.ANIMATION_DURATION_DEFAULT);
+			setTitle();
 
 		} catch (Exception e) {
 			e.printStackTrace();
