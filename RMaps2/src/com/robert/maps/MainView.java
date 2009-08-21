@@ -256,6 +256,7 @@ public class MainView extends OpenStreetMapActivity implements OpenStreetMapCons
         final Intent queryIntent = getIntent();
         final String queryAction = queryIntent.getAction();
         if (Intent.ACTION_SEARCH.equals(queryAction)) {
+        	Ut.dd("onCreate::doSearchQuery");
             doSearchQuery(queryIntent);
         }
     }
@@ -456,7 +457,7 @@ public class MainView extends OpenStreetMapActivity implements OpenStreetMapCons
 				if(pref.getBoolean("pref_predefmaps_"+nnm.getNamedItem("id").getNodeValue(), true) && !ItIsLayer){
 					MenuItem item = submenu.add(nnm.getNamedItem("name").getNodeValue());
 					item.setTitleCondensed(nnm.getNamedItem("id").getNodeValue());
-					Log.e(DEBUGTAG, nnm.getNamedItem("name").getNodeValue());
+					Ut.d(nnm.getNamedItem("name").getNodeValue());
 				}
 			}
 		} catch (SAXException e1) {
@@ -583,11 +584,9 @@ public class MainView extends OpenStreetMapActivity implements OpenStreetMapCons
 	protected void onNewIntent(Intent intent) {
 		super.onNewIntent(intent);
 
-        final Intent queryIntent = getIntent();
-        final String queryAction = queryIntent.getAction();
+        final String queryAction = intent.getAction();
         if (Intent.ACTION_SEARCH.equals(queryAction)) {
-            doSearchQuery(queryIntent);
-//        	Ut.dd("onNewIntent");
+            doSearchQuery(intent);
         }
 	}
 
