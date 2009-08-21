@@ -52,6 +52,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.PowerManager;
 import android.preference.PreferenceManager;
+import android.provider.SearchRecentSuggestions;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -67,6 +68,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.RelativeLayout.LayoutParams;
 
+import com.robert.maps.utils.SearchSuggestionsProvider;
 import com.robert.maps.utils.Ut;
 
 public class MainView extends OpenStreetMapActivity implements OpenStreetMapConstants {
@@ -590,14 +592,21 @@ public class MainView extends OpenStreetMapActivity implements OpenStreetMapCons
 	}
 
 	private void doSearchQuery(Intent queryIntent) {
-        final String queryString = queryIntent.getStringExtra(SearchManager.QUERY).replace(" ", "%20");
+        final String queryString = queryIntent.getStringExtra(SearchManager.QUERY);
+
+        // Record the query string in the recent queries suggestions provider.
+        SearchRecentSuggestions suggestions = new SearchRecentSuggestions(this, SearchSuggestionsProvider.AUTHORITY, SearchSuggestionsProvider.MODE);
+        suggestions.saveRecentQuery(queryString, null);
 
 		InputStream in = null;
 		OutputStream out = null;
 
 		try {
-			URL url = new URL("http://ajax.googleapis.com/ajax/services/search/local?v=1.0&hl=ru&q="
-					+ URLEncoder.encode(queryString, "UTF-8") + "");
+			URL url = new URL(
+					"http://ajax.googleapis.com/ajax/services/search/local?v=1.0&sll="
+							+ this.mOsmv.getMapCenter().toDoubleString()
+							+ "&q=" + URLEncoder.encode(queryString, "UTF-8")
+							+ "");
 			Ut.dd(url.toString());
 			in = new BufferedInputStream(url.openStream(), StreamUtils.IO_BUFFER_SIZE);
 
@@ -614,6 +623,7 @@ public class MainView extends OpenStreetMapActivity implements OpenStreetMapCons
 			JSONObject res = results.getJSONObject(0);
 			Ut.dd(res.toString(4));
 
+			this.mMyLocationOverlay.setLocation(new GeoPoint((int)(res.getDouble("lat")* 1E6), (int)(res.getDouble("lng")* 1E6)));
 			this.mOsmv.setZoomLevel(res.getInt("accuracy")+1);
 			this.mOsmv.getController().animateTo(new GeoPoint((int)(res.getDouble("lat")* 1E6), (int)(res.getDouble("lng")* 1E6)), OpenStreetMapViewController.AnimationType.MIDDLEPEAKSPEED, OpenStreetMapViewController.ANIMATION_SMOOTHNESS_HIGH, OpenStreetMapViewController.ANIMATION_DURATION_DEFAULT);
 
