@@ -66,6 +66,9 @@
 	<string name="auto_follow_enabled">Auto-Follow Enabled</string>
 	<string name="auto_follow_disabled">Auto-Follow Disabled</string>
 
+	<string name="no_inet_conn">No internet connection...</string>
+	<string name="no_items">Your search did not match any items</string>
+
     <string name="about_dialog_text">
 ©2009 Robert.Developer\n
 Osmdroid  by Nicolas Gramlich\n
