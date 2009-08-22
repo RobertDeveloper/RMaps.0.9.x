@@ -625,8 +625,15 @@ public class MainView extends OpenStreetMapActivity implements OpenStreetMapCons
 			//Ut.dd(json.toString(4)); //
 			JSONArray results = (JSONArray) ((JSONObject) json.get("responseData")).get("results");
 			//Ut.dd("results.length="+results.length());
+			if(results.length() == 0){
+				Toast.makeText(this, R.string.no_items, Toast.LENGTH_SHORT).show();
+				return;
+			}
 			JSONObject res = results.getJSONObject(0);
-			//Ut.dd(res.toString(4));
+			Ut.dd(res.toString(4));
+			//Toast.makeText(this, res.getString("titleNoFormatting"), Toast.LENGTH_LONG).show();
+			Toast.makeText(this, res.getString("addressLines").replace("\"", "").replace("[", "").replace("]", ""), Toast.LENGTH_LONG).show();
+			//Toast.makeText(this, ((JSONObject) json.get("addressLines")).toString(), Toast.LENGTH_LONG).show();
 
 			setAutoFollow(false, true);
 			this.mMyLocationOverlay.setLocation(new GeoPoint((int)(res.getDouble("lat")* 1E6), (int)(res.getDouble("lng")* 1E6)));
@@ -637,6 +644,7 @@ public class MainView extends OpenStreetMapActivity implements OpenStreetMapCons
 
 		} catch (Exception e) {
 			e.printStackTrace();
+			Toast.makeText(this, R.string.no_inet_conn, Toast.LENGTH_LONG).show();
 		} finally {
 			StreamUtils.closeStream(in);
 			StreamUtils.closeStream(out);
