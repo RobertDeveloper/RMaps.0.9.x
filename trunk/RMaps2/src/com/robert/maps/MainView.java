@@ -82,6 +82,7 @@ public class MainView extends OpenStreetMapActivity implements OpenStreetMapCons
 
 	private OpenStreetMapView mOsmv; //, mOsmvMinimap;
 	private OpenStreetMapViewSimpleLocationOverlay mMyLocationOverlay;
+	private SearchResultOverlay mSearchResultOverlay;
 
 	private PowerManager.WakeLock myWakeLock;
 	private boolean mFullScreen;
@@ -134,6 +135,9 @@ public class MainView extends OpenStreetMapActivity implements OpenStreetMapCons
 
 	        this.mMyLocationOverlay = new OpenStreetMapViewSimpleLocationOverlay(this);
 	        this.mOsmv.getOverlays().add(mMyLocationOverlay);
+
+	        this.mSearchResultOverlay = new SearchResultOverlay(this);
+	        this.mOsmv.getOverlays().add(mSearchResultOverlay);
         }
 
         {
@@ -309,6 +313,7 @@ public class MainView extends OpenStreetMapActivity implements OpenStreetMapCons
 	       		this.mOsmv.getOverlays().add(new YandexTrafficOverlay(this, this.mOsmv));
 			}
 	        this.mOsmv.getOverlays().add(mMyLocationOverlay);
+	        this.mOsmv.getOverlays().add(mSearchResultOverlay);
 
 	        setTitle();
 
@@ -534,6 +539,7 @@ public class MainView extends OpenStreetMapActivity implements OpenStreetMapCons
        		this.mOsmv.getOverlays().add(new YandexTrafficOverlay(this, this.mOsmv));
 		}
         this.mOsmv.getOverlays().add(mMyLocationOverlay);
+        this.mOsmv.getOverlays().add(mSearchResultOverlay);
 
 		mOsmv.setZoomLevel(settings.getInt("ZoomLevel", 0));
 		mOsmv.setMapCenter(settings.getInt("Latitude", 0), settings.getInt("Longitude", 0));
@@ -636,7 +642,7 @@ public class MainView extends OpenStreetMapActivity implements OpenStreetMapCons
 			//Toast.makeText(this, ((JSONObject) json.get("addressLines")).toString(), Toast.LENGTH_LONG).show();
 
 			setAutoFollow(false, true);
-			this.mMyLocationOverlay.setLocation(new GeoPoint((int)(res.getDouble("lat")* 1E6), (int)(res.getDouble("lng")* 1E6)));
+			this.mSearchResultOverlay.setLocation(new GeoPoint((int)(res.getDouble("lat")* 1E6), (int)(res.getDouble("lng")* 1E6)));
 			this.mOsmv.setZoomLevel((int) (2 * res.getInt("accuracy")));
 			this.mOsmv.getController().animateTo(new GeoPoint((int)(res.getDouble("lat")* 1E6), (int)(res.getDouble("lng")* 1E6)), OpenStreetMapViewController.AnimationType.MIDDLEPEAKSPEED, OpenStreetMapViewController.ANIMATION_SMOOTHNESS_HIGH, OpenStreetMapViewController.ANIMATION_DURATION_DEFAULT);
 
