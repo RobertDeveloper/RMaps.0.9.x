@@ -550,8 +550,8 @@ public class MainView extends OpenStreetMapActivity implements OpenStreetMapCons
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if(requestCode == 12345){
-			startActivity(new Intent(this, this.getClass()));
 			finish();
+			startActivity(new Intent(this, this.getClass()));
 		}
 		super.onActivityResult(requestCode, resultCode, data);
 	}
