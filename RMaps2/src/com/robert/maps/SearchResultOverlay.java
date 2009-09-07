@@ -12,16 +12,25 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Point;
+import android.graphics.Rect;
 import android.location.Location;
+
+import com.robert.maps.utils.NinePatch;
+import com.robert.maps.utils.NinePatchDrawable;
+import com.robert.maps.utils.Ut;
 
 public class SearchResultOverlay extends OpenStreetMapViewOverlay {
 
 	protected final Paint mPaint = new Paint();
 	protected final Bitmap mBubbleBitmap;
 	protected GeoPoint mLocation;
+	protected NinePatchDrawable mButton;
 
 	public SearchResultOverlay(final Context ctx) {
-		this.mBubbleBitmap = BitmapFactory.decodeResource(ctx.getResources(), R.drawable.bubble);
+		this.mBubbleBitmap = BitmapFactory.decodeResource(ctx.getResources(), R.drawable.bubble2);
+		byte[] chunk = {20,10,30,20};
+		NinePatch nine = new NinePatch(mBubbleBitmap, chunk, "");
+		this.mButton = new NinePatchDrawable(nine);
 	}
 
 	public void setLocation(final Location loc){
@@ -39,7 +48,15 @@ public class SearchResultOverlay extends OpenStreetMapViewOverlay {
 			final Point screenCoords = new Point();
 			pj.toPixels(this.mLocation, screenCoords);
 
-			c.drawBitmap(mBubbleBitmap, screenCoords.x - 2, screenCoords.y - 30, this.mPaint);
+			mButton.setBounds(screenCoords.x - 12, screenCoords.y - 80 + 3, screenCoords.x + 80 - 12, screenCoords.y + 3);
+			mButton.draw(c);
+			
+			Paint p = new Paint();
+			p.setAntiAlias(true);
+			Rect r = new Rect();
+			String str = new String("HELLO HELLO\nHELLO HELLO HELLO HELLO");
+			p.getTextBounds(str, 0, str.length(), r);
+			Ut.dd("r :: "+r.left+"-"+r.right+" : "+r.top+"-"+r.bottom);
 		}
 	}
 
