@@ -166,6 +166,7 @@ public class MainView extends OpenStreetMapActivity implements OpenStreetMapCons
 				// @Override
 				public void onClick(View v) {
 					setAutoFollow(true);
+					mSearchResultOverlay.Clear();
 					setLastKnownLocation();
 				}
 	        });
@@ -603,7 +604,10 @@ public class MainView extends OpenStreetMapActivity implements OpenStreetMapCons
 	}
 
 	private void doSearchQuery(Intent queryIntent) {
-        final String queryString = queryIntent.getStringExtra(SearchManager.QUERY);
+		mSearchResultOverlay.Clear();
+		this.mOsmv.invalidate();
+
+		final String queryString = queryIntent.getStringExtra(SearchManager.QUERY);
 
         // Record the query string in the recent queries suggestions provider.
         SearchRecentSuggestions suggestions = new SearchRecentSuggestions(this, SearchSuggestionsProvider.AUTHORITY, SearchSuggestionsProvider.MODE);
@@ -636,13 +640,14 @@ public class MainView extends OpenStreetMapActivity implements OpenStreetMapCons
 				return;
 			}
 			JSONObject res = results.getJSONObject(0);
-			Ut.dd(res.toString(4));
+			//Ut.dd(res.toString(4));
 			//Toast.makeText(this, res.getString("titleNoFormatting"), Toast.LENGTH_LONG).show();
-			Toast.makeText(this, res.getString("addressLines").replace("\"", "").replace("[", "").replace("]", ""), Toast.LENGTH_LONG).show();
+			final String address = res.getString("addressLines").replace("\"", "").replace("[", "").replace("]", "").replace(",", ", ").replace("  ", " ");
+			//Toast.makeText(this, address, Toast.LENGTH_LONG).show();
 			//Toast.makeText(this, ((JSONObject) json.get("addressLines")).toString(), Toast.LENGTH_LONG).show();
 
 			setAutoFollow(false, true);
-			this.mSearchResultOverlay.setLocation(new GeoPoint((int)(res.getDouble("lat")* 1E6), (int)(res.getDouble("lng")* 1E6)));
+			this.mSearchResultOverlay.setLocation(new GeoPoint((int)(res.getDouble("lat")* 1E6), (int)(res.getDouble("lng")* 1E6)), address);
 			this.mOsmv.setZoomLevel((int) (2 * res.getInt("accuracy")));
 			this.mOsmv.getController().animateTo(new GeoPoint((int)(res.getDouble("lat")* 1E6), (int)(res.getDouble("lng")* 1E6)), OpenStreetMapViewController.AnimationType.MIDDLEPEAKSPEED, OpenStreetMapViewController.ANIMATION_SMOOTHNESS_HIGH, OpenStreetMapViewController.ANIMATION_DURATION_DEFAULT);
 
