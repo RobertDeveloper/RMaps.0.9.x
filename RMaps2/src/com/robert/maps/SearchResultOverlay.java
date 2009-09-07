@@ -12,12 +12,10 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Point;
-import android.graphics.Rect;
 import android.location.Location;
 
 import com.robert.maps.utils.NinePatch;
 import com.robert.maps.utils.NinePatchDrawable;
-import com.robert.maps.utils.Ut;
 
 public class SearchResultOverlay extends OpenStreetMapViewOverlay {
 
@@ -25,20 +23,29 @@ public class SearchResultOverlay extends OpenStreetMapViewOverlay {
 	protected final Bitmap mBubbleBitmap;
 	protected GeoPoint mLocation;
 	protected NinePatchDrawable mButton;
+	protected String mDescr;
 
 	public SearchResultOverlay(final Context ctx) {
 		this.mBubbleBitmap = BitmapFactory.decodeResource(ctx.getResources(), R.drawable.bubble2);
-		byte[] chunk = {20,10,30,20};
+		byte[] chunk = {21,10,26,17};
 		NinePatch nine = new NinePatch(mBubbleBitmap, chunk, "");
 		this.mButton = new NinePatchDrawable(nine);
+		this.mDescr = "";
+		this.mPaint.setAntiAlias(true);
 	}
 
 	public void setLocation(final Location loc){
 		this.mLocation = TypeConverter.locationToGeoPoint(loc);
 	}
 
-	public void setLocation(final GeoPoint geopoint){
+	public void setLocation(final GeoPoint geopoint, final String aDescr){
 		this.mLocation = geopoint;
+		this.mDescr = aDescr;
+	}
+
+	public void Clear(){
+		this.mLocation = null;
+		this.mDescr = "";
 	}
 
 	@Override
@@ -47,16 +54,65 @@ public class SearchResultOverlay extends OpenStreetMapViewOverlay {
 			final OpenStreetMapViewProjection pj = osmv.getProjection();
 			final Point screenCoords = new Point();
 			pj.toPixels(this.mLocation, screenCoords);
+			final int DESCRIPTION_MAXWIDTH = 155;
+			final int TEXT_SIZE = 12;
 
-			mButton.setBounds(screenCoords.x - 12, screenCoords.y - 80 + 3, screenCoords.x + 80 - 12, screenCoords.y + 3);
+			final float[] widths = new float[mDescr.length()];
+			this.mPaint.setTextSize(TEXT_SIZE);
+			this.mPaint.getTextWidths(mDescr, widths);
+
+			final StringBuilder sb = new StringBuilder();
+			int maxWidth = 0;
+			int curLineWidth = 0;
+			int lastStop = 0;
+			int i;
+			int lastwhitespace = 0;
+			/* Loop through the charwidth array and harshly insert a linebreak,
+			 * when the width gets bigger than DESCRIPTION_MAXWIDTH. */
+			for (i = 0; i < widths.length; i++) {
+				if(!Character.isLetter(mDescr.charAt(i)) && mDescr.charAt(i) != ',')
+					lastwhitespace = i;
+
+				float charwidth = widths[i];
+
+				if(curLineWidth + charwidth> DESCRIPTION_MAXWIDTH){
+					if(lastStop == lastwhitespace)
+						i--;
+					else
+						i = lastwhitespace;
+
+
+					sb.append(mDescr.subSequence(lastStop, i));
+					sb.append('\n');
+
+					lastStop = i;
+					maxWidth = Math.max(maxWidth, curLineWidth);
+					curLineWidth = 0;
+				}
+
+				curLineWidth += charwidth;
+			}
+			/* Add the last line to the rest to the buffer. */
+			if(i != lastStop){
+				final String rest = mDescr.substring(lastStop, i);
+
+				maxWidth = Math.max(maxWidth, (int)this.mPaint.measureText(rest));
+
+				sb.append(rest);
+			}
+			final String[] lines = sb.toString().split("\n");
+			final int descWidth = Math.min(maxWidth, DESCRIPTION_MAXWIDTH);
+			final int descHeight = lines.length * TEXT_SIZE;
+
+			mButton.setBounds(screenCoords.x - 12, screenCoords.y - (descHeight + 23) + 2, screenCoords.x + descWidth + 15 - 12, screenCoords.y + 2);
 			mButton.draw(c);
-			
-			Paint p = new Paint();
-			p.setAntiAlias(true);
-			Rect r = new Rect();
-			String str = new String("HELLO HELLO\nHELLO HELLO HELLO HELLO");
-			p.getTextBounds(str, 0, str.length(), r);
-			Ut.dd("r :: "+r.left+"-"+r.right+" : "+r.top+"-"+r.bottom);
+
+			/* Draw all the lines of the description. */
+			for(int j = 0; j < lines.length; j++){
+				c.drawText(lines[j].trim(), screenCoords.x - 12 + 8, 7 + TEXT_SIZE + screenCoords.y - (descHeight + 23) + 2 + j * TEXT_SIZE,
+						mPaint);
+			}
+
 		}
 	}
 
