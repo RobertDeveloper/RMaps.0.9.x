@@ -232,7 +232,7 @@ public class OpenStreetMapRendererInfo {
 					// ResultURL:=GetURLBase+inttostr(GetX)+'&y='+inttostr(GetY)+'&z='+inttostr(GetZ-1)+'&tm='+inttostr(get_ts(60));
 				case 1: // Google.Map
 					return new StringBuilder().append(this.BASEURL)
-					.append("&hl=ru&x=")
+					.append("&x=")
 					.append(tileID[OpenStreetMapViewConstants.MAPTILE_LONGITUDE_INDEX])
 					.append("&y=")
 					.append(tileID[OpenStreetMapViewConstants.MAPTILE_LATITUDE_INDEX])
