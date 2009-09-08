@@ -88,7 +88,9 @@ public class MainPreferences extends PreferenceActivity implements OnSharedPrefe
 		if (files != null)
 			for (int i = 0; i < files.length; i++) {
 				if (files[i].getName().toLowerCase().endsWith(".mnm")
-						|| files[i].getName().toLowerCase().endsWith(".tar")) {
+						|| files[i].getName().toLowerCase().endsWith(".tar")
+						|| files[i].getName().toLowerCase().endsWith(
+								".sqlitedb")) {
 					String name = Util.FileName2ID(files[i].getName());
 
 					PreferenceScreen prefscr = getPreferenceManager().createPreferenceScreen(this);

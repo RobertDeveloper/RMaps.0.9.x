@@ -39,6 +39,8 @@ import android.os.Message;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+import com.robert.maps.utils.CashDatabase;
+
 /**
  *
  * @author Nicolas Gramlich
@@ -75,6 +77,7 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 
 	protected ZipFile mAndNavZipFile;
 	protected File mCashFile;
+	protected CashDatabase mCashDatabase;
 	protected int mZoomMinInCashFile, mZoomMaxInCashFile;
 
     private ProgressDialog mProgressDialog;
@@ -99,6 +102,7 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 		this.mDatabase = new OpenStreetMapTileFilesystemProviderDataBase(ctx);
 		this.mCurrentFSCacheByteSize = this.mDatabase.getCurrentFSCacheByteSize();
 		this.mCache = aCache;
+		this.mCashDatabase = new CashDatabase();
 
 		if (DEBUGMODE)
 			Log.i(DEBUGTAG, "Currently used cache-size is: " + this.mCurrentFSCacheByteSize + " of "
@@ -128,6 +132,10 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 		}
 
 		switch (aTileSourceType ) {
+		case 5:
+			mCashDatabase.setFile(mCashFile);
+			// Don't need indexing
+			break;
 		case 1:
 		case 2:
 			try {
@@ -410,6 +418,37 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 				}
 
 				OpenStreetMapTileFilesystemProvider.this.mPending.remove(aTileURLString);
+			}
+		});
+
+	}
+
+	public void loadMapTileFromSQLite(final String aTileURLString, final Handler callback, final int x, final int y,
+			final int z) throws IOException {
+		if (this.mPending.contains(aTileURLString))
+			return;
+
+		final String formattedTileURLString = aTileURLString.replace("/", "_");
+
+		this.mPending.add(aTileURLString);
+
+		this.mThreadPool.execute(new Runnable() {
+			public void run() {
+				// File exists, otherwise a FileNotFoundException would have been thrown
+				OpenStreetMapTileFilesystemProvider.this.mDatabase.incrementUse(formattedTileURLString);
+
+				final byte[] data = OpenStreetMapTileFilesystemProvider.this.mCashDatabase.getTile(x, y, z);
+				
+				if(data != null){
+					final Bitmap bmp = BitmapFactory.decodeByteArray(data, 0, data.length);
+
+					OpenStreetMapTileFilesystemProvider.this.mCache.putTile(aTileURLString, bmp);
+	
+					final Message successMessage = Message.obtain(callback, MAPTILEFSLOADER_SUCCESS_ID);
+					successMessage.sendToTarget();
+	
+					OpenStreetMapTileFilesystemProvider.this.mPending.remove(aTileURLString);
+				}
 			}
 		});
 
