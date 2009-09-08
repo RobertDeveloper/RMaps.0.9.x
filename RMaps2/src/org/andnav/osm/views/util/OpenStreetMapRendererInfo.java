@@ -39,7 +39,7 @@ public class OpenStreetMapRendererInfo {
 	public String ID, BASEURL, NAME, IMAGE_FILENAMEENDING;
 	public int ZOOM_MINLEVEL, ZOOM_MAXLEVEL, MAPTILE_SIZEPX,
 	URL_BUILDER_TYPE, // 0 - OSM, 1 - Google, 2 - Yandex
-	TILE_SOURCE_TYPE, // 0 - internet, 1 - AndNav ZIP file, 2 - SASGIS ZIP file, 3 - MapNav file, 4 - TAR
+	TILE_SOURCE_TYPE, // 0 - internet, 1 - AndNav ZIP file, 2 - SASGIS ZIP file, 3 - MapNav file, 4 - TAR, 5 - sqlitedb
 	YANDEX_TRAFFIC_ON,
 	PROJECTION; // 1-меркатор на сфероид, 2- на эллипсоид
 
@@ -81,7 +81,11 @@ public class OpenStreetMapRendererInfo {
 			this.ZOOM_MAXLEVEL = 24;
 			this.MAPTILE_SIZEPX = 256;
 			this.URL_BUILDER_TYPE = 0;
-			if (aId.toLowerCase().endsWith("mnm")) {
+			if (aId.toLowerCase().endsWith("sqlitedb")) {
+				this.TILE_SOURCE_TYPE = 5;
+				this.IMAGE_FILENAMEENDING = "";
+			}
+			else if (aId.toLowerCase().endsWith("mnm")) {
 				this.TILE_SOURCE_TYPE = 3;
 				this.IMAGE_FILENAMEENDING = "";
 			} else {

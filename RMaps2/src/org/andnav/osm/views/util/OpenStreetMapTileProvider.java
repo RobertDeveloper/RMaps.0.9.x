@@ -54,6 +54,7 @@ public class OpenStreetMapTileProvider implements OpenStreetMapConstants, OpenSt
 		case 2:
 		case 3:
 		case 4:
+		case 5:
 			mFSTileProvider.setCashFile(aRendererInfo.BASEURL, aRendererInfo.TILE_SOURCE_TYPE, aDownloadFinishedListener);
 			aRendererInfo.ZOOM_MAXLEVEL = mFSTileProvider.getZoomMaxInCashFile();
 			aRendererInfo.ZOOM_MINLEVEL = mFSTileProvider.getZoomMinInCashFile();
@@ -83,6 +84,11 @@ public class OpenStreetMapTileProvider implements OpenStreetMapConstants, OpenSt
 			mFSTileProvider.setCashFile(aRenderer.BASEURL, aRenderer.TILE_SOURCE_TYPE, new SimpleInvalidationHandler());
 			aRenderer.ZOOM_MAXLEVEL = mFSTileProvider.getZoomMaxInCashFile();
 			aRenderer.ZOOM_MINLEVEL = mFSTileProvider.getZoomMinInCashFile();
+			break;
+		case 5:
+			mFSTileProvider.setCashFile(aRenderer.BASEURL, aRenderer.TILE_SOURCE_TYPE, new SimpleInvalidationHandler());
+			aRenderer.ZOOM_MAXLEVEL = 17;
+			aRenderer.ZOOM_MINLEVEL = 0;
 			break;
 		}
 	}
@@ -123,7 +129,9 @@ public class OpenStreetMapTileProvider implements OpenStreetMapConstants, OpenSt
 			if(DEBUGMODE)
 				Log.i(DEBUGTAG, "Cache failed, trying from FS.");
 			try {
-				if(aTypeCash == 4) // TAR files
+				if(aTypeCash == 5)  // sqlitedb files
+					this.mFSTileProvider.loadMapTileFromSQLite(aTileURLString, this.mLoadCallbackHandler, x, y, z);
+				else if(aTypeCash == 4) // TAR files
 					this.mFSTileProvider.loadMapTileFromTAR(aTileURLString, this.mLoadCallbackHandler);
 				else if(aTypeCash == 3) { // MapNav files
 					this.mFSTileProvider.loadMapTileFromMNM(aTileURLString, this.mLoadCallbackHandler, x, y, z);

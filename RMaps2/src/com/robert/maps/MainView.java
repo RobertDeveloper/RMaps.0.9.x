@@ -435,7 +435,10 @@ public class MainView extends OpenStreetMapActivity implements OpenStreetMapCons
 			if (files != null)
 				for (int i = 0; i < files.length; i++) {
 					if (files[i].getName().toLowerCase().endsWith(".mnm")
-							|| files[i].getName().toLowerCase().endsWith(".tar")) {
+							|| files[i].getName().toLowerCase()
+									.endsWith(".tar")
+							|| files[i].getName().toLowerCase().endsWith(
+									".sqlitedb")) {
 						String name = Util.FileName2ID(files[i].getName());
 						if (pref.getBoolean("pref_usermaps_" + name + "_enabled", false)) {
 							MenuItem item = submenu.add(pref.getString("pref_usermaps_" + name + "_name", files[i]
