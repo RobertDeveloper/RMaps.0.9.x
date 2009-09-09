@@ -94,9 +94,6 @@ public class NinePatch
 		
 		// precalculate some things
 		
-		int w = right - left;
-		int h = bottom - top;
-		
 		int rightColWidth = mWidth - inner.right;
 		int leftColWidth = inner.left;
 

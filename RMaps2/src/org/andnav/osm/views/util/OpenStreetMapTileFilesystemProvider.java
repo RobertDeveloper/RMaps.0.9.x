@@ -17,7 +17,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import org.andnav.osm.exceptions.EmptyCacheException;
@@ -516,53 +515,6 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 
 	}
 
-	public void loadMapTileFromZipCash(final String aTileURLString, final Handler callback) throws IOException {
-		if (this.mPending.contains(aTileURLString))
-			return;
-
-		final String formattedTileURLString = aTileURLString.replace("/", "_");
-		final ZipEntry ze = mAndNavZipFile.getEntry(aTileURLString);
-		final InputStream in = new BufferedInputStream(mAndNavZipFile.getInputStream(ze), 8192);
-
-		this.mPending.add(aTileURLString);
-
-		this.mThreadPool.execute(new Runnable() {
-			public void run() {
-				OutputStream out = null;
-				try {
-					// File exists, otherwise a FileNotFoundException would have been thrown
-					OpenStreetMapTileFilesystemProvider.this.mDatabase.incrementUse(formattedTileURLString);
-
-					final ByteArrayOutputStream dataStream = new ByteArrayOutputStream();
-					out = new BufferedOutputStream(dataStream, StreamUtils.IO_BUFFER_SIZE);
-					StreamUtils.copy(in, out);
-					out.flush();
-
-					final byte[] data = dataStream.toByteArray();
-					final Bitmap bmp = BitmapFactory.decodeByteArray(data, 0, data.length); // , BITMAPLOADOPTIONS);
-
-					OpenStreetMapTileFilesystemProvider.this.mCache.putTile(aTileURLString, bmp);
-
-					final Message successMessage = Message.obtain(callback, MAPTILEFSLOADER_SUCCESS_ID);
-					successMessage.sendToTarget();
-
-					if (DEBUGMODE)
-						Log.d(DEBUGTAG, "Loaded: " + aTileURLString + " to MemCache.");
-				} catch (IOException e) {
-					final Message failMessage = Message.obtain(callback, MAPTILEFSLOADER_FAIL_ID);
-					failMessage.sendToTarget();
-					if (DEBUGMODE)
-						Log.e(DEBUGTAG, "Error Loading MapTile from FS. Exception: " + e.getClass().getSimpleName(), e);
-				} finally {
-					StreamUtils.closeStream(in);
-					StreamUtils.closeStream(out);
-				}
-
-				OpenStreetMapTileFilesystemProvider.this.mPending.remove(aTileURLString);
-			}
-		});
-	}
-
 	public void loadMapTileToMemCacheAsync(final String aTileURLString, final Handler callback)
 			throws FileNotFoundException {
 		if (this.mPending.contains(aTileURLString))
@@ -571,9 +523,6 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 		final String formattedTileURLString = OpenStreetMapTileNameFormatter.format(aTileURLString);
 		final InputStream in = new BufferedInputStream(OpenStreetMapTileFilesystemProvider.this.mCtx
 				.openFileInput(formattedTileURLString), 8192);
-		// final String formattedTileURLString = aTileURLString.replace("http://tile.openstreetmap.org",
-		// "/sdcard/rmaps/maps/mapnik")+".andnav";
-		// final InputStream in = new BufferedInputStream(new FileInputStream(formattedTileURLString), 8192);
 
 		this.mPending.add(aTileURLString);
 
