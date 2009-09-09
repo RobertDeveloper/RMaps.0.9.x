@@ -53,7 +53,6 @@ import android.os.Message;
 import android.os.PowerManager;
 import android.preference.PreferenceManager;
 import android.provider.SearchRecentSuggestions;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -105,6 +104,9 @@ public class MainView extends OpenStreetMapActivity implements OpenStreetMapCons
 		public void onSensorChanged(SensorEvent event) {
 			mCompassView.setAzimuth(event.values[0]);
 			mCompassView.invalidate();
+
+//			mOsmv.setBearing(360 - event.values[0]);
+//			mOsmv.invalidate();
 		}
 
 	};
@@ -360,11 +362,11 @@ public class MainView extends OpenStreetMapActivity implements OpenStreetMapCons
 		final LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 		final Location loc1 = lm.getLastKnownLocation("gps");
 		final Location loc2 = lm.getLastKnownLocation("network");
-		
+
 		boolean boolGpsEnabled = lm.isProviderEnabled(GPS);
 		boolean boolNetworkEnabled = lm.isProviderEnabled(NETWORK);
 		String str = "";
-		
+
 		Location loc = null;
 		if(loc1 == null && loc2 != null)
 			loc = loc2;
@@ -382,10 +384,10 @@ public class MainView extends OpenStreetMapActivity implements OpenStreetMapCons
 			str = getString(R.string.message_locationunavailable);
 		else
 			str = getString(R.string.message_lastknownlocation);
-		
+
 		if(str.length() > 0)
 			Toast.makeText(this, str, Toast.LENGTH_LONG).show();
-		
+
 		if (loc != null)
 			this.mOsmv
 					.getController()
@@ -420,8 +422,10 @@ public class MainView extends OpenStreetMapActivity implements OpenStreetMapCons
 	public void onLocationChanged(Location loc) {
 		this.mMyLocationOverlay.setLocation(loc);
 
-		if(mAutoFollow)
+		if(mAutoFollow){
+			this.mOsmv.setBearing(loc.getBearing());
 			this.mOsmv.getController().animateTo(TypeConverter.locationToGeoPoint(loc), OpenStreetMapViewController.AnimationType.MIDDLEPEAKSPEED, OpenStreetMapViewController.ANIMATION_SMOOTHNESS_HIGH, OpenStreetMapViewController.ANIMATION_DURATION_DEFAULT);
+		}
 		else
 			this.mOsmv.invalidate();
 	}
@@ -599,7 +603,6 @@ public class MainView extends OpenStreetMapActivity implements OpenStreetMapCons
 			final int what = msg.what;
 			switch(what){
 				case R.id.user_moved_map:
-					Log.d(DEBUGTAG, "user_moved_map");
 					setAutoFollow(false);
 					break;
 			}
