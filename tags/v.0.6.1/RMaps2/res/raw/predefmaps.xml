@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	URL_BUILDER_TYPE, // 0 - OSM, 1 - Google.Map, 2 - Yandex, 3 - Yandex.Traffic, 4 - Google.Sattelite
+	TILE_SOURCE_TYPE, // 0 - internet, 1 - AndNav ZIP file, 2 - SASGIS ZIP file, 3 - MapNav file, 4 - TAR
+	PROJECTION; // 1-меркатор на сфероид, 2- на эллипсоид
+	-->
+
+<root>
+	<map id="yandexmap" name="Yandex.Map" descr="http://maps.yandex.ru" baseurl="http://vec.maps.yandex.net/tiles?l=map&amp;v=2.7.1&amp;x=" IMAGE_FILENAMEENDING="" ZOOM_MAXLEVEL="17" MAPTILE_SIZEPX="256" URL_BUILDER_TYPE="2" TILE_SOURCE_TYPE="0" PROJECTION="2" YANDEX_TRAFFIC_ON="0"></map>
+	<map id="yandexmaptraffic" name="Yandex.Traffic" descr="http://maps.yandex.ru" baseurl="http://vec.maps.yandex.net/tiles?l=map&amp;v=2.7.1&amp;x=" IMAGE_FILENAMEENDING="" ZOOM_MAXLEVEL="17" MAPTILE_SIZEPX="256" URL_BUILDER_TYPE="2" TILE_SOURCE_TYPE="0" PROJECTION="2" YANDEX_TRAFFIC_ON="1"></map>
+	<map id="yandexsat" name="Yandex.Sattelite" descr="http://maps.yandex.ru" baseurl="http://sat01.maps.yandex.net/tiles?l=sat&amp;v=1.10.0&amp;x=" IMAGE_FILENAMEENDING="" ZOOM_MAXLEVEL="17" MAPTILE_SIZEPX="256" URL_BUILDER_TYPE="2" TILE_SOURCE_TYPE="0" PROJECTION="2" YANDEX_TRAFFIC_ON="0"></map>
+	<map layer="true" id="yandextraffic" name="Yandex.Traffic" descr="" baseurl="http://trf.maps.yandex.net/tiles?l=trf" IMAGE_FILENAMEENDING="" ZOOM_MAXLEVEL="17" MAPTILE_SIZEPX="256" URL_BUILDER_TYPE="3" TILE_SOURCE_TYPE="0" PROJECTION="2" YANDEX_TRAFFIC_ON="0"></map>
+
+	<map id="googlemap" name="Google.Map" descr="" baseurl="http://mt.google.com/vt?v=w2.999&amp;hl=ru" IMAGE_FILENAMEENDING=".png" ZOOM_MAXLEVEL="19" MAPTILE_SIZEPX="256" URL_BUILDER_TYPE="1" TILE_SOURCE_TYPE="0" PROJECTION="1" YANDEX_TRAFFIC_ON="0"></map>
+	<map id="googlesat" name="Google.Sattelite" descr="" baseurl="http://khm.google.com/kh/v=45&amp;hl=ru" IMAGE_FILENAMEENDING=".png" ZOOM_MAXLEVEL="18" MAPTILE_SIZEPX="256" URL_BUILDER_TYPE="4" TILE_SOURCE_TYPE="0" PROJECTION="1" YANDEX_TRAFFIC_ON="0"></map>
+	<map id="googleland" name="Google.Land" descr="" baseurl="http://mt.google.com/vt?v=w2p.999&amp;hl=ru" IMAGE_FILENAMEENDING=".png" ZOOM_MAXLEVEL="15" MAPTILE_SIZEPX="256" URL_BUILDER_TYPE="1" TILE_SOURCE_TYPE="0" PROJECTION="1" YANDEX_TRAFFIC_ON="0"></map>
+
+	<map id="mapnik" name="Mapnik" descr="" baseurl="http://tile.openstreetmap.org/" IMAGE_FILENAMEENDING=".png" ZOOM_MAXLEVEL="18" MAPTILE_SIZEPX="256" URL_BUILDER_TYPE="0" TILE_SOURCE_TYPE="0" PROJECTION="1" YANDEX_TRAFFIC_ON="0"></map>
+	<map id="osmarender" name="OsmaRender" descr="" baseurl="http://tah.openstreetmap.org/Tiles/tile/" IMAGE_FILENAMEENDING=".png" ZOOM_MAXLEVEL="17" MAPTILE_SIZEPX="256" URL_BUILDER_TYPE="0" TILE_SOURCE_TYPE="0" PROJECTION="1" YANDEX_TRAFFIC_ON="0"></map>
+	<map id="cyclemap" name="Cycle Map" descr="" baseurl="http://b.andy.sandbox.cloudmade.com/tiles/cycle/" IMAGE_FILENAMEENDING=".png" ZOOM_MAXLEVEL="17" MAPTILE_SIZEPX="256" URL_BUILDER_TYPE="0" TILE_SOURCE_TYPE="0" PROJECTION="1" YANDEX_TRAFFIC_ON="0"></map>
+	<map id="cloudmadest" name="Cloudmade (Standard tiles)" descr="" baseurl="http://tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/2/256/" IMAGE_FILENAMEENDING=".png" ZOOM_MAXLEVEL="18" MAPTILE_SIZEPX="256" URL_BUILDER_TYPE="0" TILE_SOURCE_TYPE="0" PROJECTION="1" YANDEX_TRAFFIC_ON="0"></map>
+</root>
