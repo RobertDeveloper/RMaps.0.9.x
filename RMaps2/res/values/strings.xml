@@ -117,8 +117,10 @@ v.0.5.2
     <string name="about_dialog_whats_new">What's new</string>
     <string name="about_dialog_close">Close</string>
 
-
-
     <string name="search_label">Address:</string>
     <string name="search_hint">e.g. Abbey Road, London</string>
+    
+    <string name="message_gpsdisabled">GPS is disabled. Trying to use wireless network to determine your location...</string>
+    <string name="message_locationunavailable">GPS and Network detection is disabled. Your current location is temporarily unavailable...</string>
+    <string name="message_lastknownlocation">GPS and Network detection is disabled. Showing last known location...</string>
 </resources>
