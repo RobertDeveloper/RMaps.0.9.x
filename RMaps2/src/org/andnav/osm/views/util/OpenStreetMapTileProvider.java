@@ -12,6 +12,7 @@ import android.os.Message;
 import android.util.Log;
 
 import com.robert.maps.R;
+import com.robert.maps.utils.Ut;
 
 /**
  *
@@ -87,8 +88,9 @@ public class OpenStreetMapTileProvider implements OpenStreetMapConstants, OpenSt
 			break;
 		case 5:
 			mFSTileProvider.setCashFile(aRenderer.BASEURL, aRenderer.TILE_SOURCE_TYPE, new SimpleInvalidationHandler());
-			aRenderer.ZOOM_MAXLEVEL = 17;
-			aRenderer.ZOOM_MINLEVEL = 0;
+			aRenderer.ZOOM_MAXLEVEL = mFSTileProvider.getCashDatabase().getMaxZoom();
+			aRenderer.ZOOM_MINLEVEL = mFSTileProvider.getCashDatabase().getMinZoom();
+			Ut.dd("Max="+aRenderer.ZOOM_MAXLEVEL+" min="+aRenderer.ZOOM_MINLEVEL);
 			break;
 		}
 	}

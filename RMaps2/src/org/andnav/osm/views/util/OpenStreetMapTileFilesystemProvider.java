@@ -123,6 +123,10 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 	public int getZoomMaxInCashFile() {
 		return mDatabase.ZoomMaxInCashFile();
 	}
+	
+	public CashDatabase getCashDatabase(){
+		return mCashDatabase;
+	}
 
 	public void setCashFile(final String aFileName, final int aTileSourceType, final Handler callback) {
 		mCashFile = new File(aFileName);

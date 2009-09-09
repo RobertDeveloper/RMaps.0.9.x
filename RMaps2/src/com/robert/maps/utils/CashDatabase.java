@@ -29,4 +29,31 @@ public class CashDatabase {
 		return ret;
 	}
 
+	public int getMaxZoom(){
+		int ret = 99;
+		final Cursor c = this.mDatabase.rawQuery(
+				"SELECT 17-MIN(z) AS ret FROM tiles", null);
+		if (c != null) {
+			if (c.moveToFirst()) {
+				ret = c.getInt(c.getColumnIndexOrThrow("ret"));
+			}
+			c.close();
+		}
+		return ret;
+	}
+
+	public int getMinZoom(){
+		int ret = 0;
+		final Cursor c = this.mDatabase.rawQuery(
+				"SELECT 17-MAX(z) AS ret FROM tiles", null);
+		if (c != null) {
+			if (c.moveToFirst()) {
+				ret = c.getInt(c.getColumnIndexOrThrow("ret"));
+			}
+			c.close();
+		}
+		return ret;
+	}
+
+
 }
