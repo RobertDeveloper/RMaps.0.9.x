@@ -360,6 +360,11 @@ public class MainView extends OpenStreetMapActivity implements OpenStreetMapCons
 		final LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 		final Location loc1 = lm.getLastKnownLocation("gps");
 		final Location loc2 = lm.getLastKnownLocation("network");
+		
+		boolean boolGpsEnabled = lm.isProviderEnabled(GPS);
+		boolean boolNetworkEnabled = lm.isProviderEnabled(NETWORK);
+		String str = "";
+		
 		Location loc = null;
 		if(loc1 == null && loc2 != null)
 			loc = loc2;
@@ -370,6 +375,17 @@ public class MainView extends OpenStreetMapActivity implements OpenStreetMapCons
 		else
 			loc = loc1.getTime() > loc2.getTime() ? loc1 : loc2;
 
+		if(boolGpsEnabled){}
+		else if(boolNetworkEnabled)
+			str = getString(R.string.message_gpsdisabled);
+		else if(loc == null)
+			str = getString(R.string.message_locationunavailable);
+		else
+			str = getString(R.string.message_lastknownlocation);
+		
+		if(str.length() > 0)
+			Toast.makeText(this, str, Toast.LENGTH_LONG).show();
+		
 		if (loc != null)
 			this.mOsmv
 					.getController()
