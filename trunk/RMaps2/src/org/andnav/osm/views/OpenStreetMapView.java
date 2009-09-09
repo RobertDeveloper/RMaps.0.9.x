@@ -17,8 +17,6 @@ import org.andnav.osm.views.util.OpenStreetMapTileProvider;
 import org.andnav.osm.views.util.Util;
 import org.andnav.osm.views.util.constants.OpenStreetMapViewConstants;
 
-import com.robert.maps.R;
-
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -37,6 +35,8 @@ import android.view.View;
 import android.view.GestureDetector.OnDoubleTapListener;
 import android.view.GestureDetector.OnGestureListener;
 
+import com.robert.maps.R;
+
 public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 		OpenStreetMapViewConstants {
 
@@ -50,6 +50,7 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 
 	protected int mLatitudeE6 = 0, mLongitudeE6 = 0;
 	protected int mZoomLevel = 0;
+	private float mBearing;
 
 	protected OpenStreetMapRendererInfo mRendererInfo;
 	protected final OpenStreetMapTileProvider mTileProvider;
@@ -82,6 +83,7 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 		super(context, attrs);
 		this.mRendererInfo = null;
 		this.mTileProvider = new OpenStreetMapTileProvider(context, new SimpleInvalidationHandler(), mRendererInfo);
+		this.mPaint.setAntiAlias(true);
 	}
 
 	/**
@@ -95,6 +97,7 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 		super(context);
 		this.mRendererInfo = aRendererInfo;
 		this.mTileProvider = new OpenStreetMapTileProvider(context, new SimpleInvalidationHandler(), aRendererInfo);
+		this.mPaint.setAntiAlias(true);
 	}
 
 	/**
@@ -113,6 +116,7 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 		super(context);
 		this.mRendererInfo = aRendererInfo;
 		this.mTileProvider = aMapToShareTheTileProviderWith.mTileProvider;
+		this.mPaint.setAntiAlias(true);
 	}
 
 	// ===========================================================
@@ -280,6 +284,10 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 		this.postInvalidate();
 	}
 
+	public void setBearing(final float aBearing){
+		this.mBearing = aBearing;
+	}
+
 	public void setRenderer(final OpenStreetMapRendererInfo aRenderer) {
 		this.mRendererInfo = aRenderer;
 		this.mTileProvider.setRender(aRenderer, new SimpleInvalidationHandler());
@@ -431,8 +439,8 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 				invalidate();
 				return true;
 			case MotionEvent.ACTION_MOVE:
-				this.mTouchMapOffsetX = (int) event.getX() - this.mTouchDownX;
-				this.mTouchMapOffsetY = (int) event.getY() - this.mTouchDownY;
+				this.mTouchMapOffsetX = (int) (Math.sin(Math.toRadians(mBearing)) * (event.getY() - this.mTouchDownY)) + (int) (Math.cos(Math.toRadians(mBearing)) * (event.getX() - this.mTouchDownX));
+				this.mTouchMapOffsetY = (int) (Math.cos(Math.toRadians(mBearing)) * (event.getY() - this.mTouchDownY)) - (int) (Math.sin(Math.toRadians(mBearing)) * (event.getX() - this.mTouchDownX));
 				invalidate();
 
 				final Message successMessage = Message.obtain(mCallbackHandler, R.id.user_moved_map);
@@ -457,8 +465,6 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 	@Override
 	public void onDraw(final Canvas c) {
 		final long startMs = System.currentTimeMillis();
-//		c.save();
-//		c.rotate(45);
 
 		/*
 		 * Do some calculations and drag attributes to local variables to save
@@ -468,6 +474,9 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 		final int viewWidth = this.getWidth();
 		final int viewHeight = this.getHeight();
 		final int tileSizePx = this.mRendererInfo.MAPTILE_SIZEPX;
+
+		c.save();
+		c.rotate(mBearing, viewWidth/2, viewHeight/2);
 
 		/*
 		 * Get the center MapTile which is above this.mLatitudeE6 and
@@ -554,7 +563,7 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 		if (this.mMaxiMap != null) // If this is a MiniMap
 			c.drawRect(0, 0, viewWidth - 1, viewHeight - 1, this.mPaint);
 
-//		c.restore();
+		c.restore();
 
 		final long endMs = System.currentTimeMillis();
 		if (DEBUGMODE)
