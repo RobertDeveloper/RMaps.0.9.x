@@ -724,9 +724,6 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 			this.mCtx = context;
 			this.mDatabase = new AndNavDatabaseHelper(context).getWritableDatabase();
 			this.mCashTableName = "";
-//			Log.e(DEBUGTAG, "getMaximumSize="+mDatabase.getMaximumSize());
-//			File file = new File("/data/data/com.robert.maps/databases/osmaptilefscache_db");
-//			Log.e(DEBUGTAG, "file.length="+file.length());
 		}
 
 		public int ZoomMaxInCashFile() {
@@ -807,7 +804,7 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 		}
 
 		public void ClearIndex(final String aName){
-			this.mDatabase.execSQL("DROP TABLE IF EXISTS " + mCashTableName);
+			this.mDatabase.execSQL("DROP TABLE IF EXISTS '" + mCashTableName + "'");
 			this.mDatabase.delete("ListCashTables", "name = '" + mCashTableName + "'", null);
 		}
 
@@ -823,14 +820,14 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 		}
 
 		public void CreateTarIndex(long aSizeFile, long aLastModifiedFile) {
-			this.mDatabase.execSQL("DROP TABLE IF EXISTS " + mCashTableName);
-			this.mDatabase.execSQL("CREATE TABLE IF NOT EXISTS " + mCashTableName + " (name VARCHAR(100), offset INTEGER NOT NULL, size INTEGER NOT NULL, PRIMARY KEY(name) );");
+			this.mDatabase.execSQL("DROP TABLE IF EXISTS '" + mCashTableName + "'");
+			this.mDatabase.execSQL("CREATE TABLE IF NOT EXISTS '" + mCashTableName + "' (name VARCHAR(100), offset INTEGER NOT NULL, size INTEGER NOT NULL, PRIMARY KEY(name) );");
 			this.mDatabase.delete("ListCashTables", "name = '" + mCashTableName + "'", null);
 		}
 
 		public void CreateMnmIndex(long aSizeFile, long aLastModifiedFile) {
-			this.mDatabase.execSQL("DROP TABLE IF EXISTS " + mCashTableName);
-			this.mDatabase.execSQL("CREATE TABLE IF NOT EXISTS " + mCashTableName + " (x INTEGER NOT NULL, y INTEGER NOT NULL, z INTEGER NOT NULL, offset INTEGER NOT NULL, size INTEGER NOT NULL, PRIMARY KEY(x, y, z) );");
+			this.mDatabase.execSQL("DROP TABLE IF EXISTS '" + mCashTableName + "'");
+			this.mDatabase.execSQL("CREATE TABLE IF NOT EXISTS '" + mCashTableName + "' (x INTEGER NOT NULL, y INTEGER NOT NULL, z INTEGER NOT NULL, offset INTEGER NOT NULL, size INTEGER NOT NULL, PRIMARY KEY(x, y, z) );");
 			this.mDatabase.delete("ListCashTables", "name = '" + mCashTableName + "'", null);
 		}
 
@@ -839,7 +836,7 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 			cv.put("name", aName);
 			cv.put("offset", aOffset);
 			cv.put("size", aSize);
-			this.mDatabase.insert(mCashTableName, null, cv);
+			this.mDatabase.insert("'" + mCashTableName + "'", null, cv);
 		}
 
 		public void addMnmIndexRow(final int aX, final int aY, final int aZ, final long aOffset, final int aSize) {
@@ -849,12 +846,12 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 			cv.put("z", aZ);
 			cv.put("offset", aOffset);
 			cv.put("size", aSize);
-			this.mDatabase.insert(mCashTableName, null, cv);
+			this.mDatabase.insert("'" + mCashTableName + "'", null, cv);
 		}
 
 		public boolean findTarIndex(final String aName, Param4ReadData aData) {
 			boolean ret  = false;
-			final Cursor c = this.mDatabase.rawQuery("SELECT offset, size FROM " + mCashTableName + " WHERE name = '"
+			final Cursor c = this.mDatabase.rawQuery("SELECT offset, size FROM '" + mCashTableName + "' WHERE name = '"
 					+ aName + ".jpg' OR name = '" + aName + ".png'", null);
 			if (c != null) {
 				if (c.moveToFirst()) {
@@ -869,7 +866,7 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 
 		public boolean findMnmIndex(final int aX, final int aY, final int aZ, Param4ReadData aData) {
 			boolean ret  = false;
-			final Cursor c = this.mDatabase.rawQuery("SELECT offset, size FROM " + mCashTableName + " WHERE x = " + aX
+			final Cursor c = this.mDatabase.rawQuery("SELECT offset, size FROM '" + mCashTableName + "' WHERE x = " + aX
 					+ " AND y = " + aY + " AND z = " + aZ, null);
 			if (c != null) {
 				if (c.moveToFirst()) {
