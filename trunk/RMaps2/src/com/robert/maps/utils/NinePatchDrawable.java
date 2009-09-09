@@ -10,6 +10,7 @@ public class NinePatchDrawable extends Drawable
 {
 	private NinePatch mNinePatch;
 	private Paint mPaint = new Paint();
+	@SuppressWarnings("unused")
 	private Context mContext;
 
 	public NinePatchDrawable(NinePatch ninePatch)
