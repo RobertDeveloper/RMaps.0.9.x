@@ -424,7 +424,7 @@ public class MainView extends OpenStreetMapActivity implements OpenStreetMapCons
 		this.mMyLocationOverlay.setLocation(loc);
 
 		if(mAutoFollow){
-			this.mOsmv.setBearing(loc.getBearing());
+//			this.mOsmv.setBearing(loc.getBearing());
 			this.mOsmv.getController().animateTo(TypeConverter.locationToGeoPoint(loc), OpenStreetMapViewController.AnimationType.MIDDLEPEAKSPEED, OpenStreetMapViewController.ANIMATION_SMOOTHNESS_HIGH, OpenStreetMapViewController.ANIMATION_DURATION_DEFAULT);
 		}
 		else
