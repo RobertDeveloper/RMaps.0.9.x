@@ -12,7 +12,6 @@ import android.os.Message;
 import android.util.Log;
 
 import com.robert.maps.R;
-import com.robert.maps.utils.Ut;
 
 /**
  *
@@ -75,24 +74,21 @@ public class OpenStreetMapTileProvider implements OpenStreetMapConstants, OpenSt
 	// Methods
 	// ===========================================================
 
-	public void setRender(final OpenStreetMapRendererInfo aRenderer, final Handler callback){
+	public boolean setRender(final OpenStreetMapRendererInfo aRenderer, final Handler callback){
+		boolean ret = true;
 		this.mRendererInfo = aRenderer;
 		switch(aRenderer.TILE_SOURCE_TYPE){
 		case 1:
 		case 2:
 		case 3:
 		case 4:
-			mFSTileProvider.setCashFile(aRenderer.BASEURL, aRenderer.TILE_SOURCE_TYPE, new SimpleInvalidationHandler());
+		case 5:
+			ret = mFSTileProvider.setCashFile(aRenderer.BASEURL, aRenderer.TILE_SOURCE_TYPE, new SimpleInvalidationHandler());
 			aRenderer.ZOOM_MAXLEVEL = mFSTileProvider.getZoomMaxInCashFile();
 			aRenderer.ZOOM_MINLEVEL = mFSTileProvider.getZoomMinInCashFile();
 			break;
-		case 5:
-			mFSTileProvider.setCashFile(aRenderer.BASEURL, aRenderer.TILE_SOURCE_TYPE, new SimpleInvalidationHandler());
-			aRenderer.ZOOM_MAXLEVEL = mFSTileProvider.getCashDatabase().getMaxZoom();
-			aRenderer.ZOOM_MINLEVEL = mFSTileProvider.getCashDatabase().getMinZoom();
-			Ut.dd("Max="+aRenderer.ZOOM_MAXLEVEL+" min="+aRenderer.ZOOM_MINLEVEL);
-			break;
 		}
+		return ret;
 	}
 
 	private class SimpleInvalidationHandler extends Handler {

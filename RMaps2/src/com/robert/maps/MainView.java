@@ -105,7 +105,8 @@ public class MainView extends OpenStreetMapActivity implements OpenStreetMapCons
 			mCompassView.setAzimuth(event.values[0]);
 			mCompassView.invalidate();
 
-//			mOsmv.setBearing(360 - event.values[0]);
+			// Этот код поворачивает карту по компасу
+//			mOsmv.setBearing(event.values[0]);
 //			mOsmv.invalidate();
 		}
 
@@ -556,7 +557,8 @@ public class MainView extends OpenStreetMapActivity implements OpenStreetMapCons
 		SharedPreferences settings = getPreferences(Activity.MODE_PRIVATE);
 
 		OpenStreetMapRendererInfo RendererInfo = getRendererInfo(getResources(), settings, settings.getString("MapName", "mapnik"));
-		mOsmv.setRenderer(RendererInfo);
+		if(!mOsmv.setRenderer(RendererInfo))
+			mOsmv.setRenderer(getRendererInfo(getResources(), settings, "mapnik"));
 
 		this.mOsmv.getOverlays().clear();
 		if(RendererInfo.YANDEX_TRAFFIC_ON == 1){
@@ -604,6 +606,9 @@ public class MainView extends OpenStreetMapActivity implements OpenStreetMapCons
 			switch(what){
 				case R.id.user_moved_map:
 					setAutoFollow(false);
+					break;
+				case R.id.set_title:
+					setTitle();
 					break;
 			}
 		}

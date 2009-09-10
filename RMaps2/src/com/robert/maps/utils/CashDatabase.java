@@ -17,15 +17,18 @@ public class CashDatabase {
 
 	public byte[] getTile(final int aX, final int aY, final int aZ) {
 		byte[] ret = null;
-		final Cursor c = this.mDatabase.rawQuery(
-				"SELECT image FROM tiles WHERE s = 0 AND x = " + aX
-						+ " AND y = " + aY + " AND z = " + (17 - aZ), null);
-		if (c != null) {
-			if (c.moveToFirst()) {
-				ret = c.getBlob(c.getColumnIndexOrThrow("image"));
+
+		if (this.mDatabase != null) {
+			final Cursor c = this.mDatabase.rawQuery("SELECT image FROM tiles WHERE s = 0 AND x = " + aX + " AND y = "
+					+ aY + " AND z = " + (17 - aZ), null);
+			if (c != null) {
+				if (c.moveToFirst()) {
+					ret = c.getBlob(c.getColumnIndexOrThrow("image"));
+				}
+				c.close();
 			}
-			c.close();
 		}
+
 		return ret;
 	}
 
