@@ -137,7 +137,12 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 		switch (aTileSourceType ) {
 		case 5:
 			mCashDatabase.setFile(mCashFile);
-			// Don't need indexing
+			
+			
+			
+			
+			
+			
 			break;
 		case 1:
 		case 2:
