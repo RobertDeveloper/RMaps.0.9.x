@@ -37,8 +37,10 @@ import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.robert.maps.utils.CashDatabase;
+import com.robert.maps.utils.Ut;
 
 /**
  *
@@ -77,7 +79,6 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 	protected ZipFile mAndNavZipFile;
 	protected File mCashFile;
 	protected CashDatabase mCashDatabase;
-	protected int mZoomMinInCashFile, mZoomMaxInCashFile;
 
     private ProgressDialog mProgressDialog;
     private boolean mStopIndexing = false;
@@ -122,27 +123,26 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 	public int getZoomMaxInCashFile() {
 		return mDatabase.ZoomMaxInCashFile();
 	}
-	
+
 	public CashDatabase getCashDatabase(){
 		return mCashDatabase;
 	}
 
-	public void setCashFile(final String aFileName, final int aTileSourceType, final Handler callback) {
+	public boolean setCashFile(final String aFileName, final int aTileSourceType, final Handler callback) {
 		mCashFile = new File(aFileName);
 		if (mCashFile.exists() == false) {
-			Log.i(DEBUGTAG, "File " + aFileName + " not found");
-			return;
+			Ut.i("File " + aFileName + " not found");
+			Toast.makeText(mCtx, "File " + aFileName + " not found", Toast.LENGTH_LONG).show();
+			return false;
 		}
 
 		switch (aTileSourceType ) {
 		case 5:
-			mCashDatabase.setFile(mCashFile);
-			
-			
-			
-			
-			
-			
+			try {
+				IndexSQLiteFile(callback);
+			} catch (NumberFormatException e) {
+			} catch (IOException e) {
+			}
 			break;
 		case 1:
 		case 2:
@@ -167,7 +167,7 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 				}
 			break;
 		}
-
+		return true;
 	}
 
 	private void IndexTarFile(final Handler callback) throws NumberFormatException, IOException {
@@ -269,6 +269,33 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 				}
 			});
 		}
+	}
+
+	private void IndexSQLiteFile(final Handler callback) throws IOException {
+		mCashDatabase.setFile(mCashFile);
+
+		mDatabase.setCashTable("cahs_" + Util.FileName2ID(mCashFile.getName()));
+
+		long fileLength = mCashFile.length();
+		long fileModified = mCashFile.lastModified();
+		if (mDatabase.NeedIndex(fileLength, fileModified, mBlockIndexing))
+		{
+			mStopIndexing = false;
+
+			this.mThreadPool.execute(new Runnable() {
+				public void run() {
+					long fileLength = mCashFile.length();
+					long fileModified = mCashFile.lastModified();
+					int minzoom = mCashDatabase.getMinZoom(), maxzoom = mCashDatabase.getMaxZoom();
+
+					mDatabase.CommitIndex(fileLength, fileModified, minzoom, maxzoom);
+
+					final Message successMessage = Message.obtain(callback, INDEXIND_SUCCESS_ID);
+					successMessage.sendToTarget();
+				}
+			});
+		}
+
 	}
 
 	private void IndexMnmFile(final Handler callback) throws IOException {
@@ -446,15 +473,15 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 				OpenStreetMapTileFilesystemProvider.this.mDatabase.incrementUse(formattedTileURLString);
 
 				final byte[] data = OpenStreetMapTileFilesystemProvider.this.mCashDatabase.getTile(x, y, z);
-				
+
 				if(data != null){
 					final Bitmap bmp = BitmapFactory.decodeByteArray(data, 0, data.length);
 
 					OpenStreetMapTileFilesystemProvider.this.mCache.putTile(aTileURLString, bmp);
-	
+
 					final Message successMessage = Message.obtain(callback, MAPTILEFSLOADER_SUCCESS_ID);
 					successMessage.sendToTarget();
-	
+
 					OpenStreetMapTileFilesystemProvider.this.mPending.remove(aTileURLString);
 				}
 			}

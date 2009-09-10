@@ -288,9 +288,9 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 		this.mBearing = aBearing;
 	}
 
-	public void setRenderer(final OpenStreetMapRendererInfo aRenderer) {
+	public boolean setRenderer(final OpenStreetMapRendererInfo aRenderer) {
 		this.mRendererInfo = aRenderer;
-		this.mTileProvider.setRender(aRenderer, new SimpleInvalidationHandler());
+		final boolean ret = this.mTileProvider.setRender(aRenderer, new SimpleInvalidationHandler());
 
 		if (this.mZoomLevel > aRenderer.ZOOM_MAXLEVEL)
 			this.mZoomLevel = aRenderer.ZOOM_MAXLEVEL;
@@ -300,6 +300,7 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 		this.setZoomLevel(this.mZoomLevel); // Invalidates the map and zooms to
 											// the maximum level of the
 											// renderer.
+		return ret;
 	}
 
 	public OpenStreetMapRendererInfo getRenderer(){
@@ -393,6 +394,8 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 		this.setMapCenter(newCenter);
 
 		zoomIn();
+		Message.obtain(mCallbackHandler, R.id.set_title).sendToTarget();
+
 		return true;
 	}
 
@@ -439,12 +442,12 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 				invalidate();
 				return true;
 			case MotionEvent.ACTION_MOVE:
-				this.mTouchMapOffsetX = (int) (Math.sin(Math.toRadians(mBearing)) * (event.getY() - this.mTouchDownY)) + (int) (Math.cos(Math.toRadians(mBearing)) * (event.getX() - this.mTouchDownX));
-				this.mTouchMapOffsetY = (int) (Math.cos(Math.toRadians(mBearing)) * (event.getY() - this.mTouchDownY)) - (int) (Math.sin(Math.toRadians(mBearing)) * (event.getX() - this.mTouchDownX));
+				final float aRotateToAngle = 360 - mBearing;
+				this.mTouchMapOffsetX = (int) (Math.sin(Math.toRadians(aRotateToAngle)) * (event.getY() - this.mTouchDownY)) + (int) (Math.cos(Math.toRadians(aRotateToAngle)) * (event.getX() - this.mTouchDownX));
+				this.mTouchMapOffsetY = (int) (Math.cos(Math.toRadians(aRotateToAngle)) * (event.getY() - this.mTouchDownY)) - (int) (Math.sin(Math.toRadians(aRotateToAngle)) * (event.getX() - this.mTouchDownX));
 				invalidate();
 
-				final Message successMessage = Message.obtain(mCallbackHandler, R.id.user_moved_map);
-				successMessage.sendToTarget();
+				Message.obtain(mCallbackHandler, R.id.user_moved_map).sendToTarget();
 
 				return true;
 			case MotionEvent.ACTION_UP:
@@ -476,7 +479,8 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 		final int tileSizePx = this.mRendererInfo.MAPTILE_SIZEPX;
 
 		c.save();
-		c.rotate(mBearing, viewWidth/2, viewHeight/2);
+		final float aRotateToAngle = 360 - mBearing;
+		c.rotate(aRotateToAngle, viewWidth/2, viewHeight/2);
 
 		/*
 		 * Get the center MapTile which is above this.mLatitudeE6 and
@@ -841,6 +845,8 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 					mZoomLevel = mRendererInfo.ZOOM_MAXLEVEL;
 				if (mZoomLevel < mRendererInfo.ZOOM_MINLEVEL)
 					mZoomLevel = mRendererInfo.ZOOM_MINLEVEL;
+
+				Message.obtain(mCallbackHandler, R.id.set_title).sendToTarget();;
 
 				OpenStreetMapView.this.invalidate();
 				break;
