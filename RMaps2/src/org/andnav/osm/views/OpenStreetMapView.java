@@ -50,7 +50,7 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 
 	protected int mLatitudeE6 = 0, mLongitudeE6 = 0;
 	protected int mZoomLevel = 0;
-	private float mBearing;
+	private float mBearing = 45; // FIXME Вернуть 0
 
 	protected OpenStreetMapRendererInfo mRendererInfo;
 	protected final OpenStreetMapTileProvider mTileProvider;
@@ -288,6 +288,10 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 		this.mBearing = aBearing;
 	}
 
+	public float getBearing() {
+		return this.mBearing;
+	}
+
 	public boolean setRenderer(final OpenStreetMapRendererInfo aRenderer) {
 		this.mRendererInfo = aRenderer;
 		final boolean ret = this.mTileProvider.setRender(aRenderer, new SimpleInvalidationHandler());
@@ -390,11 +394,16 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 	}
 
 	public boolean onDoubleTap(MotionEvent e) {
-		final GeoPoint newCenter = this.getProjection().fromPixels(e.getX(), e.getY());
-		this.setMapCenter(newCenter);
+		if (mBearing != 0) {
+			mBearing = 0;
+			Message.obtain(mCallbackHandler, R.id.user_moved_map).sendToTarget();
+		} else {
+			final GeoPoint newCenter = this.getProjection().fromPixels(e.getX(), e.getY());
+			this.setMapCenter(newCenter);
 
-		zoomIn();
-		Message.obtain(mCallbackHandler, R.id.set_title).sendToTarget();
+			zoomIn();
+			Message.obtain(mCallbackHandler, R.id.set_title).sendToTarget();
+		}
 
 		return true;
 	}
@@ -482,10 +491,26 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 		final float aRotateToAngle = 360 - mBearing;
 		c.rotate(aRotateToAngle, viewWidth/2, viewHeight/2);
 
+		c.drawRGB(255, 255, 255);
+
 		/*
 		 * Get the center MapTile which is above this.mLatitudeE6 and
 		 * this.mLongitudeE6 .
 		 */
+		final GeoPoint gpLT = this.getProjection().fromPixels(0, 0);
+		final GeoPoint gpRT = this.getProjection().fromPixels(viewWidth, 0);
+		final GeoPoint gpLB = this.getProjection().fromPixels(0, viewHeight);
+		final GeoPoint gpRB = this.getProjection().fromPixels(viewWidth, viewHeight);
+
+		final int[] MapTileLT = Util.getMapTileFromCoordinates(gpLT.getLatitudeE6(),
+				gpLT.getLongitudeE6(), zoomLevel, null, this.mRendererInfo.PROJECTION);
+		final int[] MapTileRT = Util.getMapTileFromCoordinates(gpRT.getLatitudeE6(),
+				gpRT.getLongitudeE6(), zoomLevel, null, this.mRendererInfo.PROJECTION);
+		final int[] MapTileLB = Util.getMapTileFromCoordinates(gpLB.getLatitudeE6(),
+				gpLB.getLongitudeE6(), zoomLevel, null, this.mRendererInfo.PROJECTION);
+		final int[] MapTileRB = Util.getMapTileFromCoordinates(gpRB.getLatitudeE6(),
+				gpRB.getLongitudeE6(), zoomLevel, null, this.mRendererInfo.PROJECTION);
+
 		final int[] centerMapTileCoords = Util.getMapTileFromCoordinates(this.mLatitudeE6,
 				this.mLongitudeE6, zoomLevel, null, this.mRendererInfo.PROJECTION);
 
@@ -507,6 +532,7 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 		 * Calculate the amount of tiles needed for each side around the center
 		 * one.
 		 */
+		// TODO Нужен адекватный алгоритм для отбора необходимых тайлов, попадающих в экран при повороте карты
 		final int additionalTilesNeededToLeftOfCenter = (int) Math
 				.ceil((float) centerMapTileScreenLeft / tileSizePx); // i.e.
 																		// "30 / 256"
@@ -547,7 +573,7 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 				final int tileTop = this.mTouchMapOffsetY + centerMapTileScreenTop + (y * tileSizePx);
 				c.drawBitmap(currentMapTile, tileLeft, tileTop, this.mPaint);
 
-				if (DEBUGMODE)
+				//if (DEBUGMODE)
 				{
 					c.drawLine(tileLeft, tileTop, tileLeft + tileSizePx, tileTop, this.mPaint);
 					c.drawLine(tileLeft, tileTop, tileLeft, tileTop + tileSizePx, this.mPaint);

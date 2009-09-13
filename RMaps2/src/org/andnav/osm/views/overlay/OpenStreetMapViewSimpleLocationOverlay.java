@@ -116,6 +116,7 @@ public class OpenStreetMapViewSimpleLocationOverlay extends OpenStreetMapViewOve
 
 			c.save();
 			if (mSpeed == 0) {
+				c.rotate(osmv.getBearing(), screenCoords.x, screenCoords.y);
 				c.drawBitmap(PERSON_ICON, screenCoords.x - PERSON_HOTSPOT.x, screenCoords.y - PERSON_HOTSPOT.y,
 						this.mPaint);
 //				mStop.setBounds(screenCoords.x - mArrow.getMinimumWidth() / 2, screenCoords.y
