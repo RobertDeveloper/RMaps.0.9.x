@@ -80,6 +80,12 @@ Questions, sentences mail to robertk506@gmail.ru\n
 How to and FAQ you can find on http://robertdeveloper.blogspot.com/\n
 </string>
 <string name="whats_new_dialog_text">
+v.0.6.3\n
++ Update Yandex.Map URL\n
+\n
+v.0.6.2\n
+- Fix bug long time loading sqlite cash file\n
+\n
 v.0.6.1\n
 + Add support cash files in sqlite format created by TrekBuddy Atlas Creator. Creation of files became easier. Indexation now is not required. More information at my website\n
 + Update Google.Map URL\n
@@ -119,7 +125,7 @@ v.0.5.2
 
     <string name="search_label">Address:</string>
     <string name="search_hint">e.g. Abbey Road, London</string>
-    
+
     <string name="message_gpsdisabled">GPS is disabled. Trying to use wireless network to determine your location...</string>
     <string name="message_locationunavailable">GPS and Network detection is disabled. Your current location is temporarily unavailable...</string>
     <string name="message_lastknownlocation">GPS and Network detection is disabled. Showing last known location...</string>
