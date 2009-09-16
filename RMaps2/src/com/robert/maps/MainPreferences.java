@@ -29,6 +29,8 @@ import android.preference.PreferenceGroup;
 import android.preference.PreferenceScreen;
 
 public class MainPreferences extends PreferenceActivity implements OnSharedPreferenceChangeListener {
+	private static final String PREF_USERMAPS_ = "pref_usermaps_";
+	private static final String PREF_PREDEFMAPS_ = "pref_predefmaps_";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -62,7 +64,7 @@ public class MainPreferences extends PreferenceActivity implements OnSharedPrefe
 
 				if (!ItIsLayer) {
 					CheckBoxPreference pref = new CheckBoxPreference(this);
-					pref.setKey("pref_predefmaps_" + nnm.getNamedItem("id").getNodeValue());
+					pref.setKey(PREF_PREDEFMAPS_ + nnm.getNamedItem("id").getNodeValue());
 					pref.setTitle(nnm.getNamedItem("name").getNodeValue());
 					pref.setSummary(nnm.getNamedItem("descr").getNodeValue());
 					pref.setDefaultValue(true);
@@ -87,34 +89,36 @@ public class MainPreferences extends PreferenceActivity implements OnSharedPrefe
 		File[] files = folder.listFiles();
 		if (files != null)
 			for (int i = 0; i < files.length; i++) {
-				if (files[i].getName().toLowerCase().endsWith(".mnm")
-						|| files[i].getName().toLowerCase().endsWith(".tar")
+				if (files[i].getName().toLowerCase().endsWith(
+						getString(R.string.mnm))
 						|| files[i].getName().toLowerCase().endsWith(
-								".sqlitedb")) {
+								getString(R.string.tar))
+						|| files[i].getName().toLowerCase().endsWith(
+								getString(R.string.sqlitedb))) {
 					String name = Util.FileName2ID(files[i].getName());
 
 					PreferenceScreen prefscr = getPreferenceManager().createPreferenceScreen(this);
-					prefscr.setKey("pref_usermaps_" + name);
+					prefscr.setKey(PREF_USERMAPS_ + name);
 					{
 						CheckBoxPreference pref = new CheckBoxPreference(this);
-						pref.setKey("pref_usermaps_" + name + "_enabled");
-						pref.setTitle("Enabled map");
-						pref.setSummary("Add map to maps list");
+						pref.setKey(PREF_USERMAPS_ + name + "_enabled");
+						pref.setTitle(getString(R.string.pref_usermap_enabled));
+						pref.setSummary(getString(R.string.pref_usermap_enabled_summary));
 						pref.setDefaultValue(false);
 						prefscr.addPreference(pref);
 					}
 					{
 						EditTextPreference pref = new EditTextPreference(this);
-						pref.setKey("pref_usermaps_" + name + "_name");
-						pref.setTitle("Name");
+						pref.setKey(PREF_USERMAPS_ + name + "_name");
+						pref.setTitle(getString(R.string.pref_usermap_name));
 						pref.setSummary(files[i].getName());
 						pref.setDefaultValue(files[i].getName());
 						prefscr.addPreference(pref);
 					}
 					{
 						EditTextPreference pref = new EditTextPreference(this);
-						pref.setKey("pref_usermaps_" + name + "_baseurl");
-						pref.setTitle("Base URL");
+						pref.setKey(PREF_USERMAPS_ + name + "_baseurl");
+						pref.setTitle(getString(R.string.pref_usermap_baseurl));
 						pref.setSummary(files[i].getAbsolutePath());
 						pref.setDefaultValue(files[i].getAbsolutePath());
 						pref.setEnabled(false);
@@ -122,8 +126,8 @@ public class MainPreferences extends PreferenceActivity implements OnSharedPrefe
 					}
 					{
 						ListPreference pref = new ListPreference(this);
-						pref.setKey("pref_usermaps_" + name + "_projection");
-						pref.setTitle("Projection");
+						pref.setKey(PREF_USERMAPS_ + name + "_projection");
+						pref.setTitle(getString(R.string.pref_usermap_projection));
 						pref.setEntries(R.array.projection_title);
 						pref.setEntryValues(R.array.projection_value);
 						pref.setDefaultValue("1");
@@ -132,16 +136,16 @@ public class MainPreferences extends PreferenceActivity implements OnSharedPrefe
 					}
 					{
 						CheckBoxPreference pref = new CheckBoxPreference(this);
-						pref.setKey("pref_usermaps_" + name + "_traffic");
-						pref.setTitle("Yandex.Traffic");
-						pref.setSummary("Добавить слой пробок на карту");
+						pref.setKey(PREF_USERMAPS_ + name + "_traffic");
+						pref.setTitle(getString(R.string.pref_usermap_traffic));
+						pref.setSummary(getString(R.string.pref_usermap_traffic_summary));
 						pref.setDefaultValue(false);
 						prefscr.addPreference(pref);
 					}
 
-					prefscr.setTitle(prefscr.getSharedPreferences().getString("pref_usermaps_" + name + "_name",
+					prefscr.setTitle(prefscr.getSharedPreferences().getString(PREF_USERMAPS_ + name + "_name",
 							files[i].getName()));
-					if (prefscr.getSharedPreferences().getBoolean("pref_usermaps_" + name + "_enabled", false))
+					if (prefscr.getSharedPreferences().getBoolean(PREF_USERMAPS_ + name + "_enabled", false))
 						prefscr.setSummary("Enabled  " + files[i].getAbsolutePath());
 					else
 						prefscr.setSummary("Disabled  " + files[i].getAbsolutePath());
@@ -168,7 +172,7 @@ public class MainPreferences extends PreferenceActivity implements OnSharedPrefe
 
 	public void onSharedPreferenceChanged(SharedPreferences aPref, String aKey) {
 		if (aKey.length() > 14)
-			if (aKey.substring(0, 14).equalsIgnoreCase("pref_usermaps_")) {
+			if (aKey.substring(0, 14).equalsIgnoreCase(PREF_USERMAPS_)) {
 				if (aKey.endsWith("name")) {
 					findPreference(aKey).setSummary(aPref.getString(aKey, ""));
 					findPreference(aKey.replace("_name", "")).setTitle(aPref.getString(aKey, ""));
