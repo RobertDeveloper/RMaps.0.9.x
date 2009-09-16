@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="pref_northdirectionup_summary">Turn map on the northern direction</string>
+    <string name="pref_northdirectionup">Direction on the North</string>
     <string name="pref_drivingdirectionup_summary">Turn the map in driving direction</string>
     <string name="pref_drivingdirectionup">Driving direction up</string>
     <string name="pref_zoomminlevel_summary">Set this zoom level at long press on minus button</string>
@@ -81,8 +83,9 @@ How to and FAQ you can find on http://robertdeveloper.blogspot.com/\n
 </string>
 <string name="whats_new_dialog_text">
 v.0.6.3\n
-+ Turning map in driving direction\n
-+ Added russian localisation
++ Turning map in driving direction. Enable/disable mode in preferences. Doubletup on the map return base mode.\n
++ Turning map in the northern direction. Enable/disable mode in preferences. Map turning if compass is visible.\n
++ Added russian localisation\n
 + Update Yandex.Map URL\n
 \n
 v.0.6.2\n

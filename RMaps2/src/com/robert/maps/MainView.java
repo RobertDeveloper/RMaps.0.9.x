@@ -94,11 +94,12 @@ public class MainView extends OpenStreetMapActivity implements OpenStreetMapCons
 	private SensorManager mOrientationSensorManager;
 	private boolean mCompassEnabled;
 	private boolean mDrivingDirectionUp;
+	private boolean mNorthDirectionUp;
+	private float mLastSpeed;
 
 	private final SensorEventListener mListener = new SensorEventListener() {
 
 		public void onAccuracyChanged(Sensor sensor, int accuracy) {
-			// Auto-generated method stub
 
 		}
 
@@ -106,9 +107,12 @@ public class MainView extends OpenStreetMapActivity implements OpenStreetMapCons
 			mCompassView.setAzimuth(event.values[0]);
 			mCompassView.invalidate();
 
-			// Этот код поворачивает карту по компасу
-//			mOsmv.setBearing(event.values[0]);
-//			mOsmv.invalidate();
+			if (mCompassEnabled)
+				if (mNorthDirectionUp)
+					if (mDrivingDirectionUp == false || mLastSpeed == 0) {
+						mOsmv.setBearing(event.values[0]);
+						mOsmv.invalidate();
+					}
 		}
 
 	};
@@ -240,6 +244,9 @@ public class MainView extends OpenStreetMapActivity implements OpenStreetMapCons
 	        });
         }
 
+
+		mDrivingDirectionUp = pref.getBoolean("pref_drivingdirectionup", true);
+		mNorthDirectionUp = pref.getBoolean("pref_northdirectionup", true);
 
      	mFullScreen = pref.getBoolean("pref_showstatusbar", true);
 		if (mFullScreen)
@@ -424,9 +431,12 @@ public class MainView extends OpenStreetMapActivity implements OpenStreetMapCons
 	public void onLocationChanged(Location loc) {
 		this.mMyLocationOverlay.setLocation(loc);
 
-		if(mAutoFollow){
-			if(mDrivingDirectionUp)
-				this.mOsmv.setBearing(loc.getBearing());
+		mLastSpeed = loc.getSpeed();
+
+		if (mAutoFollow) {
+			if (mDrivingDirectionUp)
+				if (loc.getSpeed() > 0)
+					this.mOsmv.setBearing(loc.getBearing());
 
 			this.mOsmv.getController().animateTo(TypeConverter.locationToGeoPoint(loc), OpenStreetMapViewController.AnimationType.MIDDLEPEAKSPEED, OpenStreetMapViewController.ANIMATION_SMOOTHNESS_HIGH, OpenStreetMapViewController.ANIMATION_DURATION_DEFAULT);
 		}
@@ -558,8 +568,6 @@ public class MainView extends OpenStreetMapActivity implements OpenStreetMapCons
 
 	private void restoreUIState() {
 		SharedPreferences settings = getPreferences(Activity.MODE_PRIVATE);
-
-		mDrivingDirectionUp = settings.getBoolean("pref_drivingdirectionup", true);
 
 		OpenStreetMapRendererInfo RendererInfo = getRendererInfo(getResources(), settings, settings.getString("MapName", "mapnik"));
 		if(!mOsmv.setRenderer(RendererInfo))
