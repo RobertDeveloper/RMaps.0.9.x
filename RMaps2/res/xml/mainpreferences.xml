@@ -41,6 +41,8 @@
 		android:entries="@array/zoomlevel_pref_title" android:entryValues="@array/zoomlevel_pref_value"
 		android:defaultValue="0"></ListPreference>
 <CheckBoxPreference android:key="pref_drivingdirectionup" android:title="@string/pref_drivingdirectionup" android:summary="@string/pref_drivingdirectionup_summary" android:defaultValue="true"></CheckBoxPreference>
+<CheckBoxPreference android:key="pref_northdirectionup" android:title="@string/pref_northdirectionup" android:summary="@string/pref_northdirectionup_summary" android:defaultValue="true"></CheckBoxPreference>
+
 </PreferenceCategory>
 
 <PreferenceCategory android:title="@string/prefcat_main_indexing"><CheckBoxPreference android:key="pref_turnoffautoreindex" android:title="@string/pref_turnoffautoreindex" android:summary="@string/pref_turnoffautoreindex_summary" android:defaultValue="false"></CheckBoxPreference>
