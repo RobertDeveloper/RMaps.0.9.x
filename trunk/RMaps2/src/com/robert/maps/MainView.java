@@ -93,6 +93,7 @@ public class MainView extends OpenStreetMapActivity implements OpenStreetMapCons
 	private CompassView mCompassView;
 	private SensorManager mOrientationSensorManager;
 	private boolean mCompassEnabled;
+	private boolean mDrivingDirectionUp;
 
 	private final SensorEventListener mListener = new SensorEventListener() {
 
@@ -424,7 +425,9 @@ public class MainView extends OpenStreetMapActivity implements OpenStreetMapCons
 		this.mMyLocationOverlay.setLocation(loc);
 
 		if(mAutoFollow){
-			this.mOsmv.setBearing(loc.getBearing());
+			if(mDrivingDirectionUp)
+				this.mOsmv.setBearing(loc.getBearing());
+
 			this.mOsmv.getController().animateTo(TypeConverter.locationToGeoPoint(loc), OpenStreetMapViewController.AnimationType.MIDDLEPEAKSPEED, OpenStreetMapViewController.ANIMATION_SMOOTHNESS_HIGH, OpenStreetMapViewController.ANIMATION_DURATION_DEFAULT);
 		}
 		else
@@ -555,6 +558,8 @@ public class MainView extends OpenStreetMapActivity implements OpenStreetMapCons
 
 	private void restoreUIState() {
 		SharedPreferences settings = getPreferences(Activity.MODE_PRIVATE);
+
+		mDrivingDirectionUp = settings.getBoolean("pref_drivingdirectionup", true);
 
 		OpenStreetMapRendererInfo RendererInfo = getRendererInfo(getResources(), settings, settings.getString("MapName", "mapnik"));
 		if(!mOsmv.setRenderer(RendererInfo))
