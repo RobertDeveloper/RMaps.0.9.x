@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="pref_drivingdirectionup_summary">Поворачивать карту в направлении движения</string>
+    <string name="pref_drivingdirectionup">Поворачивать карту</string>
     <string name="pref_zoomminlevel_summary">Устанавливать этот зум при долгом нажатии на минус</string>
     <string name="pref_zoomminlevel">Минимальный зум</string>
     <string name="pref_zoommaxlevel_summary">Устанавливать этот зум при долгом нажатии на плюс</string>
@@ -74,6 +76,8 @@ All rights reserved\n
 </string>
 <string name="whats_new_dialog_text">
 v.0.6.3\n
++ Поворот карты в направлении движения
++ Добавлена русская локализация
 + Обновил URL карт Yandex.Map\n
 \n
 v.0.6.2\n
