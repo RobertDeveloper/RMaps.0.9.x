@@ -24,24 +24,22 @@
     <string name="pref_gpsfastupdate">Fast update GPS data</string>
     <string name="pref_gpsfastupdate_summary">Slow updating saves the battery theoretically</string>
 
+    <string name="pref_usermap_enabled">Enabled map</string>
+    <string name="pref_usermap_enabled_summary">Add map to maps list</string>
+    <string name="pref_usermap_name">Name</string>
+    <string name="pref_usermap_baseurl">Base URL</string>
+    <string name="pref_usermap_projection">Projection</string>
+    <string name="pref_usermap_traffic">Yandex.Traffic</string>
+    <string name="pref_usermap_traffic_summary">Show traffic info by Yandex</string>
+
     <string name="prefcat_main_look">Look &amp; Feel</string>
     <string name="prefcat_main_maps">Maps</string>
     <string name="prefcat_main_indexing">Indexing</string>
 
-    <string name="pref_maps_add">Reload maps</string>
-    <string name="pref_maps_add_summary">Reload maps list from /sdcard/rmaps/maps</string>
 	<string name="pref_main_maps">Predefined Maps</string>
 	<string name="pref_main_maps_summary">Internet connection is required</string>
 	<string name="pref_main_usermaps">User defined maps</string>
 	<string name="pref_main_usermaps_summary">Maps from /sdcard/rmaps/maps</string>
-
-	<string name="pref_minzoom_title">Favorite min zoom</string>
-
-	<string name="pref_predefmaps_yamap">Yandex.Map</string>
-	<string name="pref_predefmaps_yamap_summary">maps.yandex.ru Projection - Merkator
-		(ellipsoid)</string>
-	<string name="pref_predefmaps_mapnik">Mapnik</string>
-	<string name="pref_predefmaps_mapnik_summary">www.openstreetmap.org</string>
 
 	<string name="prefcat_main_predefinedmaps"></string>
 	<string name="hello">Hello World, OpenStreetMapViewer</string>
@@ -58,9 +56,9 @@
     <string name="menu_about">About</string>
     <string name="menu_search">Search</string>
 
-
 	<string name="mnm">.mnm</string>
 	<string name="tar">.tar</string>
+	<string name="sqlitedb">.sqlitedb</string>
 
 	<string name="no_traffic">On this zoom traffic info are unavailable</string>
 	<string name="auto_follow_enabled">Auto-Follow Enabled</string>

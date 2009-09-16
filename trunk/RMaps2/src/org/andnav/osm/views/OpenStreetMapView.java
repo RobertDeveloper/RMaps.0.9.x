@@ -36,6 +36,7 @@ import android.view.GestureDetector.OnDoubleTapListener;
 import android.view.GestureDetector.OnGestureListener;
 
 import com.robert.maps.R;
+import com.robert.maps.utils.Ut;
 
 public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 		OpenStreetMapViewConstants {
@@ -50,7 +51,7 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 
 	protected int mLatitudeE6 = 0, mLongitudeE6 = 0;
 	protected int mZoomLevel = 0;
-	private float mBearing = 45; // FIXME Вернуть 0
+	private float mBearing = 0;
 
 	protected OpenStreetMapRendererInfo mRendererInfo;
 	protected final OpenStreetMapTileProvider mTileProvider;
@@ -497,23 +498,23 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 		 * Get the center MapTile which is above this.mLatitudeE6 and
 		 * this.mLongitudeE6 .
 		 */
-		final GeoPoint gpLT = this.getProjection().fromPixels(0, 0);
-		final GeoPoint gpRT = this.getProjection().fromPixels(viewWidth, 0);
-		final GeoPoint gpLB = this.getProjection().fromPixels(0, viewHeight);
-		final GeoPoint gpRB = this.getProjection().fromPixels(viewWidth, viewHeight);
-
-		final int[] MapTileLT = Util.getMapTileFromCoordinates(gpLT.getLatitudeE6(),
-				gpLT.getLongitudeE6(), zoomLevel, null, this.mRendererInfo.PROJECTION);
-		final int[] MapTileRT = Util.getMapTileFromCoordinates(gpRT.getLatitudeE6(),
-				gpRT.getLongitudeE6(), zoomLevel, null, this.mRendererInfo.PROJECTION);
-		final int[] MapTileLB = Util.getMapTileFromCoordinates(gpLB.getLatitudeE6(),
-				gpLB.getLongitudeE6(), zoomLevel, null, this.mRendererInfo.PROJECTION);
-		final int[] MapTileRB = Util.getMapTileFromCoordinates(gpRB.getLatitudeE6(),
-				gpRB.getLongitudeE6(), zoomLevel, null, this.mRendererInfo.PROJECTION);
+//		final GeoPoint gpLT = this.getProjection().fromPixels(0, 0);
+//		final GeoPoint gpRT = this.getProjection().fromPixels(viewWidth, 0);
+//		final GeoPoint gpLB = this.getProjection().fromPixels(0, viewHeight);
+//		final GeoPoint gpRB = this.getProjection().fromPixels(viewWidth, viewHeight);
+//
+//		final int[] MapTileLT = Util.getMapTileFromCoordinates(gpLT.getLatitudeE6(),
+//				gpLT.getLongitudeE6(), zoomLevel, null, this.mRendererInfo.PROJECTION);
+//		final int[] MapTileRT = Util.getMapTileFromCoordinates(gpRT.getLatitudeE6(),
+//				gpRT.getLongitudeE6(), zoomLevel, null, this.mRendererInfo.PROJECTION);
+//		final int[] MapTileLB = Util.getMapTileFromCoordinates(gpLB.getLatitudeE6(),
+//				gpLB.getLongitudeE6(), zoomLevel, null, this.mRendererInfo.PROJECTION);
+//		final int[] MapTileRB = Util.getMapTileFromCoordinates(gpRB.getLatitudeE6(),
+//				gpRB.getLongitudeE6(), zoomLevel, null, this.mRendererInfo.PROJECTION);
 
 		final int[] centerMapTileCoords = Util.getMapTileFromCoordinates(this.mLatitudeE6,
 				this.mLongitudeE6, zoomLevel, null, this.mRendererInfo.PROJECTION);
-
+		
 		/*
 		 * Calculate the Latitude/Longitude on the left-upper ScreenCoords of
 		 * the center MapTile. So in the end we can determine which MapTiles we
@@ -533,23 +534,36 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 		 * one.
 		 */
 		// TODO Нужен адекватный алгоритм для отбора необходимых тайлов, попадающих в экран при повороте карты
-		final int additionalTilesNeededToLeftOfCenter = (int) Math
+		int additionalTilesNeededToLeftOfCenter = (int) Math
 				.ceil((float) centerMapTileScreenLeft / tileSizePx); // i.e.
 																		// "30 / 256"
 																		// = 1;
-		final int additionalTilesNeededToRightOfCenter = (int) Math
+		int additionalTilesNeededToRightOfCenter = (int) Math
 				.ceil((float) (viewWidth - centerMapTileScreenRight) / tileSizePx);
-		final int additionalTilesNeededToTopOfCenter = (int) Math
+		int additionalTilesNeededToTopOfCenter = (int) Math
 				.ceil((float) centerMapTileScreenTop / tileSizePx); // i.e.
 																	// "30 / 256"
 																	// = 1;
-		final int additionalTilesNeededToBottomOfCenter = (int) Math
+		int additionalTilesNeededToBottomOfCenter = (int) Math
 				.ceil((float) (viewHeight - centerMapTileScreenBottom) / tileSizePx);
 
 		final int mapTileUpperBound = (int) Math.pow(2, zoomLevel);
 		final int[] mapTileCoords = new int[] { centerMapTileCoords[MAPTILE_LATITUDE_INDEX],
 				centerMapTileCoords[MAPTILE_LONGITUDE_INDEX] };
 
+		if(mBearing > 0){
+//			additionalTilesNeededToLeftOfCenter = centerMapTileCoords[0]-Math.min(MapTileRB[0], Math.min(MapTileLB[0], Math.min(MapTileLT[0], MapTileRT[0])));
+//			additionalTilesNeededToRightOfCenter = -centerMapTileCoords[0]+Math.max(MapTileRB[0], Math.max(MapTileLB[0], Math.max(MapTileLT[0], MapTileRT[0])));
+//			additionalTilesNeededToTopOfCenter = centerMapTileCoords[1]-Math.min(MapTileRB[1], Math.min(MapTileLB[1], Math.min(MapTileLT[1], MapTileRT[1])));
+//			additionalTilesNeededToBottomOfCenter = -centerMapTileCoords[1]+Math.max(MapTileRB[1], Math.max(MapTileLB[1], Math.max(MapTileLT[1], MapTileRT[1])));
+//			Ut.dd(""+additionalTilesNeededToLeftOfCenter+"-"+additionalTilesNeededToRightOfCenter+" "
+//					+additionalTilesNeededToTopOfCenter+"-"+additionalTilesNeededToBottomOfCenter);
+			additionalTilesNeededToLeftOfCenter = 1;
+			additionalTilesNeededToRightOfCenter = 1;
+			additionalTilesNeededToTopOfCenter = 1;
+			additionalTilesNeededToBottomOfCenter = 1;
+		}
+		
 		/* Draw all the MapTiles (from the upper left to the lower right). */
 		for (int y = -additionalTilesNeededToTopOfCenter; y <= additionalTilesNeededToBottomOfCenter; y++) {
 			for (int x = -additionalTilesNeededToLeftOfCenter; x <= additionalTilesNeededToRightOfCenter; x++) {
@@ -573,7 +587,7 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 				final int tileTop = this.mTouchMapOffsetY + centerMapTileScreenTop + (y * tileSizePx);
 				c.drawBitmap(currentMapTile, tileLeft, tileTop, this.mPaint);
 
-				//if (DEBUGMODE)
+				if (DEBUGMODE)
 				{
 					c.drawLine(tileLeft, tileTop, tileLeft + tileSizePx, tileTop, this.mPaint);
 					c.drawLine(tileLeft, tileTop, tileLeft, tileTop + tileSizePx, this.mPaint);
