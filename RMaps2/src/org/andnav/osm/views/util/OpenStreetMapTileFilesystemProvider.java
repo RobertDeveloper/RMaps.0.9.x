@@ -205,13 +205,13 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 						int offset = 0, skip = 0;
 
 						while (in.available() > 0) {
-							name = Util.readString(in, 100).trim();
+							name = Ut.readString(in, 100).trim();
 
 //							mode = Integer.decode("0" + Util.readString(in, 8).trim());
 //							uid = Integer.decode("0" + Util.readString(in, 8).trim());
 //							gid = Integer.decode("0" + Util.readString(in, 8).trim());
 							in.skip(24);
-							tileSize = Integer.decode("0" + Util.readString(in, 12).trim());
+							tileSize = Integer.decode("0" + Ut.readString(in, 12).trim());
 //							mtime = Integer.decode("0" + Util.readString(in, 12).trim());
 //							in.read(link);
 //							linkname = Util.readString(in, 100);
@@ -274,7 +274,7 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 	private void IndexSQLiteFile(final Handler callback) throws IOException {
 		mCashDatabase.setFile(mCashFile);
 
-		mDatabase.setCashTable("cahs_" + Util.FileName2ID(mCashFile.getName()));
+		mDatabase.setCashTable("cahs_" + Ut.FileName2ID(mCashFile.getName()));
 
 		long fileLength = mCashFile.length();
 		long fileModified = mCashFile.lastModified();
@@ -299,7 +299,7 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 	}
 
 	private void IndexMnmFile(final Handler callback) throws IOException {
-		mDatabase.setCashTable("cahs_" + Util.FileName2ID(mCashFile.getName()));
+		mDatabase.setCashTable("cahs_" + Ut.FileName2ID(mCashFile.getName()));
 
 		long fileLength = mCashFile.length();
 		long fileModified = mCashFile.lastModified();
@@ -321,18 +321,18 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 
 						byte b[] = new byte[5];
 						in.read(b);
-						int tilescount = Util.readInt(in);
+						int tilescount = Ut.readInt(in);
 
 						int tileX = 0, tileY = 0, tileZ = 0, tileSize = 0;
 						long offset = 9;
 						byte mapType[] = new byte[1];
 
 						for (int i = 0; i < tilescount; i++) {
-							tileX = Util.readInt(in);
-							tileY = Util.readInt(in);
-							tileZ = Util.readInt(in) - 1;
+							tileX = Ut.readInt(in);
+							tileY = Ut.readInt(in);
+							tileZ = Ut.readInt(in) - 1;
 							in.read(mapType);
-							tileSize = Util.readInt(in);
+							tileSize = Ut.readInt(in);
 							offset += 17;
 
 							if (tileSize > 0) {

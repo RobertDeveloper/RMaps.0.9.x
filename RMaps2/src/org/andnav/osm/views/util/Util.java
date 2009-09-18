@@ -1,10 +1,6 @@
 // Created by plusminus on 17:53:07 - 25.09.2008
 package org.andnav.osm.views.util;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-
 import org.andnav.osm.util.BoundingBoxE6;
 import org.andnav.osm.views.util.constants.OpenStreetMapViewConstants;
 
@@ -37,31 +33,6 @@ public class Util implements OpenStreetMapViewConstants{
 	// ===========================================================
 	// Methods
 	// ===========================================================
-
-	public static String readString(final InputStream in, final int size) throws IOException{
-		byte b [] = new byte[size];
-
-		int lenght = in.read(b);
-		if(b[0] == 0)
-			return "";
-		else if(lenght > 0)
-			return new String(b, 0, lenght);
-		else
-			return "";
-	}
-
-	public static int readInt(final InputStream in) throws IOException{
-		int res = 0;
-		byte b [] = new byte[4];
-
-		if(in.read(b)>0)
-			res = (((int)(b[0] & 0xFF)) << 24) +
-			  + ((b[1] & 0xFF) << 16) +
-			  + ((b[2] & 0xFF) << 8) +
-			  + (b[3] & 0xFF);
-
-		return res;
-	}
 
 	public static int[] getMapTileFromCoordinates(final int aLat, final int aLon, final int zoom, final int[] reuse, final int aProjection) {
 		return getMapTileFromCoordinates(aLat / 1E6, aLon / 1E6, zoom, reuse, aProjection);
@@ -201,23 +172,6 @@ public class Util implements OpenStreetMapViewConstants{
 
 			return result;
 		}
-	}
-
-	public static String FileName2ID(String name) {
-		return name.replace(".", "_").replace(" ", "_").replace("-", "_").trim();
-	}
-
-	public static File getRMapsFolder(String aName, boolean aShowAlertToast) {
-		File folder = new File("/sdcard/rmaps/" + aName);
-		if(!folder.exists()){
-			if (android.os.Environment.getExternalStorageState().equals(android.os.Environment.MEDIA_MOUNTED)){
-				folder.mkdirs();
-			}else if(aShowAlertToast){
-				//Toast.makeText(new Application(), "SD card is not available", Toast.LENGTH_LONG);
-			}
-		}
-
-		return folder;
 	}
 
 	// ===========================================================
