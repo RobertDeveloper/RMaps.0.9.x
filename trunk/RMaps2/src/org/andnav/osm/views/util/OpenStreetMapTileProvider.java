@@ -117,7 +117,7 @@ public class OpenStreetMapTileProvider implements OpenStreetMapConstants, OpenSt
 	}
 
 	public Bitmap getMapTile(final String aTileURLString, final int aTypeCash, final Bitmap aLoadingMapTile, final int x, final int y, final int z){
-		//Log.d(DEBUGTAG, "getMapTile "+aTileURLString);
+		Log.d(DEBUGTAG, "getMapTile "+aTileURLString);
 
 		Bitmap ret = this.mTileCache.getMapTile(aTileURLString);
 		if(ret != null){
