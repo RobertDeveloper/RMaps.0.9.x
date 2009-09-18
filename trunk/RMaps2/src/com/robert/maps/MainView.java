@@ -23,7 +23,6 @@ import org.andnav.osm.views.controller.OpenStreetMapViewController;
 import org.andnav.osm.views.overlay.OpenStreetMapViewSimpleLocationOverlay;
 import org.andnav.osm.views.util.OpenStreetMapRendererInfo;
 import org.andnav.osm.views.util.StreamUtils;
-import org.andnav.osm.views.util.Util;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.w3c.dom.Document;
@@ -438,9 +437,12 @@ public class MainView extends OpenStreetMapActivity implements OpenStreetMapCons
 				if (loc.getSpeed() > 0)
 					this.mOsmv.setBearing(loc.getBearing());
 
-			this.mOsmv.getController().animateTo(TypeConverter.locationToGeoPoint(loc), OpenStreetMapViewController.AnimationType.MIDDLEPEAKSPEED, OpenStreetMapViewController.ANIMATION_SMOOTHNESS_HIGH, OpenStreetMapViewController.ANIMATION_DURATION_DEFAULT);
-		}
-		else
+			this.mOsmv.getController().animateTo(
+					TypeConverter.locationToGeoPoint(loc),
+					OpenStreetMapViewController.AnimationType.MIDDLEPEAKSPEED,
+					OpenStreetMapViewController.ANIMATION_SMOOTHNESS_HIGH,
+					OpenStreetMapViewController.ANIMATION_DURATION_DEFAULT);
+		} else
 			this.mOsmv.invalidate();
 	}
 
@@ -463,7 +465,7 @@ public class MainView extends OpenStreetMapActivity implements OpenStreetMapCons
 		submenu.clear();
 		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
 
-		File folder = Util.getRMapsFolder("maps", true);
+		File folder = Ut.getRMapsFolder("maps", true);
 		if (folder.exists()) {
 			File[] files = folder.listFiles();
 			if (files != null)
@@ -473,7 +475,7 @@ public class MainView extends OpenStreetMapActivity implements OpenStreetMapCons
 									.endsWith(".tar")
 							|| files[i].getName().toLowerCase().endsWith(
 									".sqlitedb")) {
-						String name = Util.FileName2ID(files[i].getName());
+						String name = Ut.FileName2ID(files[i].getName());
 						if (pref.getBoolean("pref_usermaps_" + name + "_enabled", false)) {
 							MenuItem item = submenu.add(pref.getString("pref_usermaps_" + name + "_name", files[i]
 									.getName()));

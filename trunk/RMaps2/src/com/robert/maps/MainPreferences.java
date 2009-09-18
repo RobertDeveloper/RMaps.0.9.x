@@ -11,7 +11,6 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.andnav.osm.views.util.Util;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -27,6 +26,8 @@ import android.preference.ListPreference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceGroup;
 import android.preference.PreferenceScreen;
+
+import com.robert.maps.utils.Ut;
 
 public class MainPreferences extends PreferenceActivity implements OnSharedPreferenceChangeListener {
 	private static final String PREF_USERMAPS_ = "pref_usermaps_";
@@ -85,7 +86,7 @@ public class MainPreferences extends PreferenceActivity implements OnSharedPrefe
 		PreferenceGroup prefUserMapsgroup = (PreferenceGroup) findPreference("pref_usermaps_mapsgroup");
 		prefUserMapsgroup.removeAll();
 
-		File folder = Util.getRMapsFolder("maps", true);
+		File folder = Ut.getRMapsFolder("maps", true);
 		File[] files = folder.listFiles();
 		if (files != null)
 			for (int i = 0; i < files.length; i++) {
@@ -95,7 +96,7 @@ public class MainPreferences extends PreferenceActivity implements OnSharedPrefe
 								getString(R.string.tar))
 						|| files[i].getName().toLowerCase().endsWith(
 								getString(R.string.sqlitedb))) {
-					String name = Util.FileName2ID(files[i].getName());
+					String name = Ut.FileName2ID(files[i].getName());
 
 					PreferenceScreen prefscr = getPreferenceManager().createPreferenceScreen(this);
 					prefscr.setKey(PREF_USERMAPS_ + name);
