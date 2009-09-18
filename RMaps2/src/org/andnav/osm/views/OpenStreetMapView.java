@@ -514,7 +514,7 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 
 		final int[] centerMapTileCoords = Util.getMapTileFromCoordinates(this.mLatitudeE6,
 				this.mLongitudeE6, zoomLevel, null, this.mRendererInfo.PROJECTION);
-		
+
 		/*
 		 * Calculate the Latitude/Longitude on the left-upper ScreenCoords of
 		 * the center MapTile. So in the end we can determine which MapTiles we
@@ -547,11 +547,12 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 		int additionalTilesNeededToBottomOfCenter = (int) Math
 				.ceil((float) (viewHeight - centerMapTileScreenBottom) / tileSizePx);
 
-		final int mapTileUpperBound = (int) Math.pow(2, zoomLevel);
+		final int mapTileUpperBound = mRendererInfo.getTileUpperBound(zoomLevel);
 		final int[] mapTileCoords = new int[] { centerMapTileCoords[MAPTILE_LATITUDE_INDEX],
 				centerMapTileCoords[MAPTILE_LONGITUDE_INDEX] };
 
-		if(mBearing > 0){
+		//if(mBearing > 0)// FIXME get back
+		{
 //			additionalTilesNeededToLeftOfCenter = centerMapTileCoords[0]-Math.min(MapTileRB[0], Math.min(MapTileLB[0], Math.min(MapTileLT[0], MapTileRT[0])));
 //			additionalTilesNeededToRightOfCenter = -centerMapTileCoords[0]+Math.max(MapTileRB[0], Math.max(MapTileLB[0], Math.max(MapTileLT[0], MapTileRT[0])));
 //			additionalTilesNeededToTopOfCenter = centerMapTileCoords[1]-Math.min(MapTileRB[1], Math.min(MapTileLB[1], Math.min(MapTileLT[1], MapTileRT[1])));
@@ -563,7 +564,7 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 			additionalTilesNeededToTopOfCenter = 1;
 			additionalTilesNeededToBottomOfCenter = 1;
 		}
-		
+
 		/* Draw all the MapTiles (from the upper left to the lower right). */
 		for (int y = -additionalTilesNeededToTopOfCenter; y <= additionalTilesNeededToBottomOfCenter; y++) {
 			for (int x = -additionalTilesNeededToLeftOfCenter; x <= additionalTilesNeededToRightOfCenter; x++) {
@@ -587,7 +588,7 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 				final int tileTop = this.mTouchMapOffsetY + centerMapTileScreenTop + (y * tileSizePx);
 				c.drawBitmap(currentMapTile, tileLeft, tileTop, this.mPaint);
 
-				if (DEBUGMODE)
+				//if (DEBUGMODE)// FIXME get back
 				{
 					c.drawLine(tileLeft, tileTop, tileLeft + tileSizePx, tileTop, this.mPaint);
 					c.drawLine(tileLeft, tileTop, tileLeft, tileTop + tileSizePx, this.mPaint);
