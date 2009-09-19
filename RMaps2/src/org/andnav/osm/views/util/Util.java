@@ -4,6 +4,8 @@ package org.andnav.osm.views.util;
 import org.andnav.osm.util.BoundingBoxE6;
 import org.andnav.osm.views.util.constants.OpenStreetMapViewConstants;
 
+import com.robert.maps.utils.Ut;
+
 /**
  *
  * @author Nicolas Gramlich
@@ -41,19 +43,40 @@ public class Util implements OpenStreetMapViewConstants{
 	public static int[] getMapTileFromCoordinates(final double aLat, final double aLon, final int zoom, final int[] aUseAsReturnValue, final int aProjection) {
 		final int[] out = (aUseAsReturnValue != null) ? aUseAsReturnValue : new int[2];
 
-		if(aProjection == 1)
-			out[MAPTILE_LATITUDE_INDEX] = (int) Math.floor((1 - Math.log(Math.tan(aLat * Math.PI / 180) + 1 / Math.cos(aLat * Math.PI / 180)) / Math.PI) / 2 * (1 << zoom));
-		else {
-			final double E2 = (double) aLat*Math.PI/180;
-			final long sradiusa = 6378137;
-			final long sradiusb = 6356752;
-			final double J2 = (double) Math.sqrt(sradiusa*sradiusa-sradiusb*sradiusb)/sradiusa;
-			final double M2 = (double) Math.log((1+Math.sin(E2))/(1-Math.sin(E2)))/2-J2*Math.log((1+J2*Math.sin(E2))/(1-J2*Math.sin(E2)))/2;
-			final double B2 = (double)(1 << zoom);
-			out[MAPTILE_LATITUDE_INDEX] = (int) Math.floor(B2/2-M2*B2/2/Math.PI);
-		}
+		if (aProjection == 3) {
+			final int OpenSpaceUpperBoundArray[] = { 2, 5, 10, 25, 50, 100,
+					200, 500, 1000, 2000, 4000 };
+			final double[] OSRef = Ut.LatLon2OSRef(aLat, aLon);
+			out[0] = (int) ((1 - OSRef[0] / 1000000)*OpenSpaceUpperBoundArray[zoom - 7]);
+			out[1] = (int) ((OSRef[1] / 1000000)*OpenSpaceUpperBoundArray[zoom - 7]);
+		} else {
+			if (aProjection == 1)
+				out[MAPTILE_LATITUDE_INDEX] = (int) Math.floor((1 - Math
+						.log(Math.tan(aLat * Math.PI / 180) + 1
+								/ Math.cos(aLat * Math.PI / 180))
+						/ Math.PI)
+						/ 2 * (1 << zoom));
+			else {
+				final double E2 = (double) aLat * Math.PI / 180;
+				final long sradiusa = 6378137;
+				final long sradiusb = 6356752;
+				final double J2 = (double) Math.sqrt(sradiusa * sradiusa
+						- sradiusb * sradiusb)
+						/ sradiusa;
+				final double M2 = (double) Math.log((1 + Math.sin(E2))
+						/ (1 - Math.sin(E2)))
+						/ 2
+						- J2
+						* Math.log((1 + J2 * Math.sin(E2))
+								/ (1 - J2 * Math.sin(E2))) / 2;
+				final double B2 = (double) (1 << zoom);
+				out[MAPTILE_LATITUDE_INDEX] = (int) Math.floor(B2 / 2 - M2 * B2
+						/ 2 / Math.PI);
+			}
 
-		out[MAPTILE_LONGITUDE_INDEX] = (int) Math.floor((aLon + 180) / 360 * (1 << zoom));
+			out[MAPTILE_LONGITUDE_INDEX] = (int) Math.floor((aLon + 180) / 360
+					* (1 << zoom));
+		}
 
 		return out;
 	}
@@ -63,7 +86,20 @@ public class Util implements OpenStreetMapViewConstants{
 	public static BoundingBoxE6 getBoundingBoxFromMapTile(final int[] aMapTile, final int zoom, final int aProjection) {
 		final int y = aMapTile[MAPTILE_LATITUDE_INDEX];
 		final int x = aMapTile[MAPTILE_LONGITUDE_INDEX];
-		return new BoundingBoxE6(tile2lat(y, zoom, aProjection), tile2lon(x + 1, zoom), tile2lat(y + 1, zoom, aProjection), tile2lon(x, zoom));
+		
+		if(aProjection == 3){
+			final int OpenSpaceUpperBoundArray[] = { 2, 5, 10, 25 , 50, 100, 200, 500, 1000, 2000, 4000};
+			final double[] LatLon0 = Ut.OSRef2LatLon(
+					(double)((OpenSpaceUpperBoundArray[zoom - 7] - y - 1) * 1000000
+							/ OpenSpaceUpperBoundArray[zoom - 7]), (double)(x * 1000000
+							/ OpenSpaceUpperBoundArray[zoom - 7]));
+			final double[] LatLon1 = Ut.OSRef2LatLon(
+					(double)((OpenSpaceUpperBoundArray[zoom - 7] - y - 1 + 1) * 1000000
+							/ OpenSpaceUpperBoundArray[zoom - 7]), (double)((x + 1) * 1000000
+							/ OpenSpaceUpperBoundArray[zoom - 7]));
+			return new BoundingBoxE6(LatLon1[0], LatLon1[1], LatLon0[0], LatLon0[1]);
+		} else
+			return new BoundingBoxE6(tile2lat(y, zoom, aProjection), tile2lon(x + 1, zoom), tile2lat(y + 1, zoom, aProjection), tile2lon(x, zoom));
 	}
 
 	private static double tile2lon(int x, int aZoom) {
