@@ -43,8 +43,6 @@ public class NinePatchDrawable extends Drawable
 	@Override
 	public void setColorFilter(ColorFilter cf)
 	{
-		// TODO Auto-generated method stub
-		
 	}
 	
 	/* non-Android APIs */

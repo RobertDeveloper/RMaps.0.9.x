@@ -238,8 +238,8 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 
 		final BoundingBoxE6 tmp = Util.getBoundingBoxFromMapTile(centerMapTileCoords, this.mZoomLevel, mRendererInfo.PROJECTION);
 
-		final int mLatitudeSpan_2 = (int)(1.0f * tmp.getLatitudeSpanE6() * pViewHeight / this.mRendererInfo.MAPTILE_SIZEPX) / 2;
-		final int mLongitudeSpan_2 = (int)(1.0f * tmp.getLongitudeSpanE6() * pViewWidth / this.mRendererInfo.MAPTILE_SIZEPX) / 2;
+		final int mLatitudeSpan_2 = (int)(1.0f * tmp.getLatitudeSpanE6() * pViewHeight / this.mRendererInfo.getTileSizePx(this.mZoomLevel)) / 2;
+		final int mLongitudeSpan_2 = (int)(1.0f * tmp.getLongitudeSpanE6() * pViewWidth / this.mRendererInfo.getTileSizePx(this.mZoomLevel)) / 2;
 
 		final int north = this.mLatitudeE6 + mLatitudeSpan_2;
 		final int south = this.mLatitudeE6 - mLatitudeSpan_2;
@@ -485,7 +485,7 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 		final int zoomLevel = this.mZoomLevel;
 		final int viewWidth = this.getWidth();
 		final int viewHeight = this.getHeight();
-		final int tileSizePx = this.mRendererInfo.MAPTILE_SIZEPX;
+		final int tileSizePx = this.mRendererInfo.getTileSizePx(this.mZoomLevel);
 
 		c.save();
 		final float aRotateToAngle = 360 - mBearing;
@@ -686,7 +686,7 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 															// make it only
 															// 'valid' for a
 															// short time.
-			tileSizePx = OpenStreetMapView.this.mRendererInfo.MAPTILE_SIZEPX;
+			tileSizePx = OpenStreetMapView.this.mRendererInfo.getTileSizePx(OpenStreetMapView.this.mZoomLevel);
 
 			/*
 			 * Get the center MapTile which is above this.mLatitudeE6 and
@@ -733,7 +733,7 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 
 		public float metersToEquatorPixels(final float aMeters) {
 			return aMeters / EQUATORCIRCUMFENCE
-					* OpenStreetMapView.this.mRendererInfo.MAPTILE_SIZEPX;
+					* OpenStreetMapView.this.mRendererInfo.getTileSizePx(OpenStreetMapView.this.mZoomLevel);
 		}
 
 		/**
