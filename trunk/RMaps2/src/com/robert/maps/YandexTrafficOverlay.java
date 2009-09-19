@@ -45,7 +45,7 @@ public class YandexTrafficOverlay extends OpenStreetMapViewOverlay implements Op
 		final int zoomLevel = mMapView.getZoomLevel();
 		final int viewWidth = mMapView.getWidth();
 		final int viewHeight = mMapView.getHeight();
-		final int tileSizePx = this.mRendererInfo.MAPTILE_SIZEPX;
+		final int tileSizePx = this.mRendererInfo.getTileSizePx(zoomLevel);
 
 		/*
 		 * Get the center MapTile which is above this.mLatitudeE6 and this.mLongitudeE6 .

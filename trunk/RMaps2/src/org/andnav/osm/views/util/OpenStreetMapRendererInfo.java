@@ -36,8 +36,12 @@ public class OpenStreetMapRendererInfo {
 	// ===========================================================
 
 	private final Resources mResources;
+	private int MAPTILE_SIZEPX;
+	private final int OpenSpaceUpperBoundArray[] = { 2, 5, 10, 25 , 50, 100, 200, 500, 1000, 2000, 4000};
+	private final int OpenSpaceLayersArray[] = {2500, 1000, 500, 200, 100, 50, 25, 10, 5, 2, 1};
+	
 	public String ID, BASEURL, NAME, IMAGE_FILENAMEENDING;
-	public int ZOOM_MINLEVEL, ZOOM_MAXLEVEL, MAPTILE_SIZEPX,
+	public int ZOOM_MINLEVEL, ZOOM_MAXLEVEL, 
 	URL_BUILDER_TYPE, // 0 - OSM, 1 - Google, 2 - Yandex, 3 - Yandex.Traffic, 4 - Google.Sattelite, 5 - openspace
 	TILE_SOURCE_TYPE, // 0 - internet, 1 - AndNav ZIP file, 2 - SASGIS ZIP file, 3 - MapNav file, 4 - TAR, 5 - sqlitedb
 	YANDEX_TRAFFIC_ON,
@@ -197,8 +201,7 @@ public class OpenStreetMapRendererInfo {
 
 	public int getTileUpperBound(final int zoomLevel) {
 		if (this.URL_BUILDER_TYPE == 5) {
-			final int var[] = { 2, 5, 10, 25 , 50, 100, 200, 500, 1000, 2000, 4000};
-			return var[zoomLevel - ZOOM_MINLEVEL];
+			return OpenSpaceUpperBoundArray[zoomLevel - ZOOM_MINLEVEL];
 		} else
 			return (int) Math.pow(2, zoomLevel);
 	}
@@ -209,12 +212,11 @@ public class OpenStreetMapRendererInfo {
 		case 0: // 0 - internet
 			switch(this.URL_BUILDER_TYPE){
 				case 5: // openspace
-					final int LAYERS[] = {2500, 1000, 500, 200, 100, 50, 25, 10, 5, 2, 1};
 					final int million = 1000000 / getTileUpperBound(zoomLevel);
-					final int size = LAYERS[zoomLevel-ZOOM_MINLEVEL] < 5 ? 250 : 200;
+					final int size = OpenSpaceLayersArray[zoomLevel-ZOOM_MINLEVEL] < 5 ? 250 : 200;
 					return new StringBuilder()
 					.append("http://openspace.ordnancesurvey.co.uk/osmapapi/ts?FORMAT=image%2Fpng&KEY=6694613F8B469C97E0405F0AF160360A&URL=http%3A%2F%2Fopenspace.ordnancesurvey.co.uk%2Fopenspace%2Fsupport.html&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&EXCEPTIONS=application%2Fvnd.ogc.se_inimage&")
-					.append("LAYERS=").append(LAYERS[zoomLevel-ZOOM_MINLEVEL])
+					.append("LAYERS=").append(OpenSpaceLayersArray[zoomLevel-ZOOM_MINLEVEL])
 					.append("&SRS=EPSG%3A27700&BBOX=")
 					.append(million*tileID[OpenStreetMapViewConstants.MAPTILE_LONGITUDE_INDEX])
 					.append(",")
@@ -319,4 +321,10 @@ public class OpenStreetMapRendererInfo {
 		}
 	}
 
+	public int getTileSizePx(final int zoomLevel){
+		if(this.URL_BUILDER_TYPE == 5)
+			return zoomLevel-ZOOM_MINLEVEL >= 9 ? 250 : 200;
+		else
+			return MAPTILE_SIZEPX;
+	}
 }
