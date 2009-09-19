@@ -587,7 +587,7 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 				final int tileTop = this.mTouchMapOffsetY + centerMapTileScreenTop + (y * tileSizePx);
 				c.drawBitmap(currentMapTile, tileLeft, tileTop, this.mPaint);
 
-				//if (DEBUGMODE)// FIXME get back
+				// if (DEBUGMODE) // FIXME get back
 				{
 					c.drawLine(tileLeft, tileTop, tileLeft + tileSizePx, tileTop, this.mPaint);
 					c.drawLine(tileLeft, tileTop, tileLeft, tileTop + tileSizePx, this.mPaint);
@@ -610,7 +610,7 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 		c.restore();
 
 		final long endMs = System.currentTimeMillis();
-		if (DEBUGMODE)
+		if (DEBUGMODE) // FIXME get back
 			Log.i(DEBUGTAG, "Rendering overall: " + (endMs - startMs) + "ms");
 	}
 
