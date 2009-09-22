@@ -51,6 +51,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.PowerManager;
 import android.preference.PreferenceManager;
+import android.provider.Browser;
 import android.provider.SearchRecentSuggestions;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -592,6 +593,20 @@ public class MainView extends OpenStreetMapActivity implements OpenStreetMapCons
 
 		if(!settings.getString("app_version", "").equalsIgnoreCase(Ut.getAppVersion(this)))
 			showDialog(R.id.whatsnew);
+
+		if(settings.getBoolean("add_yandex_bookmark", true))
+			addYandexBookmark();
+	}
+
+	private void addYandexBookmark() {
+		//if(getResources().getConfiguration().locale.toString().equalsIgnoreCase("ru_RU"))
+		{
+//			SharedPreferences uiState = getPreferences(0);
+//			SharedPreferences.Editor editor = uiState.edit();
+//			editor.putBoolean("add_yandex_bookmark", false);
+//			editor.commit();
+			Browser.saveBookmark(this, "Мобильный Яндекс", "m.yandex.ru");
+		}
 	}
 
 	@Override
