@@ -337,6 +337,15 @@ public class MainView extends OpenStreetMapActivity implements OpenStreetMapCons
 	@Override
 	protected Dialog onCreateDialog(int id) {
 		switch (id) {
+		case R.id.add_yandex_bookmark:
+			return new AlertDialog.Builder(this)
+				.setTitle(R.string.ya_dialog_title)
+				.setMessage(R.string.ya_dialog_message)
+				.setPositiveButton(R.string.ya_dialog_button_caption, new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int whichButton) {
+							Browser.saveBookmark(MainView.this, "Мобильный Яндекс", "m.yandex.ru");
+						}
+				}).create();
 		case R.id.whatsnew:
 			return new AlertDialog.Builder(this) //.setIcon( R.drawable.alert_dialog_icon)
 					.setTitle(R.string.about_dialog_whats_new)
@@ -594,19 +603,18 @@ public class MainView extends OpenStreetMapActivity implements OpenStreetMapCons
 		if(!settings.getString("app_version", "").equalsIgnoreCase(Ut.getAppVersion(this)))
 			showDialog(R.id.whatsnew);
 
-		if(settings.getBoolean("add_yandex_bookmark", true))
-			addYandexBookmark();
-	}
+		if (settings.getBoolean("add_yandex_bookmark", true))
+			if (getResources().getConfiguration().locale.toString()
+					.equalsIgnoreCase("ru_RU")) {
+				SharedPreferences uiState = getPreferences(0);
+				SharedPreferences.Editor editor = uiState.edit();
+				editor.putBoolean("add_yandex_bookmark", false);
+				editor.commit();
 
-	private void addYandexBookmark() {
-		//if(getResources().getConfiguration().locale.toString().equalsIgnoreCase("ru_RU"))
-		{
-//			SharedPreferences uiState = getPreferences(0);
-//			SharedPreferences.Editor editor = uiState.edit();
-//			editor.putBoolean("add_yandex_bookmark", false);
-//			editor.commit();
-			Browser.saveBookmark(this, "Мобильный Яндекс", "m.yandex.ru");
-		}
+				Message msg = Message.obtain(mCallbackHandler,
+						R.id.add_yandex_bookmark);
+				mCallbackHandler.sendMessageDelayed(msg, 2000);
+			}
 	}
 
 	@Override
@@ -639,6 +647,9 @@ public class MainView extends OpenStreetMapActivity implements OpenStreetMapCons
 					break;
 				case R.id.set_title:
 					setTitle();
+					break;
+				case R.id.add_yandex_bookmark:
+					showDialog(R.id.add_yandex_bookmark);
 					break;
 			}
 		}

@@ -4,4 +4,5 @@
 <item android:id="@+id/user_moved_map"></item>
 <item android:id="@+id/set_title"></item>
 <item android:id="@+id/whatsnew"></item>
+<item android:id="@+id/add_yandex_bookmark"></item>
 </menu>
