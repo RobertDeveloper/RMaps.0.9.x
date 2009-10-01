@@ -99,38 +99,38 @@ public class Ut implements OpenStreetMapConstants, OpenStreetMapViewConstants {
 	public static double sec(double x) {
 		return 1.0 / Math.cos(x);
 	}
-	
+
 	public static double[] OSRef2LatLon(final double latOSRef, final double lonOSRef){
 		class RefEll {
 			private double maj;
 			private double min;
 			private double ecc;
-	
+
 			public RefEll(double maj, double min) {
 				this.maj = maj;
 				this.min = min;
 				this.ecc = ((maj * maj) - (min * min)) / (maj * maj);
 			}
-	
+
 			public double getMaj() {
 				return maj;
 			}
-	
+
 			public double getMin() {
 				return min;
 			}
-	
+
 			public double getEcc() {
 				return ecc;
 			}
 		}
-	
+
 	    double OSGB_F0 = 0.9996012717;
 	    double N0 = -100000.0;
 	    double E0 = 400000.0;
 	    double phi0 = Math.toRadians(49.0);
 	    double lambda0 = Math.toRadians(-2.0);
-	    RefEll AIRY_1830 = new RefEll(6377563.396, 6356256.909);	    
+	    RefEll AIRY_1830 = new RefEll(6377563.396, 6356256.909);
 	    double a = AIRY_1830.getMaj();
 	    double b = AIRY_1830.getMin();
 	    double eSquared = AIRY_1830.getEcc();
@@ -197,32 +197,32 @@ public class Ut implements OpenStreetMapConstants, OpenStreetMapViewConstants {
 	    ret[1] = Math.toDegrees(lambda);
 	    return ret;
 	}
-	
+
 	public static double[] LatLon2OSRef(final double lat, final double lng){
 		class RefEll {
 			private double maj;
 			private double min;
 			private double ecc;
-	
+
 			public RefEll(double maj, double min) {
 				this.maj = maj;
 				this.min = min;
 				this.ecc = ((maj * maj) - (min * min)) / (maj * maj);
 			}
-	
+
 			public double getMaj() {
 				return maj;
 			}
-	
+
 			public double getMin() {
 				return min;
 			}
-	
+
 			public double getEcc() {
 				return ecc;
 			}
 		}
-	
+
 		RefEll airy1830 = new RefEll(6377563.396, 6356256.909);
 	    double OSGB_F0 = 0.9996012717;
 	    double N0 = -100000.0;
@@ -285,6 +285,69 @@ public class Ut implements OpenStreetMapConstants, OpenStreetMapViewConstants {
 	    double[] ret = new double[2];
 	    ret[0] = N;
 	    ret[1] = E;
+	    return ret;
+	}
+
+
+
+	public static double[] LatLon2OSGB36(final double lat, final double lng){
+//	    uk.me.jstott.jcoord.ellipsoid.WGS84Ellipsoid wgs84 = uk.me.jstott.jcoord.ellipsoid.WGS84Ellipsoid.getInstance();
+		double semiMajorAxis = 6378137;
+		double semiMinorAxis = 6356752.3142;
+	    double semiMajorAxisSquared = semiMajorAxis * semiMajorAxis;
+	    double semiMinorAxisSquared = semiMinorAxis * semiMinorAxis;
+	    double eccentricitySquared = (semiMajorAxisSquared - semiMinorAxisSquared)
+	        / semiMajorAxisSquared;
+
+		double a = semiMajorAxis; //wgs84.getSemiMajorAxis();
+
+		double eSquared = eccentricitySquared; //wgs84.getEccentricitySquared();
+		double phi = Math.toRadians(lat);
+		double lambda = Math.toRadians(lng);
+		double v = a / (Math.sqrt(1 - eSquared * Ut.sinSquared(phi)));
+		double H = 0; // height
+		double x = (v + H) * Math.cos(phi) * Math.cos(lambda);
+		double y = (v + H) * Math.cos(phi) * Math.sin(lambda);
+		double z = ((1 - eSquared) * v + H) * Math.sin(phi);
+
+		double tx = -446.448;
+		// ty : Incorrect value in v1.0 (124.157). Corrected in v1.1.
+		double ty = 125.157;
+		double tz = -542.060;
+		double s = 0.0000204894;
+		double rx = Math.toRadians(-0.00004172222);
+		double ry = Math.toRadians(-0.00006861111);
+		double rz = Math.toRadians(-0.00023391666);
+
+		double xB = tx + (x * (1 + s)) + (-rx * y) + (ry * z);
+		double yB = ty + (rz * x) + (y * (1 + s)) + (-rx * z);
+		double zB = tz + (-ry * x) + (rx * y) + (z * (1 + s));
+
+//		a = Airy1830Ellipsoid.getInstance().getSemiMajorAxis();
+//		eSquared = Airy1830Ellipsoid.getInstance().getEccentricitySquared();
+		semiMajorAxis = 6377563.396;
+		semiMinorAxis = 6356256.909;
+	    semiMajorAxisSquared = semiMajorAxis * semiMajorAxis;
+	    semiMinorAxisSquared = semiMinorAxis * semiMinorAxis;
+	    eccentricitySquared = (semiMajorAxisSquared - semiMinorAxisSquared)
+	        / semiMajorAxisSquared;
+		a = semiMajorAxis;
+		eSquared = eccentricitySquared;
+
+		double lambdaB = Math.toDegrees(Math.atan(yB / xB));
+		double p = Math.sqrt((xB * xB) + (yB * yB));
+		double phiN = Math.atan(zB / (p * (1 - eSquared)));
+		for (int i = 1; i < 10; i++) {
+			v = a / (Math.sqrt(1 - eSquared * Ut.sinSquared(phiN)));
+			double phiN1 = Math.atan((zB + (eSquared * v * Math.sin(phiN))) / p);
+			phiN = phiN1;
+		}
+
+		double phiB = Math.toDegrees(phiN);
+
+	    double[] ret = new double[2];
+	    ret[0] = phiB;
+	    ret[1] = lambdaB;
 	    return ret;
 	}
 }
