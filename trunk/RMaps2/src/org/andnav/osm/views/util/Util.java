@@ -47,8 +47,13 @@ public class Util implements OpenStreetMapViewConstants{
 			final int OpenSpaceUpperBoundArray[] = { 2, 5, 10, 25, 50, 100,
 					200, 500, 1000, 2000, 4000 };
 			final double[] OSRef = Ut.LatLon2OSRef(aLat, aLon);
+			//final double[] OSRef = Ut.LatLon2OSGB36(aLat, aLon);
+			Ut.dd(""+OSRef[0]+" "+OSRef[1]);
+//			OSRef[0]=180123;
+//			OSRef[1]=531019;
 			out[0] = (int) ((1 - OSRef[0] / 1000000)*OpenSpaceUpperBoundArray[zoom - 7]);
 			out[1] = (int) ((OSRef[1] / 1000000)*OpenSpaceUpperBoundArray[zoom - 7]);
+			Ut.dd(""+out[0]+" "+out[1]);
 		} else {
 			if (aProjection == 1)
 				out[MAPTILE_LATITUDE_INDEX] = (int) Math.floor((1 - Math
@@ -86,7 +91,7 @@ public class Util implements OpenStreetMapViewConstants{
 	public static BoundingBoxE6 getBoundingBoxFromMapTile(final int[] aMapTile, final int zoom, final int aProjection) {
 		final int y = aMapTile[MAPTILE_LATITUDE_INDEX];
 		final int x = aMapTile[MAPTILE_LONGITUDE_INDEX];
-		
+
 		if(aProjection == 3){
 			final int OpenSpaceUpperBoundArray[] = { 2, 5, 10, 25 , 50, 100, 200, 500, 1000, 2000, 4000};
 			final double[] LatLon0 = Ut.OSRef2LatLon(
