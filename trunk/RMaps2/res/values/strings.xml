@@ -82,6 +82,9 @@ Questions, sentences mail to robertk506@gmail.ru\n
 How to and FAQ you can find on http://robertdeveloper.blogspot.com/\n
 </string>
 <string name="whats_new_dialog_text">
+v.0.6.4\n
++ Update Yandex.Traffic\n
+\n
 v.0.6.3\n
 + Turning map in driving direction. Enable/disable mode in preferences. Doubletup on the map return base mode.\n
 + Turning map in the northern direction. Enable/disable mode in preferences. Map turning if compass is visible.\n
