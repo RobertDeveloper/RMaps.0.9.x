@@ -4,6 +4,7 @@ package org.andnav.osm.views.util;
 import org.andnav.osm.util.BoundingBoxE6;
 import org.andnav.osm.views.util.constants.OpenStreetMapViewConstants;
 
+import com.robert.maps.utils.OSGB36;
 import com.robert.maps.utils.Ut;
 
 /**
@@ -47,7 +48,7 @@ public class Util implements OpenStreetMapViewConstants{
 			final int OpenSpaceUpperBoundArray[] = { 2, 5, 10, 25, 50, 100,
 					200, 500, 1000, 2000, 4000 };
 			//final double[] OSRef = Ut.LatLon2OSRef(aLat, aLon);
-			final double[] OSRef = Ut.LatLon2OSGB36(aLat, aLon);
+			final double[] OSRef = OSGB36.LatLon2OSGB(aLat, aLon);
 			Ut.dd(""+OSRef[0]+" "+OSRef[1]);
 //			OSRef[0]=180123;
 //			OSRef[1]=531019;
@@ -94,11 +95,11 @@ public class Util implements OpenStreetMapViewConstants{
 
 		if(aProjection == 3){
 			final int OpenSpaceUpperBoundArray[] = { 2, 5, 10, 25 , 50, 100, 200, 500, 1000, 2000, 4000};
-			final double[] LatLon0 = Ut.OSGB362LatLon(
+			final double[] LatLon0 = OSGB36.OSGB2LatLon(
 					(double)((OpenSpaceUpperBoundArray[zoom - 7] - y - 1) * 1000000
 							/ OpenSpaceUpperBoundArray[zoom - 7]), (double)(x * 1000000
 							/ OpenSpaceUpperBoundArray[zoom - 7]));
-			final double[] LatLon1 = Ut.OSGB362LatLon(
+			final double[] LatLon1 = OSGB36.OSGB2LatLon(
 					(double)((OpenSpaceUpperBoundArray[zoom - 7] - y - 1 + 1) * 1000000
 							/ OpenSpaceUpperBoundArray[zoom - 7]), (double)((x + 1) * 1000000
 							/ OpenSpaceUpperBoundArray[zoom - 7]));
