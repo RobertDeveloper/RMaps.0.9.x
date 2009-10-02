@@ -31,8 +31,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import uk.me.jstott.jcoord.LatLng;
-import uk.me.jstott.jcoord.OSRef;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -392,16 +390,6 @@ public class MainView extends OpenStreetMapActivity implements OpenStreetMapCons
 		loc.setLatitude(51.504862);
 		loc.setLongitude(-0.1136398);
 		this.mOsmv.setMapCenter(TypeConverter.locationToGeoPoint(loc));
-
-	    Ut.dd("Convert Latitude/Longitude to OS Grid Reference");
-	    // Using OSGB36 (convert a latitude and longitude using the OSGB36 datum to
-	    // an OSGB grid reference):
-	    Ut.dd("Using OSGB36");
-	    LatLng ll2 = new LatLng(51.504862, -0.1136398);
-	    Ut.dd("Latitude/Longitude: " + ll2.toString());
-	    OSRef os2 = ll2.toOSRef();
-	    Ut.dd("Converted to OS Grid Ref: " + os2.toString() + " - "
-	        + os2.toSixFigureString());
 
 //		if(loc1 == null && loc2 != null)
 //			loc = loc2;
