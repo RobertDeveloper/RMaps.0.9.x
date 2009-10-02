@@ -550,7 +550,7 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 		final int[] mapTileCoords = new int[] { centerMapTileCoords[MAPTILE_LATITUDE_INDEX],
 				centerMapTileCoords[MAPTILE_LONGITUDE_INDEX] };
 
-		//if(mBearing > 0)// FIXME get back
+		if(mBearing > 0)
 		{
 //			additionalTilesNeededToLeftOfCenter = centerMapTileCoords[0]-Math.min(MapTileRB[0], Math.min(MapTileLB[0], Math.min(MapTileLT[0], MapTileRT[0])));
 //			additionalTilesNeededToRightOfCenter = -centerMapTileCoords[0]+Math.max(MapTileRB[0], Math.max(MapTileLB[0], Math.max(MapTileLT[0], MapTileRT[0])));
@@ -558,10 +558,10 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 //			additionalTilesNeededToBottomOfCenter = -centerMapTileCoords[1]+Math.max(MapTileRB[1], Math.max(MapTileLB[1], Math.max(MapTileLT[1], MapTileRT[1])));
 //			Ut.dd(""+additionalTilesNeededToLeftOfCenter+"-"+additionalTilesNeededToRightOfCenter+" "
 //					+additionalTilesNeededToTopOfCenter+"-"+additionalTilesNeededToBottomOfCenter);
-			additionalTilesNeededToLeftOfCenter = 1;
-			additionalTilesNeededToRightOfCenter = 1;
-			additionalTilesNeededToTopOfCenter = 1;
-			additionalTilesNeededToBottomOfCenter = 1;
+			additionalTilesNeededToLeftOfCenter += 1;
+			additionalTilesNeededToRightOfCenter += 1;
+			additionalTilesNeededToTopOfCenter += 1;
+			additionalTilesNeededToBottomOfCenter += 1;
 		}
 
 		/* Draw all the MapTiles (from the upper left to the lower right). */
@@ -587,7 +587,7 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 				final int tileTop = this.mTouchMapOffsetY + centerMapTileScreenTop + (y * tileSizePx);
 				c.drawBitmap(currentMapTile, tileLeft, tileTop, this.mPaint);
 
-				// if (DEBUGMODE) // FIXME get back
+				if (DEBUGMODE)
 				{
 					c.drawLine(tileLeft, tileTop, tileLeft + tileSizePx, tileTop, this.mPaint);
 					c.drawLine(tileLeft, tileTop, tileLeft, tileTop + tileSizePx, this.mPaint);
@@ -610,7 +610,7 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 		c.restore();
 
 		final long endMs = System.currentTimeMillis();
-		if (DEBUGMODE) // FIXME get back
+		if (DEBUGMODE) 
 			Log.i(DEBUGTAG, "Rendering overall: " + (endMs - startMs) + "ms");
 	}
 
