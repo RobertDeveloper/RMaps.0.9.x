@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+  xmlns:android="http://schemas.android.com/apk/res/android">
+<item android:id="@+id/user_moved_map"></item>
+<item android:id="@+id/set_title"></item>
+<item android:id="@+id/whatsnew"></item>
+<item android:id="@+id/add_yandex_bookmark"></item>
+</menu>
