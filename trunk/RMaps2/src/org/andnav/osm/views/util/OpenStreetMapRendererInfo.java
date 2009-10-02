@@ -39,9 +39,9 @@ public class OpenStreetMapRendererInfo {
 	private int MAPTILE_SIZEPX;
 	private final int OpenSpaceUpperBoundArray[] = { 2, 5, 10, 25 , 50, 100, 200, 500, 1000, 2000, 4000};
 	private final int OpenSpaceLayersArray[] = {2500, 1000, 500, 200, 100, 50, 25, 10, 5, 2, 1};
-	
+
 	public String ID, BASEURL, NAME, IMAGE_FILENAMEENDING;
-	public int ZOOM_MINLEVEL, ZOOM_MAXLEVEL, 
+	public int ZOOM_MINLEVEL, ZOOM_MAXLEVEL,
 	URL_BUILDER_TYPE, // 0 - OSM, 1 - Google, 2 - Yandex, 3 - Yandex.Traffic, 4 - Google.Sattelite, 5 - openspace
 	TILE_SOURCE_TYPE, // 0 - internet, 1 - AndNav ZIP file, 2 - SASGIS ZIP file, 3 - MapNav file, 4 - TAR, 5 - sqlitedb
 	YANDEX_TRAFFIC_ON,
@@ -180,7 +180,9 @@ public class OpenStreetMapRendererInfo {
 				out.flush();
 
 				String str = dataStream.toString();
-				int start = str.indexOf("timestamp: \"")+12;
+				//JSONObject json = new JSONObject(str.replace("YMaps.TrafficLoader.onLoad(\"stat\",", "").replace("});", "}"));
+				int start = str.indexOf("timestamp:");
+				start = str.indexOf("\"", start) + 1;
 				int end = str.indexOf("\"", start);
 				mTimeStamp = str.substring(start, end);
 
