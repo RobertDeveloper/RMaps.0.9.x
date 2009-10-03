@@ -53,6 +53,7 @@ import android.os.PowerManager;
 import android.preference.PreferenceManager;
 import android.provider.Browser;
 import android.provider.SearchRecentSuggestions;
+import android.view.Display;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -98,19 +99,24 @@ public class MainView extends OpenStreetMapActivity implements OpenStreetMapCons
 	private float mLastSpeed;
 
 	private final SensorEventListener mListener = new SensorEventListener() {
+		private int iOrientation = -1;
 
 		public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
 		}
 
 		public void onSensorChanged(SensorEvent event) {
-			mCompassView.setAzimuth(event.values[0]);
+			if (iOrientation < 0)
+				iOrientation = ((WindowManager) MainView.this.getSystemService(Context.WINDOW_SERVICE))
+						.getDefaultDisplay().getOrientation();
+
+			mCompassView.setAzimuth(event.values[0] + 90 * iOrientation);
 			mCompassView.invalidate();
 
 			if (mCompassEnabled)
 				if (mNorthDirectionUp)
 					if (mDrivingDirectionUp == false || mLastSpeed == 0) {
-						mOsmv.setBearing(event.values[0]);
+						mOsmv.setBearing(event.values[0] + 90 * iOrientation);
 						mOsmv.invalidate();
 					}
 		}
@@ -444,7 +450,7 @@ public class MainView extends OpenStreetMapActivity implements OpenStreetMapCons
 
 		if (mAutoFollow) {
 			if (mDrivingDirectionUp)
-				if (loc.getSpeed() > 0)
+				if (loc.getSpeed() > 0.5)
 					this.mOsmv.setBearing(loc.getBearing());
 
 			this.mOsmv.getController().animateTo(
