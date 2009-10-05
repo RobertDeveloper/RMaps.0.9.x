@@ -691,6 +691,7 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 		protected final SimpleDateFormat DATE_FORMAT_ISO8601 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
 
 		protected String mCashTableName;
+		protected final SQLiteDatabase mRMapsData;
 
 		// ===========================================================
 		// Constructors
@@ -698,8 +699,9 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 
 		public OpenStreetMapTileFilesystemProviderDataBase(final Context context) {
 			this.mCtx = context;
-			this.mDatabase = new AndNavDatabaseHelper(context).getWritableDatabase();
 			this.mCashTableName = "";
+			this.mRMapsData = getRMapsDatabase();
+			this.mDatabase = new AndNavDatabaseHelper(context).getWritableDatabase();
 		}
 
 		public int ZoomMaxInCashFile() {
@@ -973,5 +975,30 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 				onCreate(db);
 			}
 		}
+
+	}
+
+	public SQLiteDatabase getRMapsDatabase() {
+		File folder = Ut.getRMapsFolder("data", false);
+		if(!folder.exists()) // no sdcard
+			return null;
+		
+		SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase("/sdcard/rmaps/data/data.db", null);
+		
+		// for ver.1
+		if(db.needUpgrade(1)){
+			File dbfile = new File("/data/data/com.robert.maps/databases/osmaptilefscache_db");
+			Ut.dd("Clear cache file. size = " + dbfile.length());
+			if(dbfile.exists()) 
+				dbfile.delete();
+			
+			Ut.dd("Upgrade data.db from ver.0 to ver.1");
+			db.execSQL("CREATE TABLE IF NOT EXISTS 'points' (name VARCHAR, descr VARCHAR, lon FLOAT DEFAULT '0', lat FLOAT DEFAULT '0', alt FLOAT DEFAULT '0', categoryid INTEGER, pointsourceid INTEGER);");
+			db.execSQL("CREATE TABLE IF NOT EXISTS 'pointsource' (pointsourceid INTEGER, name VARCHAR);");
+			db.execSQL("CREATE TABLE IF NOT EXISTS 'category' (categoryid INTEGER, name VARCHAR);");
+			db.setVersion(1);
+		}
+		
+		return db;
 	}
 }

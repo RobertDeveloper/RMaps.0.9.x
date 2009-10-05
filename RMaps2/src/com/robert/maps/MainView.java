@@ -4,6 +4,9 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -53,7 +56,6 @@ import android.os.PowerManager;
 import android.preference.PreferenceManager;
 import android.provider.Browser;
 import android.provider.SearchRecentSuggestions;
-import android.view.Display;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -131,6 +133,28 @@ public class MainView extends OpenStreetMapActivity implements OpenStreetMapCons
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState, false); // Pass true here to actually contribute to OSM!
+        
+        // FIXME
+        
+//		File fileData1 = new File("/data/data/com.robert.maps/databases/osmaptilefscache_db");
+//		Ut.getRMapsFolder("data", false);
+//		File fileData2 = new File("/sdcard/rmaps/data/index.sqlitedb");
+//		
+//		try {
+//			InputStream in = new BufferedInputStream(new FileInputStream(fileData1), 8192);
+//
+//			fileData2.createNewFile();
+//			OutputStream out = new BufferedOutputStream(new FileOutputStream(fileData2));
+//
+//			StreamUtils.copy(in, out);
+//		} catch (FileNotFoundException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+
 
 		mOrientationSensorManager = (SensorManager)getSystemService(Context.SENSOR_SERVICE);
        	final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
