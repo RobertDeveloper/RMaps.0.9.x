@@ -77,6 +77,10 @@ All rights reserved\n
 Как сделать офф-лайн карту и прочее можно почитать здесь http://robertdeveloper.blogspot.com/\n
 </string>
 <string name="whats_new_dialog_text">
+v.0.6.5\n
++ Индексные данные оффлайн карт перенесены на sd карту\n
+- Поправил работу компаса в ландскейп режиме\n
+\n
 v.0.6.4\n
 + Поправил Yandex.Пробки\n
 \n
