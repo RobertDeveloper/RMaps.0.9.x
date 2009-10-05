@@ -254,7 +254,8 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 
 							final Message successMessage = Message.obtain(callback, INDEXIND_SUCCESS_ID);
 							successMessage.sendToTarget();
-						}
+						} else
+							mDatabase.ClearIndex();
 
 					} catch (NumberFormatException e) {
 						e.printStackTrace();
@@ -262,6 +263,8 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 						e.printStackTrace();
 					} catch (IOException e) {
 						e.printStackTrace();
+					} finally {
+						mDatabase.ClearIndex();
 					}
 				}
 			});
@@ -357,12 +360,15 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 
 							final Message successMessage = Message.obtain(callback, INDEXIND_SUCCESS_ID);
 							successMessage.sendToTarget();
-						}
+						} else
+							mDatabase.ClearIndex();
 
 					} catch (FileNotFoundException e) {
 						e.printStackTrace();
 					} catch (IOException e) {
 						e.printStackTrace();
+					} finally {
+						mDatabase.ClearIndex();
 					}
 				}
 			});
@@ -373,7 +379,6 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 	private void ShowIndexingProgressDialog(long fileLength) {
 		mProgressDialog = new ProgressDialog(mCtx);
 		mProgressDialog.setTitle("Indexing");
-		//mProgressDialog.setMessage("Indexing");
 		mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
 		mProgressDialog.setMax((int)(fileLength/1024));
 		mProgressDialog.setCancelable(true);
@@ -691,7 +696,8 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 		protected final SimpleDateFormat DATE_FORMAT_ISO8601 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
 
 		protected String mCashTableName;
-		protected final SQLiteDatabase mRMapsData;
+		protected final SQLiteDatabase mKMLDatabase;
+		protected final SQLiteDatabase mIndexDatabase;
 
 		// ===========================================================
 		// Constructors
@@ -700,13 +706,14 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 		public OpenStreetMapTileFilesystemProviderDataBase(final Context context) {
 			this.mCtx = context;
 			this.mCashTableName = "";
-			this.mRMapsData = getRMapsDatabase();
+			this.mKMLDatabase = getKMLDatabase();
+			this.mIndexDatabase = getIndexDatabase();
 			this.mDatabase = new AndNavDatabaseHelper(context).getWritableDatabase();
 		}
 
 		public int ZoomMaxInCashFile() {
 			int ret = 24;
-			final Cursor c = this.mDatabase.rawQuery("SELECT maxzoom FROM ListCashTables WHERE name = '"
+			final Cursor c = this.mIndexDatabase.rawQuery("SELECT maxzoom FROM ListCashTables WHERE name = '"
 					+ mCashTableName + "'", null);
 			if (c != null) {
 				if (c.moveToFirst()) {
@@ -720,7 +727,7 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 
 		public int ZoomMinInCashFile() {
 			int ret  = 0;
-			final Cursor c = this.mDatabase.rawQuery("SELECT minzoom FROM ListCashTables WHERE name = '"
+			final Cursor c = this.mIndexDatabase.rawQuery("SELECT minzoom FROM ListCashTables WHERE name = '"
 					+ mCashTableName + "'", null);
 			if (c != null) {
 				if (c.moveToFirst()) {
@@ -737,16 +744,16 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 		}
 
 		public boolean NeedIndex(final long aSizeFile, final long aLastModifiedFile, final boolean aBlockIndexing) {
-			this.mDatabase.execSQL("CREATE TABLE IF NOT EXISTS ListCashTables (name VARCHAR(100), lastmodified LONG NOT NULL, size LONG NOT NULL, minzoom INTEGER NOT NULL, maxzoom INTEGER NOT NULL, PRIMARY KEY(name) );");
+			this.mIndexDatabase.execSQL("CREATE TABLE IF NOT EXISTS ListCashTables (name VARCHAR(100), lastmodified LONG NOT NULL, size LONG NOT NULL, minzoom INTEGER NOT NULL, maxzoom INTEGER NOT NULL, PRIMARY KEY(name) );");
 
 			Cursor cur = null;
-			cur = this.mDatabase.rawQuery("SELECT COUNT(*) FROM ListCashTables", null);
+			cur = this.mIndexDatabase.rawQuery("SELECT COUNT(*) FROM ListCashTables", null);
 			if (cur != null) {
 				if (cur.getCount() > 0) {
 					Log.e(DEBUGTAG, "In table ListCashTables " + cur.getCount() + " records");
 					cur.close();
 
-					cur = this.mDatabase.rawQuery("SELECT size, lastmodified FROM ListCashTables WHERE name = '"
+					cur = this.mIndexDatabase.rawQuery("SELECT size, lastmodified FROM ListCashTables WHERE name = '"
 							+ mCashTableName + "'", null);
 					if (cur.getCount() > 0) {
 						cur.moveToFirst();
@@ -766,7 +773,7 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 				Log.e(DEBUGTAG, "NO table ListCashTables in database");
 
 			Cursor c = null;
-			c = this.mDatabase.rawQuery("SELECT * FROM ListCashTables WHERE name = '" + mCashTableName + "'", null);
+			c = this.mIndexDatabase.rawQuery("SELECT * FROM ListCashTables WHERE name = '" + mCashTableName + "'", null);
 			boolean res = false;
 			if(c == null)
 				return true;
@@ -781,32 +788,33 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 			return res;
 		}
 
-		public void ClearIndex(final String aName){
-			this.mDatabase.execSQL("DROP TABLE IF EXISTS '" + mCashTableName + "'");
-			this.mDatabase.delete("ListCashTables", "name = '" + mCashTableName + "'", null);
+		public void ClearIndex(){
+			Ut.dd("DROP " + mCashTableName);
+			this.mIndexDatabase.execSQL("DROP TABLE IF EXISTS '" + mCashTableName + "'");
+			this.mIndexDatabase.delete("ListCashTables", "name = '" + mCashTableName + "'", null);
 		}
 
 		public void CommitIndex(long aSizeFile, long aLastModifiedFile, int zoomMinInCashFile, int zoomMaxInCashFile) {
-			this.mDatabase.delete("ListCashTables", "name = '" + mCashTableName + "'", null);
+			this.mIndexDatabase.delete("ListCashTables", "name = '" + mCashTableName + "'", null);
 			final ContentValues cv = new ContentValues();
 			cv.put("name", mCashTableName);
 			cv.put("lastmodified", aLastModifiedFile);
 			cv.put("size", aSizeFile);
 			cv.put("minzoom", zoomMinInCashFile);
 			cv.put("maxzoom", zoomMaxInCashFile);
-			this.mDatabase.insert("ListCashTables", null, cv);
+			this.mIndexDatabase.insert("ListCashTables", null, cv);
 		}
 
 		public void CreateTarIndex(long aSizeFile, long aLastModifiedFile) {
-			this.mDatabase.execSQL("DROP TABLE IF EXISTS '" + mCashTableName + "'");
-			this.mDatabase.execSQL("CREATE TABLE IF NOT EXISTS '" + mCashTableName + "' (name VARCHAR(100), offset INTEGER NOT NULL, size INTEGER NOT NULL, PRIMARY KEY(name) );");
-			this.mDatabase.delete("ListCashTables", "name = '" + mCashTableName + "'", null);
+			this.mIndexDatabase.execSQL("DROP TABLE IF EXISTS '" + mCashTableName + "'");
+			this.mIndexDatabase.execSQL("CREATE TABLE IF NOT EXISTS '" + mCashTableName + "' (name VARCHAR(100), offset INTEGER NOT NULL, size INTEGER NOT NULL, PRIMARY KEY(name) );");
+			this.mIndexDatabase.delete("ListCashTables", "name = '" + mCashTableName + "'", null);
 		}
 
 		public void CreateMnmIndex(long aSizeFile, long aLastModifiedFile) {
-			this.mDatabase.execSQL("DROP TABLE IF EXISTS '" + mCashTableName + "'");
-			this.mDatabase.execSQL("CREATE TABLE IF NOT EXISTS '" + mCashTableName + "' (x INTEGER NOT NULL, y INTEGER NOT NULL, z INTEGER NOT NULL, offset INTEGER NOT NULL, size INTEGER NOT NULL, PRIMARY KEY(x, y, z) );");
-			this.mDatabase.delete("ListCashTables", "name = '" + mCashTableName + "'", null);
+			this.mIndexDatabase.execSQL("DROP TABLE IF EXISTS '" + mCashTableName + "'");
+			this.mIndexDatabase.execSQL("CREATE TABLE IF NOT EXISTS '" + mCashTableName + "' (x INTEGER NOT NULL, y INTEGER NOT NULL, z INTEGER NOT NULL, offset INTEGER NOT NULL, size INTEGER NOT NULL, PRIMARY KEY(x, y, z) );");
+			this.mIndexDatabase.delete("ListCashTables", "name = '" + mCashTableName + "'", null);
 		}
 
 		public void addTarIndexRow(final String aName, final int aOffset, final int aSize) {
@@ -814,7 +822,7 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 			cv.put("name", aName);
 			cv.put("offset", aOffset);
 			cv.put("size", aSize);
-			this.mDatabase.insert("'" + mCashTableName + "'", null, cv);
+			this.mIndexDatabase.insert("'" + mCashTableName + "'", null, cv);
 		}
 
 		public void addMnmIndexRow(final int aX, final int aY, final int aZ, final long aOffset, final int aSize) {
@@ -824,12 +832,12 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 			cv.put("z", aZ);
 			cv.put("offset", aOffset);
 			cv.put("size", aSize);
-			this.mDatabase.insert("'" + mCashTableName + "'", null, cv);
+			this.mIndexDatabase.insert("'" + mCashTableName + "'", null, cv);
 		}
 
 		public boolean findTarIndex(final String aName, Param4ReadData aData) {
 			boolean ret  = false;
-			final Cursor c = this.mDatabase.rawQuery("SELECT offset, size FROM '" + mCashTableName + "' WHERE name = '"
+			final Cursor c = this.mIndexDatabase.rawQuery("SELECT offset, size FROM '" + mCashTableName + "' WHERE name = '"
 					+ aName + ".jpg' OR name = '" + aName + ".png'", null);
 			if (c != null) {
 				if (c.moveToFirst()) {
@@ -844,7 +852,7 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 
 		public boolean findMnmIndex(final int aX, final int aY, final int aZ, Param4ReadData aData) {
 			boolean ret  = false;
-			final Cursor c = this.mDatabase.rawQuery("SELECT offset, size FROM '" + mCashTableName + "' WHERE x = " + aX
+			final Cursor c = this.mIndexDatabase.rawQuery("SELECT offset, size FROM '" + mCashTableName + "' WHERE x = " + aX
 					+ " AND y = " + aY + " AND z = " + aZ, null);
 			if (c != null) {
 				if (c.moveToFirst()) {
@@ -978,27 +986,36 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 
 	}
 
-	public SQLiteDatabase getRMapsDatabase() {
+	public SQLiteDatabase getIndexDatabase() {
 		File folder = Ut.getRMapsFolder("data", false);
 		if(!folder.exists()) // no sdcard
 			return null;
-		
-		SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase("/sdcard/rmaps/data/data.db", null);
-		
+
+		SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase("/sdcard/rmaps/data/index.db", null);
+
 		// for ver.1
-		if(db.needUpgrade(1)){
-			File dbfile = new File("/data/data/com.robert.maps/databases/osmaptilefscache_db");
-			Ut.dd("Clear cache file. size = " + dbfile.length());
-			if(dbfile.exists()) 
-				dbfile.delete();
-			
+		if(db.needUpgrade(1))
+			db.setVersion(1);
+
+		return db;
+	}
+
+	public SQLiteDatabase getKMLDatabase() {
+		File folder = Ut.getRMapsFolder("data", false);
+		if(!folder.exists()) // no sdcard
+			return null;
+
+		SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase("/sdcard/rmaps/data/data.db", null);
+
+		// for ver.1
+		if(db.needUpgrade(1)) {
 			Ut.dd("Upgrade data.db from ver.0 to ver.1");
 			db.execSQL("CREATE TABLE IF NOT EXISTS 'points' (name VARCHAR, descr VARCHAR, lon FLOAT DEFAULT '0', lat FLOAT DEFAULT '0', alt FLOAT DEFAULT '0', categoryid INTEGER, pointsourceid INTEGER);");
 			db.execSQL("CREATE TABLE IF NOT EXISTS 'pointsource' (pointsourceid INTEGER, name VARCHAR);");
 			db.execSQL("CREATE TABLE IF NOT EXISTS 'category' (categoryid INTEGER, name VARCHAR);");
 			db.setVersion(1);
 		}
-		
+
 		return db;
 	}
 }

@@ -82,6 +82,10 @@ Questions, sentences mail to robertk506@gmail.ru\n
 How to and FAQ you can find on http://robertdeveloper.blogspot.com/\n
 </string>
 <string name="whats_new_dialog_text">
+v.0.6.5\n
++ Move index data of offline maps to sdcard\n
+- Bug fix: Wrong compass orientation on landscape mode\n
+\n
 v.0.6.4\n
 + Update Yandex.Traffic\n
 \n

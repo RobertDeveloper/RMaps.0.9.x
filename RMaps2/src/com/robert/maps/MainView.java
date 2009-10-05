@@ -43,6 +43,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.database.sqlite.SQLiteDatabase;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -133,28 +134,8 @@ public class MainView extends OpenStreetMapActivity implements OpenStreetMapCons
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState, false); // Pass true here to actually contribute to OSM!
-        
-        // FIXME
-        
-//		File fileData1 = new File("/data/data/com.robert.maps/databases/osmaptilefscache_db");
-//		Ut.getRMapsFolder("data", false);
-//		File fileData2 = new File("/sdcard/rmaps/data/index.sqlitedb");
-//		
-//		try {
-//			InputStream in = new BufferedInputStream(new FileInputStream(fileData1), 8192);
-//
-//			fileData2.createNewFile();
-//			OutputStream out = new BufferedOutputStream(new FileOutputStream(fileData2));
-//
-//			StreamUtils.copy(in, out);
-//		} catch (FileNotFoundException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
 
+        CheckNeedDataUpdate();
 
 		mOrientationSensorManager = (SensorManager)getSystemService(Context.SENSOR_SERVICE);
        	final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
@@ -306,6 +287,44 @@ public class MainView extends OpenStreetMapActivity implements OpenStreetMapCons
             doSearchQuery(queryIntent);
         }
     }
+
+	private void CheckNeedDataUpdate() {
+		SharedPreferences settings = getPreferences(Activity.MODE_PRIVATE);
+		final int versionDataUpdate = settings.getInt("versionDataUpdate", 0);
+
+		if(versionDataUpdate < 1){
+			File folder = Ut.getRMapsFolder("data", false);
+			if(folder.exists()) {
+				File fileData1 = new File("/data/data/com.robert.maps/databases/osmaptilefscache_db");
+				File fileData2 = new File("/sdcard/rmaps/data/index.db");
+
+				try {
+					InputStream in = new BufferedInputStream(new FileInputStream(fileData1), 8192);
+
+					fileData2.createNewFile();
+					OutputStream out = new BufferedOutputStream(new FileOutputStream(fileData2));
+
+					StreamUtils.copy(in, out);
+				} catch (FileNotFoundException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+
+				SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase("/sdcard/rmaps/data/index.db", null);
+				db.execSQL("DROP TABLE IF EXISTS 't_fscache'");
+			}
+
+			File dbfile = new File("/data/data/com.robert.maps/databases/osmaptilefscache_db");
+			if(dbfile.exists())
+				dbfile.delete();
+
+			SharedPreferences uiState = getPreferences(0);
+			SharedPreferences.Editor editor = uiState.edit();
+			editor.putInt("versionDataUpdate", 1);
+			editor.commit();
+		}
+	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
