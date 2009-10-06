@@ -26,7 +26,6 @@ import android.graphics.Point;
 import android.graphics.Paint.Style;
 import android.os.Handler;
 import android.os.Message;
-import android.util.AttributeSet;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.KeyEvent;
@@ -75,16 +74,6 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 	// ===========================================================
 	// Constructors
 	// ===========================================================
-
-	/**
-	 * XML Constructor (uses default Renderer)
-	 */
-	public OpenStreetMapView(Context context, AttributeSet attrs) {
-		super(context, attrs);
-		this.mRendererInfo = null;
-		this.mTileProvider = new OpenStreetMapTileProvider(context, new SimpleInvalidationHandler(), mRendererInfo);
-		this.mPaint.setAntiAlias(true);
-	}
 
 	/**
 	 * Standard Constructor for {@link OpenStreetMapView}.
@@ -383,6 +372,7 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 		for (OpenStreetMapViewOverlay osmvo : this.mOverlays)
 			if (osmvo.onLongPress(e, this))
 				return;
+		
 	}
 
 	public boolean onSingleTapUp(MotionEvent e) {

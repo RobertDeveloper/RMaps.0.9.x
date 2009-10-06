@@ -57,12 +57,14 @@ import android.os.PowerManager;
 import android.preference.PreferenceManager;
 import android.provider.Browser;
 import android.provider.SearchRecentSuggestions;
+import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.widget.ImageView;
@@ -137,7 +139,7 @@ public class MainView extends OpenStreetMapActivity implements OpenStreetMapCons
 
         CheckNeedDataUpdate();
 
-		mOrientationSensorManager = (SensorManager)getSystemService(Context.SENSOR_SERVICE);
+        mOrientationSensorManager = (SensorManager)getSystemService(Context.SENSOR_SERVICE);
        	final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
 
  		final RelativeLayout rl = new RelativeLayout(this);
@@ -255,7 +257,6 @@ public class MainView extends OpenStreetMapActivity implements OpenStreetMapCons
 	        });
         }
 
-
 		mDrivingDirectionUp = pref.getBoolean("pref_drivingdirectionup", true);
 		mNorthDirectionUp = pref.getBoolean("pref_northdirectionup", true);
 
@@ -324,6 +325,20 @@ public class MainView extends OpenStreetMapActivity implements OpenStreetMapCons
 			editor.putInt("versionDataUpdate", 1);
 			editor.commit();
 		}
+	}
+
+	@Override
+	public boolean onContextItemSelected(MenuItem item) {
+		// TODO Auto-generated method stub
+		return super.onContextItemSelected(item);
+	}
+
+	@Override
+	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
+		Ut.dd("onCreateContextMenu");
+		menu.add(0, 23423, 0, "Click Me"); // FIXME
+		
+		super.onCreateContextMenu(menu, v, menuInfo);
 	}
 
 	@Override
