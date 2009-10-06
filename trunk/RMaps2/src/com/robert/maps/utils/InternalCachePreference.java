@@ -20,8 +20,12 @@ public class InternalCachePreference extends Preference {
 	public InternalCachePreference(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		mCtx = context;
+		Ut.dd(context.getCacheDir().getAbsolutePath());
+		Ut.dd(context.getDatabasePath("osmaptilefscache_db").getAbsolutePath());
+
 		setWidgetLayoutResource(R.layout.preference_widget_btn_clear);
 		mDbFile = new File("/data/data/com.robert.maps/databases/osmaptilefscache_db");
+		File folder = new File("/data/data/com.robert.maps/files");
 		setSummary(String.format(mCtx.getString(R.string.pref_internalcache_summary), (int) mDbFile
 				.length() / 1024));
 	}
