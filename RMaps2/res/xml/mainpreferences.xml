@@ -61,5 +61,8 @@
 		<com.robert.maps.utils.InternalCachePreference
 			android:key="pref_internalcache" android:title="@string/pref_internalcache_title"
 			android:summary="@string/pref_internalcache_summary" />
+		<com.robert.maps.utils.IndexPreference
+			android:key="pref_index" android:title="@string/pref_index_title"
+			android:summary="@string/pref_index_summary" />
 	</PreferenceCategory>
 </PreferenceScreen>

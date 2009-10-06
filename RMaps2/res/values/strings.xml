@@ -49,6 +49,8 @@
 	<string name="btn_clear_cache_title">Clear cache</string>
 	<string name="pref_internalcache_title">Internal cache</string>
 	<string name="pref_internalcache_summary">Used for temp storage map tiles. Size: %dKB/4MB</string>
+	<string name="pref_index_title">Index database</string>
+	<string name="pref_index_summary">Tiles index of offline maps. Size: %dKB</string>
 
 	<string name="hello">Hello World, OpenStreetMapViewer</string>
 
