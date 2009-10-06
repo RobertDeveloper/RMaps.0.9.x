@@ -42,6 +42,7 @@ public class InternalCachePreference extends Preference {
 							InternalCachePreference.this.mCtx
 									.getString(R.string.pref_internalcache_summary),
 							(int) InternalCachePreference.this.mDbFile.length() / 1024));
+					db.close();
 				}
 			}
 		});

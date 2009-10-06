@@ -259,12 +259,14 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 
 					} catch (NumberFormatException e) {
 						e.printStackTrace();
+						mDatabase.ClearIndex();
 					} catch (FileNotFoundException e) {
 						e.printStackTrace();
+						mDatabase.ClearIndex();
 					} catch (IOException e) {
 						e.printStackTrace();
-					} finally {
 						mDatabase.ClearIndex();
+					} finally {
 					}
 				}
 			});
@@ -365,10 +367,11 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 
 					} catch (FileNotFoundException e) {
 						e.printStackTrace();
+						mDatabase.ClearIndex();
 					} catch (IOException e) {
 						e.printStackTrace();
-					} finally {
 						mDatabase.ClearIndex();
+					} finally {
 					}
 				}
 			});
