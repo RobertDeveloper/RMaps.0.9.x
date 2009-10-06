@@ -28,23 +28,38 @@
 			android:defaultValue="true"></CheckBoxPreference>
 		<ListPreference android:key="pref_accuracy"
 			android:title="@string/pref_accuracy" android:summary="@string/pref_accuracy_summary"
-			android:entryValues="@array/accuracy_pref_value" android:entries="@array/accuracy_pref_title" android:defaultValue="1"></ListPreference>
-	<CheckBoxPreference android:key="pref_gpsfastupdate" android:defaultValue="true" android:summary="@string/pref_gpsfastupdate_summary" android:title="@string/pref_gpsfastupdate"></CheckBoxPreference>
-<CheckBoxPreference android:title="@string/pref_bottomzoomcontrol" android:summary="@string/pref_bottomzoomcontrol_summary" android:key="pref_bottomzoomcontrol" android:defaultValue="false"></CheckBoxPreference>
+			android:entryValues="@array/accuracy_pref_value" android:entries="@array/accuracy_pref_title"
+			android:defaultValue="1"></ListPreference>
+		<CheckBoxPreference android:key="pref_gpsfastupdate"
+			android:defaultValue="true" android:summary="@string/pref_gpsfastupdate_summary"
+			android:title="@string/pref_gpsfastupdate"></CheckBoxPreference>
+		<CheckBoxPreference android:title="@string/pref_bottomzoomcontrol"
+			android:summary="@string/pref_bottomzoomcontrol_summary" android:key="pref_bottomzoomcontrol"
+			android:defaultValue="false"></CheckBoxPreference>
 
-<ListPreference android:title="@string/pref_zoomminlevel"
-	android:summary="@string/pref_zoomminlevel_summary" android:key="pref_zoomminlevel"
-	android:entries="@array/zoomlevel_pref_title" android:entryValues="@array/zoomlevel_pref_value"
-	android:defaultValue="0"></ListPreference>
-	<ListPreference android:title="@string/pref_zoommaxlevel"
-		android:summary="@string/pref_zoommaxlevel_summary" android:key="pref_zoommaxlevel"
-		android:entries="@array/zoomlevel_pref_title" android:entryValues="@array/zoomlevel_pref_value"
-		android:defaultValue="0"></ListPreference>
-<CheckBoxPreference android:key="pref_drivingdirectionup" android:title="@string/pref_drivingdirectionup" android:summary="@string/pref_drivingdirectionup_summary" android:defaultValue="true"></CheckBoxPreference>
-<CheckBoxPreference android:key="pref_northdirectionup" android:title="@string/pref_northdirectionup" android:summary="@string/pref_northdirectionup_summary" android:defaultValue="true"></CheckBoxPreference>
+		<ListPreference android:title="@string/pref_zoomminlevel"
+			android:summary="@string/pref_zoomminlevel_summary" android:key="pref_zoomminlevel"
+			android:entries="@array/zoomlevel_pref_title" android:entryValues="@array/zoomlevel_pref_value"
+			android:defaultValue="0"></ListPreference>
+		<ListPreference android:title="@string/pref_zoommaxlevel"
+			android:summary="@string/pref_zoommaxlevel_summary" android:key="pref_zoommaxlevel"
+			android:entries="@array/zoomlevel_pref_title" android:entryValues="@array/zoomlevel_pref_value"
+			android:defaultValue="0"></ListPreference>
+		<CheckBoxPreference android:key="pref_drivingdirectionup"
+			android:title="@string/pref_drivingdirectionup" android:summary="@string/pref_drivingdirectionup_summary"
+			android:defaultValue="true"></CheckBoxPreference>
+		<CheckBoxPreference android:key="pref_northdirectionup"
+			android:title="@string/pref_northdirectionup" android:summary="@string/pref_northdirectionup_summary"
+			android:defaultValue="true"></CheckBoxPreference>
 
-</PreferenceCategory>
+	</PreferenceCategory>
 
-<PreferenceCategory android:title="@string/prefcat_main_indexing"><CheckBoxPreference android:key="pref_turnoffautoreindex" android:title="@string/pref_turnoffautoreindex" android:summary="@string/pref_turnoffautoreindex_summary" android:defaultValue="false"></CheckBoxPreference>
-</PreferenceCategory>
+	<PreferenceCategory android:title="@string/prefcat_main_indexing">
+		<CheckBoxPreference android:key="pref_turnoffautoreindex"
+			android:title="@string/pref_turnoffautoreindex" android:summary="@string/pref_turnoffautoreindex_summary"
+			android:defaultValue="false"></CheckBoxPreference>
+		<com.robert.maps.utils.InternalCachePreference
+			android:key="pref_internalcache" android:title="@string/pref_internalcache_title"
+			android:summary="@string/pref_internalcache_summary" />
+	</PreferenceCategory>
 </PreferenceScreen>
