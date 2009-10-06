@@ -46,6 +46,10 @@
 	<string name="pref_main_usermaps_summary">Карты из папки /sdcard/rmaps/maps</string>
 
 	<string name="prefcat_main_predefinedmaps"></string>
+	<string name="btn_clear_cache_title">Очистить</string>
+	<string name="pref_internalcache_title">Внутренний кэш</string>
+	<string name="pref_internalcache_summary">Временное хранение тайлов карт. Размер: %dKB/4MB</string>
+
 	<string name="hello">Hello World, OpenStreetMapViewer</string>
 
 	<string name="app_name">RMaps</string>

@@ -988,7 +988,7 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 
 	public SQLiteDatabase getIndexDatabase() {
 		File folder = Ut.getRMapsFolder("data", false);
-		if(!folder.exists()) // no sdcard
+		if(!folder.exists()) // no sdcard // TODO ѕроверить как это работает без карты? если вытащить карту во врем€ работы программы?
 			return null;
 
 		SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase("/sdcard/rmaps/data/index.db", null);
