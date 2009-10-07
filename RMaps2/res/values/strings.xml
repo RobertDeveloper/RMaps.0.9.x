@@ -65,7 +65,7 @@
 	<string name="menu_compass">Compass</string>
     <string name="menu_about">About</string>
     <string name="menu_search">Search</string>
-    
+
     <string name="menu_addpoi">Add POI</string>
 
 	<string name="mnm">.mnm</string>
@@ -75,6 +75,7 @@
 	<string name="no_traffic">On this zoom traffic info are unavailable</string>
 	<string name="auto_follow_enabled">Auto-Follow Enabled</string>
 	<string name="auto_follow_disabled">Auto-Follow Disabled</string>
+	<string name="message_geodata_notavailable">Data on SD card is not available. Operation cannot be performed.</string>
 
 	<string name="no_inet_conn">No internet connection...</string>
 	<string name="no_items">Your search did not match any items</string>

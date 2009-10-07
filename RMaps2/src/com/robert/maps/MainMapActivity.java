@@ -73,6 +73,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.RelativeLayout.LayoutParams;
 
+import com.robert.maps.kml.PoiManager;
 import com.robert.maps.utils.SearchSuggestionsProvider;
 import com.robert.maps.utils.Ut;
 
@@ -102,6 +103,7 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 	private boolean mDrivingDirectionUp;
 	private boolean mNorthDirectionUp;
 	private float mLastSpeed;
+	private PoiManager mPoiManager;
 
 	private final SensorEventListener mListener = new SensorEventListener() {
 		private int iOrientation = -1;
@@ -139,12 +141,13 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 
         CheckNeedDataUpdate();
 
+        mPoiManager = new PoiManager(this);
         mOrientationSensorManager = (SensorManager)getSystemService(Context.SENSOR_SERVICE);
        	final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
 
  		final RelativeLayout rl = new RelativeLayout(this);
         OpenStreetMapRendererInfo RendererInfo = getRendererInfo(getResources(), getPreferences(Activity.MODE_PRIVATE), "mapnik");
-        
+
         this.mOsmv = new OpenStreetMapView(this, RendererInfo);
         this.mOsmv.setMainActivityCallbackHandler(mCallbackHandler);
         rl.addView(this.mOsmv, new RelativeLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
@@ -295,6 +298,7 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 		final int versionDataUpdate = settings.getInt("versionDataUpdate", 0);
 
 		if(versionDataUpdate < 1){
+			Ut.dd("Upgrade app data from v.0 to v.1");
 			File folder = Ut.getRMapsFolder("data", false);
 			if(folder.exists()) {
 				File fileData1 = new File("/data/data/com.robert.maps/databases/osmaptilefscache_db");
@@ -315,6 +319,7 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 
 				SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase("/sdcard/rmaps/data/index.db", null);
 				db.execSQL("DROP TABLE IF EXISTS 't_fscache'");
+				db.close();
 			}
 
 			File dbfile = new File("/data/data/com.robert.maps/databases/osmaptilefscache_db");
@@ -332,10 +337,10 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 	public boolean onContextItemSelected(MenuItem item) {
 		switch(item.getItemId()){
 		case R.id.menu_addpoi:
-			this.mOsmv.setMapCenter(this.mOsmv.getTouchDownPoint());
+			mPoiManager.addPoi(this.mOsmv.getTouchDownPoint());
 			break;
 		}
-		
+
 		return super.onContextItemSelected(item);
 	}
 
@@ -345,7 +350,7 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 
 			menu.add(0, R.id.menu_addpoi, 0, getText(R.string.menu_addpoi));
 		}
-		
+
 		super.onCreateContextMenu(menu, v, menuInfo);
 	}
 
