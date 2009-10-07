@@ -2,6 +2,9 @@ package com.robert.maps.utils;
 
 import java.io.File;
 
+import org.andnav.osm.views.util.OpenStreetMapTileCache;
+import org.andnav.osm.views.util.OpenStreetMapTileFilesystemProvider;
+
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.preference.Preference;
@@ -16,18 +19,19 @@ public class InternalCachePreference extends Preference {
     private Button btnClear;
     private Context mCtx;
     private File mDbFile;
+    private OpenStreetMapTileFilesystemProvider mFSTileProvider;
 
 	public InternalCachePreference(Context context, AttributeSet attrs) {
 		super(context, attrs);
-		mCtx = context;
-		Ut.dd(context.getCacheDir().getAbsolutePath());
-		Ut.dd(context.getDatabasePath("osmaptilefscache_db").getAbsolutePath());
 
 		setWidgetLayoutResource(R.layout.preference_widget_btn_clear);
-		mDbFile = new File("/data/data/com.robert.maps/databases/osmaptilefscache_db");
-		File folder = new File("/data/data/com.robert.maps/files");
-		setSummary(String.format(mCtx.getString(R.string.pref_internalcache_summary), (int) mDbFile
-				.length() / 1024));
+
+		mCtx = context;
+		this.mFSTileProvider = new OpenStreetMapTileFilesystemProvider(context, 4 * 1024 * 1024, new OpenStreetMapTileCache()); // 4MB FSCache
+		mDbFile = context.getDatabasePath("osmaptilefscache_db");
+
+		setSummary(String.format(mCtx.getString(R.string.pref_internalcache_summary), (int) (mDbFile
+				.length() + mFSTileProvider.getCurrentFSCacheByteSize())/ 1024));
 	}
 
 	@Override
@@ -38,16 +42,14 @@ public class InternalCachePreference extends Preference {
 		btnClear.setOnClickListener(new OnClickListener() {
 			// @Override
 			public void onClick(View v) {
-				SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(
-						"/data/data/com.robert.maps/databases/osmaptilefscache_db", null);
-				if (db != null) {
-					db.execSQL("DELETE FROM 't_fscache'");
-					InternalCachePreference.this.setSummary(String.format(
-							InternalCachePreference.this.mCtx
-									.getString(R.string.pref_internalcache_summary),
-							(int) InternalCachePreference.this.mDbFile.length() / 1024));
-					db.close();
-				}
+				InternalCachePreference.this.mFSTileProvider.clearCurrentFSCache();
+				InternalCachePreference.this
+						.setSummary(String
+								.format(
+										InternalCachePreference.this.mCtx
+												.getString(R.string.pref_internalcache_summary),
+										(int) (InternalCachePreference.this.mDbFile.length() + InternalCachePreference.this.mFSTileProvider
+												.getCurrentFSCacheByteSize()) / 1024));
 			}
 		});
 
