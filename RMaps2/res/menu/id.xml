@@ -5,4 +5,6 @@
 <item android:id="@+id/set_title"></item>
 <item android:id="@+id/whatsnew"></item>
 <item android:id="@+id/add_yandex_bookmark"></item>
+
+<item android:id="@+id/menu_addpoi"></item>
 </menu>

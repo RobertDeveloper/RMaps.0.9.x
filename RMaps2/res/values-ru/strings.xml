@@ -64,6 +64,8 @@
 	<string name="menu_compass">Компасс</string>
     <string name="menu_about">О программе</string>
     <string name="menu_search">Поиск</string>
+    
+    <string name="menu_addpoi">Добавить POI</string>
 
 	<string name="no_traffic">При таком значении зума пробки недоступны</string>
 	<string name="auto_follow_enabled">Авто следование за текущим положением включено</string>
