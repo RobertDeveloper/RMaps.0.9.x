@@ -430,6 +430,10 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 	public boolean canCreateContextMenu(){
 		return !mActionMoveDetected;
 	}
+	
+	public GeoPoint getTouchDownPoint(){
+		return this.getProjection().fromPixels(mTouchDownX, mTouchDownY);
+	}
 
 	@Override
 	public boolean onTouchEvent(final MotionEvent event) {

@@ -330,15 +330,20 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
-		// TODO Auto-generated method stub
+		switch(item.getItemId()){
+		case R.id.menu_addpoi:
+			this.mOsmv.setMapCenter(this.mOsmv.getTouchDownPoint());
+			break;
+		}
+		
 		return super.onContextItemSelected(item);
 	}
 
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
 		if(mOsmv.canCreateContextMenu()){
-			Ut.dd("onCreateContextMenu MAIN");
-			menu.add(0, 23423, 0, "Click Me"); // FIXME
+
+			menu.add(0, R.id.menu_addpoi, 0, getText(R.string.menu_addpoi));
 		}
 		
 		super.onCreateContextMenu(menu, v, menuInfo);
