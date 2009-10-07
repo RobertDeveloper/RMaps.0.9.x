@@ -1,5 +1,8 @@
 package com.robert.maps;
 
+//FIXME Программа ломится при установке поверх предыдущей версии, какая то проблема с апгредом базы
+//FIXME Не отрабатывает контекстное меню, потому что руки дрожат
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
