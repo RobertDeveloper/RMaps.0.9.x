@@ -76,7 +76,7 @@ import android.widget.RelativeLayout.LayoutParams;
 import com.robert.maps.utils.SearchSuggestionsProvider;
 import com.robert.maps.utils.Ut;
 
-public class MainView extends OpenStreetMapActivity implements OpenStreetMapConstants {
+public class MainMapActivity extends OpenStreetMapActivity implements OpenStreetMapConstants {
 	// ===========================================================
 	// Constants
 	// ===========================================================
@@ -112,7 +112,7 @@ public class MainView extends OpenStreetMapActivity implements OpenStreetMapCons
 
 		public void onSensorChanged(SensorEvent event) {
 			if (iOrientation < 0)
-				iOrientation = ((WindowManager) MainView.this.getSystemService(Context.WINDOW_SERVICE))
+				iOrientation = ((WindowManager) MainMapActivity.this.getSystemService(Context.WINDOW_SERVICE))
 						.getDefaultDisplay().getOrientation();
 
 			mCompassView.setAzimuth(event.values[0] + 90 * iOrientation);
@@ -144,9 +144,11 @@ public class MainView extends OpenStreetMapActivity implements OpenStreetMapCons
 
  		final RelativeLayout rl = new RelativeLayout(this);
         OpenStreetMapRendererInfo RendererInfo = getRendererInfo(getResources(), getPreferences(Activity.MODE_PRIVATE), "mapnik");
+        
         this.mOsmv = new OpenStreetMapView(this, RendererInfo);
         this.mOsmv.setMainActivityCallbackHandler(mCallbackHandler);
         rl.addView(this.mOsmv, new RelativeLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
+        registerForContextMenu(mOsmv);
 
         /* SingleLocation-Overlay */
         {
@@ -205,20 +207,20 @@ public class MainView extends OpenStreetMapActivity implements OpenStreetMapCons
 	        ivZoomIn.setOnClickListener(new OnClickListener(){
 				// @Override
 				public void onClick(View v) {
-					MainView.this.mOsmv.zoomIn();
+					MainMapActivity.this.mOsmv.zoomIn();
 					setTitle();
 
-					if(MainView.this.mOsmv.getZoomLevel() > 16 && MainView.this.mOsmv.getRenderer().YANDEX_TRAFFIC_ON == 1)
-						Toast.makeText(MainView.this, R.string.no_traffic, Toast.LENGTH_SHORT).show();
+					if(MainMapActivity.this.mOsmv.getZoomLevel() > 16 && MainMapActivity.this.mOsmv.getRenderer().YANDEX_TRAFFIC_ON == 1)
+						Toast.makeText(MainMapActivity.this, R.string.no_traffic, Toast.LENGTH_SHORT).show();
 				}
 	        });
 	        ivZoomIn.setOnLongClickListener(new OnLongClickListener(){
 				// @Override
 				public boolean onLongClick(View v) {
-					SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(MainView.this);
+					SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(MainMapActivity.this);
 					final int zoom = Integer.parseInt(pref.getString("pref_zoommaxlevel", "0"));
 					if (zoom > 0) {
-						MainView.this.mOsmv.setZoomLevel(zoom - 1);
+						MainMapActivity.this.mOsmv.setZoomLevel(zoom - 1);
 						setTitle();
 					}
 					return true;
@@ -239,17 +241,17 @@ public class MainView extends OpenStreetMapActivity implements OpenStreetMapCons
 	        ivZoomOut.setOnClickListener(new OnClickListener(){
 				// @Override
 				public void onClick(View v) {
-					MainView.this.mOsmv.zoomOut();
+					MainMapActivity.this.mOsmv.zoomOut();
 					setTitle();
 				}
 	        });
 	        ivZoomOut.setOnLongClickListener(new OnLongClickListener(){
 				// @Override
 				public boolean onLongClick(View v) {
-					SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(MainView.this);
+					SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(MainMapActivity.this);
 					final int zoom = Integer.parseInt(pref.getString("pref_zoomminlevel", "0"));
 					if (zoom > 0) {
-						MainView.this.mOsmv.setZoomLevel(zoom - 1);
+						MainMapActivity.this.mOsmv.setZoomLevel(zoom - 1);
 						setTitle();
 					}
 					return true;
@@ -284,7 +286,6 @@ public class MainView extends OpenStreetMapActivity implements OpenStreetMapCons
         final Intent queryIntent = getIntent();
         final String queryAction = queryIntent.getAction();
         if (Intent.ACTION_SEARCH.equals(queryAction)) {
-        	Ut.dd("onCreate::doSearchQuery");
             doSearchQuery(queryIntent);
         }
     }
@@ -335,8 +336,10 @@ public class MainView extends OpenStreetMapActivity implements OpenStreetMapCons
 
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
-		Ut.dd("onCreateContextMenu");
-		menu.add(0, 23423, 0, "Click Me"); // FIXME
+		if(mOsmv.canCreateContextMenu()){
+			Ut.dd("onCreateContextMenu MAIN");
+			menu.add(0, 23423, 0, "Click Me"); // FIXME
+		}
 		
 		super.onCreateContextMenu(menu, v, menuInfo);
 	}
@@ -407,7 +410,7 @@ public class MainView extends OpenStreetMapActivity implements OpenStreetMapCons
 				.setMessage(R.string.ya_dialog_message)
 				.setPositiveButton(R.string.ya_dialog_button_caption, new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int whichButton) {
-							Browser.saveBookmark(MainView.this, "Мобильный Яндекс", "m.yandex.ru");
+							Browser.saveBookmark(MainMapActivity.this, "Мобильный Яндекс", "m.yandex.ru");
 						}
 				}).create();
 		case R.id.whatsnew:

@@ -90,7 +90,7 @@ How to and FAQ you can find on http://robertdeveloper.blogspot.com/\n
 <string name="whats_new_dialog_text">
 v.0.6.5\n
 + Move index data of offline maps to sdcard\n
-+ Added buttons for clearing internal cache and index database to preference
++ Added buttons for clearing internal cache and index database to preference\n
 - Bug fix: Wrong compass orientation on landscape mode\n
 \n
 v.0.6.4\n
