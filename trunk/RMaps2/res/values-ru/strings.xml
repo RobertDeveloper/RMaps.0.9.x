@@ -64,12 +64,13 @@
 	<string name="menu_compass">Компасс</string>
     <string name="menu_about">О программе</string>
     <string name="menu_search">Поиск</string>
-    
+
     <string name="menu_addpoi">Добавить POI</string>
 
 	<string name="no_traffic">При таком значении зума пробки недоступны</string>
 	<string name="auto_follow_enabled">Авто следование за текущим положением включено</string>
 	<string name="auto_follow_disabled">Авто следование за текущим положением выключено</string>
+	<string name="message_geodata_notavailable">Данные на SD карте недоступны. Операция не может быть выполнена.</string>
 
 	<string name="no_inet_conn">Нет соединения с интернетом...</string>
 	<string name="no_items">По вашему запросу ничего не найдено</string>
