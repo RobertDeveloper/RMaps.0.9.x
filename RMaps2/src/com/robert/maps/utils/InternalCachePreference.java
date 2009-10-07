@@ -6,7 +6,6 @@ import org.andnav.osm.views.util.OpenStreetMapTileCache;
 import org.andnav.osm.views.util.OpenStreetMapTileFilesystemProvider;
 
 import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
 import android.preference.Preference;
 import android.util.AttributeSet;
 import android.view.View;

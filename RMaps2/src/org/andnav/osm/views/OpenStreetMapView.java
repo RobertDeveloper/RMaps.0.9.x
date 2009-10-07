@@ -50,6 +50,7 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 	protected int mLatitudeE6 = 0, mLongitudeE6 = 0;
 	protected int mZoomLevel = 0;
 	private float mBearing = 0;
+	private boolean mActionMoveDetected;
 
 	protected OpenStreetMapRendererInfo mRendererInfo;
 	protected final OpenStreetMapTileProvider mTileProvider;
@@ -69,7 +70,7 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 	private OpenStreetMapViewController mController;
 	private int mMiniMapOverriddenVisibility = NOT_SET;
 	private int mMiniMapZoomDiff = NOT_SET;
-	private Handler mCallbackHandler;
+	private Handler mMainActivityCallbackHandler;
 
 	// ===========================================================
 	// Constructors
@@ -386,13 +387,13 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 	public boolean onDoubleTap(MotionEvent e) {
 		if (mBearing != 0) {
 			mBearing = 0;
-			Message.obtain(mCallbackHandler, R.id.user_moved_map).sendToTarget();
+			Message.obtain(mMainActivityCallbackHandler, R.id.user_moved_map).sendToTarget();
 		} else {
 			final GeoPoint newCenter = this.getProjection().fromPixels(e.getX(), e.getY());
 			this.setMapCenter(newCenter);
 
 			zoomIn();
-			Message.obtain(mCallbackHandler, R.id.set_title).sendToTarget();
+			Message.obtain(mMainActivityCallbackHandler, R.id.set_title).sendToTarget();
 		}
 
 		return true;
@@ -425,6 +426,10 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 
 		return super.onTrackballEvent(event);
 	}
+	
+	public boolean canCreateContextMenu(){
+		return !mActionMoveDetected;
+	}
 
 	@Override
 	public boolean onTouchEvent(final MotionEvent event) {
@@ -436,29 +441,31 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 
 		switch (event.getAction()) {
 			case MotionEvent.ACTION_DOWN:
+				mActionMoveDetected = false;
 				this.mTouchDownX = (int) event.getX();
 				this.mTouchDownY = (int) event.getY();
 				invalidate();
-				return true;
+				break;
 			case MotionEvent.ACTION_MOVE:
+				mActionMoveDetected = true;
 				final float aRotateToAngle = 360 - mBearing;
 				this.mTouchMapOffsetX = (int) (Math.sin(Math.toRadians(aRotateToAngle)) * (event.getY() - this.mTouchDownY)) + (int) (Math.cos(Math.toRadians(aRotateToAngle)) * (event.getX() - this.mTouchDownX));
 				this.mTouchMapOffsetY = (int) (Math.cos(Math.toRadians(aRotateToAngle)) * (event.getY() - this.mTouchDownY)) - (int) (Math.sin(Math.toRadians(aRotateToAngle)) * (event.getX() - this.mTouchDownX));
 				invalidate();
 
-				Message.obtain(mCallbackHandler, R.id.user_moved_map).sendToTarget();
+				Message.obtain(mMainActivityCallbackHandler, R.id.user_moved_map).sendToTarget();
 
-				return true;
+				break;
 			case MotionEvent.ACTION_UP:
+				mActionMoveDetected = false;
 				final int viewWidth_2 = this.getWidth() / 2;
 				final int viewHeight_2 = this.getHeight() / 2;
 				final GeoPoint newCenter = this.getProjection().fromPixels(viewWidth_2,
 						viewHeight_2);
 				this.mTouchMapOffsetX = 0;
 				this.mTouchMapOffsetY = 0;
-				//newCenter.setCoordsE6(this.mLatitudeE6, this.mLongitudeE6-5000000);
 				this.setMapCenter(newCenter); // Calls invalidate
-				//Log.i(DEBUGTAG, ""+this.mLongitudeE6);
+				break;
 		}
 
 		return super.onTouchEvent(event);
@@ -876,7 +883,7 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 				if (mZoomLevel < mRendererInfo.ZOOM_MINLEVEL)
 					mZoomLevel = mRendererInfo.ZOOM_MINLEVEL;
 
-				Message.obtain(mCallbackHandler, R.id.set_title).sendToTarget();;
+				Message.obtain(mMainActivityCallbackHandler, R.id.set_title).sendToTarget();;
 
 				OpenStreetMapView.this.invalidate();
 				break;
@@ -934,7 +941,7 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 	}
 
 	public void setMainActivityCallbackHandler(Handler callbackHandler) {
-		this.mCallbackHandler = callbackHandler;
+		this.mMainActivityCallbackHandler = callbackHandler;
 
 	}
 
