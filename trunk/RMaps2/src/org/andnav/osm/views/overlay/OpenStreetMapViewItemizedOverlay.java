@@ -35,7 +35,7 @@ public class OpenStreetMapViewItemizedOverlay<T extends OpenStreetMapViewOverlay
 	// ===========================================================
 
 	protected OnItemTapListener<T> mOnItemTapListener;
-	protected final List<T> mItemList;
+	protected List<T> mItemList;
 	protected final Point mMarkerHotSpot;
 	protected final Drawable mMarker;
 	protected final int mMarkerWidth, mMarkerHeight;

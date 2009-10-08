@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.widget.Toast;
 
@@ -35,6 +36,14 @@ public class GeoDatabase {
 			cv.put("pointsourceid", aPointSourceId);
 			this.mDatabase.insert("points", null, cv);
 		}
+	}
+
+	public Cursor getPoiListCursor() {
+		if (isDatabaseReady()) {
+			return mDatabase.rawQuery("SELECT lat, lon, name, descr FROM points", null);
+		}
+
+		return null;
 	}
 
 	private boolean isDatabaseReady() {
