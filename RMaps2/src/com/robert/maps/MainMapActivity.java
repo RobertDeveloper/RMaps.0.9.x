@@ -15,7 +15,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.util.ArrayList;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -27,7 +26,6 @@ import org.andnav.osm.util.TypeConverter;
 import org.andnav.osm.util.constants.OpenStreetMapConstants;
 import org.andnav.osm.views.OpenStreetMapView;
 import org.andnav.osm.views.controller.OpenStreetMapViewController;
-import org.andnav.osm.views.overlay.OpenStreetMapViewItemizedOverlay;
 import org.andnav.osm.views.overlay.OpenStreetMapViewOverlayItem;
 import org.andnav.osm.views.overlay.OpenStreetMapViewSimpleLocationOverlay;
 import org.andnav.osm.views.util.OpenStreetMapRendererInfo;
@@ -80,6 +78,7 @@ import android.widget.Toast;
 import android.widget.RelativeLayout.LayoutParams;
 
 import com.robert.maps.kml.PoiManager;
+import com.robert.maps.overlays.PoiOverlay;
 import com.robert.maps.utils.SearchSuggestionsProvider;
 import com.robert.maps.utils.Ut;
 
@@ -94,7 +93,7 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 
 	private OpenStreetMapView mOsmv; //, mOsmvMinimap;
 	private OpenStreetMapViewSimpleLocationOverlay mMyLocationOverlay;
-	private OpenStreetMapViewItemizedOverlay<OpenStreetMapViewOverlayItem> mMyLocationOverlay2;
+	private PoiOverlay mPoiOverlay;
 	private SearchResultOverlay mSearchResultOverlay;
 
 	private PowerManager.WakeLock myWakeLock;
@@ -175,22 +174,8 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 
         /* Itemized Overlay */
         {
-			/* Create a static ItemizedOverlay showing a some Markers on some cities. */
-			final ArrayList<OpenStreetMapViewOverlayItem> items = new ArrayList<OpenStreetMapViewOverlayItem>();
-			items
-					.add(new OpenStreetMapViewOverlayItem("Hannover", "SampleDescription", new GeoPoint(52370816,
-							9735936))); // Hannover
-			items
-					.add(new OpenStreetMapViewOverlayItem("Berlin", "SampleDescription", new GeoPoint(52518333,
-							13408333))); // Berlin
-			items.add(new OpenStreetMapViewOverlayItem("Washington", "SampleDescription", new GeoPoint(38895000,
-					-77036667))); // Washington
-			items.add(new OpenStreetMapViewOverlayItem("San Francisco", "SampleDescription", new GeoPoint(37779300,
-					-122419200))); // San Francisco
-
-			/* OnTapListener for the Markers, shows a simpel Toast. */
-			this.mMyLocationOverlay2 = new OpenStreetMapViewItemizedOverlay<OpenStreetMapViewOverlayItem>(this, items,
-					new OpenStreetMapViewItemizedOverlay.OnItemTapListener<OpenStreetMapViewOverlayItem>() {
+			this.mPoiOverlay = new PoiOverlay(this, mPoiManager,
+					new PoiOverlay.OnItemTapListener<OpenStreetMapViewOverlayItem>() {
 						public boolean onItemTap(int index, OpenStreetMapViewOverlayItem item) {
 							Toast.makeText(MainMapActivity.this,
 									"Item '" + item.mTitle + "' (index=" + index + ") got tapped", Toast.LENGTH_LONG)
@@ -198,7 +183,7 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 							return true; // We 'handled' this event.
 						}
 					});
-			this.mOsmv.getOverlays().add(this.mMyLocationOverlay2);
+			this.mOsmv.getOverlays().add(this.mPoiOverlay);
 		}
 
         {
@@ -373,6 +358,7 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 		switch(item.getItemId()){
 		case R.id.menu_addpoi:
 			mPoiManager.addPoi(this.mOsmv.getTouchDownPoint());
+			mOsmv.invalidate();
 			break;
 		}
 
@@ -438,7 +424,7 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 			}
 	        this.mOsmv.getOverlays().add(mMyLocationOverlay);
 	        this.mOsmv.getOverlays().add(mSearchResultOverlay);
-	        this.mOsmv.getOverlays().add(mMyLocationOverlay2);
+	        this.mOsmv.getOverlays().add(mPoiOverlay);
 
 	        setTitle();
 
@@ -704,7 +690,7 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 		}
         this.mOsmv.getOverlays().add(mMyLocationOverlay);
         this.mOsmv.getOverlays().add(mSearchResultOverlay);
-        this.mOsmv.getOverlays().add(mMyLocationOverlay2);
+        this.mOsmv.getOverlays().add(mPoiOverlay);
 
 		mOsmv.setZoomLevel(settings.getInt("ZoomLevel", 0));
 		mOsmv.setMapCenter(settings.getInt("Latitude", 0), settings.getInt("Longitude", 0));
