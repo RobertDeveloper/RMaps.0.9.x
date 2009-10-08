@@ -177,9 +177,9 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 			this.mPoiOverlay = new PoiOverlay(this, mPoiManager,
 					new PoiOverlay.OnItemTapListener<OpenStreetMapViewOverlayItem>() {
 						public boolean onItemTap(int index, OpenStreetMapViewOverlayItem item) {
-							Toast.makeText(MainMapActivity.this,
-									"Item '" + item.mTitle + "' (index=" + index + ") got tapped", Toast.LENGTH_LONG)
-									.show();
+//							Toast.makeText(MainMapActivity.this,
+//									"Item '" + item.mTitle + "' (index=" + index + ") got tapped", Toast.LENGTH_LONG)
+//									.show();
 							return true; // We 'handled' this event.
 						}
 					});
@@ -422,9 +422,9 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 			if(RendererInfo.YANDEX_TRAFFIC_ON == 1){
 	       		this.mOsmv.getOverlays().add(new YandexTrafficOverlay(this, this.mOsmv));
 			}
-	        this.mOsmv.getOverlays().add(mMyLocationOverlay);
-	        this.mOsmv.getOverlays().add(mSearchResultOverlay);
 	        this.mOsmv.getOverlays().add(mPoiOverlay);
+	        this.mOsmv.getOverlays().add(mSearchResultOverlay);
+	        this.mOsmv.getOverlays().add(mMyLocationOverlay);
 
 	        setTitle();
 
@@ -688,9 +688,9 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 		if(RendererInfo.YANDEX_TRAFFIC_ON == 1){
        		this.mOsmv.getOverlays().add(new YandexTrafficOverlay(this, this.mOsmv));
 		}
-        this.mOsmv.getOverlays().add(mMyLocationOverlay);
-        this.mOsmv.getOverlays().add(mSearchResultOverlay);
         this.mOsmv.getOverlays().add(mPoiOverlay);
+        this.mOsmv.getOverlays().add(mSearchResultOverlay);
+        this.mOsmv.getOverlays().add(mMyLocationOverlay);
 
 		mOsmv.setZoomLevel(settings.getInt("ZoomLevel", 0));
 		mOsmv.setMapCenter(settings.getInt("Latitude", 0), settings.getInt("Longitude", 0));
