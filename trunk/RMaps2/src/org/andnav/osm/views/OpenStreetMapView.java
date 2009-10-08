@@ -373,7 +373,7 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 		for (OpenStreetMapViewOverlay osmvo : this.mOverlays)
 			if (osmvo.onLongPress(e, this))
 				return;
-		
+
 	}
 
 	public boolean onSingleTapUp(MotionEvent e) {
@@ -426,11 +426,11 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 
 		return super.onTrackballEvent(event);
 	}
-	
+
 	public boolean canCreateContextMenu(){
 		return !mActionMoveDetected;
 	}
-	
+
 	public GeoPoint getTouchDownPoint(){
 		return this.getProjection().fromPixels(mTouchDownX, mTouchDownY);
 	}
@@ -444,32 +444,34 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 		this.mGestureDetector.onTouchEvent(event);
 
 		switch (event.getAction()) {
-			case MotionEvent.ACTION_DOWN:
-				mActionMoveDetected = false;
-				this.mTouchDownX = (int) event.getX();
-				this.mTouchDownY = (int) event.getY();
-				invalidate();
-				break;
-			case MotionEvent.ACTION_MOVE:
-				mActionMoveDetected = true;
-				final float aRotateToAngle = 360 - mBearing;
-				this.mTouchMapOffsetX = (int) (Math.sin(Math.toRadians(aRotateToAngle)) * (event.getY() - this.mTouchDownY)) + (int) (Math.cos(Math.toRadians(aRotateToAngle)) * (event.getX() - this.mTouchDownX));
-				this.mTouchMapOffsetY = (int) (Math.cos(Math.toRadians(aRotateToAngle)) * (event.getY() - this.mTouchDownY)) - (int) (Math.sin(Math.toRadians(aRotateToAngle)) * (event.getX() - this.mTouchDownX));
-				invalidate();
+		case MotionEvent.ACTION_DOWN:
+			mActionMoveDetected = false;
+			this.mTouchDownX = (int) event.getX();
+			this.mTouchDownY = (int) event.getY();
+			invalidate();
+			break;
+		case MotionEvent.ACTION_MOVE:
+			if (Math.max(Math.abs(mTouchDownX - event.getX()), Math.abs(mTouchDownY - event.getY())) > 4)
+				mActionMoveDetected = true; // компенсируем дрожание рук
+			final float aRotateToAngle = 360 - mBearing;
+			this.mTouchMapOffsetX = (int) (Math.sin(Math.toRadians(aRotateToAngle)) * (event.getY() - this.mTouchDownY))
+					+ (int) (Math.cos(Math.toRadians(aRotateToAngle)) * (event.getX() - this.mTouchDownX));
+			this.mTouchMapOffsetY = (int) (Math.cos(Math.toRadians(aRotateToAngle)) * (event.getY() - this.mTouchDownY))
+					- (int) (Math.sin(Math.toRadians(aRotateToAngle)) * (event.getX() - this.mTouchDownX));
+			invalidate();
 
-				Message.obtain(mMainActivityCallbackHandler, R.id.user_moved_map).sendToTarget();
+			Message.obtain(mMainActivityCallbackHandler, R.id.user_moved_map).sendToTarget();
 
-				break;
-			case MotionEvent.ACTION_UP:
-				mActionMoveDetected = false;
-				final int viewWidth_2 = this.getWidth() / 2;
-				final int viewHeight_2 = this.getHeight() / 2;
-				final GeoPoint newCenter = this.getProjection().fromPixels(viewWidth_2,
-						viewHeight_2);
-				this.mTouchMapOffsetX = 0;
-				this.mTouchMapOffsetY = 0;
-				this.setMapCenter(newCenter); // Calls invalidate
-				break;
+			break;
+		case MotionEvent.ACTION_UP:
+			mActionMoveDetected = false;
+			final int viewWidth_2 = this.getWidth() / 2;
+			final int viewHeight_2 = this.getHeight() / 2;
+			final GeoPoint newCenter = this.getProjection().fromPixels(viewWidth_2, viewHeight_2);
+			this.mTouchMapOffsetX = 0;
+			this.mTouchMapOffsetY = 0;
+			this.setMapCenter(newCenter); // Calls invalidate
+			break;
 		}
 
 		return super.onTouchEvent(event);
@@ -611,7 +613,7 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 		c.restore();
 
 		final long endMs = System.currentTimeMillis();
-		if (DEBUGMODE) 
+		if (DEBUGMODE)
 			Log.i(DEBUGTAG, "Rendering overall: " + (endMs - startMs) + "ms");
 	}
 

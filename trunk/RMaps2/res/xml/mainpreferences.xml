@@ -34,17 +34,14 @@
 			android:defaultValue="true" android:summary="@string/pref_gpsfastupdate_summary"
 			android:title="@string/pref_gpsfastupdate"></CheckBoxPreference>
 		<CheckBoxPreference android:title="@string/pref_bottomzoomcontrol"
-			android:summary="@string/pref_bottomzoomcontrol_summary" android:key="pref_bottomzoomcontrol"
-			android:defaultValue="false"></CheckBoxPreference>
+			android:summary="@string/pref_bottomzoomcontrol_summary" android:key="pref_bottomzoomcontrol" android:defaultValue="true"></CheckBoxPreference>
 
 		<ListPreference android:title="@string/pref_zoomminlevel"
 			android:summary="@string/pref_zoomminlevel_summary" android:key="pref_zoomminlevel"
-			android:entries="@array/zoomlevel_pref_title" android:entryValues="@array/zoomlevel_pref_value"
-			android:defaultValue="0"></ListPreference>
+			android:entries="@array/zoomlevel_pref_title" android:entryValues="@array/zoomlevel_pref_value" android:defaultValue="7"></ListPreference>
 		<ListPreference android:title="@string/pref_zoommaxlevel"
 			android:summary="@string/pref_zoommaxlevel_summary" android:key="pref_zoommaxlevel"
-			android:entries="@array/zoomlevel_pref_title" android:entryValues="@array/zoomlevel_pref_value"
-			android:defaultValue="0"></ListPreference>
+			android:entries="@array/zoomlevel_pref_title" android:entryValues="@array/zoomlevel_pref_value" android:defaultValue="17"></ListPreference>
 		<CheckBoxPreference android:key="pref_drivingdirectionup"
 			android:title="@string/pref_drivingdirectionup" android:summary="@string/pref_drivingdirectionup_summary"
 			android:defaultValue="true"></CheckBoxPreference>

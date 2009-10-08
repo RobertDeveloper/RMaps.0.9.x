@@ -20,16 +20,14 @@ import com.robert.maps.utils.NinePatchDrawable;
 public class SearchResultOverlay extends OpenStreetMapViewOverlay {
 
 	protected final Paint mPaint = new Paint();
-	protected final Bitmap mBubbleBitmap;
 	protected GeoPoint mLocation;
 	protected NinePatchDrawable mButton;
 	protected String mDescr;
 
 	public SearchResultOverlay(final Context ctx) {
-		this.mBubbleBitmap = BitmapFactory.decodeResource(ctx.getResources(), R.drawable.bubble2);
-		byte[] chunk = {21,10,26,17};
-		NinePatch nine = new NinePatch(mBubbleBitmap, chunk, "");
-		this.mButton = new NinePatchDrawable(nine);
+		Bitmap mBubbleBitmap = BitmapFactory.decodeResource(ctx.getResources(), R.drawable.bubble2);
+		byte[] chunk = {21,10,26,17}; // left,top,right,bottom
+		this.mButton = new NinePatchDrawable(new NinePatch(mBubbleBitmap, chunk, ""));
 		this.mDescr = "";
 		this.mPaint.setAntiAlias(true);
 	}
