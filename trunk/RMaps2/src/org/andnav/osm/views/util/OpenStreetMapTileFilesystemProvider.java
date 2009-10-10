@@ -672,9 +672,9 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 				+ " INTEGER NOT NULL DEFAULT 1," + T_FSCACHE_FILESIZE + " INTEGER NOT NULL," + " PRIMARY KEY("
 				+ T_FSCACHE_NAME + ")" + ");";
 
-		public static final String T_FSCACHE_SELECT_LEAST_USED = "SELECT " + T_FSCACHE_NAME + "," + T_FSCACHE_FILESIZE
-				+ " FROM " + T_FSCACHE + " WHERE " + T_FSCACHE_USAGECOUNT + " = (SELECT MIN(" + T_FSCACHE_USAGECOUNT
-				+ ") FROM " + T_FSCACHE + ")";
+//		public static final String T_FSCACHE_SELECT_LEAST_USED = "SELECT " + T_FSCACHE_NAME + "," + T_FSCACHE_FILESIZE
+//				+ " FROM " + T_FSCACHE + " WHERE " + T_FSCACHE_USAGECOUNT + " = (SELECT MIN(" + T_FSCACHE_USAGECOUNT
+//				+ ") FROM " + T_FSCACHE + ")";
 		public static final String T_FSCACHE_SELECT_OLDEST = "SELECT " + T_FSCACHE_NAME + "," + T_FSCACHE_FILESIZE
 				+ " FROM " + T_FSCACHE + " ORDER BY " + T_FSCACHE_TIMESTAMP + " ASC";
 	}

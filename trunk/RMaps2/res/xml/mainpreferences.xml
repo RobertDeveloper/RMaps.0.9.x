@@ -38,7 +38,7 @@
 
 		<ListPreference android:title="@string/pref_zoomminlevel"
 			android:summary="@string/pref_zoomminlevel_summary" android:key="pref_zoomminlevel"
-			android:entries="@array/zoomlevel_pref_title" android:entryValues="@array/zoomlevel_pref_value" android:defaultValue="7"></ListPreference>
+			android:entries="@array/zoomlevel_pref_title" android:entryValues="@array/zoomlevel_pref_value" android:defaultValue="10"></ListPreference>
 		<ListPreference android:title="@string/pref_zoommaxlevel"
 			android:summary="@string/pref_zoommaxlevel_summary" android:key="pref_zoommaxlevel"
 			android:entries="@array/zoomlevel_pref_title" android:entryValues="@array/zoomlevel_pref_value" android:defaultValue="17"></ListPreference>
