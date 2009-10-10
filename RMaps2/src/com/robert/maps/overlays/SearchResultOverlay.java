@@ -1,4 +1,4 @@
-package com.robert.maps;
+package com.robert.maps.overlays;
 
 import org.andnav.osm.util.GeoPoint;
 import org.andnav.osm.util.TypeConverter;
@@ -14,6 +14,7 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import android.location.Location;
 
+import com.robert.maps.R;
 import com.robert.maps.utils.NinePatch;
 import com.robert.maps.utils.NinePatchDrawable;
 

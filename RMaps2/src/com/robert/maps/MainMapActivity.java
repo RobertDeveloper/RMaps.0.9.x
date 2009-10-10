@@ -79,6 +79,7 @@ import android.widget.RelativeLayout.LayoutParams;
 
 import com.robert.maps.kml.PoiManager;
 import com.robert.maps.overlays.PoiOverlay;
+import com.robert.maps.overlays.SearchResultOverlay;
 import com.robert.maps.utils.SearchSuggestionsProvider;
 import com.robert.maps.utils.Ut;
 
@@ -187,7 +188,7 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 		}
 
         {
-        	final boolean sideBottom = pref.getBoolean("pref_bottomzoomcontrol", false);
+        	final boolean sideBottom = pref.getBoolean("pref_bottomzoomcontrol", true);
 
             /* Compass */
         	mCompassView = new CompassView(this, sideBottom);
@@ -241,7 +242,7 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 				// @Override
 				public boolean onLongClick(View v) {
 					SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(MainMapActivity.this);
-					final int zoom = Integer.parseInt(pref.getString("pref_zoommaxlevel", "0"));
+					final int zoom = Integer.parseInt(pref.getString("pref_zoommaxlevel", "17"));
 					if (zoom > 0) {
 						MainMapActivity.this.mOsmv.setZoomLevel(zoom - 1);
 						setTitle();
@@ -272,7 +273,7 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 				// @Override
 				public boolean onLongClick(View v) {
 					SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(MainMapActivity.this);
-					final int zoom = Integer.parseInt(pref.getString("pref_zoomminlevel", "0"));
+					final int zoom = Integer.parseInt(pref.getString("pref_zoomminlevel", "7"));
 					if (zoom > 0) {
 						MainMapActivity.this.mOsmv.setZoomLevel(zoom - 1);
 						setTitle();
