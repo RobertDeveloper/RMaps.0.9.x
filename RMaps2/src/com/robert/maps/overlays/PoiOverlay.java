@@ -54,7 +54,7 @@ public class PoiOverlay extends OpenStreetMapViewOverlay {
 	}
 
 	@Override
-	public void onDraw(Canvas c, OpenStreetMapView mapView) {
+	public void onDrawAfterRotate(Canvas c, OpenStreetMapView mapView) {
 		this.mItemList = mPoiManager.getPoiList();
 
 		final OpenStreetMapViewProjection pj = mapView.getProjection();
@@ -163,6 +163,18 @@ public class PoiOverlay extends OpenStreetMapViewOverlay {
 
 	@Override
 	protected void onDrawFinished(Canvas c, OpenStreetMapView osmv) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void onDraw(Canvas c, OpenStreetMapView osmv) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void onDrawFinishedAfterRotate(Canvas c, OpenStreetMapView osmv) {
 		// TODO Auto-generated method stub
 		
 	}
