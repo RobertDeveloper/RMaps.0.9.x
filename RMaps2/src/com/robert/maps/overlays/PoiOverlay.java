@@ -1,56 +1,93 @@
 package com.robert.maps.overlays;
 
+import java.util.List;
+
 import org.andnav.osm.views.OpenStreetMapView;
-import org.andnav.osm.views.overlay.OpenStreetMapViewItemizedOverlay;
-import org.andnav.osm.views.overlay.OpenStreetMapViewOverlayItem;
+import org.andnav.osm.views.OpenStreetMapView.OpenStreetMapViewProjection;
+import org.andnav.osm.views.overlay.OpenStreetMapViewOverlay;
 
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Point;
+import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
+import android.view.MotionEvent;
 
 import com.robert.maps.R;
 import com.robert.maps.kml.PoiManager;
+import com.robert.maps.kml.PoiPoint;
 import com.robert.maps.utils.NinePatch;
 import com.robert.maps.utils.NinePatchDrawable;
 import com.robert.maps.utils.Ut;
 
-public class PoiOverlay extends OpenStreetMapViewItemizedOverlay<OpenStreetMapViewOverlayItem> {
+public class PoiOverlay extends OpenStreetMapViewOverlay {
 //	private Context mCtx;
 	private PoiManager mPoiManager;
 	private NinePatchDrawable mButton;
 	private int mTapIndex;
 
-	public PoiOverlay(Context ctx, PoiManager poiManager,
-			OnItemTapListener<OpenStreetMapViewOverlayItem> onItemTapListener) {
-		super(ctx, poiManager.getPoiList(), ctx.getResources().getDrawable(R.drawable.poi), new Point(0, 38), onItemTapListener);
+	protected OnItemTapListener<PoiPoint> mOnItemTapListener;
+	protected List<PoiPoint> mItemList;
+	protected final Point mMarkerHotSpot;
+	protected final Drawable mMarker;
+	protected final int mMarkerWidth, mMarkerHeight;
 
+	public PoiOverlay(Context ctx, PoiManager poiManager,
+			OnItemTapListener<PoiPoint> onItemTapListener) 
+	{
 //		mCtx = ctx;
 		mPoiManager = poiManager;
 		Bitmap mBubbleBitmap = BitmapFactory.decodeResource(ctx.getResources(), R.drawable.popup_button);
 		byte[] chunk = {8,8,31,28}; // left,top,right,bottom
 		this.mButton = new NinePatchDrawable(new NinePatch(mBubbleBitmap, chunk, ""));
 		mTapIndex = -1;
+
+		this.mMarker = ctx.getResources().getDrawable(R.drawable.poi);
+		this.mMarkerHotSpot = new Point(0, 38);
+
+        this.mOnItemTapListener = onItemTapListener;
+
+		this.mMarkerWidth = this.mMarker.getIntrinsicWidth();
+		this.mMarkerHeight = this.mMarker.getIntrinsicHeight();
 	}
 
 	@Override
 	public void onDraw(Canvas c, OpenStreetMapView mapView) {
-		super.mItemList = mPoiManager.getPoiList();
-		super.onDraw(c, mapView);
+		this.mItemList = mPoiManager.getPoiList();
+
+		final OpenStreetMapViewProjection pj = mapView.getProjection();
+
+		final Point curScreenCoords = new Point();
+
+		/* Draw in backward cycle, so the items with the least index are on the front. */
+		for (int i = this.mItemList.size() - 1; i >= 0; i--) {
+			if (i != mTapIndex) {
+				PoiPoint item = this.mItemList.get(i);
+				pj.toPixels(item.mGeoPoint, curScreenCoords);
+
+				onDrawItem(c, i, curScreenCoords);
+			}
+		}
+		
+		if(mTapIndex >= 0){
+			PoiPoint item = this.mItemList.get(mTapIndex);
+			pj.toPixels(item.mGeoPoint, curScreenCoords);
+
+			onDrawItem(c, mTapIndex, curScreenCoords);
+		}
 	}
 
-	@Override
 	protected void onDrawItem(Canvas c, int index, Point screenCoords) {
-		//FIXME Активная точка должна рисоваться последней
-		if (mTapIndex == index) {
+		if (index == mTapIndex) {
 			int toUp = 1, toRight = 4; // int toUp = 25, toRight = 3;
 			int textToRight = 24, widthRightCut = 2, textPadding = 4, maxButtonWidth = 240;
 			int h0 = 40; // w0 = 40;// исходный размер
-			final OpenStreetMapViewOverlayItem focusedItem = super.mItemList.get(index);
+			final PoiPoint focusedItem = mItemList.get(index);
 
 			Ut.TextWriter twTitle = new Ut.TextWriter(maxButtonWidth - textToRight, 14, focusedItem.mTitle);
-			Ut.TextWriter twDescr = new Ut.TextWriter(maxButtonWidth - textToRight, 12, focusedItem.mDescription);
+			Ut.TextWriter twDescr = new Ut.TextWriter(maxButtonWidth - textToRight, 12, focusedItem.mDescr);
 			Ut.TextWriter twCoord = new Ut.TextWriter(maxButtonWidth - textToRight, 8, Ut.formatGeoPoint(focusedItem.mGeoPoint));
 
 			final int buttonHegth = 10 + twTitle.getHeight() + twDescr.getHeight() + twCoord.getHeight() + 3*textPadding;
@@ -65,17 +102,70 @@ public class PoiOverlay extends OpenStreetMapViewItemizedOverlay<OpenStreetMapVi
 			twCoord.Draw(c, screenCoords.x + toRight + textToRight + textPadding, twTitle.getHeight() + twDescr.getHeight() + screenCoords.y - h0 - toUp + 3*textPadding - 1);
 		}
 
-		super.onDrawItem(c, index, screenCoords);
+		final int left = screenCoords.x - this.mMarkerHotSpot.x;
+		final int right = left + this.mMarkerWidth;
+		final int top = screenCoords.y - this.mMarkerHotSpot.y;
+		final int bottom = top + this.mMarkerHeight;
+
+		this.mMarker.setBounds(left, top, right, bottom);
+
+		this.mMarker.draw(c);
 	}
 
 	@Override
+	public boolean onSingleTapUp(MotionEvent event,
+			OpenStreetMapView mapView) {
+
+		final OpenStreetMapViewProjection pj = mapView.getProjection();
+		final int eventX = (int)event.getX();
+		final int eventY = (int)event.getY();
+
+		final int markerWidth = this.mMarker.getIntrinsicWidth();
+		final int markerHeight = this.mMarker.getIntrinsicHeight();
+
+		/* These objects are created to avoid construct new ones every cycle. */
+		final Rect curMarkerBounds = new Rect();
+		final Point mCurScreenCoords = new Point();
+
+		for(int i = 0; i < this.mItemList.size(); i++){
+			final PoiPoint mItem = this.mItemList.get(i);
+			pj.toPixels(mItem.mGeoPoint, mCurScreenCoords);
+
+			final int left = mCurScreenCoords.x - this.mMarkerHotSpot.x;
+			final int right = left + markerWidth;
+			final int top = mCurScreenCoords.y - this.mMarkerHotSpot.y;
+			final int bottom = top + markerHeight;
+
+			curMarkerBounds.set(left, top, right, bottom);
+			if(curMarkerBounds.contains(eventX, eventY))
+				if(onTap(i))
+					return true;
+		}
+		return super.onSingleTapUp(event, mapView);
+	}
+
 	protected boolean onTap(int index) {
 		if(mTapIndex == index)
 			mTapIndex = -1;
 		else
 			mTapIndex = index;
-		return super.onTap(index);
+
+		if(this.mOnItemTapListener != null)
+			return this.mOnItemTapListener.onItemTap(index, this.mItemList.get(index));
+		else
+			return false;
 	}
 
+	@SuppressWarnings("hiding")
+	public static interface OnItemTapListener<PoiPoint>{
+		public boolean onItemTap(final int aIndex, final PoiPoint aItem);
+	}
 
+	@Override
+	protected void onDrawFinished(Canvas c, OpenStreetMapView osmv) {
+		// TODO Auto-generated method stub
+		
+	}
 }
+
+

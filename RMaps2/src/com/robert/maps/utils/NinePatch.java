@@ -126,8 +126,8 @@ public class NinePatch
 		
 		// /////////// 2nd row
 		
-		if (!true)
-			return;
+//		if (!true)
+//			return;
 		
 		// left-middle
 		src.left = 0+1;

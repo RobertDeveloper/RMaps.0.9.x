@@ -26,7 +26,6 @@ import org.andnav.osm.util.TypeConverter;
 import org.andnav.osm.util.constants.OpenStreetMapConstants;
 import org.andnav.osm.views.OpenStreetMapView;
 import org.andnav.osm.views.controller.OpenStreetMapViewController;
-import org.andnav.osm.views.overlay.OpenStreetMapViewOverlayItem;
 import org.andnav.osm.views.overlay.OpenStreetMapViewSimpleLocationOverlay;
 import org.andnav.osm.views.util.OpenStreetMapRendererInfo;
 import org.andnav.osm.views.util.StreamUtils;
@@ -78,6 +77,7 @@ import android.widget.Toast;
 import android.widget.RelativeLayout.LayoutParams;
 
 import com.robert.maps.kml.PoiManager;
+import com.robert.maps.kml.PoiPoint;
 import com.robert.maps.overlays.PoiOverlay;
 import com.robert.maps.overlays.SearchResultOverlay;
 import com.robert.maps.utils.SearchSuggestionsProvider;
@@ -176,8 +176,8 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
         /* Itemized Overlay */
         {
 			this.mPoiOverlay = new PoiOverlay(this, mPoiManager,
-					new PoiOverlay.OnItemTapListener<OpenStreetMapViewOverlayItem>() {
-						public boolean onItemTap(int index, OpenStreetMapViewOverlayItem item) {
+					new PoiOverlay.OnItemTapListener<PoiPoint>() {
+						public boolean onItemTap(int index, PoiPoint item) {
 //							Toast.makeText(MainMapActivity.this,
 //									"Item '" + item.mTitle + "' (index=" + index + ") got tapped", Toast.LENGTH_LONG)
 //									.show();
@@ -273,7 +273,7 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 				// @Override
 				public boolean onLongClick(View v) {
 					SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(MainMapActivity.this);
-					final int zoom = Integer.parseInt(pref.getString("pref_zoomminlevel", "7"));
+					final int zoom = Integer.parseInt(pref.getString("pref_zoomminlevel", "10"));
 					if (zoom > 0) {
 						MainMapActivity.this.mOsmv.setZoomLevel(zoom - 1);
 						setTitle();
