@@ -451,16 +451,17 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 			invalidate();
 			break;
 		case MotionEvent.ACTION_MOVE:
-			if (Math.max(Math.abs(mTouchDownX - event.getX()), Math.abs(mTouchDownY - event.getY())) > 4)
+			if (Math.max(Math.abs(mTouchDownX - event.getX()), Math.abs(mTouchDownY - event.getY())) > 4) {
 				mActionMoveDetected = true; // компенсируем дрожание рук
-			final float aRotateToAngle = 360 - mBearing;
-			this.mTouchMapOffsetX = (int) (Math.sin(Math.toRadians(aRotateToAngle)) * (event.getY() - this.mTouchDownY))
-					+ (int) (Math.cos(Math.toRadians(aRotateToAngle)) * (event.getX() - this.mTouchDownX));
-			this.mTouchMapOffsetY = (int) (Math.cos(Math.toRadians(aRotateToAngle)) * (event.getY() - this.mTouchDownY))
-					- (int) (Math.sin(Math.toRadians(aRotateToAngle)) * (event.getX() - this.mTouchDownX));
-			invalidate();
+				final float aRotateToAngle = 360 - mBearing;
+				this.mTouchMapOffsetX = (int) (Math.sin(Math.toRadians(aRotateToAngle)) * (event.getY() - this.mTouchDownY))
+						+ (int) (Math.cos(Math.toRadians(aRotateToAngle)) * (event.getX() - this.mTouchDownX));
+				this.mTouchMapOffsetY = (int) (Math.cos(Math.toRadians(aRotateToAngle)) * (event.getY() - this.mTouchDownY))
+						- (int) (Math.sin(Math.toRadians(aRotateToAngle)) * (event.getX() - this.mTouchDownX));
+				invalidate();
 
-			Message.obtain(mMainActivityCallbackHandler, R.id.user_moved_map).sendToTarget();
+				Message.obtain(mMainActivityCallbackHandler, R.id.user_moved_map).sendToTarget();
+			}
 
 			break;
 		case MotionEvent.ACTION_UP:

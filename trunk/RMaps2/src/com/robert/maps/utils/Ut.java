@@ -4,12 +4,15 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.andnav.osm.util.GeoPoint;
 import org.andnav.osm.util.constants.OpenStreetMapConstants;
 import org.andnav.osm.views.util.constants.OpenStreetMapViewConstants;
 
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.util.Log;
 
 public class Ut implements OpenStreetMapConstants, OpenStreetMapViewConstants {
@@ -71,6 +74,10 @@ public class Ut implements OpenStreetMapConstants, OpenStreetMapViewConstants {
 			return "";
 	}
 
+	public static String formatGeoPoint(GeoPoint point){
+		return point.toDoubleString();
+	}
+
 	public static int readInt(final InputStream in) throws IOException{
 		int res = 0;
 		byte b [] = new byte[4];
@@ -84,4 +91,84 @@ public class Ut implements OpenStreetMapConstants, OpenStreetMapViewConstants {
 		return res;
 	}
 
+	public static class TextWriter {
+		private String mText;
+		private int mMaxWidth;
+		private int mMaxHeight;
+		private int mTextSize;
+		private Paint mPaint;
+		private String[] mLines;
+
+		public TextWriter(int aMaxWidth, int aTextSize, String aText) {
+			mMaxWidth = aMaxWidth;
+			mTextSize = aTextSize;
+			mText = aText;
+			mPaint = new Paint();
+			mPaint.setAntiAlias(true);
+			//mPaint.setTypeface(Typeface.create((Typeface)null, Typeface.BOLD));
+
+			final float[] widths = new float[mText.length()];
+			this.mPaint.setTextSize(mTextSize);
+			this.mPaint.getTextWidths(mText, widths);
+
+			final StringBuilder sb = new StringBuilder();
+			int maxWidth = 0;
+			int curLineWidth = 0;
+			int lastStop = 0;
+			int i;
+			int lastwhitespace = 0;
+			/*
+			 * Loop through the charwidth array and harshly insert a linebreak, when the width gets bigger than
+			 * DESCRIPTION_MAXWIDTH.
+			 */
+			for (i = 0; i < widths.length; i++) {
+				if (!Character.isLetter(mText.charAt(i)) && mText.charAt(i) != ',')
+					lastwhitespace = i;
+
+				float charwidth = widths[i];
+
+				if (curLineWidth + charwidth > mMaxWidth) {
+					if (lastStop == lastwhitespace)
+						i--;
+					else
+						i = lastwhitespace;
+
+					sb.append(mText.subSequence(lastStop, i));
+					sb.append('\n');
+
+					lastStop = i;
+					maxWidth = Math.max(maxWidth, curLineWidth);
+					curLineWidth = 0;
+				}
+
+				curLineWidth += charwidth;
+			}
+			/* Add the last line to the rest to the buffer. */
+			if (i != lastStop) {
+				final String rest = mText.substring(lastStop, i);
+
+				maxWidth = Math.max(maxWidth, (int) this.mPaint.measureText(rest));
+
+				sb.append(rest);
+			}
+			mLines = sb.toString().split("\n");
+
+			mMaxWidth = maxWidth;
+			mMaxHeight = mLines.length * mTextSize;
+		}
+
+		public void Draw(final Canvas c, final int x, final int y) {
+			for (int j = 0; j < mLines.length; j++) {
+				c.drawText(mLines[j].trim(), x, y + mTextSize * (j+1), mPaint);
+			}
+		}
+
+		public int getWidth() {
+			return mMaxWidth;
+		}
+
+		public int getHeight() {
+			return mMaxHeight;
+		}
+	}
 }
