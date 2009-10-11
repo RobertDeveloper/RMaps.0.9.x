@@ -78,6 +78,10 @@ public class Ut implements OpenStreetMapConstants, OpenStreetMapViewConstants {
 		return point.toDoubleString();
 	}
 
+	public static CharSequence formatGeoCoord(double double1) {
+		return new StringBuilder().append(double1).toString();
+	}
+	
 	public static int readInt(final InputStream in) throws IOException{
 		int res = 0;
 		byte b [] = new byte[4];
@@ -171,4 +175,5 @@ public class Ut implements OpenStreetMapConstants, OpenStreetMapViewConstants {
 			return mMaxHeight;
 		}
 	}
+
 }

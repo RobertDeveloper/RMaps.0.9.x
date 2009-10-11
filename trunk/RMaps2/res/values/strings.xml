@@ -151,4 +151,12 @@ v.0.5.2
     <string name="message_gpsdisabled">GPS is disabled. Trying to use wireless network to determine your location...</string>
     <string name="message_locationunavailable">GPS and Network detection is disabled. Your current location is temporarily unavailable...</string>
     <string name="message_lastknownlocation">GPS and Network detection is disabled. Showing last known location...</string>
+    
+    <string name="menu_done">Done</string>
+    <string name="menu_doNotSave">Revert</string>
+    
+    <string name="PoiTitle">Title</string>
+    <string name="PoiLat">Latitude</string>
+    <string name="PoiLon">Longitude</string>
+    <string name="PoiDescr">Description</string>
 </resources>
