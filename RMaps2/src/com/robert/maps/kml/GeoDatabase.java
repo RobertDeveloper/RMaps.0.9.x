@@ -40,7 +40,7 @@ public class GeoDatabase {
 
 	public Cursor getPoiListCursor() {
 		if (isDatabaseReady()) {
-			return mDatabase.rawQuery("SELECT lat, lon, name, descr FROM points", null);
+			return mDatabase.rawQuery("SELECT lat, lon, name, descr FROM points ORDER BY lat, lon", null);
 		}
 
 		return null;

@@ -358,8 +358,10 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 	public boolean onContextItemSelected(MenuItem item) {
 		switch(item.getItemId()){
 		case R.id.menu_addpoi:
-			mPoiManager.addPoi(this.mOsmv.getTouchDownPoint());
-			mOsmv.invalidate();
+//			mPoiManager.addPoiStartActivity(this, this.mOsmv.getTouchDownPoint());
+			startActivity((new Intent(this, PoiActivity.class)).putExtra("lat",
+					this.mOsmv.getTouchDownPoint().getLatitude()).putExtra("lon",
+							this.mOsmv.getTouchDownPoint().getLongitude()));
 			break;
 		}
 
@@ -395,7 +397,7 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 			onSearchRequested();
 			return true;
 		case (R.id.settings):
-			startActivityForResult(new Intent(this, MainPreferences.class), 12345);
+			startActivityForResult(new Intent(this, MainPreferences.class), R.id.settings_activity_closed);
 			return true;
 		case (R.id.about):
 			showDialog(R.id.about);
@@ -720,7 +722,7 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if(requestCode == 12345){
+		if(requestCode == R.id.settings_activity_closed){
 			finish();
 			startActivity(new Intent(this, this.getClass()));
 		}

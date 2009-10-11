@@ -6,7 +6,10 @@ import java.util.List;
 import org.andnav.osm.util.GeoPoint;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
+
+import com.robert.maps.PoiActivity;
 
 public class PoiManager {
 	protected final Context mCtx;
@@ -23,6 +26,10 @@ public class PoiManager {
 		mGeoDatabase.addPoi("testpoi", "Test POI 1", point.getLatitude(), point.getLongitude(), 0, 0, 0);
 	}
 
+	public void addPoi(final String title, final String descr, GeoPoint point){
+		mGeoDatabase.addPoi(title, descr, point.getLatitude(), point.getLongitude(), 0, 0, 0);
+	}
+
 	public List<PoiPoint> getPoiList() {
 		final ArrayList<PoiPoint> items = new ArrayList<PoiPoint>();
 		final Cursor c = mGeoDatabase.getPoiListCursor();
@@ -37,5 +44,12 @@ public class PoiManager {
 		}
 
 		return items;
+	}
+
+
+	public void addPoiStartActivity(Context ctx, GeoPoint touchDownPoint) {
+		ctx.startActivity((new Intent(ctx, PoiActivity.class)).putExtra("lat",
+				touchDownPoint.getLatitude()).putExtra("lon",
+				touchDownPoint.getLongitude()));
 	}
 }

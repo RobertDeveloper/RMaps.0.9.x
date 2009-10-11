@@ -29,6 +29,7 @@ public class PoiOverlay extends OpenStreetMapViewOverlay {
 	private int mTapIndex;
 
 	protected OnItemTapListener<PoiPoint> mOnItemTapListener;
+	protected OnItemLongPressListener<PoiPoint> mOnItemLongPressListener;
 	protected List<PoiPoint> mItemList;
 	protected final Point mMarkerHotSpot;
 	protected final Drawable mMarker;
@@ -110,20 +111,22 @@ public class PoiOverlay extends OpenStreetMapViewOverlay {
 		this.mMarker.setBounds(left, top, right, bottom);
 
 		this.mMarker.draw(c);
+//		
+//		
+//		final int left2 = screenCoords.x + 5;
+//		final int right2 = left + 30;
+//		final int top2 = screenCoords.y - this.mMarkerHotSpot.y;
+//		final int bottom2 = top + 24;
+//		Paint p = new Paint();
+//		c.drawLine(left2, top2, right2, bottom2, p);
+//		c.drawLine(right2, top2, left2, bottom2, p);
 	}
-
-	@Override
-	public boolean onSingleTapUp(MotionEvent event,
-			OpenStreetMapView mapView) {
-
+	
+	private int getMarkerAtPoint(final MotionEvent event, OpenStreetMapView mapView){
 		final OpenStreetMapViewProjection pj = mapView.getProjection();
 		final int eventX = (int)event.getX();
 		final int eventY = (int)event.getY();
 
-		final int markerWidth = this.mMarker.getIntrinsicWidth();
-		final int markerHeight = this.mMarker.getIntrinsicHeight();
-
-		/* These objects are created to avoid construct new ones every cycle. */
 		final Rect curMarkerBounds = new Rect();
 		final Point mCurScreenCoords = new Point();
 
@@ -131,17 +134,51 @@ public class PoiOverlay extends OpenStreetMapViewOverlay {
 			final PoiPoint mItem = this.mItemList.get(i);
 			pj.toPixels(mItem.mGeoPoint, mCurScreenCoords);
 
-			final int left = mCurScreenCoords.x - this.mMarkerHotSpot.x;
-			final int right = left + markerWidth;
+//			final int left = mCurScreenCoords.x - this.mMarkerHotSpot.x;
+//			final int right = left + markerWidth;
+//			final int top = mCurScreenCoords.y - this.mMarkerHotSpot.y;
+//			final int bottom = top + markerHeight;
+			final int left = mCurScreenCoords.x + 5;
+			final int right = left + 30;
 			final int top = mCurScreenCoords.y - this.mMarkerHotSpot.y;
-			final int bottom = top + markerHeight;
+			final int bottom = top + 24;
 
 			curMarkerBounds.set(left, top, right, bottom);
 			if(curMarkerBounds.contains(eventX, eventY))
-				if(onTap(i))
-					return true;
+				return i;
 		}
+		
+		return -1;
+	}
+
+	@Override
+	public boolean onSingleTapUp(MotionEvent event, OpenStreetMapView mapView) {
+		final int index = getMarkerAtPoint(event, mapView);
+		if (index >= 0)
+			if (onTap(index))
+				return true;
+
 		return super.onSingleTapUp(event, mapView);
+	}
+
+	@Override
+	public boolean onLongPress(MotionEvent event, OpenStreetMapView mapView) {
+		mapView.cancelLongPress();
+		Ut.dd("cancelLongPress");
+		final int index = getMarkerAtPoint(event, mapView);
+		if (index >= 0)
+			if (onLongLongPress(index))
+				return true;
+
+		return super.onLongPress(event, mapView);
+	}
+
+	private boolean onLongLongPress(int index) {
+		return false;
+//		if(this.mOnItemLongPressListener != null)
+//			return this.mOnItemLongPressListener.onItemLongPress(index, this.mItemList.get(index));
+//		else
+//			return false;
 	}
 
 	protected boolean onTap(int index) {
@@ -159,6 +196,11 @@ public class PoiOverlay extends OpenStreetMapViewOverlay {
 	@SuppressWarnings("hiding")
 	public static interface OnItemTapListener<PoiPoint>{
 		public boolean onItemTap(final int aIndex, final PoiPoint aItem);
+	}
+
+	@SuppressWarnings("hiding")
+	public static interface OnItemLongPressListener<PoiPoint>{
+		public boolean onItemLongPress(final int aIndex, final PoiPoint aItem);
 	}
 
 	@Override
