@@ -27,12 +27,10 @@ import android.graphics.Paint.Style;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
-import android.view.ContextMenu;
 import android.view.GestureDetector;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.view.GestureDetector.OnDoubleTapListener;
 import android.view.GestureDetector.OnGestureListener;
 
@@ -628,10 +626,6 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 
 		c.restore();
 
-		/* Draw all Overlays. */
-		for (OpenStreetMapViewOverlay osmvo : this.mOverlays)
-			osmvo.onManagedDrawAfterRotate(c, this);
-		
 		final long endMs = System.currentTimeMillis();
 		if (DEBUGMODE)
 			Log.i(DEBUGTAG, "Rendering overall: " + (endMs - startMs) + "ms");
