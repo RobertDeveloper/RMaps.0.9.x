@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <resources>
     <string name="pref_northdirectionup_summary">Поворачивать карту вместе с компасом</string>
     <string name="pref_northdirectionup">По компасу</string>
@@ -10,9 +10,8 @@
     <string name="pref_zoommaxlevel">Максимальный зум</string>
     <string name="pref_bottomzoomcontrol_summary">Размещать кнопки зума в нижней части экрана</string>
     <string name="pref_bottomzoomcontrol">Кнопки зума внизу</string>
-    <string name="app_user_id"></string>
+    <string name="app_user_id"/>
     <string name="app_user_label">Robert.Developer</string>
-
     <string name="prefcat_main_misc">Прочее</string>
     <string name="pref_accuracy_summary">Показывать точность определения положения как голубую окружность как в Google Map</string>
     <string name="pref_accuracy">Индикатор точности положения</string>
@@ -27,7 +26,6 @@
     <string name="pref_turnoffautoreindex_summary">Отключить авто реиндексацию при изменении размера или даты времени файла карты</string>
     <string name="pref_gpsfastupdate">Частое обновление GPS данных</string>
     <string name="pref_gpsfastupdate_summary">Редкое обновление GPS данных теоритически экономит батарею</string>
-
     <string name="pref_usermap_enabled">Включить карту</string>
     <string name="pref_usermap_enabled_summary">Добавить карту в список карт</string>
     <string name="pref_usermap_name">Имя карты</string>
@@ -35,46 +33,36 @@
     <string name="pref_usermap_projection">Проекция</string>
     <string name="pref_usermap_traffic">Яндекс.Пробки</string>
     <string name="pref_usermap_traffic_summary">Добавить слой пробок на карту</string>
-
     <string name="prefcat_main_look">Представление &amp; Управление</string>
     <string name="prefcat_main_maps">Карты</string>
     <string name="prefcat_main_indexing">Индексация</string>
-
-	<string name="pref_main_maps">Он-лайн карты</string>
-	<string name="pref_main_maps_summary">Требуется подключение к интернету</string>
-	<string name="pref_main_usermaps">Офф-лайн карты</string>
-	<string name="pref_main_usermaps_summary">Карты из папки /sdcard/rmaps/maps</string>
-
-	<string name="prefcat_main_predefinedmaps"></string>
-	<string name="btn_clear_cache_title">Очистить</string>
-	<string name="pref_internalcache_title">Внутренний кэш</string>
-	<string name="pref_internalcache_summary">Временное хранение тайлов карт. Размер: %dKB/4MB</string>
-	<string name="pref_index_title">Идексный файл</string>
-	<string name="pref_index_summary">Индекс тайлов offline карт. Размер: %dKB</string>
-
-	<string name="hello">Hello World, OpenStreetMapViewer</string>
-
-	<string name="app_name">RMaps</string>
-	<string name="app_name_itemizedoverlay">OSMViewer ItemizedOverlay</string>
-
-	<string name="menu_settings">Настройки</string>
+    <string name="pref_main_maps">Он-лайн карты</string>
+    <string name="pref_main_maps_summary">Требуется подключение к интернету</string>
+    <string name="pref_main_usermaps">Офф-лайн карты</string>
+    <string name="pref_main_usermaps_summary">Карты из папки /sdcard/rmaps/maps</string>
+    <string name="prefcat_main_predefinedmaps"/>
+    <string name="btn_clear_cache_title">Очистить</string>
+    <string name="pref_internalcache_title">Внутренний кэш</string>
+    <string name="pref_internalcache_summary">Временное хранение тайлов карт. Размер: %dKB/4MB</string>
+    <string name="pref_index_title">Идексный файл</string>
+    <string name="pref_index_summary">Индекс тайлов offline карт. Размер: %dKB</string>
+    <string name="hello">Hello World, OpenStreetMapViewer</string>
+    <string name="app_name">RMaps</string>
+    <string name="app_name_itemizedoverlay">OSMViewer ItemizedOverlay</string>
+    <string name="menu_settings">Настройки</string>
     <string name="menu_exit">Выход</string>
-	<string name="menu_mylocation">Где я?</string>
-	<string name="menu_mapselector">Карты</string>
-	<string name="menu_compass">Компасс</string>
+    <string name="menu_mylocation">Где я?</string>
+    <string name="menu_mapselector">Карты</string>
+    <string name="menu_compass">Компасс</string>
     <string name="menu_about">О программе</string>
     <string name="menu_search">Поиск</string>
-
     <string name="menu_addpoi">Добавить POI</string>
-
-	<string name="no_traffic">При таком значении зума пробки недоступны</string>
-	<string name="auto_follow_enabled">Авто следование за текущим положением включено</string>
-	<string name="auto_follow_disabled">Авто следование за текущим положением выключено</string>
-	<string name="message_geodata_notavailable">Данные на SD карте недоступны. Операция не может быть выполнена.</string>
-
-	<string name="no_inet_conn">Нет соединения с интернетом...</string>
-	<string name="no_items">По вашему запросу ничего не найдено</string>
-
+    <string name="no_traffic">При таком значении зума пробки недоступны</string>
+    <string name="auto_follow_enabled">Авто следование за текущим положением включено</string>
+    <string name="auto_follow_disabled">Авто следование за текущим положением выключено</string>
+    <string name="message_geodata_notavailable">Данные на SD карте недоступны. Операция не может быть выполнена.</string>
+    <string name="no_inet_conn">Нет соединения с интернетом...</string>
+    <string name="no_items">По вашему запросу ничего не найдено</string>
     <string name="about_dialog_text">
 ©2009 Robert.Developer\n
   Osmdroid  by Nicolas Gramlich\n
@@ -88,7 +76,7 @@ All rights reserved\n
 \n
 Как сделать офф-лайн карту и прочее можно почитать здесь http://robertdeveloper.blogspot.com/\n
 </string>
-<string name="whats_new_dialog_text">
+    <string name="whats_new_dialog_text">
 v.0.6.5\n
 + Индексные данные оффлайн карт перенесены на sd карту\n
 + Добавлены в настройки кнопки для очистки внутреннего кэша и индексного файла\n
@@ -138,18 +126,21 @@ v.0.5.2\n
 + Отключение от GPS при сворачивании окна\n
 
 </string>
-
     <string name="about_dialog_whats_new">Что нового</string>
     <string name="about_dialog_close">Закрыть</string>
-
     <string name="ya_dialog_title">Яндекс Пробки</string>
     <string name="ya_dialog_message">В знак уважения и благодарности фирме Яндекс за предоставленную информацию о пробках предлагаю Вам добавить закладку на страницу Мобильный Яндекс. Это сообщение ни к чему Вас не обязыват и больше появляться не будет.</string>
     <string name="ya_dialog_button_caption">OK</string>
-
     <string name="search_label">Адрес:</string>
     <string name="search_hint">напр. Москва Таганка</string>
-
     <string name="message_gpsdisabled">GPS выключен. Попытаюсь определить местоположение по базовым станциям...</string>
     <string name="message_locationunavailable">GPS and определение по базовым станциям выключены. Определение местоположения невозможно...</string>
     <string name="message_lastknownlocation">GPS and определение по базовым станциям выключены. Показываю последнее определенное когда-то местоположение...</string>
+    <string name="PoiTitle">Наименование</string>
+    <string name="PoiLon">Долгота</string>
+    <string name="PoiLat">Широта</string>
+    <string name="PoiDescr">Описание</string>
+    <string name="menu_edit">Изменить</string>
+    <string name="menu_doNotSave">Отменить</string>
+    <string name="menu_done">Записать</string>
 </resources>
