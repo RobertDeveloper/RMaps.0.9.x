@@ -1,10 +1,11 @@
 // Created by plusminus on 22:01:11 - 29.09.2008
-package org.andnav.osm.views.overlay;
+package com.robert.maps.overlays;
 
 import org.andnav.osm.util.GeoPoint;
 import org.andnav.osm.util.TypeConverter;
 import org.andnav.osm.views.OpenStreetMapView;
 import org.andnav.osm.views.OpenStreetMapView.OpenStreetMapViewProjection;
+import org.andnav.osm.views.overlay.OpenStreetMapViewOverlay;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -24,7 +25,7 @@ import com.robert.maps.R;
  * @author Nicolas Gramlich
  *
  */
-public class OpenStreetMapViewSimpleLocationOverlay extends OpenStreetMapViewOverlay {
+public class MyLocationOverlay extends OpenStreetMapViewOverlay {
 	// ===========================================================
 	// Constants
 	// ===========================================================
@@ -54,7 +55,7 @@ public class OpenStreetMapViewSimpleLocationOverlay extends OpenStreetMapViewOve
 	// Constructors
 	// ===========================================================
 
-	public OpenStreetMapViewSimpleLocationOverlay(final Context ctx){
+	public MyLocationOverlay(final Context ctx){
 		this.PERSON_ICON = BitmapFactory.decodeResource(ctx.getResources(), R.drawable.person);
 		this.mArrow = ctx.getResources().getDrawable(R.drawable.arrow);
 		//this.mStop = ctx.getResources().getDrawable(R.drawable.arrow_stop);
