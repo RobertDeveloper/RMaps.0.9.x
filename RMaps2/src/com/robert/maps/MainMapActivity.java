@@ -107,7 +107,7 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 	private boolean mCompassEnabled;
 	private boolean mDrivingDirectionUp;
 	private boolean mNorthDirectionUp;
-	private float mLastSpeed;
+	private float mLastSpeed, mLastBearing;
 	private PoiManager mPoiManager;
 	private String ACTION_SHOW_POINTS = "com.robert.maps.action.SHOW_POINTS";
 
@@ -129,13 +129,39 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 			if (mCompassEnabled)
 				if (mNorthDirectionUp)
 					if (mDrivingDirectionUp == false || mLastSpeed == 0) {
-						mOsmv.setBearing(event.values[0] + 90 * iOrientation);
+						mOsmv.setBearing(updateBearing(event.values[0]) + 90 * iOrientation);
 						mOsmv.invalidate();
 					}
 		}
 
 	};
 
+	private float updateBearing(float newBearing) {
+		float dif = newBearing - mLastBearing;
+		// find difference between new and current position
+		if (Math.abs(dif) > 180)
+			dif = 360 - dif;
+		// if difference is bigger than 180 degrees,
+		// it's faster to rotate in opposite direction
+		if (Math.abs(dif) < 1)
+			return mLastBearing;
+		// if difference is less than 1 degree, leave things as is
+		if (Math.abs(dif) >= 90)
+			return mLastBearing = newBearing;
+		// if difference is bigger than 90 degress, just update it
+		mLastBearing += 90 * Math.signum(dif) * Math.pow(Math.abs(dif) / 90, 2);
+		// bearing is updated proportionally to the square of the difference
+		// value
+		// sign of difference is paid into account
+		// if difference is 90(max. possible) it is updated exactly by 90
+		while (mLastBearing > 360)
+			mLastBearing -= 360;
+		while (mLastBearing < 0)
+			mLastBearing += 360;
+		// prevent bearing overrun/underrun
+		return mLastBearing;
+	}
+	
 	// ===========================================================
 	// Constructors
 	// ===========================================================
