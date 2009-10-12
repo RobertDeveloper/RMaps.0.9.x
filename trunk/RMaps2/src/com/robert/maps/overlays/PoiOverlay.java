@@ -122,10 +122,8 @@ public class PoiOverlay extends OpenStreetMapViewOverlay {
 //		c.drawLine(right2, top2, left2, bottom2, p);
 	}
 	
-	private int getMarkerAtPoint(final MotionEvent event, OpenStreetMapView mapView){
+	public int getMarkerAtPoint(final int eventX, final int eventY, OpenStreetMapView mapView){
 		final OpenStreetMapViewProjection pj = mapView.getProjection();
-		final int eventX = (int)event.getX();
-		final int eventY = (int)event.getY();
 
 		final Rect curMarkerBounds = new Rect();
 		final Point mCurScreenCoords = new Point();
@@ -153,7 +151,7 @@ public class PoiOverlay extends OpenStreetMapViewOverlay {
 
 	@Override
 	public boolean onSingleTapUp(MotionEvent event, OpenStreetMapView mapView) {
-		final int index = getMarkerAtPoint(event, mapView);
+		final int index = getMarkerAtPoint((int)event.getX(), (int)event.getY(), mapView);
 		if (index >= 0)
 			if (onTap(index))
 				return true;
@@ -163,9 +161,7 @@ public class PoiOverlay extends OpenStreetMapViewOverlay {
 
 	@Override
 	public boolean onLongPress(MotionEvent event, OpenStreetMapView mapView) {
-		mapView.cancelLongPress();
-		Ut.dd("cancelLongPress");
-		final int index = getMarkerAtPoint(event, mapView);
+		final int index = getMarkerAtPoint((int)event.getX(), (int)event.getY(), mapView);
 		if (index >= 0)
 			if (onLongLongPress(index))
 				return true;
