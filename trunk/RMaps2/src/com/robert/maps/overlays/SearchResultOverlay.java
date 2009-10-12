@@ -50,11 +50,15 @@ public class SearchResultOverlay extends OpenStreetMapViewOverlay {
 	@Override
 	protected void onDraw(Canvas c, OpenStreetMapView osmv) {
 		if(this.mLocation != null){
+
 			final OpenStreetMapViewProjection pj = osmv.getProjection();
 			final Point screenCoords = new Point();
 			pj.toPixels(this.mLocation, screenCoords);
 			final int DESCRIPTION_MAXWIDTH = 155;
 			final int TEXT_SIZE = 12;
+
+			c.save();
+			c.rotate(osmv.getBearing(), screenCoords.x, screenCoords.y);
 
 			final float[] widths = new float[mDescr.length()];
 			this.mPaint.setTextSize(TEXT_SIZE);
@@ -111,7 +115,8 @@ public class SearchResultOverlay extends OpenStreetMapViewOverlay {
 				c.drawText(lines[j].trim(), screenCoords.x - 12 + 8, 7 + TEXT_SIZE + screenCoords.y - (descHeight + 23) + 2 + j * TEXT_SIZE,
 						mPaint);
 			}
-
+			
+			c.restore();
 		}
 	}
 
