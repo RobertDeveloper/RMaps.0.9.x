@@ -38,6 +38,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.SearchManager;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -50,6 +51,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -442,6 +444,22 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 		super.onOptionsItemSelected(item);
 
 		switch (item.getItemId()) {
+		case (R.id.gpsstatus):
+			try {
+				startActivity(new Intent("com.eclipsim.gpsstatus.VIEW"));
+			} catch (ActivityNotFoundException e) {
+				Toast.makeText(this,
+						"GPS Status not found. Please install it!",
+						Toast.LENGTH_LONG).show();
+				try {
+					startActivity(new Intent(Intent.ACTION_VIEW).setData(Uri
+							.parse("market://search?q=pname:com.eclipsim.gpsstatus2")));
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+			return true;
 		case (R.id.search):
 			onSearchRequested();
 			return true;
