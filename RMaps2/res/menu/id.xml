@@ -8,4 +8,5 @@
 <item android:id="@+id/settings_activity_closed"></item>
 
 <item android:id="@+id/menu_addpoi"></item>
+<item android:id="@+id/menu_editpoi"></item>
 </menu>

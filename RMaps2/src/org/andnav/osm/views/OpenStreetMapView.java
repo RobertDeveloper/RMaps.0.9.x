@@ -27,14 +27,17 @@ import android.graphics.Paint.Style;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.GestureDetector;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.GestureDetector.OnDoubleTapListener;
 import android.view.GestureDetector.OnGestureListener;
 
 import com.robert.maps.R;
+import com.robert.maps.utils.Ut;
 
 public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 		OpenStreetMapViewConstants {
@@ -60,8 +63,8 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 	protected final List<OpenStreetMapViewOverlay> mOverlays = new ArrayList<OpenStreetMapViewOverlay>();
 
 	protected final Paint mPaint = new Paint();
-	private int mTouchDownX;
-	private int mTouchDownY;
+	public int mTouchDownX;
+	public int mTouchDownY;
 	public int mTouchMapOffsetX;
 	public int mTouchMapOffsetY;
 
@@ -88,6 +91,14 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 		this.mRendererInfo = aRendererInfo;
 		this.mTileProvider = new OpenStreetMapTileProvider(context, new SimpleInvalidationHandler(), aRendererInfo);
 		this.mPaint.setAntiAlias(true);
+		
+//		setOnLongClickListener(new OnLongClickListener() {
+//			
+//			public boolean onLongClick(View v) {
+//				Ut.dd("Stop LongClick");
+//				return true;
+//			}
+//		});
 	}
 
 	/**
@@ -101,13 +112,13 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 	 *            May significantly improve the render speed, when using the
 	 *            same {@link OpenStreetMapRendererInfo}.
 	 */
-	public OpenStreetMapView(final Context context, final OpenStreetMapRendererInfo aRendererInfo,
-			final OpenStreetMapView aMapToShareTheTileProviderWith) {
-		super(context);
-		this.mRendererInfo = aRendererInfo;
-		this.mTileProvider = aMapToShareTheTileProviderWith.mTileProvider;
-		this.mPaint.setAntiAlias(true);
-	}
+//	public OpenStreetMapView(final Context context, final OpenStreetMapRendererInfo aRendererInfo,
+//			final OpenStreetMapView aMapToShareTheTileProviderWith) {
+//		super(context);
+//		this.mRendererInfo = aRendererInfo;
+//		this.mTileProvider = aMapToShareTheTileProviderWith.mTileProvider;
+//		this.mPaint.setAntiAlias(true);
+//	}
 
 	// ===========================================================
 	// Getter & Setter
@@ -370,9 +381,12 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 	// ===========================================================
 
 	public void onLongPress(MotionEvent e) {
+		Ut.dd("onLongPress");
 		for (OpenStreetMapViewOverlay osmvo : this.mOverlays)
-			if (osmvo.onLongPress(e, this))
+			if (osmvo.onLongPress(e, this)){
+				mActionMoveDetected = true;
 				return;
+			}
 
 	}
 
@@ -428,6 +442,7 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 	}
 
 	public boolean canCreateContextMenu(){
+		Ut.dd("canCreateContextMenu");
 		return !mActionMoveDetected;
 	}
 

@@ -358,7 +358,11 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 	public boolean onContextItemSelected(MenuItem item) {
 		switch(item.getItemId()){
 		case R.id.menu_addpoi:
-//			mPoiManager.addPoiStartActivity(this, this.mOsmv.getTouchDownPoint());
+			startActivity((new Intent(this, PoiActivity.class)).putExtra("lat",
+					this.mOsmv.getTouchDownPoint().getLatitude()).putExtra("lon",
+							this.mOsmv.getTouchDownPoint().getLongitude()));
+			break;
+		case R.id.menu_editpoi:
 			startActivity((new Intent(this, PoiActivity.class)).putExtra("lat",
 					this.mOsmv.getTouchDownPoint().getLatitude()).putExtra("lon",
 							this.mOsmv.getTouchDownPoint().getLongitude()));
@@ -371,8 +375,12 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
 		if(mOsmv.canCreateContextMenu()){
-
-			menu.add(0, R.id.menu_addpoi, 0, getText(R.string.menu_addpoi));
+			int markerIndex = mPoiOverlay.getMarkerAtPoint(mOsmv.mTouchDownX, mOsmv.mTouchDownY, mOsmv);
+			if(markerIndex >= 0){
+				menu.add(0, R.id.menu_editpoi, 0, getText(R.string.menu_edit));
+			}else{
+				menu.add(0, R.id.menu_addpoi, 0, getText(R.string.menu_addpoi));
+			}
 		}
 
 		super.onCreateContextMenu(menu, v, menuInfo);
