@@ -353,7 +353,9 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 			if(fields.length>1) title = fields[1];
 			if(fields.length>2) descr = fields[2];
 			
-			mPoiOverlay.setGpsStatusGeoPoint(GeoPoint.fromDoubleString(locns), title, descr);
+			GeoPoint point = GeoPoint.fromDoubleString(locns);
+			mPoiOverlay.setGpsStatusGeoPoint(point, title, descr);
+			mOsmv.setMapCenter(point);
 		}
 	}
 
