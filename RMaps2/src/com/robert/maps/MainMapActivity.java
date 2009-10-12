@@ -343,8 +343,16 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 
 	private void ActionShowPoints(Intent queryIntent) {
 		final ArrayList<String> locations = queryIntent.getStringArrayListExtra("locations");
-		if(!locations.isEmpty())
-			Ut.dd("asd="+locations.get(0));
+		if(!locations.isEmpty()){
+			Ut.dd("Intent: "+ACTION_SHOW_POINTS+" locations: "+locations.toString());
+			String [] fields = locations.get(0).split(";");
+			String locns = "", title = "", descr = "";
+			if(fields.length>0) locns = fields[0];
+			if(fields.length>1) title = fields[1];
+			if(fields.length>2) descr = fields[2];
+			
+			mPoiOverlay.setGpsStatusGeoPoint(GeoPoint.fromDoubleString(locns), title, descr);
+		}
 	}
 
 	private void CheckNeedDataUpdate() {
