@@ -55,7 +55,7 @@ public class PoiOverlay extends OpenStreetMapViewOverlay {
 	}
 
 	@Override
-	public void onDrawAfterRotate(Canvas c, OpenStreetMapView mapView) {
+	public void onDraw(Canvas c, OpenStreetMapView mapView) {
 		this.mItemList = mPoiManager.getPoiList();
 
 		final OpenStreetMapViewProjection pj = mapView.getProjection();
@@ -68,7 +68,12 @@ public class PoiOverlay extends OpenStreetMapViewOverlay {
 				PoiPoint item = this.mItemList.get(i);
 				pj.toPixels(item.mGeoPoint, curScreenCoords);
 
+				c.save();
+				c.rotate(mapView.getBearing(), curScreenCoords.x, curScreenCoords.y);
+				
 				onDrawItem(c, i, curScreenCoords);
+
+				c.restore();
 			}
 		}
 		
@@ -76,7 +81,12 @@ public class PoiOverlay extends OpenStreetMapViewOverlay {
 			PoiPoint item = this.mItemList.get(mTapIndex);
 			pj.toPixels(item.mGeoPoint, curScreenCoords);
 
+			c.save();
+			c.rotate(mapView.getBearing(), curScreenCoords.x, curScreenCoords.y);
+
 			onDrawItem(c, mTapIndex, curScreenCoords);
+
+			c.restore();
 		}
 	}
 
@@ -201,21 +211,8 @@ public class PoiOverlay extends OpenStreetMapViewOverlay {
 
 	@Override
 	protected void onDrawFinished(Canvas c, OpenStreetMapView osmv) {
-		// TODO Auto-generated method stub
-		
 	}
 
-	@Override
-	protected void onDraw(Canvas c, OpenStreetMapView osmv) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	protected void onDrawFinishedAfterRotate(Canvas c, OpenStreetMapView osmv) {
-		// TODO Auto-generated method stub
-		
-	}
 }
 
 

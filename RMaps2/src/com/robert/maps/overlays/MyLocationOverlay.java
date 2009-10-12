@@ -138,18 +138,6 @@ public class MyLocationOverlay extends OpenStreetMapViewOverlay {
 		}
 	}
 
-	@Override
-	protected void onDrawAfterRotate(Canvas c, OpenStreetMapView osmv) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	protected void onDrawFinishedAfterRotate(Canvas c, OpenStreetMapView osmv) {
-		// TODO Auto-generated method stub
-		
-	}
-
 	// ===========================================================
 	// Methods
 	// ===========================================================

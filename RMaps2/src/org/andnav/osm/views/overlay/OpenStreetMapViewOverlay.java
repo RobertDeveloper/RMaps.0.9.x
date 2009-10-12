@@ -42,18 +42,9 @@ public abstract class OpenStreetMapViewOverlay implements OpenStreetMapConstants
 		onDrawFinished(c, osmv);
 	}
 	
-	public void onManagedDrawAfterRotate(final Canvas c, final OpenStreetMapView osmv){
-		onDrawAfterRotate(c, osmv);
-		onDrawFinishedAfterRotate(c, osmv);
-	}
-	
 	protected abstract void onDraw(final Canvas c, final OpenStreetMapView osmv);
 	
 	protected abstract void onDrawFinished(final Canvas c, final OpenStreetMapView osmv);
-
-	protected abstract void onDrawAfterRotate(final Canvas c, final OpenStreetMapView osmv);
-	
-	protected abstract void onDrawFinishedAfterRotate(final Canvas c, final OpenStreetMapView osmv);
 
 	// ===========================================================
 	// Methods
