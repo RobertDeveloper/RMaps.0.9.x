@@ -1,8 +1,6 @@
 // Created by plusminus on 00:14:42 - 02.10.2008
 package org.andnav.osm;
 
-import org.andnav.osm.contributor.OSMUploader;
-import org.andnav.osm.contributor.RouteRecorder;
 import org.andnav.osm.util.constants.OpenStreetMapConstants;
 
 import android.app.Activity;
@@ -33,7 +31,7 @@ public abstract class OpenStreetMapActivity extends Activity implements OpenStre
 
 	protected SampleLocationListener mLocationListener, mNetListener;
 
-	protected RouteRecorder mRouteRecorder = new RouteRecorder();
+//	protected RouteRecorder mRouteRecorder = new RouteRecorder();
 
 	protected boolean mDoGPSRecordingAndContributing;
 
@@ -63,10 +61,10 @@ public abstract class OpenStreetMapActivity extends Activity implements OpenStre
 	public void onCreate(final Bundle savedInstanceState, final boolean pDoGPSRecordingAndContributing) {
 		super.onCreate(savedInstanceState);
 
-		if(pDoGPSRecordingAndContributing)
-			this.enableDoGPSRecordingAndContributing();
-		else
-			this.disableDoGPSRecordingAndContributing(false);
+//		if(pDoGPSRecordingAndContributing)
+//			this.enableDoGPSRecordingAndContributing();
+//		else
+//			this.disableDoGPSRecordingAndContributing(false);
 
 		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
 		mGPSFastUpdate = pref.getBoolean("pref_gpsfastupdate", true);
@@ -135,38 +133,38 @@ public abstract class OpenStreetMapActivity extends Activity implements OpenStre
 		if(mNetListener != null)
 			getLocationManager().removeUpdates(mNetListener);
 
-		if(this.mDoGPSRecordingAndContributing){
-			OSMUploader.uploadAsync(this.mRouteRecorder.getRecordedGeoPoints());
-		}
+//		if(this.mDoGPSRecordingAndContributing){
+//			OSMUploader.uploadAsync(this.mRouteRecorder.getRecordedGeoPoints());
+//		}
 	}
 
 	// ===========================================================
 	// Methods
 	// ===========================================================
 
-	public void enableDoGPSRecordingAndContributing(){
-		/* If already true, return. */
-		if(this.mDoGPSRecordingAndContributing)
-			return;
-
-		this.mRouteRecorder = new RouteRecorder();
-
-		this.mDoGPSRecordingAndContributing = true;
-	}
-
-	public void disableDoGPSRecordingAndContributing(final boolean pContributdeCurrentRoute){
-		/* If already false, return. */
-		if(!this.mDoGPSRecordingAndContributing)
-			return;
-
-		if(pContributdeCurrentRoute){
-			OSMUploader.uploadAsync(this.mRouteRecorder.getRecordedGeoPoints());
-		}
-
-		this.mRouteRecorder = null;
-
-		this.mDoGPSRecordingAndContributing = false;
-	}
+//	public void enableDoGPSRecordingAndContributing(){
+//		/* If already true, return. */
+//		if(this.mDoGPSRecordingAndContributing)
+//			return;
+//
+//		this.mRouteRecorder = new RouteRecorder();
+//
+//		this.mDoGPSRecordingAndContributing = true;
+//	}
+//
+//	public void disableDoGPSRecordingAndContributing(final boolean pContributdeCurrentRoute){
+//		/* If already false, return. */
+//		if(!this.mDoGPSRecordingAndContributing)
+//			return;
+//
+//		if(pContributdeCurrentRoute){
+//			OSMUploader.uploadAsync(this.mRouteRecorder.getRecordedGeoPoints());
+//		}
+//
+//		this.mRouteRecorder = null;
+//
+//		this.mDoGPSRecordingAndContributing = false;
+//	}
 
 	@Override
 	protected void onStart() {
@@ -206,8 +204,8 @@ public abstract class OpenStreetMapActivity extends Activity implements OpenStre
 	private class SampleLocationListener implements LocationListener {
 		public void onLocationChanged(final Location loc) {
 			if (loc != null){
-				if(OpenStreetMapActivity.this.mDoGPSRecordingAndContributing)
-					OpenStreetMapActivity.this.mRouteRecorder.add(loc, OpenStreetMapActivity.this.mNumSatellites);
+//				if(OpenStreetMapActivity.this.mDoGPSRecordingAndContributing)
+//					OpenStreetMapActivity.this.mRouteRecorder.add(loc, OpenStreetMapActivity.this.mNumSatellites);
 
 				OpenStreetMapActivity.this.onLocationChanged(loc);
 			}else{

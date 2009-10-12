@@ -26,7 +26,6 @@ import org.andnav.osm.util.TypeConverter;
 import org.andnav.osm.util.constants.OpenStreetMapConstants;
 import org.andnav.osm.views.OpenStreetMapView;
 import org.andnav.osm.views.controller.OpenStreetMapViewController;
-import org.andnav.osm.views.overlay.OpenStreetMapViewSimpleLocationOverlay;
 import org.andnav.osm.views.util.OpenStreetMapRendererInfo;
 import org.andnav.osm.views.util.StreamUtils;
 import org.json.JSONArray;
@@ -78,6 +77,7 @@ import android.widget.RelativeLayout.LayoutParams;
 
 import com.robert.maps.kml.PoiManager;
 import com.robert.maps.kml.PoiPoint;
+import com.robert.maps.overlays.MyLocationOverlay;
 import com.robert.maps.overlays.PoiOverlay;
 import com.robert.maps.overlays.SearchResultOverlay;
 import com.robert.maps.utils.SearchSuggestionsProvider;
@@ -93,7 +93,7 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 	// ===========================================================
 
 	private OpenStreetMapView mOsmv; //, mOsmvMinimap;
-	private OpenStreetMapViewSimpleLocationOverlay mMyLocationOverlay;
+	private MyLocationOverlay mMyLocationOverlay;
 	private PoiOverlay mPoiOverlay;
 	private SearchResultOverlay mSearchResultOverlay;
 
@@ -166,7 +166,7 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
         	if(RendererInfo.YANDEX_TRAFFIC_ON == 1)
         		this.mOsmv.getOverlays().add(new YandexTrafficOverlay(this, this.mOsmv));
 
-	        this.mMyLocationOverlay = new OpenStreetMapViewSimpleLocationOverlay(this);
+	        this.mMyLocationOverlay = new MyLocationOverlay(this);
 	        this.mOsmv.getOverlays().add(mMyLocationOverlay);
 
 	        this.mSearchResultOverlay = new SearchResultOverlay(this);
