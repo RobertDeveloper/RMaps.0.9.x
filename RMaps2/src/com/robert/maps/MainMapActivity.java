@@ -1,8 +1,5 @@
 package com.robert.maps;
 
-//FIXME Программа ломится при установке поверх предыдущей версии, какая то проблема с апгредом базы
-//FIXME Не отрабатывает контекстное меню, потому что руки дрожат
-
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
@@ -15,6 +12,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -111,6 +109,7 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 	private boolean mNorthDirectionUp;
 	private float mLastSpeed;
 	private PoiManager mPoiManager;
+	private String ACTION_SHOW_POINTS = "com.robert.maps.action.SHOW_POINTS";
 
 	private final SensorEventListener mListener = new SensorEventListener() {
 		private int iOrientation = -1;
@@ -309,10 +308,18 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 
         final Intent queryIntent = getIntent();
         final String queryAction = queryIntent.getAction();
+        
         if (Intent.ACTION_SEARCH.equals(queryAction)) {
             doSearchQuery(queryIntent);
-        }
+        }else if(ACTION_SHOW_POINTS.equalsIgnoreCase(queryAction))
+        	ActionShowPoints(queryIntent);
     }
+
+	private void ActionShowPoints(Intent queryIntent) {
+		final ArrayList<String> locations = queryIntent.getStringArrayListExtra("locations");
+		if(!locations.isEmpty())
+			Ut.dd("asd="+locations.get(0));
+	}
 
 	private void CheckNeedDataUpdate() {
 		SharedPreferences settings = getPreferences(Activity.MODE_PRIVATE);
