@@ -1,7 +1,9 @@
 package com.robert.maps.overlays;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.andnav.osm.util.GeoPoint;
 import org.andnav.osm.views.OpenStreetMapView;
 import org.andnav.osm.views.OpenStreetMapView.OpenStreetMapViewProjection;
 import org.andnav.osm.views.overlay.OpenStreetMapViewOverlay;
@@ -34,6 +36,7 @@ public class PoiOverlay extends OpenStreetMapViewOverlay {
 	protected final Point mMarkerHotSpot;
 	protected final Drawable mMarker;
 	protected final int mMarkerWidth, mMarkerHeight;
+	private boolean mCanUpdateList = true;
 
 	public PoiOverlay(Context ctx, PoiManager poiManager,
 			OnItemTapListener<PoiPoint> onItemTapListener) 
@@ -53,10 +56,22 @@ public class PoiOverlay extends OpenStreetMapViewOverlay {
 		this.mMarkerWidth = this.mMarker.getIntrinsicWidth();
 		this.mMarkerHeight = this.mMarker.getIntrinsicHeight();
 	}
-
+	
+	public void setGpsStatusGeoPoint(final GeoPoint geopoint, final String title, final String descr) {
+		PoiPoint poi = new PoiPoint(title, descr, geopoint);
+		if(mItemList == null)
+			mItemList = new ArrayList<PoiPoint>();
+		else
+			mItemList.clear();
+		
+		mItemList.add(poi);
+		mCanUpdateList = false;
+	}
+	
 	@Override
 	public void onDraw(Canvas c, OpenStreetMapView mapView) {
-		this.mItemList = mPoiManager.getPoiList();
+		if(mCanUpdateList)
+			this.mItemList = mPoiManager.getPoiList();
 
 		final OpenStreetMapViewProjection pj = mapView.getProjection();
 
