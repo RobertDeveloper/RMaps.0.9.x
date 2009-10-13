@@ -613,6 +613,7 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 							+ mRendererInfo.getQRTS(mapTileCoords[MAPTILE_LONGITUDE_INDEX], mapTileCoords[MAPTILE_LATITUDE_INDEX], zoomLevel), tileLeft + 5,
 							tileTop + 15, this.mPaint);
 				}
+				
 			}
 		}
 
@@ -625,6 +626,12 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 			c.drawRect(0, 0, viewWidth - 1, viewHeight - 1, this.mPaint);
 
 		c.restore();
+
+//		c.drawLine(viewWidth/2, 0, viewWidth/2, viewHeight, this.mPaint);
+//		c.drawLine(0, viewHeight/2, viewWidth, viewHeight/2, this.mPaint);
+//		c.drawCircle(viewWidth/2, viewHeight/2, 100, this.mPaint);
+//		c.drawLine(viewWidth/2-100, viewHeight/2-100, viewWidth/2+100, viewHeight/2+100, this.mPaint);
+//		c.drawLine(viewWidth/2+100, viewHeight/2-100, viewWidth/2-100, viewHeight/2+100, this.mPaint);
 
 		final long endMs = System.currentTimeMillis();
 		if (DEBUGMODE)
@@ -781,6 +788,22 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 		 */
 		public Point toPixels(final GeoPoint in, final Point reuse) {
 			return toPixels(in, reuse, true);
+		}
+		
+		public Point toPixels(final GeoPoint in, final double bearing, final Point reuse){
+			final Point point = toPixels(in, reuse, true);
+			final Point out = (reuse != null) ? reuse : new Point();
+			
+			final int x1 = point.x - OpenStreetMapView.this.getWidth()/2;
+			final int y1 = point.y - OpenStreetMapView.this.getHeight()/2;
+			final double hypot = Math.hypot(x1, y1);
+			final double angle = -1 * Math.signum(y1) * Math.toDegrees(Math.acos(x1/hypot));
+			final double angle2 = angle + bearing;
+			final int x2 = (int)(Math.cos(Math.toRadians(angle2))*hypot);
+			final int y2 = (int)(Math.sin(Math.toRadians(angle2-180))*hypot);
+			
+			out.set(OpenStreetMapView.this.getWidth()/2 + x2, OpenStreetMapView.this.getHeight()/2 + y2);
+			return out;
 		}
 
 		protected Point toPixels(final GeoPoint in, final Point reuse, final boolean doGudermann) {

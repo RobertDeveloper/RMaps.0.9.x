@@ -342,11 +342,7 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
             doSearchQuery(queryIntent);
         }else if(ACTION_SHOW_POINTS.equalsIgnoreCase(queryAction))
         	ActionShowPoints(queryIntent);
-        
-        
-        
-        // FIXME
-        //mOsmv.setBearing(updateBearing(45) + 90 * 0);
+
     }
 
 	private void ActionShowPoints(Intent queryIntent) {
