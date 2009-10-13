@@ -1,3 +1,4 @@
+//TODO Direction http://maps.google.com/maps/nav?key=ABQIAAAAzr2EBOXUKnm_jVnk0OJI7xSosDVG8KKPE1-m51RBrvYughuyMxQ-i1QfUnH94QxWIa6N4U6MouMmBA&output=js&dirflg=d&hl=en&mapclient=jsapi&q=from:%2065.366837,26.71875%20to:%2065.50,26.80
 package com.robert.maps;
 
 import java.io.BufferedInputStream;
@@ -341,6 +342,11 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
             doSearchQuery(queryIntent);
         }else if(ACTION_SHOW_POINTS.equalsIgnoreCase(queryAction))
         	ActionShowPoints(queryIntent);
+        
+        
+        
+        // FIXME
+        //mOsmv.setBearing(updateBearing(45) + 90 * 0);
     }
 
 	private void ActionShowPoints(Intent queryIntent) {
