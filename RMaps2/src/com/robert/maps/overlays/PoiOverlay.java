@@ -136,8 +136,8 @@ public class PoiOverlay extends OpenStreetMapViewOverlay {
 		this.mMarker.setBounds(left, top, right, bottom);
 
 		this.mMarker.draw(c);
-//		
-//		
+		
+		
 //		final int left2 = screenCoords.x + 5;
 //		final int right2 = left + 30;
 //		final int top2 = screenCoords.y - this.mMarkerHotSpot.y;
