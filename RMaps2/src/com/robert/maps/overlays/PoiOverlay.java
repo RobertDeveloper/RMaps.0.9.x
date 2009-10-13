@@ -155,16 +155,17 @@ public class PoiOverlay extends OpenStreetMapViewOverlay {
 
 		for(int i = 0; i < this.mItemList.size(); i++){
 			final PoiPoint mItem = this.mItemList.get(i);
-			pj.toPixels(mItem.mGeoPoint, mCurScreenCoords);
+			pj.toPixels(mItem.mGeoPoint, mapView.getBearing(), mCurScreenCoords);
 
 //			final int left = mCurScreenCoords.x - this.mMarkerHotSpot.x;
 //			final int right = left + markerWidth;
 //			final int top = mCurScreenCoords.y - this.mMarkerHotSpot.y;
 //			final int bottom = top + markerHeight;
-			final int left = mCurScreenCoords.x + 5;
-			final int right = left + 30;
-			final int top = mCurScreenCoords.y - this.mMarkerHotSpot.y;
-			final int bottom = top + 24;
+			final int pxUp = 2;
+			final int left = mCurScreenCoords.x + 5 - pxUp;
+			final int right = left + 30 + pxUp;
+			final int top = mCurScreenCoords.y - this.mMarkerHotSpot.y - pxUp;
+			final int bottom = top + 24 + pxUp;
 
 			curMarkerBounds.set(left, top, right, bottom);
 			if(curMarkerBounds.contains(eventX, eventY))
