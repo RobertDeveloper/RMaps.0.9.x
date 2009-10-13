@@ -355,6 +355,7 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 			
 			GeoPoint point = GeoPoint.fromDoubleString(locns);
 			mPoiOverlay.setGpsStatusGeoPoint(point, title, descr);
+			setAutoFollow(false);
 			mOsmv.setMapCenter(point);
 		}
 	}
@@ -457,7 +458,6 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 					startActivity(new Intent(Intent.ACTION_VIEW).setData(Uri
 							.parse("market://search?q=pname:com.eclipsim.gpsstatus2")));
 				} catch (Exception e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 			}
