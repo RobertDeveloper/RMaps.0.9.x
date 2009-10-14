@@ -38,6 +38,22 @@ public class GeoDatabase {
 		}
 	}
 
+	public void updatePoi(int id, String aName, String aDescr, double aLat, double aLon, double aAlt, int aCategoryId,
+			int aPointSourceId) {
+		if (isDatabaseReady()) {
+			final ContentValues cv = new ContentValues();
+			cv.put("name", aName);
+			cv.put("descr", aDescr);
+			cv.put("lat", aLat);
+			cv.put("lon", aLon);
+			cv.put("alt", aAlt);
+			cv.put("categoryid", aCategoryId);
+			cv.put("pointsourceid", aPointSourceId);
+			String[] args = {"" + id};
+			this.mDatabase.update("points", cv, "pointid = @1", args);
+		}
+	}
+
 	public Cursor getPoiListCursor() {
 		if (isDatabaseReady()) {
 			// не менять порядок полей
@@ -58,7 +74,7 @@ public class GeoDatabase {
 
 	public void deletePoi(final int id) {
 		if (isDatabaseReady()) {
-			mDatabase.rawQuery("DELETE FROM points WHERE pointid = " + id, null);
+			mDatabase.execSQL("DELETE FROM points WHERE pointid = " + id);
 		}
 	}
 

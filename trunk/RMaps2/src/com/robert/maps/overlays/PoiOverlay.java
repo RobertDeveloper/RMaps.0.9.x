@@ -1,6 +1,7 @@
 package com.robert.maps.overlays;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.andnav.osm.util.GeoPoint;
@@ -25,7 +26,7 @@ import com.robert.maps.utils.NinePatchDrawable;
 import com.robert.maps.utils.Ut;
 
 public class PoiOverlay extends OpenStreetMapViewOverlay {
-//	private Context mCtx;
+	private Context mCtx;
 	private PoiManager mPoiManager;
 	private NinePatchDrawable mButton;
 	private int mTapIndex;
@@ -34,31 +35,34 @@ public class PoiOverlay extends OpenStreetMapViewOverlay {
 	protected OnItemLongPressListener<PoiPoint> mOnItemLongPressListener;
 	protected List<PoiPoint> mItemList;
 	protected final Point mMarkerHotSpot;
-	protected final Drawable mMarker;
 	protected final int mMarkerWidth, mMarkerHeight;
 	private boolean mCanUpdateList = true;
+	protected HashMap<Integer, Drawable> mBtnMap;
 
 	public PoiOverlay(Context ctx, PoiManager poiManager,
 			OnItemTapListener<PoiPoint> onItemTapListener) 
 	{
-//		mCtx = ctx;
+		mCtx = ctx;
 		mPoiManager = poiManager;
 		Bitmap mBubbleBitmap = BitmapFactory.decodeResource(ctx.getResources(), R.drawable.popup_button);
 		byte[] chunk = {8,8,31,28}; // left,top,right,bottom
 		this.mButton = new NinePatchDrawable(new NinePatch(mBubbleBitmap, chunk, ""));
 		mTapIndex = -1;
 
-		this.mMarker = ctx.getResources().getDrawable(R.drawable.poi);
+		Drawable marker = ctx.getResources().getDrawable(R.drawable.poi);
+		this.mMarkerWidth = marker.getIntrinsicWidth();
+		this.mMarkerHeight = marker.getIntrinsicHeight();
+		
+		mBtnMap = new HashMap<Integer, Drawable>();
+		mBtnMap.put(new Integer(R.drawable.poi), marker);
 		this.mMarkerHotSpot = new Point(0, 38);
 
         this.mOnItemTapListener = onItemTapListener;
 
-		this.mMarkerWidth = this.mMarker.getIntrinsicWidth();
-		this.mMarkerHeight = this.mMarker.getIntrinsicHeight();
 	}
 	
 	public void setGpsStatusGeoPoint(final GeoPoint geopoint, final String title, final String descr) {
-		PoiPoint poi = new PoiPoint(title, descr, geopoint);
+		PoiPoint poi = new PoiPoint(title, descr, geopoint, R.drawable.poi_satttelite);
 		if(mItemList == null)
 			mItemList = new ArrayList<PoiPoint>();
 		else
@@ -81,7 +85,7 @@ public class PoiOverlay extends OpenStreetMapViewOverlay {
 		for (int i = this.mItemList.size() - 1; i >= 0; i--) {
 			if (i != mTapIndex) {
 				PoiPoint item = this.mItemList.get(i);
-				pj.toPixels(item.mGeoPoint, curScreenCoords);
+				pj.toPixels(item.GeoPoint, curScreenCoords);
 
 				c.save();
 				c.rotate(mapView.getBearing(), curScreenCoords.x, curScreenCoords.y);
@@ -94,7 +98,7 @@ public class PoiOverlay extends OpenStreetMapViewOverlay {
 		
 		if(mTapIndex >= 0){
 			PoiPoint item = this.mItemList.get(mTapIndex);
-			pj.toPixels(item.mGeoPoint, curScreenCoords);
+			pj.toPixels(item.GeoPoint, curScreenCoords);
 
 			c.save();
 			c.rotate(mapView.getBearing(), curScreenCoords.x, curScreenCoords.y);
@@ -106,15 +110,16 @@ public class PoiOverlay extends OpenStreetMapViewOverlay {
 	}
 
 	protected void onDrawItem(Canvas c, int index, Point screenCoords) {
+		final PoiPoint focusedItem = mItemList.get(index);
+
 		if (index == mTapIndex) {
 			int toUp = 1, toRight = 4; // int toUp = 25, toRight = 3;
 			int textToRight = 24, widthRightCut = 2, textPadding = 4, maxButtonWidth = 240;
 			int h0 = 40; // w0 = 40;// исходный размер
-			final PoiPoint focusedItem = mItemList.get(index);
 
-			Ut.TextWriter twTitle = new Ut.TextWriter(maxButtonWidth - textToRight, 14, focusedItem.mTitle);
-			Ut.TextWriter twDescr = new Ut.TextWriter(maxButtonWidth - textToRight, 12, focusedItem.mDescr);
-			Ut.TextWriter twCoord = new Ut.TextWriter(maxButtonWidth - textToRight, 8, Ut.formatGeoPoint(focusedItem.mGeoPoint));
+			Ut.TextWriter twTitle = new Ut.TextWriter(maxButtonWidth - textToRight, 14, focusedItem.Title);
+			Ut.TextWriter twDescr = new Ut.TextWriter(maxButtonWidth - textToRight, 12, focusedItem.Descr);
+			Ut.TextWriter twCoord = new Ut.TextWriter(maxButtonWidth - textToRight, 8, Ut.formatGeoPoint(focusedItem.GeoPoint));
 
 			final int buttonHegth = 10 + twTitle.getHeight() + twDescr.getHeight() + twCoord.getHeight() + 3*textPadding;
 			final int buttonWidth = Math.max(twCoord.getWidth(), Math.max(twTitle.getWidth(),twDescr.getWidth())) + textToRight + widthRightCut + 2 * textPadding;// конечный размер
@@ -133,9 +138,18 @@ public class PoiOverlay extends OpenStreetMapViewOverlay {
 		final int top = screenCoords.y - this.mMarkerHotSpot.y;
 		final int bottom = top + this.mMarkerHeight;
 
-		this.mMarker.setBounds(left, top, right, bottom);
+		Integer key = new Integer(focusedItem.pictureid);
+		Drawable marker = null;
+		if(mBtnMap.containsKey(key))
+			marker = mBtnMap.get(key);
+		else {
+			marker = mCtx.getResources().getDrawable(focusedItem.pictureid);
+			mBtnMap.put(key, marker);
+		}
 
-		this.mMarker.draw(c);
+		marker.setBounds(left, top, right, bottom);
+		
+		marker.draw(c);
 		
 		
 //		final int left2 = screenCoords.x + 5;
@@ -159,7 +173,7 @@ public class PoiOverlay extends OpenStreetMapViewOverlay {
 
 		for(int i = 0; i < this.mItemList.size(); i++){
 			final PoiPoint mItem = this.mItemList.get(i);
-			pj.toPixels(mItem.mGeoPoint, mapView.getBearing(), mCurScreenCoords);
+			pj.toPixels(mItem.GeoPoint, mapView.getBearing(), mCurScreenCoords);
 
 //			final int left = mCurScreenCoords.x - this.mMarkerHotSpot.x;
 //			final int right = left + markerWidth;

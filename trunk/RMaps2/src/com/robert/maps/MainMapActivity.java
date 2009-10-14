@@ -415,10 +415,12 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 		case R.id.menu_editpoi:
 			int markerIndex = mPoiOverlay.getMarkerAtPoint(mOsmv.mTouchDownX, mOsmv.mTouchDownY, mOsmv);
 			startActivity((new Intent(this, PoiActivity.class)).putExtra("pointid", mPoiOverlay.getPoiPoint(markerIndex).getId()));
+			mOsmv.invalidate();
 			break;
 		case R.id.menu_deletepoi:
 			int markerIndex2 = mPoiOverlay.getMarkerAtPoint(mOsmv.mTouchDownX, mOsmv.mTouchDownY, mOsmv);
 			mPoiManager.deletePoi(mPoiOverlay.getPoiPoint(markerIndex2).getId());
+			mOsmv.invalidate();
 			break;
 		}
 
