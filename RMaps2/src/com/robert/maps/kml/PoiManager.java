@@ -30,13 +30,20 @@ public class PoiManager {
 		mGeoDatabase.addPoi(title, descr, point.getLatitude(), point.getLongitude(), 0, 0, 0);
 	}
 
+	public void updatePoi(final PoiPoint point){
+		if(point.getId() < 0)
+			mGeoDatabase.addPoi(point.Title, point.Descr, point.GeoPoint.getLatitude(), point.GeoPoint.getLongitude(), point.Alt, point.CategoryId, point.PointSourceId);
+		else 
+			mGeoDatabase.updatePoi(point.getId(), point.Title, point.Descr, point.GeoPoint.getLatitude(), point.GeoPoint.getLongitude(), point.Alt, point.CategoryId, point.PointSourceId);
+	}
+
 	public List<PoiPoint> getPoiList() {
 		final ArrayList<PoiPoint> items = new ArrayList<PoiPoint>();
 		final Cursor c = mGeoDatabase.getPoiListCursor();
 		if (c != null) {
 			if (c.moveToFirst()) {
 				do {
-					items.add(new PoiPoint(c.getString(2), c.getString(3), new GeoPoint(
+					items.add(new PoiPoint(c.getInt(4), c.getString(2), c.getString(3), new GeoPoint(
 							(int) (1E6 * c.getDouble(0)), (int) (1E6 * c.getDouble(1)))));
 				} while (c.moveToNext());
 			}

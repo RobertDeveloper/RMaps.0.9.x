@@ -463,7 +463,7 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 			invalidate();
 			break;
 		case MotionEvent.ACTION_MOVE:
-			if (Math.max(Math.abs(mTouchDownX - event.getX()), Math.abs(mTouchDownY - event.getY())) > 4) {
+			if (Math.max(Math.abs(mTouchDownX - event.getX()), Math.abs(mTouchDownY - event.getY())) > 6) {
 				mActionMoveDetected = true; // компенсируем дрожание рук
 				final float aRotateToAngle = 360 - mBearing;
 				this.mTouchMapOffsetX = (int) (Math.sin(Math.toRadians(aRotateToAngle)) * (event.getY() - this.mTouchDownY))

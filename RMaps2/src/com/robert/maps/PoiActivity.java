@@ -15,7 +15,7 @@ import com.robert.maps.utils.Ut;
 
 public class PoiActivity extends Activity {
 	EditText mTitle, mLat, mLon, mDescr;
-	private int mId;
+	private PoiPoint mPoiPoint;
 	private PoiManager mPoiManager;
 	
 	
@@ -33,30 +33,34 @@ public class PoiActivity extends Activity {
 		mDescr = (EditText) findViewById(R.id.Descr);
 
         Bundle extras = getIntent().getExtras();
-        mId = extras.getInt("pointid", -1);
+        int id = extras.getInt("pointid", PoiPoint.EMPTY_ID());
         
-        if(mId < 0){
+        if(id < 0){
+        	mPoiPoint = new PoiPoint();
 			mTitle.setText(extras.getString("title"));
 			mLat.setText(Ut.formatGeoCoord(extras.getDouble("lat")));
 			mLon.setText(Ut.formatGeoCoord(extras.getDouble("lon")));
 			mDescr.setText(extras.getString("descr"));
         }else{
-        	PoiPoint point = mPoiManager.getPoiPoint(mId);
+        	mPoiPoint = mPoiManager.getPoiPoint(id);
         	
-        	if(point == null)
+        	if(mPoiPoint == null)
         		finish();
         	
-        	mId = point.getId();
-        	mTitle.setText(point.mTitle);
-        	mLat.setText(Ut.formatGeoCoord(point.mGeoPoint.getLatitude()));
-        	mLon.setText(Ut.formatGeoCoord(point.mGeoPoint.getLongitude()));
-        	mDescr.setText(point.mDescr);
+        	mTitle.setText(mPoiPoint.Title);
+        	mLat.setText(Ut.formatGeoCoord(mPoiPoint.GeoPoint.getLatitude()));
+        	mLon.setText(Ut.formatGeoCoord(mPoiPoint.GeoPoint.getLongitude()));
+        	mDescr.setText(mPoiPoint.Descr);
         }
 		
 		((Button) findViewById(R.id.saveButton))
 		.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-				mPoiManager.addPoi(mTitle.getText().toString(), mDescr.getText().toString(), GeoPoint.from2DoubleString(mLat.getText().toString(), mLon.getText().toString()));
+				mPoiPoint.Title = mTitle.getText().toString();
+				mPoiPoint.Descr = mDescr.getText().toString();
+				mPoiPoint.GeoPoint = GeoPoint.from2DoubleString(mLat.getText().toString(), mLon.getText().toString());
+				
+				mPoiManager.updatePoi(mPoiPoint);
 				PoiActivity.this.finish();
 			}
 		});
