@@ -440,12 +440,11 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 	}
 
 	public boolean canCreateContextMenu(){
-		Ut.dd("canCreateContextMenu");
 		return !mActionMoveDetected;
 	}
 
 	public GeoPoint getTouchDownPoint(){
-		return this.getProjection().fromPixels(mTouchDownX, mTouchDownY);
+		return this.getProjection().fromPixels(mTouchDownX, mTouchDownY, mBearing);
 	}
 
 	@Override
@@ -751,6 +750,18 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 			//for(int i =0; i<=tileSizePx*(1<<zoomLevel); i++){int Q = Util.x2lon(i, zoomLevel, tileSizePx);Log.d(DEBUGTAG, "lon "+i+" "+Q);}
 
 			return p;
+		}
+		
+		public GeoPoint fromPixels(float x, float y, double bearing){
+			final int x1 = (int) (x - OpenStreetMapView.this.getWidth()/2);
+			final int y1 = (int) (y - OpenStreetMapView.this.getHeight()/2);
+			final double hypot = Math.hypot(x1, y1);
+			final double angle = -1 * Math.signum(y1) * Math.toDegrees(Math.acos(x1/hypot));
+			final double angle2 = angle - bearing;
+			final int x2 = (int)(Math.cos(Math.toRadians(angle2))*hypot);
+			final int y2 = (int)(Math.sin(Math.toRadians(angle2-180))*hypot);
+			
+			return fromPixels((float)(OpenStreetMapView.this.getWidth()/2 + x2), (float)(OpenStreetMapView.this.getHeight()/2 + y2));
 		}
 
 		private static final int EQUATORCIRCUMFENCE = 40075004;
