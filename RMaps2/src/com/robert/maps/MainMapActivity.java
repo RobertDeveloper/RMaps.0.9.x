@@ -1,4 +1,6 @@
 //TODO Direction http://maps.google.com/maps/nav?key=ABQIAAAAzr2EBOXUKnm_jVnk0OJI7xSosDVG8KKPE1-m51RBrvYughuyMxQ-i1QfUnH94QxWIa6N4U6MouMmBA&output=js&dirflg=d&hl=en&mapclient=jsapi&q=from:%2065.366837,26.71875%20to:%2065.50,26.80
+// from:%2065.366837,26.71875%20to:%2065.50,26.80
+// http://maps.google.com/maps?saddr=65.366837,26.71875&daddr=65.50,26.80&output=kml
 package com.robert.maps;
 
 import java.io.BufferedInputStream;
@@ -406,9 +408,9 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 	public boolean onContextItemSelected(MenuItem item) {
 		switch(item.getItemId()){
 		case R.id.menu_addpoi:
-			startActivity((new Intent(this, PoiActivity.class)).putExtra("lat",
-					this.mOsmv.getTouchDownPoint().getLatitude()).putExtra("lon",
-							this.mOsmv.getTouchDownPoint().getLongitude()));
+			GeoPoint point = this.mOsmv.getTouchDownPoint();
+			startActivity((new Intent(this, PoiActivity.class))
+					.putExtra("lat", point.getLatitude()).putExtra("lon", point.getLongitude()));
 			break;
 		case R.id.menu_editpoi:
 			startActivity((new Intent(this, PoiActivity.class)).putExtra("lat",
