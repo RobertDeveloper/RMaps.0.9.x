@@ -10,9 +10,8 @@
 		android:icon="@android:drawable/ic_menu_compass"
 		android:title="@string/menu_compass"></item>
 	<item
-		android:id="@+id/settings"
-		android:icon="@android:drawable/ic_menu_preferences"
-		android:title="@string/menu_settings"></item>
+		android:id="@+id/gpsstatus"
+		android:title="@string/menu_gpsstatus"></item>
 	<item
 		android:id="@+id/mylocation"
 		android:icon="@android:drawable/ic_menu_mylocation"
@@ -29,12 +28,14 @@
 			</group>
 		</menu>
 	</item>
+	
 	<item
-		android:id="@+id/gpsstatus"
-		android:title="@string/menu_gpsstatus"></item>
+		android:id="@+id/settings"
+		android:icon="@android:drawable/ic_menu_preferences"
+		android:title="@string/menu_settings"></item>
 	<item
 		android:id="@+id/about"
 		android:title="@string/menu_about"
 		android:icon="@android:drawable/ic_menu_info_details"></item>
-	
+
 </menu>

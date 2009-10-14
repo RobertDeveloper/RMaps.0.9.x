@@ -52,4 +52,22 @@ public class PoiManager {
 				touchDownPoint.getLatitude()).putExtra("lon",
 				touchDownPoint.getLongitude()));
 	}
+
+
+	public PoiPoint getPoiPoint(int id) {
+		PoiPoint point = null;
+		final Cursor c = mGeoDatabase.getPoi(id);
+		if (c != null) {
+			if (c.moveToFirst())
+				point = new PoiPoint(c.getInt(4), c.getString(2), c.getString(3), new GeoPoint(
+						(int) (1E6 * c.getDouble(0)), (int) (1E6 * c.getDouble(1))));
+			c.close();
+		}
+
+		return point;
+	}
+	
+	public void deletePoi(final int id){
+		mGeoDatabase.deletePoi(id);
+	}
 }

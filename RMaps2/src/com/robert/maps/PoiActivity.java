@@ -10,32 +10,53 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.robert.maps.kml.PoiManager;
+import com.robert.maps.kml.PoiPoint;
 import com.robert.maps.utils.Ut;
 
 public class PoiActivity extends Activity {
 	EditText mTitle, mLat, mLon, mDescr;
+	private int mId;
+	private PoiManager mPoiManager;
+	
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
 		this.setContentView(R.layout.poi);
-		
+
+		mPoiManager = new PoiManager(this);
+
 		mTitle = (EditText) findViewById(R.id.Title);
 		mLat = (EditText) findViewById(R.id.Lat);
 		mLon = (EditText) findViewById(R.id.Lon);
 		mDescr = (EditText) findViewById(R.id.Descr);
 
         Bundle extras = getIntent().getExtras();
-		mTitle.setText(extras.getString("title"));
-		mLat.setText(Ut.formatGeoCoord(extras.getDouble("lat")));
-		mLon.setText(Ut.formatGeoCoord(extras.getDouble("lon")));
-		mDescr.setText(extras.getString("descr"));
+        mId = extras.getInt("pointid", -1);
+        
+        if(mId < 0){
+			mTitle.setText(extras.getString("title"));
+			mLat.setText(Ut.formatGeoCoord(extras.getDouble("lat")));
+			mLon.setText(Ut.formatGeoCoord(extras.getDouble("lon")));
+			mDescr.setText(extras.getString("descr"));
+        }else{
+        	PoiPoint point = mPoiManager.getPoiPoint(mId);
+        	
+        	if(point == null)
+        		finish();
+        	
+        	mId = point.getId();
+        	mTitle.setText(point.mTitle);
+        	mLat.setText(Ut.formatGeoCoord(point.mGeoPoint.getLatitude()));
+        	mLon.setText(Ut.formatGeoCoord(point.mGeoPoint.getLongitude()));
+        	mDescr.setText(point.mDescr);
+        }
 		
 		((Button) findViewById(R.id.saveButton))
 		.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-				PoiManager poiManager = new PoiManager(PoiActivity.this);
-				poiManager.addPoi(mTitle.getText().toString(), mDescr.getText().toString(), GeoPoint.from2DoubleString(mLat.getText().toString(), mLon.getText().toString()));
+				mPoiManager.addPoi(mTitle.getText().toString(), mDescr.getText().toString(), GeoPoint.from2DoubleString(mLat.getText().toString(), mLon.getText().toString()));
 				PoiActivity.this.finish();
 			}
 		});
