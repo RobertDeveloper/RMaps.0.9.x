@@ -85,6 +85,7 @@ How to and FAQ you can find on http://robertdeveloper.blogspot.com/\n
 v.0.6.5\n
 + Move index data of offline maps to sdcard\n
 + Added buttons for clearing internal cache and index database to preference\n
++ Update Yandex.Map URL, Google.Map URL\n
 - Bug fix: Wrong compass orientation on landscape mode\n
 \n
 v.0.6.4\n
