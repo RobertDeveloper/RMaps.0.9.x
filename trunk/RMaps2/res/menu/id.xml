@@ -9,4 +9,5 @@
 
 <item android:id="@+id/menu_addpoi"></item>
 <item android:id="@+id/menu_editpoi"></item>
+<item android:id="@+id/menu_deletepoi"></item>
 </menu>

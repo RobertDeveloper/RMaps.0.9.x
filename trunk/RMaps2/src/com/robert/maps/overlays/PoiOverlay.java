@@ -147,6 +147,10 @@ public class PoiOverlay extends OpenStreetMapViewOverlay {
 //		c.drawLine(right2, top2, left2, bottom2, p);
 	}
 	
+	public PoiPoint getPoiPoint(final int index){
+		return this.mItemList.get(index);
+	}
+	
 	public int getMarkerAtPoint(final int eventX, final int eventY, OpenStreetMapView mapView){
 		final OpenStreetMapViewProjection pj = mapView.getProjection();
 

@@ -413,9 +413,12 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 					.putExtra("lat", point.getLatitude()).putExtra("lon", point.getLongitude()));
 			break;
 		case R.id.menu_editpoi:
-			startActivity((new Intent(this, PoiActivity.class)).putExtra("lat",
-					this.mOsmv.getTouchDownPoint().getLatitude()).putExtra("lon",
-							this.mOsmv.getTouchDownPoint().getLongitude()));
+			int markerIndex = mPoiOverlay.getMarkerAtPoint(mOsmv.mTouchDownX, mOsmv.mTouchDownY, mOsmv);
+			startActivity((new Intent(this, PoiActivity.class)).putExtra("pointid", mPoiOverlay.getPoiPoint(markerIndex).getId()));
+			break;
+		case R.id.menu_deletepoi:
+			int markerIndex2 = mPoiOverlay.getMarkerAtPoint(mOsmv.mTouchDownX, mOsmv.mTouchDownY, mOsmv);
+			mPoiManager.deletePoi(mPoiOverlay.getPoiPoint(markerIndex2).getId());
 			break;
 		}
 
@@ -428,6 +431,7 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 			int markerIndex = mPoiOverlay.getMarkerAtPoint(mOsmv.mTouchDownX, mOsmv.mTouchDownY, mOsmv);
 			if(markerIndex >= 0){
 				menu.add(0, R.id.menu_editpoi, 0, getText(R.string.menu_edit));
+				menu.add(0, R.id.menu_deletepoi, 0, getText(R.string.menu_delete));
 			}else{
 				menu.add(0, R.id.menu_addpoi, 0, getText(R.string.menu_addpoi));
 			}

@@ -40,10 +40,26 @@ public class GeoDatabase {
 
 	public Cursor getPoiListCursor() {
 		if (isDatabaseReady()) {
-			return mDatabase.rawQuery("SELECT lat, lon, name, descr FROM points ORDER BY lat, lon", null);
+			// не менять порядок полей
+			return mDatabase.rawQuery("SELECT lat, lon, name, descr, pointid FROM points ORDER BY lat, lon", null);
 		}
 
 		return null;
+	}
+
+	public Cursor getPoi(final int id) {
+		if (isDatabaseReady()) {
+			// не менять порядок полей
+			return mDatabase.rawQuery("SELECT lat, lon, name, descr, pointid FROM points WHERE pointid = " + id + " ORDER BY lat, lon", null);
+		}
+
+		return null;
+	}
+
+	public void deletePoi(final int id) {
+		if (isDatabaseReady()) {
+			mDatabase.rawQuery("DELETE FROM points WHERE pointid = " + id, null);
+		}
 	}
 
 	private boolean isDatabaseReady() {
@@ -68,9 +84,9 @@ public class GeoDatabase {
 		// for ver.1
 		if(db.needUpgrade(1)) {
 			Ut.dd("Upgrade data.db from ver.0 to ver.1");
-			db.execSQL("CREATE TABLE IF NOT EXISTS 'points' (name VARCHAR, descr VARCHAR, lat FLOAT DEFAULT '0', lon FLOAT DEFAULT '0', alt FLOAT DEFAULT '0', categoryid INTEGER, pointsourceid INTEGER);");
-			db.execSQL("CREATE TABLE IF NOT EXISTS 'pointsource' (pointsourceid INTEGER, name VARCHAR);");
-			db.execSQL("CREATE TABLE IF NOT EXISTS 'category' (categoryid INTEGER, name VARCHAR);");
+			db.execSQL("CREATE TABLE IF NOT EXISTS 'points' (pointid INTEGER NOT NULL PRIMARY KEY UNIQUE, name VARCHAR, descr VARCHAR, lat FLOAT DEFAULT '0', lon FLOAT DEFAULT '0', alt FLOAT DEFAULT '0', categoryid INTEGER, pointsourceid INTEGER);");
+			db.execSQL("CREATE TABLE IF NOT EXISTS 'pointsource' (pointsourceid INTEGER NOT NULL PRIMARY KEY UNIQUE, name VARCHAR);");
+			db.execSQL("CREATE TABLE IF NOT EXISTS 'category' (categoryid INTEGER NOT NULL PRIMARY KEY UNIQUE, name VARCHAR);");
 			db.setVersion(1);
 		}
 

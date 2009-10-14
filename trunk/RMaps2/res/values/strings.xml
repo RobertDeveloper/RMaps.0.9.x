@@ -143,6 +143,7 @@ v.0.5.2
     <string name="menu_done">Done</string>
     <string name="menu_doNotSave">Revert</string>
     <string name="menu_edit">Edit</string>
+    <string name="menu_delete">Delete</string>
     <string name="PoiTitle">Title</string>
     <string name="PoiLat">Latitude</string>
     <string name="PoiLon">Longitude</string>
