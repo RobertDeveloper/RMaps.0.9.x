@@ -35,7 +35,6 @@ import android.view.GestureDetector.OnDoubleTapListener;
 import android.view.GestureDetector.OnGestureListener;
 
 import com.robert.maps.R;
-import com.robert.maps.utils.Ut;
 
 public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 		OpenStreetMapViewConstants {
@@ -379,7 +378,6 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 	// ===========================================================
 
 	public void onLongPress(MotionEvent e) {
-		Ut.dd("onLongPress");
 		for (OpenStreetMapViewOverlay osmvo : this.mOverlays)
 			if (osmvo.onLongPress(e, this)){
 				mActionMoveDetected = true;

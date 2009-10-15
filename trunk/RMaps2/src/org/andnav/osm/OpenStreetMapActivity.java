@@ -178,7 +178,7 @@ public abstract class OpenStreetMapActivity extends Activity implements OpenStre
 	}
 
 	protected void StatusChanged(String provider, int status, Bundle b){
-		Log.e(DEBUGTAG, "onStatusChanged povider = " + provider + " status = " + status + " satellites = " + b.getInt("satellites", NOT_SET));
+//		Log.e(DEBUGTAG, "onStatusChanged povider = " + provider + " status = " + status + " satellites = " + b.getInt("satellites", NOT_SET));
 		if(mNetListener != null) {
 			if(provider.equals(GPS) && status == 2) {
 				getLocationManager().removeUpdates(mNetListener);

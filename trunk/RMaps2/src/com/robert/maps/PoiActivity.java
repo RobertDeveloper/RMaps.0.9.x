@@ -33,6 +33,7 @@ public class PoiActivity extends Activity {
 		mDescr = (EditText) findViewById(R.id.Descr);
 
         Bundle extras = getIntent().getExtras();
+        if(extras == null) extras = new Bundle();
         int id = extras.getInt("pointid", PoiPoint.EMPTY_ID());
         
         if(id < 0){
