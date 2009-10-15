@@ -78,6 +78,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.RelativeLayout.LayoutParams;
 
+import com.robert.maps.kml.PoiListActivity;
 import com.robert.maps.kml.PoiManager;
 import com.robert.maps.kml.PoiPoint;
 import com.robert.maps.overlays.MyLocationOverlay;
@@ -471,6 +472,9 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 					e1.printStackTrace();
 				}
 			}
+			return true;
+		case (R.id.poilist):
+			startActivity(new Intent(this, PoiListActivity.class));
 			return true;
 		case (R.id.search):
 			onSearchRequested();
