@@ -205,18 +205,18 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
         }
 
         /* Itemized Overlay */
-        {
-			this.mPoiOverlay = new PoiOverlay(this, mPoiManager,
-					new PoiOverlay.OnItemTapListener<PoiPoint>() {
-						public boolean onItemTap(int index, PoiPoint item) {
-//							Toast.makeText(MainMapActivity.this,
-//									"Item '" + item.mTitle + "' (index=" + index + ") got tapped", Toast.LENGTH_LONG)
-//									.show();
-							return true; // We 'handled' this event.
-						}
-					});
-			this.mOsmv.getOverlays().add(this.mPoiOverlay);
-		}
+//        {
+//			this.mPoiOverlay = new PoiOverlay(this, mPoiManager,
+//					new PoiOverlay.OnItemTapListener<PoiPoint>() {
+//						public boolean onItemTap(int index, PoiPoint item) {
+////							Toast.makeText(MainMapActivity.this,
+////									"Item '" + item.mTitle + "' (index=" + index + ") got tapped", Toast.LENGTH_LONG)
+////									.show();
+//							return true; // We 'handled' this event.
+//						}
+//					});
+//			this.mOsmv.getOverlays().add(this.mPoiOverlay);
+//		}
 
         {
         	final boolean sideBottom = pref.getBoolean("pref_bottomzoomcontrol", true);
@@ -509,7 +509,8 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 	       		this.mOsmv.getOverlays().add(new YandexTrafficOverlay(this, this.mOsmv));
 			}
 	        this.mOsmv.getOverlays().add(mMyLocationOverlay);
-	        this.mOsmv.getOverlays().add(mPoiOverlay);
+	        if(mPoiOverlay != null)
+	        	this.mOsmv.getOverlays().add(mPoiOverlay);
 	        this.mOsmv.getOverlays().add(mSearchResultOverlay);
 
 	        setTitle();
@@ -732,6 +733,7 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 		}
 
 		mOrientationSensorManager.unregisterListener(mListener);
+		mPoiManager.FreeDatabase();
 
 		super.onPause();
 	}
@@ -775,7 +777,8 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
        		this.mOsmv.getOverlays().add(new YandexTrafficOverlay(this, this.mOsmv));
 		}
         this.mOsmv.getOverlays().add(mMyLocationOverlay);
-        this.mOsmv.getOverlays().add(mPoiOverlay);
+        if(mPoiOverlay != null)
+        	this.mOsmv.getOverlays().add(mPoiOverlay);
         this.mOsmv.getOverlays().add(mSearchResultOverlay);
 
 		mOsmv.setZoomLevel(settings.getInt("ZoomLevel", 0));

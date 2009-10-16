@@ -21,6 +21,9 @@ public class PoiManager {
 		mGeoDatabase = new GeoDatabase(ctx);
 	}
 
+	public void FreeDatabase(){
+		mGeoDatabase.FreeDatabase();
+	}
 
 	public void addPoi(GeoPoint point){
 		mGeoDatabase.addPoi("testpoi", "Test POI 1", point.getLatitude(), point.getLongitude(), 0, 0, 0);
