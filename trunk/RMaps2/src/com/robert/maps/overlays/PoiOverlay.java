@@ -113,7 +113,7 @@ public class PoiOverlay extends OpenStreetMapViewOverlay {
 		final PoiPoint focusedItem = mItemList.get(index);
 
 		if (index == mTapIndex) {
-			int toUp = 8, toRight = 2; // int toUp = 25, toRight = 3;
+			int toUp = 7, toRight = 2; // int toUp = 25, toRight = 3;
 			int textToRight = 26, widthRightCut = 2, textPadding = 4, maxButtonWidth = 240;
 			int h0 = 40; // w0 = 40;// исходный размер
 
