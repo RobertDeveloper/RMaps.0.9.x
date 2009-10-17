@@ -11,7 +11,7 @@
 		android:title="@string/menu_compass"></item>
 	<item
 		android:id="@+id/poilist"
-		android:icon="@drawable/ic_menu_see_map"
+		android:icon="@android:drawable/ic_menu_myplaces"
 		android:title="@string/menu_poilist"></item>
 	<item
 		android:id="@+id/mylocation"
