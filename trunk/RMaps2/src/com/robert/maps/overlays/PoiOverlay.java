@@ -13,7 +13,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
@@ -97,7 +96,7 @@ public class PoiOverlay extends OpenStreetMapViewOverlay {
 			}
 		}
 		
-		if(mTapIndex >= 0){
+		if(mTapIndex >= 0 && mTapIndex < this.mItemList.size()){
 			PoiPoint item = this.mItemList.get(mTapIndex);
 			pj.toPixels(item.GeoPoint, curScreenCoords);
 

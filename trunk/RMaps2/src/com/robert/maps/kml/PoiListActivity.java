@@ -15,7 +15,6 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
-import com.robert.maps.PoiActivity;
 import com.robert.maps.R;
 
 public class PoiListActivity extends ListActivity {
