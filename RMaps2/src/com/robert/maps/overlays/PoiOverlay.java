@@ -55,7 +55,7 @@ public class PoiOverlay extends OpenStreetMapViewOverlay {
 		
 		mBtnMap = new HashMap<Integer, Drawable>();
 		mBtnMap.put(new Integer(R.drawable.poi), marker);
-		this.mMarkerHotSpot = new Point(0, 38);
+		this.mMarkerHotSpot = new Point(0, 45);
 
         this.mOnItemTapListener = onItemTapListener;
 
@@ -113,7 +113,7 @@ public class PoiOverlay extends OpenStreetMapViewOverlay {
 		final PoiPoint focusedItem = mItemList.get(index);
 
 		if (index == mTapIndex) {
-			int toUp = 1, toRight = 2; // int toUp = 25, toRight = 3;
+			int toUp = 8, toRight = 2; // int toUp = 25, toRight = 3;
 			int textToRight = 26, widthRightCut = 2, textPadding = 4, maxButtonWidth = 240;
 			int h0 = 40; // w0 = 40;// исходный размер
 
