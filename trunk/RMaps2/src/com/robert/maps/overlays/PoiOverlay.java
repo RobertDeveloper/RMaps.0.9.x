@@ -13,6 +13,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
@@ -113,8 +114,8 @@ public class PoiOverlay extends OpenStreetMapViewOverlay {
 		final PoiPoint focusedItem = mItemList.get(index);
 
 		if (index == mTapIndex) {
-			int toUp = 1, toRight = 4; // int toUp = 25, toRight = 3;
-			int textToRight = 24, widthRightCut = 2, textPadding = 4, maxButtonWidth = 240;
+			int toUp = 1, toRight = 2; // int toUp = 25, toRight = 3;
+			int textToRight = 26, widthRightCut = 2, textPadding = 4, maxButtonWidth = 240;
 			int h0 = 40; // w0 = 40;// исходный размер
 
 			Ut.TextWriter twTitle = new Ut.TextWriter(maxButtonWidth - textToRight, 14, focusedItem.Title);
@@ -152,10 +153,11 @@ public class PoiOverlay extends OpenStreetMapViewOverlay {
 		marker.draw(c);
 		
 		
-//		final int left2 = screenCoords.x + 5;
-//		final int right2 = left + 30;
-//		final int top2 = screenCoords.y - this.mMarkerHotSpot.y;
-//		final int bottom2 = top + 24;
+//		final int pxUp = 2;
+//		final int left2 = screenCoords.x + 5 - pxUp;
+//		final int right2 = left + 30 + pxUp;
+//		final int top2 = screenCoords.y - this.mMarkerHotSpot.y - pxUp;
+//		final int bottom2 = top + 33 + pxUp;
 //		Paint p = new Paint();
 //		c.drawLine(left2, top2, right2, bottom2, p);
 //		c.drawLine(right2, top2, left2, bottom2, p);
@@ -183,7 +185,7 @@ public class PoiOverlay extends OpenStreetMapViewOverlay {
 			final int left = mCurScreenCoords.x + 5 - pxUp;
 			final int right = left + 30 + pxUp;
 			final int top = mCurScreenCoords.y - this.mMarkerHotSpot.y - pxUp;
-			final int bottom = top + 24 + pxUp;
+			final int bottom = top + 33 + pxUp;
 
 			curMarkerBounds.set(left, top, right, bottom);
 			if(curMarkerBounds.contains(eventX, eventY))
