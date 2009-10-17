@@ -133,7 +133,7 @@ public class GeoDatabase {
 
 		@Override
 		public void onCreate(SQLiteDatabase db) {
-			db.execSQL("CREATE TABLE IF NOT EXISTS 'points' (pointid INTEGER NOT NULL PRIMARY KEY UNIQUE, name VARCHAR, descr VARCHAR, lat FLOAT DEFAULT '0', lon FLOAT DEFAULT '0', alt FLOAT DEFAULT '0', categoryid INTEGER, pointsourceid INTEGER);");
+			db.execSQL("CREATE TABLE IF NOT EXISTS 'points' (pointid INTEGER NOT NULL PRIMARY KEY UNIQUE, name VARCHAR, descr VARCHAR, lat FLOAT DEFAULT '0', lon FLOAT DEFAULT '0', alt FLOAT DEFAULT '0', hidden INTEGER, categoryid INTEGER, pointsourceid INTEGER);");
 			db.execSQL("CREATE TABLE IF NOT EXISTS 'pointsource' (pointsourceid INTEGER NOT NULL PRIMARY KEY UNIQUE, name VARCHAR);");
 			db.execSQL("CREATE TABLE IF NOT EXISTS 'category' (categoryid INTEGER NOT NULL PRIMARY KEY UNIQUE, name VARCHAR);");
 		}
