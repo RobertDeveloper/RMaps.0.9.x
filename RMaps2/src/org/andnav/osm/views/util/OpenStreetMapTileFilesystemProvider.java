@@ -40,6 +40,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.robert.maps.utils.CashDatabase;
+import com.robert.maps.utils.RSQLiteOpenHelper;
 import com.robert.maps.utils.Ut;
 
 /**
@@ -68,7 +69,7 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 	// ===========================================================
 
 	protected final Context mCtx;
-	protected final OpenStreetMapTileFilesystemProviderDataBase mDatabase; //FIXME
+	protected final OpenStreetMapTileFilesystemProviderDataBase mDatabase; 
 	protected final int mMaxFSCacheByteSize;
 	protected int mCurrentFSCacheByteSize;
 	protected ExecutorService mThreadPool = Executors.newFixedThreadPool(2);
@@ -695,7 +696,6 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 		// ===========================================================
 
 		protected final Context mCtx;
-		protected final AndNavDatabaseHelper mAndNavDatabaseHelper;
 		protected final SQLiteDatabase mDatabase;
 		protected final SimpleDateFormat DATE_FORMAT_ISO8601 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
 
@@ -710,8 +710,7 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 			this.mCtx = context;
 			this.mCashTableName = "";
 			this.mIndexDatabase = getIndexDatabase();
-			this.mAndNavDatabaseHelper = new AndNavDatabaseHelper(context);
-			this.mDatabase = mAndNavDatabaseHelper.getWritableDatabase();
+			this.mDatabase = new AndNavDatabaseHelper(context).getWritableDatabase();
 		}
 
 		public int ZoomMaxInCashFile() {
@@ -996,7 +995,6 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 		}
 
 		public void freeDatabases() {
-			mAndNavDatabaseHelper.close();
 			if(mDatabase != null)
 				if(mDatabase.isOpen())
 				{
@@ -1014,19 +1012,28 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 
 	}
 
+	protected class IndexDatabaseHelper extends RSQLiteOpenHelper {
+		public IndexDatabaseHelper(final Context context, final String name) {
+			super(context, name, null, 1);
+		}
+
+		@Override
+		public void onCreate(SQLiteDatabase db) {
+		}
+
+		@Override
+		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+		}
+		
+	}
+
 	public SQLiteDatabase getIndexDatabase() {
 		File folder = Ut.getRMapsFolder("data", false);
 		if(!folder.exists()) // no sdcard // TODO ѕроверить как это работает без карты? если вытащить карту во врем€ работы программы?
 			return null;
 
 		Ut.dd("OpenStreetMapTileFilesystemProvider: Open INDEX database");
-		SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase("/sdcard/rmaps/data/index.db", null);
-
-		// for ver.1
-		if(db.needUpgrade(1))
-			db.setVersion(1);
-
-		return db;
+		return new IndexDatabaseHelper(mCtx, folder.getAbsolutePath() + "/index.db").getWritableDatabase();
 	}
 
 	public void freeDatabases() {

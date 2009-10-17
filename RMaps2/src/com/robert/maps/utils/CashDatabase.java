@@ -35,8 +35,9 @@ public class CashDatabase {
 
 	public int getMaxZoom(){
 		int ret = 99;
+		this.mDatabase.execSQL("CREATE TABLE IF NOT EXISTS info AS SELECT 17-MAX(z) AS minzoom, 17-MIN(z) AS maxzoom FROM tiles");
 		final Cursor c = this.mDatabase.rawQuery(
-				"SELECT 17-MIN(z) AS ret FROM tiles", null);
+				"SELECT maxzoom AS ret FROM info", null);
 		if (c != null) {
 			if (c.moveToFirst()) {
 				ret = c.getInt(c.getColumnIndexOrThrow("ret"));
@@ -48,8 +49,9 @@ public class CashDatabase {
 
 	public int getMinZoom(){
 		int ret = 0;
+		this.mDatabase.execSQL("CREATE TABLE IF NOT EXISTS info AS SELECT 17-MAX(z) AS minzoom, 17-MIN(z) AS maxzoom FROM tiles");
 		final Cursor c = this.mDatabase.rawQuery(
-				"SELECT 17-MAX(z) AS ret FROM tiles", null);
+				"SELECT minzoom AS ret FROM info", null);
 		if (c != null) {
 			if (c.moveToFirst()) {
 				ret = c.getInt(c.getColumnIndexOrThrow("ret"));
