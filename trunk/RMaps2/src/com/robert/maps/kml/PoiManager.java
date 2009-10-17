@@ -21,8 +21,8 @@ public class PoiManager {
 		mGeoDatabase = new GeoDatabase(ctx);
 	}
 
-	public void FreeDatabase(){
-		mGeoDatabase.FreeDatabase();
+	public void FreeDatabases(){
+		mGeoDatabase.FreeDatabases();
 	}
 
 	public void addPoi(GeoPoint point){

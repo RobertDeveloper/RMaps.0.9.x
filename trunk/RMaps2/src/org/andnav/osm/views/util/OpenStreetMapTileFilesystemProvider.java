@@ -68,7 +68,7 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 	// ===========================================================
 
 	protected final Context mCtx;
-	protected final OpenStreetMapTileFilesystemProviderDataBase mDatabase;
+	protected final OpenStreetMapTileFilesystemProviderDataBase mDatabase; //FIXME
 	protected final int mMaxFSCacheByteSize;
 	protected int mCurrentFSCacheByteSize;
 	protected ExecutorService mThreadPool = Executors.newFixedThreadPool(2);
@@ -695,6 +695,7 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 		// ===========================================================
 
 		protected final Context mCtx;
+		protected final AndNavDatabaseHelper mAndNavDatabaseHelper;
 		protected final SQLiteDatabase mDatabase;
 		protected final SimpleDateFormat DATE_FORMAT_ISO8601 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
 
@@ -709,7 +710,8 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 			this.mCtx = context;
 			this.mCashTableName = "";
 			this.mIndexDatabase = getIndexDatabase();
-			this.mDatabase = new AndNavDatabaseHelper(context).getWritableDatabase();
+			this.mAndNavDatabaseHelper = new AndNavDatabaseHelper(context);
+			this.mDatabase = mAndNavDatabaseHelper.getWritableDatabase();
 		}
 
 		public int ZoomMaxInCashFile() {
@@ -985,6 +987,31 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 			}
 		}
 
+		@Override
+		protected void finalize() throws Throwable {
+			Ut.dd("finalize: Close INDEX database");
+			if(mIndexDatabase != null)
+				mIndexDatabase.close();
+			super.finalize();
+		}
+
+		public void freeDatabases() {
+			mAndNavDatabaseHelper.close();
+			if(mDatabase != null)
+				if(mDatabase.isOpen())
+				{
+					mDatabase.close();
+					Ut.dd("Close AndNavDatabase");
+				}
+			
+			if(mIndexDatabase != null)
+				if(mIndexDatabase.isOpen())
+				{
+					mIndexDatabase.close();
+					Ut.dd("Close INDEX Database");
+				}
+		}
+
 	}
 
 	public SQLiteDatabase getIndexDatabase() {
@@ -992,6 +1019,7 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 		if(!folder.exists()) // no sdcard // TODO ѕроверить как это работает без карты? если вытащить карту во врем€ работы программы?
 			return null;
 
+		Ut.dd("OpenStreetMapTileFilesystemProvider: Open INDEX database");
 		SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase("/sdcard/rmaps/data/index.db", null);
 
 		// for ver.1
@@ -999,6 +1027,11 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 			db.setVersion(1);
 
 		return db;
+	}
+
+	public void freeDatabases() {
+		mDatabase.freeDatabases();
+		mCashDatabase.freeDatabases();
 	}
 
 }

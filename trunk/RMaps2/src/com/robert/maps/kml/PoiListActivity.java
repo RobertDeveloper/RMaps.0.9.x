@@ -19,16 +19,44 @@ import com.robert.maps.PoiActivity;
 import com.robert.maps.R;
 
 public class PoiListActivity extends ListActivity {
+	private GeoDatabase db = null;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
         registerForContextMenu(getListView());
-		
-        FillData();
+	}
+
+	@Override
+	protected void onStart() {
+		db = new GeoDatabase(this);
+		super.onStart();
+	}
+
+	@Override
+	protected void onStop() {
+		db.FreeDatabases();
+		db = null;
+		super.onStop();
+	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+	}
+
+	@Override
+	protected void onResume() {
+		FillData();
+		super.onResume();
+	}
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
 	}
 
 	private void FillData() {
-		GeoDatabase db = new GeoDatabase(this);
 		Cursor c = db.getPoiListCursor();
         startManagingCursor(c);
 

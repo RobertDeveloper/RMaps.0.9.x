@@ -80,7 +80,6 @@ import android.widget.RelativeLayout.LayoutParams;
 
 import com.robert.maps.kml.PoiListActivity;
 import com.robert.maps.kml.PoiManager;
-import com.robert.maps.kml.PoiPoint;
 import com.robert.maps.overlays.MyLocationOverlay;
 import com.robert.maps.overlays.PoiOverlay;
 import com.robert.maps.overlays.SearchResultOverlay;
@@ -205,18 +204,10 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
         }
 
         /* Itemized Overlay */
-//        {
-//			this.mPoiOverlay = new PoiOverlay(this, mPoiManager,
-//					new PoiOverlay.OnItemTapListener<PoiPoint>() {
-//						public boolean onItemTap(int index, PoiPoint item) {
-////							Toast.makeText(MainMapActivity.this,
-////									"Item '" + item.mTitle + "' (index=" + index + ") got tapped", Toast.LENGTH_LONG)
-////									.show();
-//							return true; // We 'handled' this event.
-//						}
-//					});
-//			this.mOsmv.getOverlays().add(this.mPoiOverlay);
-//		}
+        {
+        	this.mPoiOverlay = new PoiOverlay(this, mPoiManager, null);
+			this.mOsmv.getOverlays().add(this.mPoiOverlay);
+		}
 
         {
         	final boolean sideBottom = pref.getBoolean("pref_bottomzoomcontrol", true);
@@ -347,6 +338,13 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
         	ActionShowPoints(queryIntent);
 
     }
+
+	@Override
+	protected void onDestroy() {
+		mOsmv.freeDatabases();
+		mPoiManager.FreeDatabases();
+		super.onDestroy();
+	}
 
 	private void ActionShowPoints(Intent queryIntent) {
 		final ArrayList<String> locations = queryIntent.getStringArrayListExtra("locations");
@@ -733,7 +731,6 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 		}
 
 		mOrientationSensorManager.unregisterListener(mListener);
-		mPoiManager.FreeDatabase();
 
 		super.onPause();
 	}

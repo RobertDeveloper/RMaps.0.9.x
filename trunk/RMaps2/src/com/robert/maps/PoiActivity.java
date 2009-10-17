@@ -25,7 +25,8 @@ public class PoiActivity extends Activity {
 		
 		this.setContentView(R.layout.poi);
 
-		mPoiManager = new PoiManager(this);
+		if(mPoiManager == null)
+			mPoiManager = new PoiManager(this);
 
 		mTitle = (EditText) findViewById(R.id.Title);
 		mLat = (EditText) findViewById(R.id.Lat);
@@ -72,4 +73,12 @@ public class PoiActivity extends Activity {
 			}
 		});
 	}
+
+
+	@Override
+	protected void onDestroy() {
+		mPoiManager.FreeDatabases();
+		super.onDestroy();
+	}
+
 }
