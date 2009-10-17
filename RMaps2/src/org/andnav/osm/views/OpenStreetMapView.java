@@ -997,4 +997,8 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 
 	}
 
+	public void freeDatabases() {
+		mTileProvider.freeDatabases();
+	}
+
 }

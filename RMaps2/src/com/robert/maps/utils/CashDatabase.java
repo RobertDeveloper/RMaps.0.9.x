@@ -12,6 +12,7 @@ public class CashDatabase {
 		if (mDatabase != null)
 			mDatabase.close();
 
+		Ut.dd("CashDatabase: Open SQLITEDB Database");
 		mDatabase = SQLiteDatabase.openOrCreateDatabase(aFile, null);
 	}
 
@@ -56,6 +57,23 @@ public class CashDatabase {
 			c.close();
 		}
 		return ret;
+	}
+
+	@Override
+	protected void finalize() throws Throwable {
+		Ut.dd("finalize: Close SQLITEDB Database database");
+		if(mDatabase != null)
+			mDatabase.close();
+		super.finalize();
+	}
+
+	public void freeDatabases() {
+		if(mDatabase != null)
+			if(mDatabase.isOpen())
+			{
+				mDatabase.close();
+				Ut.dd("Close SQLITEDB Database");
+			}
 	}
 
 

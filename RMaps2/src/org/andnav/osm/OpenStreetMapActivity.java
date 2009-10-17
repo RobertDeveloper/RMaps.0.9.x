@@ -60,7 +60,7 @@ public abstract class OpenStreetMapActivity extends Activity implements OpenStre
 	 */
 	public void onCreate(final Bundle savedInstanceState, final boolean pDoGPSRecordingAndContributing) {
 		super.onCreate(savedInstanceState);
-
+		
 //		if(pDoGPSRecordingAndContributing)
 //			this.enableDoGPSRecordingAndContributing();
 //		else
@@ -95,9 +95,14 @@ public abstract class OpenStreetMapActivity extends Activity implements OpenStre
 		if(getLocationManager().isProviderEnabled(GPS)){
 				getLocationManager().requestLocationUpdates(GPS, minTime, minDistance, this.mLocationListener);
 
-				if(getLocationManager().isProviderEnabled(NETWORK)){
-					this.mNetListener = new SampleLocationListener();
-					getLocationManager().requestLocationUpdates(NETWORK, minTime, minDistance, this.mNetListener);
+				try {
+					if(getLocationManager().isProviderEnabled(NETWORK)){
+						this.mNetListener = new SampleLocationListener();
+						getLocationManager().requestLocationUpdates(NETWORK, minTime, minDistance, this.mNetListener);
+					}
+				} catch (Exception e) {
+					Log.e(DEBUGTAG, "isProviderEnabled(NETWORK) exception");
+					e.printStackTrace();
 				}
 
 		} else if(getLocationManager().isProviderEnabled(NETWORK)) {

@@ -55,6 +55,18 @@ public class GeoDatabase {
 		}
 	}
 
+	@Override
+	protected void finalize() throws Throwable {
+		if(mDatabase != null){
+			if(mDatabase.isOpen()){
+				mDatabase.close();
+				Ut.dd("finalize: Close database");
+				mDatabase = null;
+			}
+		}
+		super.finalize();
+	}
+
 	public Cursor getPoiListCursor() {
 		if (isDatabaseReady()) {
 			// не менять порядок полей
@@ -94,11 +106,13 @@ public class GeoDatabase {
 		return ret;
 	}
 	
-	public void FreeDatabase(){
+	public void FreeDatabases(){
 		if(mDatabase != null){
-			mDatabase.close();
-			Ut.dd("Close database isOpen="+mDatabase.isOpen());
-			mDatabase = null;
+			if(mDatabase.isOpen()){
+				mDatabase.close();
+				Ut.dd("Close database");
+				mDatabase = null;
+			}
 		}
 	}
 
@@ -107,7 +121,6 @@ public class GeoDatabase {
 		if(!folder.exists()) // no sdcard
 			return null;
 		
-		Ut.dd("open database");
 		SQLiteDatabase db = new GeoDatabaseHelper(mCtx, folder.getAbsolutePath() + "/geodata.db").getWritableDatabase();
 
 		return db;

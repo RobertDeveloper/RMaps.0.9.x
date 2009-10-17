@@ -19,7 +19,6 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 
 public class YandexTrafficOverlay extends OpenStreetMapViewOverlay implements OpenStreetMapConstants,
 		OpenStreetMapViewConstants {
@@ -94,7 +93,7 @@ public class YandexTrafficOverlay extends OpenStreetMapViewOverlay implements Op
 				/* Construct a URLString, which represents the MapTile. */
 				final String tileURLString = this.mRendererInfo.getTileURLString(mapTileCoords, zoomLevel);
 
-				Log.i(DEBUGTAG, tileURLString);
+//				Log.i(DEBUGTAG, tileURLString);
 
 				/* Draw the MapTile 'i tileSizePx' above of the centerMapTile */
 				final Bitmap currentMapTile = this.mTileProvider.getMapTile(tileURLString,
