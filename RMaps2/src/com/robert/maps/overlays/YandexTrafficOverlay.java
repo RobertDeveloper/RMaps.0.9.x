@@ -1,4 +1,4 @@
-package com.robert.maps;
+package com.robert.maps.overlays;
 
 import org.andnav.osm.util.BoundingBoxE6;
 import org.andnav.osm.util.MyMath;

@@ -1,4 +1,4 @@
-package com.robert.maps;
+package com.robert.maps.kml;
 
 import org.andnav.osm.util.GeoPoint;
 
@@ -9,8 +9,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.robert.maps.kml.PoiManager;
-import com.robert.maps.kml.PoiPoint;
+import com.robert.maps.R;
 import com.robert.maps.utils.Ut;
 
 public class PoiActivity extends Activity {

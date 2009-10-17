@@ -9,7 +9,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 
-import com.robert.maps.PoiActivity;
 
 public class PoiManager {
 	protected final Context mCtx;

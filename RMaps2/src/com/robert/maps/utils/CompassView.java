@@ -1,9 +1,11 @@
-package com.robert.maps;
+package com.robert.maps.utils;
 
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.view.View;
+
+import com.robert.maps.R;
 
 public class CompassView extends View {
 	private Drawable mCompass;
