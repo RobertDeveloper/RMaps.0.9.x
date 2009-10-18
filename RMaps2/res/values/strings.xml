@@ -71,7 +71,7 @@
     <string name="no_items">Your search did not match any items</string>
     <string name="about_dialog_text">
 ©2009 Robert.Developer\n
-  Osmdroid  by Nicolas Gramlich\n
+  Osmdroid by Nicolas Gramlich\n
   App icon by Everaldo Coelho\n
 With the assistance of\n
   Dmytro Sandu\n
@@ -154,4 +154,5 @@ v.0.5.2
     <string name="ya_dialog_title"/>
     <string name="ya_dialog_message"/>
     <string name="ya_dialog_button_caption"/>
+    <string name="menu_goto">Go to POI</string>
 </resources>

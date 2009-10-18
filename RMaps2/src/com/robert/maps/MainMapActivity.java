@@ -81,6 +81,7 @@ import android.widget.RelativeLayout.LayoutParams;
 import com.robert.maps.kml.PoiActivity;
 import com.robert.maps.kml.PoiListActivity;
 import com.robert.maps.kml.PoiManager;
+import com.robert.maps.kml.PoiPoint;
 import com.robert.maps.overlays.MyLocationOverlay;
 import com.robert.maps.overlays.PoiOverlay;
 import com.robert.maps.overlays.SearchResultOverlay;
@@ -475,7 +476,7 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 			}
 			return true;
 		case (R.id.poilist):
-			startActivity(new Intent(this, PoiListActivity.class));
+			startActivityForResult(new Intent(this, PoiListActivity.class), R.id.poilist);
 			return true;
 		case (R.id.search):
 			onSearchRequested();
@@ -808,10 +809,20 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if(requestCode == R.id.settings_activity_closed){
+		switch(requestCode){
+		case R.id.poilist:
+			if(resultCode == RESULT_OK){
+				PoiPoint point = mPoiManager.getPoiPoint(data.getIntExtra("pointid", 77));
+				if(point != null)
+					mOsmv.setMapCenter(point.GeoPoint);
+			}
+			break;
+		case R.id.settings_activity_closed:
 			finish();
 			startActivity(new Intent(this, this.getClass()));
+			break;
 		}
+
 		super.onActivityResult(requestCode, resultCode, data);
 	}
 

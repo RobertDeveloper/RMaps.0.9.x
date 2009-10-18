@@ -64,7 +64,7 @@
     <string name="no_items">По вашему запросу ничего не найдено</string>
     <string name="about_dialog_text">
 ©2009 Robert.Developer\n
-  Osmdroid  by Nicolas Gramlich\n
+  Osmdroid by Nicolas Gramlich\n
   App icon by Everaldo Coelho\n
 При участии\n
   Dmytro Sandu\n
@@ -148,4 +148,5 @@ v.0.5.2\n
     <string name="menu_poilist">POI</string>
     <string name="menu_gpsstatus">GPS Status</string>
     <string name="menu_delete">Удалить</string>
+    <string name="menu_goto">Перейти к точке</string>
 </resources>
