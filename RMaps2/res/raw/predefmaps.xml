@@ -35,6 +35,7 @@
 	<map id="cyclemap" name="Cycle Map" descr="" baseurl="http://b.andy.sandbox.cloudmade.com/tiles/cycle/" IMAGE_FILENAMEENDING=".png" ZOOM_MINLEVEL="0" ZOOM_MAXLEVEL="17" MAPTILE_SIZEPX="256" URL_BUILDER_TYPE="0" TILE_SOURCE_TYPE="0" PROJECTION="1" YANDEX_TRAFFIC_ON="0"></map>
 	<map id="cloudmadest" name="Cloudmade (Standard tiles)" descr="" baseurl="http://tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/2/256/" IMAGE_FILENAMEENDING=".png" ZOOM_MINLEVEL="0" ZOOM_MAXLEVEL="18" MAPTILE_SIZEPX="256" URL_BUILDER_TYPE="0" TILE_SOURCE_TYPE="0" PROJECTION="1" YANDEX_TRAFFIC_ON="0"></map>
 	<map id="osmhikingger" name="OSM Hiking Germany" descr="OpenStreetMap Hiking (Germany only)" baseurl="http://openpistemap.org/tiles/contours/" IMAGE_FILENAMEENDING=".png" ZOOM_MINLEVEL="0" ZOOM_MAXLEVEL="18" MAPTILE_SIZEPX="256" URL_BUILDER_TYPE="0" TILE_SOURCE_TYPE="0" PROJECTION="1" YANDEX_TRAFFIC_ON="0"></map>
+	<map id="osmpublictransport" name="OSM Public Transport" descr="" baseurl="http://tile.xn--pnvkarte-m4a.de/tilegen/" IMAGE_FILENAMEENDING=".png" ZOOM_MINLEVEL="0" ZOOM_MAXLEVEL="18" MAPTILE_SIZEPX="256" URL_BUILDER_TYPE="0" TILE_SOURCE_TYPE="0" PROJECTION="1" YANDEX_TRAFFIC_ON="0"></map>
 
 	<map id="openspace" name="Ordnance Survey Map" descr="Covering the whole of Great Britain" baseurl="" IMAGE_FILENAMEENDING="" ZOOM_MINLEVEL="7" ZOOM_MAXLEVEL="17" MAPTILE_SIZEPX="200" URL_BUILDER_TYPE="5" TILE_SOURCE_TYPE="0" PROJECTION="3" YANDEX_TRAFFIC_ON="0"></map>
 	<map id="msmap" name="Microsoft Maps" descr="" baseurl="http://r0.ortho.tiles.virtualearth.net/tiles/r" IMAGE_FILENAMEENDING=".png?g=45" ZOOM_MINLEVEL="1" ZOOM_MAXLEVEL="19" MAPTILE_SIZEPX="256" URL_BUILDER_TYPE="6" TILE_SOURCE_TYPE="0" PROJECTION="1" YANDEX_TRAFFIC_ON="0"></map>
@@ -42,4 +43,8 @@
 	<map id="msmapearth" name="Microsoft Virtual Earth" descr="" baseurl="http://a0.ortho.tiles.virtualearth.net/tiles/a" IMAGE_FILENAMEENDING=".jpg?g=45" ZOOM_MINLEVEL="1" ZOOM_MAXLEVEL="19" MAPTILE_SIZEPX="256" URL_BUILDER_TYPE="6" TILE_SOURCE_TYPE="0" PROJECTION="1" YANDEX_TRAFFIC_ON="0"></map>
 	<map id="msmaphybrid" name="Microsoft Hybrid" descr="" baseurl="http://h0.ortho.tiles.virtualearth.net/tiles/h" IMAGE_FILENAMEENDING=".jpg?g=45" ZOOM_MINLEVEL="1" ZOOM_MAXLEVEL="19" MAPTILE_SIZEPX="256" URL_BUILDER_TYPE="6" TILE_SOURCE_TYPE="0" PROJECTION="1" YANDEX_TRAFFIC_ON="0"></map>
 
+	<map id="outdooractive" name="Outdooractive.com" descr="" baseurl="http://t1.outdooractive.com/portal/map/" IMAGE_FILENAMEENDING=".png" ZOOM_MINLEVEL="0" ZOOM_MAXLEVEL="19" MAPTILE_SIZEPX="256" URL_BUILDER_TYPE="0" TILE_SOURCE_TYPE="0" PROJECTION="1" YANDEX_TRAFFIC_ON="0"></map>
+	<map id="cykloatlas" name="Cykloatlas CZ" descr="http://www.cykloserver.cz/cykloatlas/" baseurl="http://services.tmapserver.cz/tiles/gm/shc/" IMAGE_FILENAMEENDING=".png" ZOOM_MINLEVEL="7" ZOOM_MAXLEVEL="15" MAPTILE_SIZEPX="256" URL_BUILDER_TYPE="0" TILE_SOURCE_TYPE="0" PROJECTION="1" YANDEX_TRAFFIC_ON="0"></map>
+	
+	<map id="ump_pcpl" name="UMP-pcPL Poland" descr="http://ump.waw.pl" baseurl="http://1.tiles.ump.waw.pl/ump_tiles/" IMAGE_FILENAMEENDING=".png" ZOOM_MINLEVEL="0" ZOOM_MAXLEVEL="18" MAPTILE_SIZEPX="256" URL_BUILDER_TYPE="0" TILE_SOURCE_TYPE="0" PROJECTION="1" YANDEX_TRAFFIC_ON="0"></map>
 </root>
