@@ -42,7 +42,7 @@ public class OpenStreetMapRendererInfo {
 
 	public String ID, BASEURL, NAME, IMAGE_FILENAMEENDING;
 	public int ZOOM_MINLEVEL, ZOOM_MAXLEVEL,
-	URL_BUILDER_TYPE, // 0 - OSM, 1 - Google, 2 - Yandex, 3 - Yandex.Traffic, 4 - Google.Sattelite, 5 - openspace
+	URL_BUILDER_TYPE, // 0 - OSM, 1 - Google, 2 - Yandex, 3 - Yandex.Traffic, 4 - Google.Sattelite, 5 - openspace, 6 - microsoft
 	TILE_SOURCE_TYPE, // 0 - internet, 1 - AndNav ZIP file, 2 - SASGIS ZIP file, 3 - MapNav file, 4 - TAR, 5 - sqlitedb
 	YANDEX_TRAFFIC_ON,
 	PROJECTION; // 1-меркатор на сфероид, 2- на эллипсоид, 3- OSGB 36 British national grid reference system
@@ -213,6 +213,11 @@ public class OpenStreetMapRendererInfo {
 		switch(this.TILE_SOURCE_TYPE){
 		case 0: // 0 - internet
 			switch(this.URL_BUILDER_TYPE){
+				case 6: // Microsoft
+					return new StringBuilder().append(this.BASEURL)
+					.append(encodeQuadTree(zoomLevel, tileID[OpenStreetMapViewConstants.MAPTILE_LONGITUDE_INDEX], tileID[OpenStreetMapViewConstants.MAPTILE_LATITUDE_INDEX]))
+					.append(this.IMAGE_FILENAMEENDING)
+					.toString();
 				case 5: // openspace
 					final int million = 1000000 / getTileUpperBound(zoomLevel);
 					final int size = OpenSpaceLayersArray[zoomLevel-ZOOM_MINLEVEL] < 5 ? 250 : 200;
@@ -245,6 +250,7 @@ public class OpenStreetMapRendererInfo {
 					.append(tileID[OpenStreetMapViewConstants.MAPTILE_LATITUDE_INDEX])
 					.append("&z=")
 					.append(zoomLevel)
+					.append(this.IMAGE_FILENAMEENDING)
 					.toString();
 					// ResultURL:=GetURLBase+inttostr(GetX)+'&y='+inttostr(GetY)+'&z='+inttostr(GetZ-1);
 				case 3: // Yandex.Traffic
@@ -321,6 +327,21 @@ public class OpenStreetMapRendererInfo {
 			.append(this.IMAGE_FILENAMEENDING)
 			.toString();
 		}
+	}
+
+	protected static final char[] NUM_CHAR = { '0', '1', '2', '3' };
+
+	private Object encodeQuadTree(int zoom, int tilex, int tiley) {
+		char[] tileNum = new char[zoom];
+		for (int i = zoom - 1; i >= 0; i--) {
+			// Binary encoding using ones for tilex and twos for tiley. if a bit
+			// is set in tilex and tiley we get a three.
+			int num = (tilex % 2) | ((tiley % 2) << 1);
+			tileNum[i] = NUM_CHAR[num];
+			tilex >>= 1;
+			tiley >>= 1;
+		}
+		return new String(tileNum);
 	}
 
 	public int getTileSizePx(final int zoomLevel){

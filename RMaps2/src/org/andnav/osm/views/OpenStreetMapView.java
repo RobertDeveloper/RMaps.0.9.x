@@ -35,6 +35,7 @@ import android.view.GestureDetector.OnDoubleTapListener;
 import android.view.GestureDetector.OnGestureListener;
 
 import com.robert.maps.R;
+import com.robert.maps.utils.Ut;
 
 public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 		OpenStreetMapViewConstants {
@@ -592,6 +593,7 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 				/* Construct a URLString, which represents the MapTile. */
 				final String tileURLString = this.mRendererInfo.getTileURLString(mapTileCoords,
 						zoomLevel);
+				Ut.dd("onDraw: " + tileURLString);
 
 				/* Draw the MapTile 'i tileSizePx' above of the centerMapTile */
 				final Bitmap currentMapTile = this.mTileProvider.getMapTile(tileURLString,
