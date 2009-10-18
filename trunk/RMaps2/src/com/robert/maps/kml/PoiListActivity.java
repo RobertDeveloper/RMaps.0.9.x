@@ -40,19 +40,9 @@ public class PoiListActivity extends ListActivity {
 	}
 
 	@Override
-	protected void onPause() {
-		super.onPause();
-	}
-
-	@Override
 	protected void onResume() {
 		FillData();
 		super.onResume();
-	}
-
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
 	}
 
 	private void FillData() {
@@ -93,6 +83,7 @@ public class PoiListActivity extends ListActivity {
 	public void onCreateContextMenu(ContextMenu menu, View v,
 			ContextMenuInfo menuInfo) {
 		
+		menu.add(0, R.id.menu_gotopoi, 0, getText(R.string.menu_goto));
 		menu.add(0, R.id.menu_editpoi, 0, getText(R.string.menu_edit));
 		menu.add(0, R.id.menu_deletepoi, 0, getText(R.string.menu_delete));
 		
@@ -106,6 +97,10 @@ public class PoiListActivity extends ListActivity {
 		switch(item.getItemId()){
 		case R.id.menu_editpoi:
 			startActivity((new Intent(this, PoiActivity.class)).putExtra("pointid", pointid));
+			break;
+		case R.id.menu_gotopoi:
+			setResult(RESULT_OK, (new Intent()).putExtra("pointid", pointid));
+			finish();
 			break;
 		case R.id.menu_deletepoi:
 			new PoiManager(this).deletePoi(pointid);
