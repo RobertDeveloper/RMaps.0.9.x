@@ -29,6 +29,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Bitmap;
@@ -69,7 +70,7 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 	// ===========================================================
 
 	protected final Context mCtx;
-	protected final OpenStreetMapTileFilesystemProviderDataBase mDatabase; 
+	protected final OpenStreetMapTileFilesystemProviderDataBase mDatabase;
 	protected final int mMaxFSCacheByteSize;
 	protected int mCurrentFSCacheByteSize;
 	protected ExecutorService mThreadPool = Executors.newFixedThreadPool(2);
@@ -1007,7 +1008,7 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 					mDatabase.close();
 					Ut.dd("Close AndNavDatabase");
 				}
-			
+
 			if(mIndexDatabase != null)
 				if(mIndexDatabase.isOpen())
 				{
@@ -1030,11 +1031,15 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 		@Override
 		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 			if(oldVersion < 2){
-				Ut.dd("Upgrade IndexDatabase ver."+oldVersion+" to ver."+newVersion);
-				db.execSQL("DELETE FROM 'ListCashTables' WHERE name LIKE ('%sqlitedb')");
+				try {
+					Ut.dd("Upgrade IndexDatabase ver."+oldVersion+" to ver."+newVersion);
+					db.execSQL("DELETE FROM 'ListCashTables' WHERE name LIKE ('%sqlitedb')");
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
 			}
 		}
-		
+
 	}
 
 	public SQLiteDatabase getIndexDatabase() {
