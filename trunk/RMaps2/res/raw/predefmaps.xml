@@ -1,22 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-	URL_BUILDER_TYPE, // 0 - OSM, 
-		1 - Google, 
-		2 - Yandex, 
-		3 - Yandex.Traffic, 
-		4 - Google.Sattelite, 
-		5 - openspace, 
-		6 - microsoft, 
-	TILE_SOURCE_TYPE, // 
-		0 - internet, 
-		1 - AndNav ZIP file, 
-		2 - SASGIS ZIP file, 
-		3 - MapNav file, 
-		4 - TAR, 
+	URL_BUILDER_TYPE, // 0 - OSM,
+		1 - Google,
+		2 - Yandex,
+		3 - Yandex.Traffic,
+		4 - Google.Sattelite,
+		5 - openspace,
+		6 - microsoft,
+		7 - Docelu.pl
+	TILE_SOURCE_TYPE, //
+		0 - internet,
+		1 - AndNav ZIP file,
+		2 - SASGIS ZIP file,
+		3 - MapNav file,
+		4 - TAR,
 		5 - sqlitedb
-	PROJECTION; // 
-		1-меркатор на сфероид, 
-		2- на эллипсоид, 
+	PROJECTION; //
+		1-меркатор на сфероид,
+		2- на эллипсоид,
 		3- OSGB 36 British national grid reference system
 	-->
 
@@ -45,6 +46,11 @@
 
 	<map id="outdooractive" name="Outdooractive.com" descr="" baseurl="http://t1.outdooractive.com/portal/map/" IMAGE_FILENAMEENDING=".png" ZOOM_MINLEVEL="0" ZOOM_MAXLEVEL="19" MAPTILE_SIZEPX="256" URL_BUILDER_TYPE="0" TILE_SOURCE_TYPE="0" PROJECTION="1" YANDEX_TRAFFIC_ON="0"></map>
 	<map id="cykloatlas" name="Cykloatlas CZ" descr="http://www.cykloserver.cz/cykloatlas/" baseurl="http://services.tmapserver.cz/tiles/gm/shc/" IMAGE_FILENAMEENDING=".png" ZOOM_MINLEVEL="7" ZOOM_MAXLEVEL="15" MAPTILE_SIZEPX="256" URL_BUILDER_TYPE="0" TILE_SOURCE_TYPE="0" PROJECTION="1" YANDEX_TRAFFIC_ON="0"></map>
-	
+
 	<map id="ump_pcpl" name="UMP-pcPL Poland" descr="http://ump.waw.pl" baseurl="http://1.tiles.ump.waw.pl/ump_tiles/" IMAGE_FILENAMEENDING=".png" ZOOM_MINLEVEL="0" ZOOM_MAXLEVEL="18" MAPTILE_SIZEPX="256" URL_BUILDER_TYPE="0" TILE_SOURCE_TYPE="0" PROJECTION="1" YANDEX_TRAFFIC_ON="0"></map>
+	<map id="docelupl" name="Docelu.pl Poland" descr="http://docelu.pl" baseurl="http://i.wp.pl/m/tiles004/" IMAGE_FILENAMEENDING=".png" ZOOM_MINLEVEL="2" ZOOM_MAXLEVEL="17" MAPTILE_SIZEPX="256" URL_BUILDER_TYPE="7" TILE_SOURCE_TYPE="0" PROJECTION="1" YANDEX_TRAFFIC_ON="0"></map>
+
+	<map id="freemapsk" name="Freemap.sk Slovakia" descr="http://www.freemap.sk/" baseurl="http://www.freemap.sk/layers/allinone/?/BNp/" IMAGE_FILENAMEENDING="" ZOOM_MINLEVEL="0" ZOOM_MAXLEVEL="18" MAPTILE_SIZEPX="256" URL_BUILDER_TYPE="0" TILE_SOURCE_TYPE="0" PROJECTION="1" YANDEX_TRAFFIC_ON="0"></map>
+	<map id="freemapskhiking" name="Freemap.sk Hiking Slovakia" descr="http://www.freemap.sk/" baseurl="http://www.freemap.sk/layers/allinone/?/BNTNp/" IMAGE_FILENAMEENDING="" ZOOM_MINLEVEL="0" ZOOM_MAXLEVEL="18" MAPTILE_SIZEPX="256" URL_BUILDER_TYPE="0" TILE_SOURCE_TYPE="0" PROJECTION="1" YANDEX_TRAFFIC_ON="0"></map>
+	<map id="freemapskhillshade" name="Freemap.sk Hiking HillShade Slovakia" descr="http://www.freemap.sk/" baseurl="http://www.freemap.sk/layers/allinone/?/BVRNTp/" IMAGE_FILENAMEENDING="" ZOOM_MINLEVEL="0" ZOOM_MAXLEVEL="18" MAPTILE_SIZEPX="256" URL_BUILDER_TYPE="0" TILE_SOURCE_TYPE="0" PROJECTION="1" YANDEX_TRAFFIC_ON="0"></map>
 </root>

@@ -76,6 +76,10 @@ All rights reserved\n
 Как сделать офф-лайн карту и прочее можно почитать здесь http://robertdeveloper.blogspot.com/\n
 </string>
     <string name="whats_new_dialog_text">
+v.0.7.4\n
++ Добавлены онлайн карты (Docelu.pl Poland, Freemap.sk Slovakia, Slovakia Hiking, Slovakia Hiking HillShade)\n
+Хотите добавить какие-то онлайн карты? Напишите мне.\n
+\n
 v.0.7.3\n
 - Bug fix: Значение зума 100 в картах формата sqlitedb\n
 + Добавлены онлайн карты (Microsoft Maps, Maps China, Virtual Earth, Hybrid, OSM Hiking Germany, OSM Public Transport, Outdooractive.com, Cykloatlas CZ, UMP-pcPL Poland)\n

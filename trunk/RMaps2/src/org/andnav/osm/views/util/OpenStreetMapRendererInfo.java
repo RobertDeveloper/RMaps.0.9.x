@@ -213,6 +213,17 @@ public class OpenStreetMapRendererInfo {
 		switch(this.TILE_SOURCE_TYPE){
 		case 0: // 0 - internet
 			switch(this.URL_BUILDER_TYPE){
+				case 7: // docelu.pl
+					String sy = String.format("%06x", tileID[OpenStreetMapViewConstants.MAPTILE_LATITUDE_INDEX]);
+					String sx = String.format("%06x", tileID[OpenStreetMapViewConstants.MAPTILE_LONGITUDE_INDEX]);
+					char[] cx = sx.toCharArray();
+					char[] cy = sy.toCharArray();
+					String szoom = Integer.toHexString(zoomLevel);
+
+					String s = "http://i.wp.pl/m/tiles004/" + szoom + "/" + cx[4] + cy[4] + "/" + cx[3]
+							+ cy[3] + "/" + cx[2] + cy[2] + "/" + cx[1] + cy[1] + "/" + cx[0] + cy[0]
+							+ "/z" + szoom + "x" + sx + "y" + sy + ".png";
+					return s;
 				case 6: // Microsoft
 					return new StringBuilder().append(this.BASEURL)
 					.append(encodeQuadTree(zoomLevel, tileID[OpenStreetMapViewConstants.MAPTILE_LONGITUDE_INDEX], tileID[OpenStreetMapViewConstants.MAPTILE_LATITUDE_INDEX]))
