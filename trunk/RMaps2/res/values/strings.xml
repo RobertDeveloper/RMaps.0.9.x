@@ -83,7 +83,7 @@ Questions, sentences mail to robertk506@gmail.ru\n
 How to and FAQ you can find on http://robertdeveloper.blogspot.com/\n
 </string>
     <string name="whats_new_dialog_text">
-v.0.7.2\n
+v.0.7.3\n
 - Bug fix: 100 value zoom in sqlitedb format maps\n
 + Added new online maps (Microsoft Maps, Maps China, Virtual Earth, Hybrid, OSM Hiking Germany, OSM Public Transport, Outdooractive.com, Cykloatlas CZ, UMP-pcPL Poland)\n
 \n

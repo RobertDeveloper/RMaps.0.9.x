@@ -13,8 +13,8 @@ public class CashDatabase {
 		if (mDatabase != null)
 			mDatabase.close();
 
-		Ut.dd("CashDatabase: Open SQLITEDB Database");
 		mDatabase = new CashDatabaseHelper(null, aFile.getAbsolutePath()).getWritableDatabase();
+		Ut.dd("CashDatabase: Open SQLITEDB Database ver."+mDatabase.getVersion());
 	}
 
 	protected class CashDatabaseHelper extends RSQLiteOpenHelper {
@@ -28,14 +28,14 @@ public class CashDatabase {
 
 		@Override
 		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-			Ut.dd("Current cash db ver."+oldVersion);
-			if(oldVersion < 3){
-				Ut.dd("Convert cash db ver."+oldVersion+"to ver."+newVersion);
-				db.execSQL("DROP TABLE IF EXISTS info");
-				db.execSQL("CREATE TABLE IF NOT EXISTS info AS SELECT 17-MAX(z) AS minzoom, 17-MIN(z) AS maxzoom FROM tiles");
-			}
 		}
 		
+	}
+	
+	public void updateMinMaxZoom(){
+		Ut.dd("Update min max");
+		this.mDatabase.execSQL("DROP TABLE IF EXISTS info");
+		this.mDatabase.execSQL("CREATE TABLE IF NOT EXISTS info AS SELECT 17-MAX(z) AS minzoom, 17-MIN(z) AS maxzoom FROM tiles");
 	}
 
 	public byte[] getTile(final int aX, final int aY, final int aZ) {
