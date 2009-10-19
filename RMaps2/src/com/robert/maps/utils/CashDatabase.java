@@ -29,9 +29,9 @@ public class CashDatabase {
 		@Override
 		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 		}
-		
+
 	}
-	
+
 	public void updateMinMaxZoom(){
 		Ut.dd("Update min max");
 		this.mDatabase.execSQL("DROP TABLE IF EXISTS info");
@@ -55,10 +55,11 @@ public class CashDatabase {
 		return ret;
 	}
 
-	public int getMaxZoom(){
+	public int getMaxZoom() {
 		int ret = 99;
-		final Cursor c = this.mDatabase.rawQuery(
-				"SELECT maxzoom AS ret FROM info", null);
+		this.mDatabase
+				.execSQL("CREATE TABLE IF NOT EXISTS info AS SELECT 17-MAX(z) AS minzoom, 17-MIN(z) AS maxzoom FROM tiles");
+		final Cursor c = this.mDatabase.rawQuery("SELECT maxzoom AS ret FROM info", null);
 		if (c != null) {
 			if (c.moveToFirst()) {
 				ret = c.getInt(c.getColumnIndexOrThrow("ret"));
@@ -68,10 +69,11 @@ public class CashDatabase {
 		return ret;
 	}
 
-	public int getMinZoom(){
+	public int getMinZoom() {
 		int ret = 0;
-		final Cursor c = this.mDatabase.rawQuery(
-				"SELECT minzoom AS ret FROM info", null);
+		this.mDatabase
+				.execSQL("CREATE TABLE IF NOT EXISTS info AS SELECT 17-MAX(z) AS minzoom, 17-MIN(z) AS maxzoom FROM tiles");
+		final Cursor c = this.mDatabase.rawQuery("SELECT minzoom AS ret FROM info", null);
 		if (c != null) {
 			if (c.moveToFirst()) {
 				ret = c.getInt(c.getColumnIndexOrThrow("ret"));

@@ -44,6 +44,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -167,7 +168,7 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 		// prevent bearing overrun/underrun
 		return mLastBearing;
 	}
-	
+
 	// ===========================================================
 	// Constructors
 	// ===========================================================
@@ -332,7 +333,7 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 
         final Intent queryIntent = getIntent();
         final String queryAction = queryIntent.getAction();
-        
+
         if (Intent.ACTION_SEARCH.equals(queryAction)) {
             doSearchQuery(queryIntent);
         }else if(ACTION_SHOW_POINTS.equalsIgnoreCase(queryAction))
@@ -356,7 +357,7 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 			if(fields.length>0) locns = fields[0];
 			if(fields.length>1) title = fields[1];
 			if(fields.length>2) descr = fields[2];
-			
+
 			GeoPoint point = GeoPoint.fromDoubleString(locns);
 			mPoiOverlay.setGpsStatusGeoPoint(point, title, descr);
 			setAutoFollow(false);
@@ -368,25 +369,29 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 		SharedPreferences settings = getPreferences(Activity.MODE_PRIVATE);
 		final int versionDataUpdate = settings.getInt("versionDataUpdate", 0);
 		Ut.dd("versionDataUpdate="+versionDataUpdate);
-		
+
 		if(versionDataUpdate < 2){
 			Ut.dd("Upgrade app data from v.1 to v.2");
-			File folder = Ut.getRMapsFolder("data", false);
-			if(folder.exists()) {
-				File fileData2 = new File("/sdcard/rmaps/data/index.db");
+			try {
+				File folder = Ut.getRMapsFolder("data", false);
+				if(folder.exists()) {
+					File fileData2 = new File("/sdcard/rmaps/data/index.db");
 
-				if(fileData2.exists()){
-					SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase("/sdcard/rmaps/data/index.db", null);
-					db.execSQL("DELETE FROM ListCashTables WHERE name LIKE ('%sqlitedb')");
-					db.close();
+					if(fileData2.exists()){
+						SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase("/sdcard/rmaps/data/index.db", null);
+						db.execSQL("DELETE FROM ListCashTables WHERE name LIKE ('%sqlitedb')");
+						db.close();
+					}
 				}
+			} catch (SQLException e) {
+				e.printStackTrace();
 			}
-			
-			SharedPreferences uiState = getPreferences(0);
-			SharedPreferences.Editor editor = uiState.edit();
-			editor.putInt("versionDataUpdate", 2);
-			editor.commit();
 		}
+
+		SharedPreferences uiState = getPreferences(0);
+		SharedPreferences.Editor editor = uiState.edit();
+		editor.putInt("versionDataUpdate", 2);
+		editor.commit();
 	}
 
 	@Override
