@@ -14,13 +14,12 @@ public class CashDatabase {
 			mDatabase.close();
 
 		Ut.dd("CashDatabase: Open SQLITEDB Database");
-		//mDatabase = SQLiteDatabase.openOrCreateDatabase(aFile, null);
 		mDatabase = new CashDatabaseHelper(null, aFile.getAbsolutePath()).getWritableDatabase();
 	}
 
 	protected class CashDatabaseHelper extends RSQLiteOpenHelper {
 		public CashDatabaseHelper(final Context context, final String name) {
-			super(context, name, null, 2);
+			super(context, name, null, 3);
 		}
 
 		@Override
@@ -29,7 +28,9 @@ public class CashDatabase {
 
 		@Override
 		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-			if(oldVersion < 2){
+			Ut.dd("Current cash db ver."+oldVersion);
+			if(oldVersion < 3){
+				Ut.dd("Convert cash db ver."+oldVersion+"to ver."+newVersion);
 				db.execSQL("DROP TABLE IF EXISTS info");
 				db.execSQL("CREATE TABLE IF NOT EXISTS info AS SELECT 17-MAX(z) AS minzoom, 17-MIN(z) AS maxzoom FROM tiles");
 			}
