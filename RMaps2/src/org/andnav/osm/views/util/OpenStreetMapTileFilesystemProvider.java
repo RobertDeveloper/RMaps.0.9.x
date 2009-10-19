@@ -290,6 +290,12 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 					long fileLength = mCashFile.length();
 					long fileModified = mCashFile.lastModified();
 					int minzoom = mCashDatabase.getMinZoom(), maxzoom = mCashDatabase.getMaxZoom();
+					Ut.dd("minzoom="+minzoom+" maxzoom="+maxzoom);
+					if(minzoom == 99){
+						mCashDatabase.updateMinMaxZoom();
+						minzoom = mCashDatabase.getMinZoom();
+						maxzoom = mCashDatabase.getMaxZoom();
+					}
 
 					mDatabase.CommitIndex(fileLength, fileModified, minzoom, maxzoom);
 
@@ -1014,7 +1020,7 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 
 	protected class IndexDatabaseHelper extends RSQLiteOpenHelper {
 		public IndexDatabaseHelper(final Context context, final String name) {
-			super(context, name, null, 1);
+			super(context, name, null, 3);
 		}
 
 		@Override
@@ -1023,6 +1029,10 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 
 		@Override
 		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+			if(oldVersion < 2){
+				Ut.dd("Upgrade IndexDatabase ver."+oldVersion+" to ver."+newVersion);
+				db.execSQL("DELETE FROM 'ListCashTables' WHERE name LIKE ('%sqlitedb')");
+			}
 		}
 		
 	}
