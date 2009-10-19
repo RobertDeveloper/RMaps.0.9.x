@@ -2,6 +2,7 @@ package com.robert.maps.utils;
 
 import java.io.File;
 
+import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
@@ -13,7 +14,27 @@ public class CashDatabase {
 			mDatabase.close();
 
 		Ut.dd("CashDatabase: Open SQLITEDB Database");
-		mDatabase = SQLiteDatabase.openOrCreateDatabase(aFile, null);
+		//mDatabase = SQLiteDatabase.openOrCreateDatabase(aFile, null);
+		mDatabase = new CashDatabaseHelper(null, aFile.getAbsolutePath()).getWritableDatabase();
+	}
+
+	protected class CashDatabaseHelper extends RSQLiteOpenHelper {
+		public CashDatabaseHelper(final Context context, final String name) {
+			super(context, name, null, 2);
+		}
+
+		@Override
+		public void onCreate(SQLiteDatabase db) {
+		}
+
+		@Override
+		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+			if(oldVersion < 2){
+				db.execSQL("DROP TABLE IF EXISTS info");
+				db.execSQL("CREATE TABLE IF NOT EXISTS info AS SELECT 17-MAX(z) AS minzoom, 17-MIN(z) AS maxzoom FROM tiles");
+			}
+		}
+		
 	}
 
 	public byte[] getTile(final int aX, final int aY, final int aZ) {
@@ -35,7 +56,6 @@ public class CashDatabase {
 
 	public int getMaxZoom(){
 		int ret = 99;
-		this.mDatabase.execSQL("CREATE TABLE IF NOT EXISTS info AS SELECT 17-MAX(z) AS minzoom, 17-MIN(z) AS maxzoom FROM tiles");
 		final Cursor c = this.mDatabase.rawQuery(
 				"SELECT maxzoom AS ret FROM info", null);
 		if (c != null) {
@@ -49,7 +69,6 @@ public class CashDatabase {
 
 	public int getMinZoom(){
 		int ret = 0;
-		this.mDatabase.execSQL("CREATE TABLE IF NOT EXISTS info AS SELECT 17-MAX(z) AS minzoom, 17-MIN(z) AS maxzoom FROM tiles");
 		final Cursor c = this.mDatabase.rawQuery(
 				"SELECT minzoom AS ret FROM info", null);
 		if (c != null) {
