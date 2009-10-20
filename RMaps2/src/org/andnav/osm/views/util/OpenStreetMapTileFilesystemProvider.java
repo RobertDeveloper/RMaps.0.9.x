@@ -40,6 +40,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.robert.maps.R;
 import com.robert.maps.utils.CashDatabase;
 import com.robert.maps.utils.RSQLiteOpenHelper;
 import com.robert.maps.utils.Ut;
@@ -722,27 +723,37 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 
 		public int ZoomMaxInCashFile() {
 			int ret = 24;
-			final Cursor c = this.mIndexDatabase.rawQuery("SELECT maxzoom FROM ListCashTables WHERE name = '"
-					+ mCashTableName + "'", null);
-			if (c != null) {
-				if (c.moveToFirst()) {
-					ret = c.getInt(c.getColumnIndexOrThrow("maxzoom"));
+			try {
+				final Cursor c = this.mIndexDatabase.rawQuery("SELECT maxzoom FROM ListCashTables WHERE name = '"
+						+ mCashTableName + "'", null);
+				if (c != null) {
+					if (c.moveToFirst()) {
+						ret = c.getInt(c.getColumnIndexOrThrow("maxzoom"));
+					}
+					c.close();
 				}
-				c.close();
+			} catch (IllegalArgumentException e) {
+				Toast.makeText(mCtx, R.string.message_corruptindex, Toast.LENGTH_LONG).show();
+				e.printStackTrace();
 			}
-
+			
 			return ret;
 		}
 
 		public int ZoomMinInCashFile() {
 			int ret  = 0;
-			final Cursor c = this.mIndexDatabase.rawQuery("SELECT minzoom FROM ListCashTables WHERE name = '"
-					+ mCashTableName + "'", null);
-			if (c != null) {
-				if (c.moveToFirst()) {
-					ret = c.getInt(c.getColumnIndexOrThrow("minzoom"));
+			try {
+				final Cursor c = this.mIndexDatabase.rawQuery("SELECT minzoom FROM ListCashTables WHERE name = '"
+						+ mCashTableName + "'", null);
+				if (c != null) {
+					if (c.moveToFirst()) {
+						ret = c.getInt(c.getColumnIndexOrThrow("minzoom"));
+					}
+					c.close();
 				}
-				c.close();
+			} catch (IllegalArgumentException e) {
+				Toast.makeText(mCtx, R.string.message_corruptindex, Toast.LENGTH_LONG).show();
+				e.printStackTrace();
 			}
 
 			return ret;

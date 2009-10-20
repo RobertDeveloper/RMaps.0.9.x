@@ -151,6 +151,7 @@ v.0.5.2
     <string name="message_gpsdisabled">GPS is disabled. Trying to use wireless network to determine your location...</string>
     <string name="message_locationunavailable">GPS and Network detection is disabled. Your current location is temporarily unavailable...</string>
     <string name="message_lastknownlocation">GPS and Network detection is disabled. Showing last known location...</string>
+    <string name="message_corruptindex">You have corrupt index data. I recommend to clear index data in settings.</string>
     <string name="menu_done">Done</string>
     <string name="menu_doNotSave">Revert</string>
     <string name="menu_edit">Edit</string>
