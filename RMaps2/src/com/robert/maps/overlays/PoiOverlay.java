@@ -31,6 +31,14 @@ public class PoiOverlay extends OpenStreetMapViewOverlay {
 	private NinePatchDrawable mButton;
 	private int mTapIndex;
 
+	public int getTapIndex() {
+		return mTapIndex;
+	}
+
+	public void setTapIndex(int mTapIndex) {
+		this.mTapIndex = mTapIndex;
+	}
+
 	protected OnItemTapListener<PoiPoint> mOnItemTapListener;
 	protected OnItemLongPressListener<PoiPoint> mOnItemLongPressListener;
 	protected List<PoiPoint> mItemList;
