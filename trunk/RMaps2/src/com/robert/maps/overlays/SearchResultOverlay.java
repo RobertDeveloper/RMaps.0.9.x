@@ -14,6 +14,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.location.Location;
+import android.view.KeyEvent;
 
 import com.robert.maps.R;
 import com.robert.maps.utils.NinePatch;
@@ -122,6 +123,19 @@ public class SearchResultOverlay extends OpenStreetMapViewOverlay {
 	}
 
 	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event,
+			OpenStreetMapView mapView) {
+		if (keyCode == KeyEvent.KEYCODE_BACK)
+			if (mLocation != null) {
+				mLocation = null;
+				mapView.invalidate();
+				return true;
+			}
+
+		return super.onKeyDown(keyCode, event, mapView);
+	}
+
+	@Override
 	protected void onDrawFinished(Canvas c, OpenStreetMapView osmv) {
 		// Auto-generated method stub
 
@@ -139,6 +153,9 @@ public class SearchResultOverlay extends OpenStreetMapViewOverlay {
 		if(mLocation != null){
 			editor.putString("SearchResultDescr", mDescr);
 			editor.putString("SearchResultLocation", mLocation.toDoubleString());
+		}else{
+			editor.putString("SearchResultDescr", "");
+			editor.putString("SearchResultLocation", "");
 		}
 	}
 

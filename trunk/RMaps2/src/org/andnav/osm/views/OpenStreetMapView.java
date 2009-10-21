@@ -89,13 +89,8 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 		this.mTileProvider = new OpenStreetMapTileProvider(context, new SimpleInvalidationHandler(), aRendererInfo);
 		this.mPaint.setAntiAlias(true);
 		
-//		setOnLongClickListener(new OnLongClickListener() {
-//			
-//			public boolean onLongClick(View v) {
-//				Ut.dd("Stop LongClick");
-//				return true;
-//			}
-//		});
+		setFocusable(true);
+		setFocusableInTouchMode(true);
 	}
 
 	/**
