@@ -306,7 +306,7 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 				}
 	        });
         }
-
+        
 		mDrivingDirectionUp = pref.getBoolean("pref_drivingdirectionup", true);
 		mNorthDirectionUp = pref.getBoolean("pref_northdirectionup", true);
 
@@ -330,7 +330,7 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 	        getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.main_title);
 
 		restoreUIState();
-
+		
         final Intent queryIntent = getIntent();
         final String queryAction = queryIntent.getAction();
 
