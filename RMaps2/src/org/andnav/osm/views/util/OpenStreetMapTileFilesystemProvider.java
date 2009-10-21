@@ -286,18 +286,15 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 		if (mDatabase.NeedIndex(fileLength, fileModified, mBlockIndexing))
 		{
 			mStopIndexing = false;
+			Toast.makeText(mCtx, "Update min max zoom data of map file...", Toast.LENGTH_LONG).show();
 
 			this.mThreadPool.execute(new Runnable() {
 				public void run() {
 					long fileLength = mCashFile.length();
 					long fileModified = mCashFile.lastModified();
+					mCashDatabase.updateMinMaxZoom();
 					int minzoom = mCashDatabase.getMinZoom(), maxzoom = mCashDatabase.getMaxZoom();
-					Ut.dd("minzoom="+minzoom+" maxzoom="+maxzoom);
-					if(minzoom == 99){
-						mCashDatabase.updateMinMaxZoom();
-						minzoom = mCashDatabase.getMinZoom();
-						maxzoom = mCashDatabase.getMaxZoom();
-					}
+					Ut.dd("Update min max zoom data: minzoom="+minzoom+" maxzoom="+maxzoom);
 
 					mDatabase.CommitIndex(fileLength, fileModified, minzoom, maxzoom);
 
@@ -801,7 +798,8 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 				res = true;
 			else if(aBlockIndexing)
 				res = false;
-			else if(c.getLong(c.getColumnIndex("size")) != aSizeFile || c.getLong(c.getColumnIndex("lastmodified")) != aLastModifiedFile)
+			else if (c.getLong(c.getColumnIndex("size")) != aSizeFile
+					/*|| c.getLong(c.getColumnIndex("lastmodified")) != aLastModifiedFile*/)
 				res = true;
 
 			c.close();

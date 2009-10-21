@@ -370,8 +370,8 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 		final int versionDataUpdate = settings.getInt("versionDataUpdate", 0);
 		Ut.dd("versionDataUpdate="+versionDataUpdate);
 
-		if(versionDataUpdate < 2){
-			Ut.dd("Upgrade app data from v.1 to v.2");
+		if(versionDataUpdate < 3){
+			Ut.dd("Upgrade app data to v.3");
 			try {
 				File folder = Ut.getRMapsFolder("data", false);
 				if(folder.exists()) {
@@ -390,7 +390,7 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 
 		SharedPreferences uiState = getPreferences(0);
 		SharedPreferences.Editor editor = uiState.edit();
-		editor.putInt("versionDataUpdate", 2);
+		editor.putInt("versionDataUpdate", 3);
 		editor.commit();
 	}
 

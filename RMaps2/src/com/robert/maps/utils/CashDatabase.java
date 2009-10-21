@@ -14,7 +14,8 @@ public class CashDatabase {
 			mDatabase.close();
 
 		mDatabase = new CashDatabaseHelper(null, aFile.getAbsolutePath()).getWritableDatabase();
-		Ut.dd("CashDatabase: Open SQLITEDB Database ver."+mDatabase.getVersion());
+		Ut.dd("CashDatabase: Open SQLITEDB Database");
+		
 	}
 
 	protected class CashDatabaseHelper extends RSQLiteOpenHelper {
@@ -35,7 +36,7 @@ public class CashDatabase {
 	public void updateMinMaxZoom(){
 		Ut.dd("Update min max");
 		this.mDatabase.execSQL("DROP TABLE IF EXISTS info");
-		this.mDatabase.execSQL("CREATE TABLE IF NOT EXISTS info AS SELECT 17-MAX(z) AS minzoom, 17-MIN(z) AS maxzoom FROM tiles");
+		this.mDatabase.execSQL("CREATE TABLE IF NOT EXISTS info AS SELECT MIN(z) AS minzoom, MAX(z) AS maxzoom FROM tiles");
 	}
 
 	public byte[] getTile(final int aX, final int aY, final int aZ) {
@@ -57,9 +58,7 @@ public class CashDatabase {
 
 	public int getMaxZoom() {
 		int ret = 99;
-		this.mDatabase
-				.execSQL("CREATE TABLE IF NOT EXISTS info AS SELECT 17-MAX(z) AS minzoom, 17-MIN(z) AS maxzoom FROM tiles");
-		final Cursor c = this.mDatabase.rawQuery("SELECT maxzoom AS ret FROM info", null);
+		final Cursor c = this.mDatabase.rawQuery("SELECT 17-minzoom AS ret FROM info", null);
 		if (c != null) {
 			if (c.moveToFirst()) {
 				ret = c.getInt(c.getColumnIndexOrThrow("ret"));
@@ -71,9 +70,7 @@ public class CashDatabase {
 
 	public int getMinZoom() {
 		int ret = 0;
-		this.mDatabase
-				.execSQL("CREATE TABLE IF NOT EXISTS info AS SELECT 17-MAX(z) AS minzoom, 17-MIN(z) AS maxzoom FROM tiles");
-		final Cursor c = this.mDatabase.rawQuery("SELECT minzoom AS ret FROM info", null);
+		final Cursor c = this.mDatabase.rawQuery("SELECT 17-maxzoom AS ret FROM info", null);
 		if (c != null) {
 			if (c.moveToFirst()) {
 				ret = c.getInt(c.getColumnIndexOrThrow("ret"));
