@@ -715,6 +715,8 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 		editor.putInt("ZoomLevel", mOsmv.getZoomLevel());
 		editor.putBoolean("CompassEnabled", mCompassEnabled);
 		editor.putString("app_version", Ut.getAppVersion(this));
+		if(mPoiOverlay != null)
+			editor.putInt("curShowPoiId", mPoiOverlay.getTapIndex());
 		editor.commit();
 
 		if (myWakeLock != null) {
@@ -776,6 +778,9 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 		mCompassView.setVisibility(mCompassEnabled ? View.VISIBLE : View.INVISIBLE);
 
 		setTitle();
+		
+		if(mPoiOverlay != null)
+			mPoiOverlay.setTapIndex(settings.getInt("curShowPoiId", -1));
 
 		if(!settings.getString("app_version", "").equalsIgnoreCase(Ut.getAppVersion(this)))
 			showDialog(R.id.whatsnew);
