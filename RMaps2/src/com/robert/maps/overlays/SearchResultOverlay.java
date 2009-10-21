@@ -7,6 +7,7 @@ import org.andnav.osm.views.OpenStreetMapView.OpenStreetMapViewProjection;
 import org.andnav.osm.views.overlay.OpenStreetMapViewOverlay;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -124,6 +125,21 @@ public class SearchResultOverlay extends OpenStreetMapViewOverlay {
 	protected void onDrawFinished(Canvas c, OpenStreetMapView osmv) {
 		// Auto-generated method stub
 
+	}
+
+	public void fromPref(SharedPreferences settings) {
+		final String strlocation = settings.getString("SearchResultLocation", "");
+		if(strlocation.length() > 0){
+			mLocation = GeoPoint.fromDoubleString(strlocation);
+			mDescr = settings.getString("SearchResultDescr", "");
+		}
+	}
+	
+	public void toPref(SharedPreferences.Editor editor){
+		if(mLocation != null){
+			editor.putString("SearchResultDescr", mDescr);
+			editor.putString("SearchResultLocation", mLocation.toDoubleString());
+		}
 	}
 
 }

@@ -717,6 +717,7 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 		editor.putString("app_version", Ut.getAppVersion(this));
 		if(mPoiOverlay != null)
 			editor.putInt("curShowPoiId", mPoiOverlay.getTapIndex());
+		mSearchResultOverlay.toPref(editor);
 		editor.commit();
 
 		if (myWakeLock != null) {
@@ -781,6 +782,8 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 		
 		if(mPoiOverlay != null)
 			mPoiOverlay.setTapIndex(settings.getInt("curShowPoiId", -1));
+		
+		mSearchResultOverlay.fromPref(settings);
 
 		if(!settings.getString("app_version", "").equalsIgnoreCase(Ut.getAppVersion(this)))
 			showDialog(R.id.whatsnew);
