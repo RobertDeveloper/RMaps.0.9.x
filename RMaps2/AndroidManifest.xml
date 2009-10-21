@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <manifest android:sharedUserId="@string/app_user_id"
     android:sharedUserLabel="@string/app_user_label"
-    package="com.robert.maps" xmlns:android="http://schemas.android.com/apk/res/android" android:versionName="0.7.4.2" android:versionCode="73">
+    package="com.robert.maps" xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="74" android:versionName="0.7.4.3">
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <uses-permission android:name="android.permission.INTERNET"/>

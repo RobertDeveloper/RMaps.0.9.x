@@ -146,6 +146,7 @@ v.0.5.2\n
     <string name="message_gpsdisabled">GPS выключен. Попытаюсь определить местоположение по базовым станциям...</string>
     <string name="message_locationunavailable">GPS and определение по базовым станциям выключены. Определение местоположения невозможно...</string>
     <string name="message_lastknownlocation">GPS and определение по базовым станциям выключены. Показываю последнее определенное когда-то местоположение...</string>
+    <string name="message_updateminmax">Обновление мин макс значений зума карты...</string>
     <string name="PoiTitle">Наименование</string>
     <string name="PoiLon">Долгота</string>
     <string name="PoiLat">Широта</string>

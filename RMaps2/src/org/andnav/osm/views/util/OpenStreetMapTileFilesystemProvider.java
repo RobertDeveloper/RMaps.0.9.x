@@ -286,7 +286,7 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 		if (mDatabase.NeedIndex(fileLength, fileModified, mBlockIndexing))
 		{
 			mStopIndexing = false;
-			Toast.makeText(mCtx, "Update min max zoom data of map file...", Toast.LENGTH_LONG).show();
+			Toast.makeText(mCtx, R.string.message_updateminmax, Toast.LENGTH_LONG).show();
 
 			this.mThreadPool.execute(new Runnable() {
 				public void run() {
