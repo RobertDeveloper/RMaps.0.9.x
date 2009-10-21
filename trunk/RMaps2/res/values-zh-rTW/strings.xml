@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pref_northdirectionup_summary">把地圖指向北方</string>
+    <string name="pref_northdirectionup">北方</string>
+    <string name="pref_drivingdirectionup_summary">把地圖指向前進方向</string>
+    <string name="pref_drivingdirectionup">前進方向</string>
+    <string name="pref_zoomminlevel_summary">長按減號按鈕設定縮放級別</string>
+    <string name="pref_zoomminlevel">收藏最小縮放</string>
+    <string name="pref_zoommaxlevel_summary">長按加號按鈕設定縮放級別</string>
+    <string name="pref_zoommaxlevel">收藏最大縮放</string>
+    <string name="pref_bottomzoomcontrol_summary">在底部顯示縮放按鈕</string>
+    <string name="pref_bottomzoomcontrol">底部縮放</string>
+    <string name="app_user_id"></string>
+    <string name="app_user_label">Robert.Developer</string>
+
+    <string name="prefcat_main_misc">Misc</string>
+    <string name="pref_accuracy_summary">顯示藍色指示盤如Google Map</string>
+    <string name="pref_accuracy">精度指標</string>
+    <string name="pref_keepscreenon_summaryoff">操作結束螢幕會自動關閉</string>
+    <string name="pref_keepscreenon_summary">觀看地圖時螢幕不會關閉</string>
+    <string name="pref_keepscreenon">保持螢幕開啟舊檔</string>
+    <string name="pref_showtitle_summary">用地圖名等隱藏視窗標題</string>
+    <string name="pref_showtitle">顯示視窗標題</string>
+    <string name="pref_showstatusbar_summary">隱藏狀態列</string>
+    <string name="pref_showstatusbar">顯示狀態列</string>
+    <string name="pref_turnoffautoreindex">關閉自動符號變更</string>
+    <string name="pref_turnoffautoreindex_summary">關閉地圖檔案大小和時間檢查</string>
+    <string name="pref_gpsfastupdate">快速更新GPS資料</string>
+    <string name="pref_gpsfastupdate_summary">減慢更新節約電量</string>
+
+    <string name="pref_usermap_enabled">啟用地圖</string>
+    <string name="pref_usermap_enabled_summary">新增地圖到地圖清單</string>
+    <string name="pref_usermap_name">名字</string>
+    <string name="pref_usermap_baseurl">基礎 URL</string>
+    <string name="pref_usermap_projection">計劃</string>
+    <string name="pref_usermap_traffic">Yandex.Traffic</string>
+    <string name="pref_usermap_traffic_summary">用Yandex顯示流量</string>
+
+    <string name="prefcat_main_look">外觀和感覺</string>
+    <string name="prefcat_main_maps">地圖</string>
+    <string name="prefcat_main_indexing">索引</string>
+
+	<string name="pref_main_maps">預定義地圖</string>
+	<string name="pref_main_maps_summary">需要網路連線</string>
+	<string name="pref_main_usermaps">使用者定義地圖</string>
+	<string name="pref_main_usermaps_summary">地圖來自 /sdcard/rmaps/maps</string>
+
+	<string name="prefcat_main_predefinedmaps"></string>
+	<string name="hello">Hello World, OpenStreetMapViewer</string>
+
+	<string name="app_name">RMaps</string>
+	<string name="app_name_itemizedoverlay">OSMViewer ItemizedOverlay</string>
+
+	<string name="unknown">未知</string>
+	<string name="menu_settings">設定</string>
+    <string name="menu_exit">結束</string>
+	<string name="menu_mylocation">我的位置</string>
+	<string name="menu_mapselector">地圖</string>
+	<string name="menu_compass">羅盤</string>
+    <string name="menu_about">關於</string>
+    <string name="menu_search">搜尋</string>
+
+	<string name="mnm">.mnm</string>
+	<string name="tar">.tar</string>
+	<string name="sqlitedb">.sqlitedb</string>
+
+	<string name="no_traffic">在此縮放下流量資訊不可用</string>
+	<string name="auto_follow_enabled">自動追蹤啟用</string>
+	<string name="auto_follow_disabled">自動追蹤禁用</string>
+
+	<string name="no_inet_conn">沒有網路連線...</string>
+	<string name="no_items">沒有比對內容</string>
+
+    <string name="about_dialog_text">
+c2009 Robert.Developer\n
+Osmdroid  by Nicolas Gramlich\n
+App icon by Everaldo Coelho\n
+All rights reserved\n
+\n
+如有疑問請發送郵件到 robertk506@gmail.ru\n
+\n
+您可以登入 http://robertdeveloper.blogspot.com/ 檢視作業指南和常見問題\n
+</string>
+<string name="whats_new_dialog_text">
+v.0.6.3\n
++ 地圖指向前進方向. 啟用/禁用參數模式. 按兩下地圖返回基礎模式.\n
++ 地圖指向北方. 啟用/禁用參數模式. 指南針可見時地圖轉向北方.\n
++ 新增俄羅斯位置\n
++ 更新Yandex.Map URL\n
+\n
+v.0.6.2\n
+- 修復長時間載入sqlite cash檔案的bug\n
+\n
+v.0.6.1\n
++ 新增支援cash檔案到sqlite格式，由TrekBuddy Atlas Creator製作. 建立檔案變得輕而易舉. 現在不需要索引. 想獲取更多資訊請存取我的網站.\n
++ 更新Google.Map URL\n
++ 改變Google.Map的最大縮放級別從18到20\n
+\n
+v.0.6.0\n
++ 搜尋的第一版本. 請測驗並回饋.\n
+- 錯誤修復\n
+\n
+v.0.5.5\n
++ 地圖上的指南針\n
++ 關於對話方塊\n
++ 有何更新對話方塊
+
+v.0.5.4
++ 啟用/禁用自動追蹤模式
++ 縮放按鈕的頂/底部
++ 按兩下地圖中心放大
++ 長按縮放按鈕使用預定義縮放值
+
+v.0.5.3
++ GPS未準備好時使用網路提供
++ 在視窗標題列中顯示狀態(測試外觀)
++ 快\慢更新當前位置
++ 關閉自動索引(若重啟後仍有問題)
+
+v.0.5.2
++ 更新Google.Map URL
++ tar檔案中支援png圖片
++ 監視 GPS 開啟舊檔/關閉
++  GPS 關閉
+
+</string>
+
+    <string name="about_dialog_whats_new">有何更新</string>
+    <string name="about_dialog_close">關閉</string>
+
+    <string name="search_label">位址:</string>
+    <string name="search_hint">如. Abbey Road, London</string>
+
+    <string name="message_gpsdisabled">GPS已禁用. 嘗試使用無線網路定位當前位置...</string>
+    <string name="message_locationunavailable">GPS和網路被禁用. 您當前位置不可用...</string>
+    <string name="message_lastknownlocation">GPS和網路被禁用. 顯示前次位置...</string>
+</resources>
