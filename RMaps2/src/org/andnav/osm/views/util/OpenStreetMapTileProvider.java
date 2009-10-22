@@ -136,8 +136,6 @@ public class OpenStreetMapTileProvider implements OpenStreetMapConstants, OpenSt
 				} else
 					this.mFSTileProvider.loadMapTileToMemCacheAsync(aTileURLString, this.mLoadCallbackHandler);
 
-					//this.mFSTileProvider.loadMapTileFromZipCash(aTileURLString, this.mLoadCallbackHandler);
-
 				ret = aLoadingMapTile;
 			} catch (Exception e) {
 				if(DEBUGMODE)

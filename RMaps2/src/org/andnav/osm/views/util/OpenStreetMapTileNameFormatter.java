@@ -43,8 +43,12 @@ public class OpenStreetMapTileNameFormatter {
 	 * </PRE>
 	 * @return saveable formatted URL as a String
 	 */
-	public static String format(final String aTileURLString){
-		return aTileURLString.substring(7).replace("/", "_");
+	public static String format(final String aTileURLString) {
+		final String str = aTileURLString.substring(7).replace("/", "_");
+		if (str.length() > 255) {
+			return str.substring(str.length() - 255);
+		} else
+			return str;
 	}
 
 	// ===========================================================

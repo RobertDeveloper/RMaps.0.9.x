@@ -807,9 +807,11 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 		switch(requestCode){
 		case R.id.poilist:
 			if(resultCode == RESULT_OK){
-				PoiPoint point = mPoiManager.getPoiPoint(data.getIntExtra("pointid", 77));
-				if(point != null)
+				PoiPoint point = mPoiManager.getPoiPoint(data.getIntExtra("pointid", PoiPoint.EMPTY_ID()));
+				if(point != null){
+					setAutoFollow(false);
 					mOsmv.setMapCenter(point.GeoPoint);
+				}
 			}
 			break;
 		case R.id.settings_activity_closed:
