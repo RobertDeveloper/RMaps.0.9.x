@@ -6,4 +6,9 @@
 		android:icon="@android:drawable/ic_menu_add"
 		android:title="@string/menu_addpoi">
 	</item>
+	<item
+		android:id="@+id/menu_categorylist"
+		android:icon="@drawable/ic_menu_archive"
+		android:title="@string/menu_categorylist">
+	</item>
 </menu>

@@ -79,4 +79,27 @@ public class PoiManager {
 	public void deletePoi(final int id){
 		mGeoDatabase.deletePoi(id);
 	}
+
+	public void deletePoiCategory(final int id){
+		mGeoDatabase.deletePoiCategory(id);
+	}
+
+	public PoiCategory getPoiCategory(int id) {
+		PoiCategory category = null;
+		final Cursor c = mGeoDatabase.getPoiCategory(id);
+		if (c != null) {
+			if (c.moveToFirst())
+				category = new PoiCategory(id, c.getString(0));
+			c.close();
+		}
+
+		return category;
+	}
+
+	public void updatePoiCategory(PoiCategory poiCategory) {
+		if(poiCategory.getId() < 0)
+			mGeoDatabase.addPoiCategory(poiCategory.Title);
+		else 
+			mGeoDatabase.updatePoiCategory(poiCategory.getId(), poiCategory.Title);
+	}
 }
