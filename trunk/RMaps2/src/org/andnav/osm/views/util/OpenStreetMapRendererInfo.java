@@ -233,7 +233,7 @@ public class OpenStreetMapRendererInfo {
 					final int million = 1000000 / getTileUpperBound(zoomLevel);
 					final int size = OpenSpaceLayersArray[zoomLevel-ZOOM_MINLEVEL] < 5 ? 250 : 200;
 					return new StringBuilder()
-					.append("http://openspace.ordnancesurvey.co.uk/osmapapi/ts?FORMAT=image%2Fpng&KEY=6694613F8B469C97E0405F0AF160360A&URL=http%3A%2F%2Fopenspace.ordnancesurvey.co.uk%2Fopenspace%2Fsupport.html&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&EXCEPTIONS=application%2Fvnd.ogc.se_inimage&")
+					.append(this.BASEURL)
 					.append("LAYERS=").append(OpenSpaceLayersArray[zoomLevel-ZOOM_MINLEVEL])
 					.append("&SRS=EPSG%3A27700&BBOX=")
 					.append(million*tileID[OpenStreetMapViewConstants.MAPTILE_LONGITUDE_INDEX])

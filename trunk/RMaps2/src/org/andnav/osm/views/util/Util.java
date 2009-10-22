@@ -44,8 +44,6 @@ public class Util implements OpenStreetMapViewConstants{
 		final int[] out = (aUseAsReturnValue != null) ? aUseAsReturnValue : new int[2];
 
 		if (aProjection == 3) {
-			final int OpenSpaceUpperBoundArray[] = { 2, 5, 10, 25, 50, 100,
-					200, 500, 1000, 2000, 4000 };
 			final double[] OSRef = OSGB36.LatLon2OSGB(aLat, aLon);
 			out[0] = (int) ((1 - OSRef[0] / 1000000)*OpenSpaceUpperBoundArray[zoom - 7]);
 			out[1] = (int) ((OSRef[1] / 1000000)*OpenSpaceUpperBoundArray[zoom - 7]);
@@ -88,7 +86,6 @@ public class Util implements OpenStreetMapViewConstants{
 		final int x = aMapTile[MAPTILE_LONGITUDE_INDEX];
 
 		if(aProjection == 3){
-			final int OpenSpaceUpperBoundArray[] = { 2, 5, 10, 25 , 50, 100, 200, 500, 1000, 2000, 4000};
 			final double[] LatLon0 = OSGB36.OSGB2LatLon(
 					(double)((OpenSpaceUpperBoundArray[zoom - 7] - y - 1) * 1000000
 							/ OpenSpaceUpperBoundArray[zoom - 7]), (double)(x * 1000000
