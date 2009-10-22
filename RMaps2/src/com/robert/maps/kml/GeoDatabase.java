@@ -76,6 +76,15 @@ public class GeoDatabase {
 		return null;
 	}
 
+	public Cursor getPoiCategoryListCursor() {
+		if (isDatabaseReady()) {
+			// не менять порядок полей
+			return mDatabase.rawQuery("SELECT name, categoryid _id FROM category ORDER BY name", null);
+		}
+
+		return null;
+	}
+
 	public Cursor getPoi(final int id) {
 		if (isDatabaseReady()) {
 			// не менять порядок полей
@@ -88,6 +97,12 @@ public class GeoDatabase {
 	public void deletePoi(final int id) {
 		if (isDatabaseReady()) {
 			mDatabase.execSQL("DELETE FROM points WHERE pointid = " + id);
+		}
+	}
+
+	public void deletePoiCategory(final int id) {
+		if (isDatabaseReady()) {
+			mDatabase.execSQL("DELETE FROM category WHERE categoryid = " + id);
 		}
 	}
 
@@ -144,5 +159,31 @@ public class GeoDatabase {
 			// for ver.1
 		}
 		
+	}
+
+	public Cursor getPoiCategory(int id) {
+		if (isDatabaseReady()) {
+			// не менять порядок полей
+			return mDatabase.rawQuery("SELECT name, categoryid FROM category WHERE categoryid = " + id, null);
+		}
+
+		return null;
+	}
+
+	public void addPoiCategory(String title) {
+		if (isDatabaseReady()) {
+			final ContentValues cv = new ContentValues();
+			cv.put("name", title);
+			this.mDatabase.insert("category", null, cv);
+		}
+	}
+
+	public void updatePoiCategory(int id, String title) {
+		if (isDatabaseReady()) {
+			final ContentValues cv = new ContentValues();
+			cv.put("name", title);
+			String[] args = {"" + id};
+			this.mDatabase.update("category", cv, "categoryid = @1", args);
+		}
 	}
 }

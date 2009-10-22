@@ -41,8 +41,10 @@
         <provider
             android:authorities="com.robert.maps.SuggestionProvider" android:name=".utils.SearchSuggestionsProvider"/>
         <activity android:name=".kml.PoiActivity"/>
-        <activity android:name="com.robert.maps.kml.PoiListActivity"/>
-    </application>
+        <activity android:name=".kml.PoiListActivity"/>
+    <activity android:name=".kml.PoiCategoryActivity"></activity>
+<activity android:name=".kml.PoiCategoryListActivity"></activity>
+</application>
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
     <uses-sdk android:minSdkVersion="3"/>
 </manifest>

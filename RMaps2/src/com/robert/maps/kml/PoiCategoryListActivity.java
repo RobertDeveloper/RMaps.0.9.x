@@ -1,5 +1,7 @@
 package com.robert.maps.kml;
 
+import com.robert.maps.R;
+
 import android.app.ListActivity;
 import android.content.Intent;
 import android.database.Cursor;
@@ -12,14 +14,11 @@ import android.view.View;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.AdapterView;
 import android.widget.ListAdapter;
-import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
-import com.robert.maps.R;
-
-public class PoiListActivity extends ListActivity {
+public class PoiCategoryListActivity extends ListActivity {
 	private GeoDatabase db = null;
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -46,13 +45,13 @@ public class PoiListActivity extends ListActivity {
 	}
 
 	private void FillData() {
-		Cursor c = db.getPoiListCursor();
+		Cursor c = db.getPoiCategoryListCursor();
         startManagingCursor(c);
 
         ListAdapter adapter = new SimpleCursorAdapter(this,
                 android.R.layout.simple_list_item_2, c, 
-                        new String[] { "name", "descr" }, 
-                        new int[] { android.R.id.text1, android.R.id.text2 });
+                        new String[] { "name"}, 
+                        new int[] { android.R.id.text1 });
         setListAdapter(adapter);
 	}
 
@@ -61,7 +60,7 @@ public class PoiListActivity extends ListActivity {
 		super.onCreateOptionsMenu(menu);
 
 		MenuInflater inflater = getMenuInflater();
-		inflater.inflate(R.menu.poilist_menu, menu);
+		inflater.inflate(R.menu.poicategorylist_menu, menu);
 
 		return true;
 	}
@@ -72,10 +71,7 @@ public class PoiListActivity extends ListActivity {
 		
 		switch(item.getItemId()){
 		case R.id.menu_addpoi:
-			startActivity((new Intent(this, PoiActivity.class)));
-			return true;
-		case R.id.menu_categorylist:
-			startActivity((new Intent(this, PoiCategoryListActivity.class)));
+			startActivity((new Intent(this, PoiCategoryActivity.class)));
 			return true;
 		}
 		
@@ -86,7 +82,6 @@ public class PoiListActivity extends ListActivity {
 	public void onCreateContextMenu(ContextMenu menu, View v,
 			ContextMenuInfo menuInfo) {
 		
-		menu.add(0, R.id.menu_gotopoi, 0, getText(R.string.menu_goto));
 		menu.add(0, R.id.menu_editpoi, 0, getText(R.string.menu_edit));
 		menu.add(0, R.id.menu_deletepoi, 0, getText(R.string.menu_delete));
 		
@@ -95,18 +90,14 @@ public class PoiListActivity extends ListActivity {
 
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
-		int pointid = (int) ((AdapterView.AdapterContextMenuInfo)item.getMenuInfo()).id;
+		int id = (int) ((AdapterView.AdapterContextMenuInfo)item.getMenuInfo()).id;
 		
 		switch(item.getItemId()){
 		case R.id.menu_editpoi:
-			startActivity((new Intent(this, PoiActivity.class)).putExtra("pointid", pointid));
-			break;
-		case R.id.menu_gotopoi:
-			setResult(RESULT_OK, (new Intent()).putExtra("pointid", pointid));
-			finish();
+			startActivity((new Intent(this, PoiCategoryActivity.class)).putExtra("id", id));
 			break;
 		case R.id.menu_deletepoi:
-			new PoiManager(this).deletePoi(pointid);
+			new PoiManager(this).deletePoiCategory(id);
 			FillData();
 	        break;
 		}
@@ -114,8 +105,4 @@ public class PoiListActivity extends ListActivity {
 		return super.onContextItemSelected(item);
 	}
 
-	@Override
-	protected void onListItemClick(ListView l, View v, int position, long id) {
-		super.onListItemClick(l, v, position, id);
-	}
 }
