@@ -19,6 +19,10 @@ public class PoiManager {
 		mCtx = ctx;
 		mGeoDatabase = new GeoDatabase(ctx);
 	}
+	
+	public GeoDatabase getGeoDatabase(){
+		return mGeoDatabase;
+	}
 
 	public void FreeDatabases(){
 		mGeoDatabase.FreeDatabases();
@@ -46,7 +50,7 @@ public class PoiManager {
 			if (c.moveToFirst()) {
 				do {
 					items.add(new PoiPoint(c.getInt(4), c.getString(2), c.getString(3), new GeoPoint(
-							(int) (1E6 * c.getDouble(0)), (int) (1E6 * c.getDouble(1)))));
+							(int) (1E6 * c.getDouble(0)), (int) (1E6 * c.getDouble(1))), 0));
 				} while (c.moveToNext());
 			}
 			c.close();
@@ -69,7 +73,7 @@ public class PoiManager {
 		if (c != null) {
 			if (c.moveToFirst())
 				point = new PoiPoint(c.getInt(4), c.getString(2), c.getString(3), new GeoPoint(
-						(int) (1E6 * c.getDouble(0)), (int) (1E6 * c.getDouble(1))));
+						(int) (1E6 * c.getDouble(0)), (int) (1E6 * c.getDouble(1))), c.getInt(7));
 			c.close();
 		}
 

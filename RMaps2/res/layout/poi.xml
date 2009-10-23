@@ -21,6 +21,18 @@
 			android:layout_width="fill_parent"
 			android:id="@+id/Title"></EditText>
 		<TextView
+			android:text="@string/PoiCategoryTitle"
+			android:id="@+id/TextPoiCategoryTitle"
+			android:textAppearance="?android:attr/textAppearance"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"></TextView>
+        <Spinner android:id="@+id/spinnerCategory"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:drawSelectorOnTop="true"
+            android:prompt="@string/PoiCategoryTitle"
+        />
+		<TextView
 			android:text="@string/PoiLat"
 			android:id="@+id/TextLat"
 			android:textAppearance="?android:attr/textAppearance"

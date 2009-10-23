@@ -17,28 +17,28 @@ public class PoiPoint implements PoiConstants {
 	public int PointSourceId;
 
 	public PoiPoint(int id, String mTitle, String mDescr, GeoPoint mGeoPoint,
-			int picid) {
+			int picid, int categiryid) {
 		this.Id = id;
 		this.Title = mTitle;
 		this.Descr = mDescr;
 		this.GeoPoint = mGeoPoint;
 		this.pictureid = picid;
 		this.Alt = 0;
-		this.CategoryId = 0;
+		this.CategoryId = categiryid;
 		this.PointSourceId = 0;
 	}
 	
 	public PoiPoint(){
-		this(EMPTY_ID, "", "", null, R.drawable.poi);
+		this(EMPTY_ID, "", "", null, R.drawable.poi, 0);
 	}
 
-	public PoiPoint(int id, String mTitle, String mDescr, GeoPoint mGeoPoint) {
-		this(id, mTitle, mDescr, mGeoPoint, R.drawable.poi);
+	public PoiPoint(int id, String mTitle, String mDescr, GeoPoint mGeoPoint, int categoryid) {
+		this(id, mTitle, mDescr, mGeoPoint, R.drawable.poi, categoryid);
 
 	}
 
 	public PoiPoint(String mTitle, String mDescr, GeoPoint mGeoPoint, int picid) {
-		this(EMPTY_ID, mTitle, mDescr, mGeoPoint, picid);
+		this(EMPTY_ID, mTitle, mDescr, mGeoPoint, picid, 0);
 	}
 
 	public int getId() {

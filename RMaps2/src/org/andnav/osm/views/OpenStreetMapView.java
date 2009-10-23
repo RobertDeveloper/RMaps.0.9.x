@@ -406,7 +406,7 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		Log.e(DEBUGTAG, "onKeyDown keyCode="+keyCode);
+//		Log.e(DEBUGTAG, "onKeyDown keyCode="+keyCode);
 		for (OpenStreetMapViewOverlay osmvo : this.mOverlays)
 			if (osmvo.onKeyDown(keyCode, event, this))
 				return true;
