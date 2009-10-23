@@ -21,6 +21,12 @@
 			android:layout_width="fill_parent"
 			android:id="@+id/Title"></EditText>
 
+		<CheckBox
+			android:text="@string/hiddencategory"
+			android:id="@+id/Hidden"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"></CheckBox>
+			
 		<TextView
 			android:text=""
 			android:id="@+id/empty"

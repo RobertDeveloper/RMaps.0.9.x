@@ -10,10 +10,11 @@ import android.database.sqlite.SQLiteDatabase;
 import android.widget.Toast;
 
 import com.robert.maps.R;
+import com.robert.maps.kml.constants.PoiConstants;
 import com.robert.maps.utils.RSQLiteOpenHelper;
 import com.robert.maps.utils.Ut;
 
-public class GeoDatabase {
+public class GeoDatabase implements PoiConstants{
 	protected final Context mCtx;
 	private SQLiteDatabase mDatabase;
 	protected final SimpleDateFormat DATE_FORMAT_ISO8601 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
@@ -25,7 +26,7 @@ public class GeoDatabase {
 	}
 
 	public void addPoi(String aName, String aDescr, double aLat, double aLon, double aAlt, int aCategoryId,
-			int aPointSourceId) {
+			int aPointSourceId, int hidden, int iconid) {
 		if (isDatabaseReady()) {
 			final ContentValues cv = new ContentValues();
 			cv.put("name", aName);
@@ -35,12 +36,14 @@ public class GeoDatabase {
 			cv.put("alt", aAlt);
 			cv.put("categoryid", aCategoryId);
 			cv.put("pointsourceid", aPointSourceId);
+			cv.put("hidden", hidden);
+			cv.put("iconid", iconid);
 			this.mDatabase.insert("points", null, cv);
 		}
 	}
 
 	public void updatePoi(int id, String aName, String aDescr, double aLat, double aLon, double aAlt, int aCategoryId,
-			int aPointSourceId) {
+			int aPointSourceId, int hidden, int iconid) {
 		if (isDatabaseReady()) {
 			final ContentValues cv = new ContentValues();
 			cv.put("name", aName);
@@ -50,6 +53,8 @@ public class GeoDatabase {
 			cv.put("alt", aAlt);
 			cv.put("categoryid", aCategoryId);
 			cv.put("pointsourceid", aPointSourceId);
+			cv.put("hidden", hidden);
+			cv.put("iconid", iconid);
 			String[] args = {"" + id};
 			this.mDatabase.update("points", cv, "pointid = @1", args);
 		}
@@ -76,6 +81,15 @@ public class GeoDatabase {
 		return null;
 	}
 
+	public Cursor getPoiListNotHiddenCursor() {
+		if (isDatabaseReady()) {
+			// не менять порядок полей
+			return mDatabase.rawQuery("SELECT poi.lat, poi.lon, poi.name, poi.descr, poi.pointid, poi.pointid _id, poi.pointid ID FROM points poi LEFT JOIN category cat ON cat.categoryid = poi.categoryid WHERE poi.hidden = 0 AND cat.hidden = 0 ORDER BY lat, lon", null);
+		}
+
+		return null;
+	}
+
 	public Cursor getPoiCategoryListCursor() {
 		if (isDatabaseReady()) {
 			// не менять порядок полей
@@ -90,7 +104,7 @@ public class GeoDatabase {
 			// не менять порядок полей
 			return mDatabase
 					.rawQuery(
-							"SELECT lat, lon, name, descr, pointid, alt, hidden, categoryid, pointsourceid FROM points WHERE pointid = "
+							"SELECT lat, lon, name, descr, pointid, alt, hidden, categoryid, pointsourceid, iconid FROM points WHERE pointid = "
 									+ id, null);
 		}
 
@@ -104,7 +118,7 @@ public class GeoDatabase {
 	}
 
 	public void deletePoiCategory(final int id) {
-		if (isDatabaseReady()) {
+		if (isDatabaseReady() && id != 0) { // predef category My POI never delete
 			mDatabase.execSQL("DELETE FROM category WHERE categoryid = " + id);
 		}
 	}
@@ -146,20 +160,36 @@ public class GeoDatabase {
 	
 	protected class GeoDatabaseHelper extends RSQLiteOpenHelper {
 		public GeoDatabaseHelper(final Context context, final String name) {
-			super(context, name, null, 1);
+			super(context, name, null, 2);
 		}
 
 		@Override
 		public void onCreate(SQLiteDatabase db) {
-			db.execSQL("CREATE TABLE IF NOT EXISTS 'points' (pointid INTEGER NOT NULL PRIMARY KEY UNIQUE, name VARCHAR, descr VARCHAR, lat FLOAT DEFAULT '0', lon FLOAT DEFAULT '0', alt FLOAT DEFAULT '0', hidden INTEGER, categoryid INTEGER, pointsourceid INTEGER);");
-			db.execSQL("CREATE TABLE IF NOT EXISTS 'pointsource' (pointsourceid INTEGER NOT NULL PRIMARY KEY UNIQUE, name VARCHAR);");
-			db.execSQL("CREATE TABLE IF NOT EXISTS 'category' (categoryid INTEGER NOT NULL PRIMARY KEY UNIQUE, name VARCHAR);");
+			db.execSQL(PoiConstants.SQL_CREATE_points);
+			db.execSQL(PoiConstants.SQL_CREATE_pointsource);
+			db.execSQL(PoiConstants.SQL_CREATE_category);
+			db.execSQL(PoiConstants.SQL_ADD_category);
 		}
 
 		@Override
 		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-//			Ut.dd("Upgrade data.db from ver.0 to ver.1");
-			// for ver.1
+			Ut.dd("Upgrade data.db from ver." + oldVersion + " to ver."
+					+ newVersion);
+
+			if (oldVersion < 2) {
+				db.execSQL(PoiConstants.SQL_UPDATE_1_1);
+				db.execSQL(PoiConstants.SQL_UPDATE_1_2);
+				db.execSQL(PoiConstants.SQL_UPDATE_1_3);
+				db.execSQL(PoiConstants.SQL_CREATE_points);
+				db.execSQL(PoiConstants.SQL_UPDATE_1_5);
+				db.execSQL(PoiConstants.SQL_UPDATE_1_6);
+				db.execSQL(PoiConstants.SQL_UPDATE_1_7);
+				db.execSQL(PoiConstants.SQL_UPDATE_1_8);
+				db.execSQL(PoiConstants.SQL_UPDATE_1_9);
+				db.execSQL(PoiConstants.SQL_CREATE_category);
+				db.execSQL(PoiConstants.SQL_UPDATE_1_11);
+				db.execSQL(PoiConstants.SQL_UPDATE_1_12);
+			}
 		}
 		
 	}
@@ -167,24 +197,28 @@ public class GeoDatabase {
 	public Cursor getPoiCategory(int id) {
 		if (isDatabaseReady()) {
 			// не менять порядок полей
-			return mDatabase.rawQuery("SELECT name, categoryid FROM category WHERE categoryid = " + id, null);
+			return mDatabase.rawQuery("SELECT name, categoryid, hidden, iconid FROM category WHERE categoryid = " + id, null);
 		}
 
 		return null;
 	}
 
-	public void addPoiCategory(String title) {
+	public void addPoiCategory(String title, int hidden, int iconid) {
 		if (isDatabaseReady()) {
 			final ContentValues cv = new ContentValues();
 			cv.put("name", title);
+			cv.put("hidden", hidden);
+			cv.put("iconid", iconid);
 			this.mDatabase.insert("category", null, cv);
 		}
 	}
 
-	public void updatePoiCategory(int id, String title) {
+	public void updatePoiCategory(int id, String title, int hidden, int iconid) {
 		if (isDatabaseReady()) {
 			final ContentValues cv = new ContentValues();
 			cv.put("name", title);
+			cv.put("hidden", hidden);
+			cv.put("iconid", iconid);
 			String[] args = {"" + id};
 			this.mDatabase.update("category", cv, "categoryid = @1", args);
 		}

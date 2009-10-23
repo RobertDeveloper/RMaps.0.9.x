@@ -26,12 +26,12 @@
 			android:textAppearance="?android:attr/textAppearance"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"></TextView>
-        <Spinner android:id="@+id/spinnerCategory"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:drawSelectorOnTop="true"
-            android:prompt="@string/PoiCategoryTitle"
-        />
+		<Spinner
+			android:id="@+id/spinnerCategory"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:drawSelectorOnTop="true"
+			android:prompt="@string/PoiCategoryTitle" />
 		<TextView
 			android:text="@string/PoiLat"
 			android:id="@+id/TextLat"
@@ -67,6 +67,12 @@
 			android:minLines="4"
 			android:id="@+id/Descr"></EditText>
 
+		<CheckBox
+			android:text="@string/hidden"
+			android:id="@+id/Hidden"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"></CheckBox>
+			
 		<TextView
 			android:text=""
 			android:id="@+id/empty"
@@ -96,5 +102,6 @@
 				android:text="@string/menu_doNotSave" />
 
 		</LinearLayout>
-	</LinearLayout>
+	
+</LinearLayout>
 </ScrollView>

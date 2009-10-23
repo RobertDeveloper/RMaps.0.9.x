@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.andnav.osm.util.GeoPoint;
 
+import com.robert.maps.R;
+
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -28,24 +30,19 @@ public class PoiManager {
 		mGeoDatabase.FreeDatabases();
 	}
 
-	public void addPoi(GeoPoint point){
-		mGeoDatabase.addPoi("testpoi", "Test POI 1", point.getLatitude(), point.getLongitude(), 0, 0, 0);
-	}
-
 	public void addPoi(final String title, final String descr, GeoPoint point){
-		mGeoDatabase.addPoi(title, descr, point.getLatitude(), point.getLongitude(), 0, 0, 0);
+		mGeoDatabase.addPoi(title, descr, point.getLatitude(), point.getLongitude(), 0, 0, 0, 0, R.drawable.poi);
 	}
 
 	public void updatePoi(final PoiPoint point){
 		if(point.getId() < 0)
-			mGeoDatabase.addPoi(point.Title, point.Descr, point.GeoPoint.getLatitude(), point.GeoPoint.getLongitude(), point.Alt, point.CategoryId, point.PointSourceId);
+			mGeoDatabase.addPoi(point.Title, point.Descr, point.GeoPoint.getLatitude(), point.GeoPoint.getLongitude(), point.Alt, point.CategoryId, point.PointSourceId, point.Hidden == true ? 1 : 0, point.IconId);
 		else 
-			mGeoDatabase.updatePoi(point.getId(), point.Title, point.Descr, point.GeoPoint.getLatitude(), point.GeoPoint.getLongitude(), point.Alt, point.CategoryId, point.PointSourceId);
+			mGeoDatabase.updatePoi(point.getId(), point.Title, point.Descr, point.GeoPoint.getLatitude(), point.GeoPoint.getLongitude(), point.Alt, point.CategoryId, point.PointSourceId, point.Hidden == true ? 1 : 0, point.IconId);
 	}
-
-	public List<PoiPoint> getPoiList() {
+	
+	private List<PoiPoint> doCreatePoiListFromCursor(Cursor c){
 		final ArrayList<PoiPoint> items = new ArrayList<PoiPoint>();
-		final Cursor c = mGeoDatabase.getPoiListCursor();
 		if (c != null) {
 			if (c.moveToFirst()) {
 				do {
@@ -59,6 +56,13 @@ public class PoiManager {
 		return items;
 	}
 
+	public List<PoiPoint> getPoiList() {
+		return doCreatePoiListFromCursor(mGeoDatabase.getPoiListCursor());
+	}
+
+	public List<PoiPoint> getPoiListNotHidden(){
+		return doCreatePoiListFromCursor(mGeoDatabase.getPoiListNotHiddenCursor());
+	}
 
 	public void addPoiStartActivity(Context ctx, GeoPoint touchDownPoint) {
 		ctx.startActivity((new Intent(ctx, PoiActivity.class)).putExtra("lat",
@@ -72,8 +76,11 @@ public class PoiManager {
 		final Cursor c = mGeoDatabase.getPoi(id);
 		if (c != null) {
 			if (c.moveToFirst())
-				point = new PoiPoint(c.getInt(4), c.getString(2), c.getString(3), new GeoPoint(
-						(int) (1E6 * c.getDouble(0)), (int) (1E6 * c.getDouble(1))), c.getInt(7));
+				point = new PoiPoint(c.getInt(4), c.getString(2), c
+						.getString(3), new GeoPoint(
+						(int) (1E6 * c.getDouble(0)), (int) (1E6 * c
+								.getDouble(1))), c.getInt(9), c.getInt(7), c
+						.getInt(5), c.getInt(8), c.getInt(6));
 			c.close();
 		}
 
@@ -93,7 +100,7 @@ public class PoiManager {
 		final Cursor c = mGeoDatabase.getPoiCategory(id);
 		if (c != null) {
 			if (c.moveToFirst())
-				category = new PoiCategory(id, c.getString(0));
+				category = new PoiCategory(id, c.getString(0), c.getInt(2) == 1 ? true : false, c.getInt(3));
 			c.close();
 		}
 
@@ -102,8 +109,8 @@ public class PoiManager {
 
 	public void updatePoiCategory(PoiCategory poiCategory) {
 		if(poiCategory.getId() < 0)
-			mGeoDatabase.addPoiCategory(poiCategory.Title);
+			mGeoDatabase.addPoiCategory(poiCategory.Title, poiCategory.Hidden == true ? 1 : 0, poiCategory.IconId);
 		else 
-			mGeoDatabase.updatePoiCategory(poiCategory.getId(), poiCategory.Title);
+			mGeoDatabase.updatePoiCategory(poiCategory.getId(), poiCategory.Title, poiCategory.Hidden == true ? 1 : 0, poiCategory.IconId);
 	}
 }
