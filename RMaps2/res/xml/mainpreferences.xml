@@ -51,7 +51,8 @@
 
 	</PreferenceCategory>
 
-	<PreferenceCategory android:title="@string/prefcat_main_indexing">
+	<PreferenceCategory android:title="@string/prefcat_main_poi"><CheckBoxPreference android:title="@string/pref_hidepoi" android:key="pref_hidepoi" android:summary="@string/pref_hidepoi_summary" android:defaultValue="false"></CheckBoxPreference>
+</PreferenceCategory><PreferenceCategory android:title="@string/prefcat_main_indexing">
 		<CheckBoxPreference android:key="pref_turnoffautoreindex"
 			android:title="@string/pref_turnoffautoreindex" android:summary="@string/pref_turnoffautoreindex_summary"
 			android:defaultValue="false"></CheckBoxPreference>
@@ -62,4 +63,5 @@
 			android:key="pref_index" android:title="@string/pref_index_title"
 			android:summary="@string/pref_index_summary" />
 	</PreferenceCategory>
+
 </PreferenceScreen>

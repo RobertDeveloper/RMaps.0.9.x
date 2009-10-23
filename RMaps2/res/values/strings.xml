@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <resources>
+    <string name="pref_hidepoi_summary">Dont show POI icons on the map</string>
+    <string name="pref_hidepoi">Hide POI</string>
+    <string name="prefcat_main_poi">POI</string>
     <string name="pref_northdirectionup_summary">Turn map on the northern direction</string>
     <string name="pref_northdirectionup">Direction on the North</string>
     <string name="pref_drivingdirectionup_summary">Turn the map in driving direction</string>

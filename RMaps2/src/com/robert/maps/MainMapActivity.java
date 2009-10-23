@@ -206,8 +206,8 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
         }
 
         /* Itemized Overlay */
-        {
-        	this.mPoiOverlay = new PoiOverlay(this, mPoiManager, null);
+		{
+			this.mPoiOverlay = new PoiOverlay(this, mPoiManager, null, pref.getBoolean("pref_hidepoi", false));
 			this.mOsmv.getOverlays().add(this.mPoiOverlay);
 		}
 
@@ -396,6 +396,7 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
+		int markerIndex = mPoiOverlay.getMarkerAtPoint(mOsmv.mTouchDownX, mOsmv.mTouchDownY, mOsmv);
 		switch(item.getItemId()){
 		case R.id.menu_addpoi:
 			GeoPoint point = this.mOsmv.getTouchDownPoint();
@@ -403,13 +404,17 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 					.putExtra("lat", point.getLatitude()).putExtra("lon", point.getLongitude()));
 			break;
 		case R.id.menu_editpoi:
-			int markerIndex = mPoiOverlay.getMarkerAtPoint(mOsmv.mTouchDownX, mOsmv.mTouchDownY, mOsmv);
 			startActivity((new Intent(this, PoiActivity.class)).putExtra("pointid", mPoiOverlay.getPoiPoint(markerIndex).getId()));
 			mOsmv.invalidate();
 			break;
 		case R.id.menu_deletepoi:
-			int markerIndex2 = mPoiOverlay.getMarkerAtPoint(mOsmv.mTouchDownX, mOsmv.mTouchDownY, mOsmv);
-			mPoiManager.deletePoi(mPoiOverlay.getPoiPoint(markerIndex2).getId());
+			mPoiManager.deletePoi(mPoiOverlay.getPoiPoint(markerIndex).getId());
+			mOsmv.invalidate();
+			break;
+		case R.id.menu_hide:
+			PoiPoint poi = mPoiOverlay.getPoiPoint(markerIndex);
+			poi.Hidden = true;
+			mPoiManager.updatePoi(poi);
 			mOsmv.invalidate();
 			break;
 		}
@@ -421,11 +426,10 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
 		if(mOsmv.canCreateContextMenu()){
 			int markerIndex = mPoiOverlay.getMarkerAtPoint(mOsmv.mTouchDownX, mOsmv.mTouchDownY, mOsmv);
+			menu.add(0, R.id.menu_editpoi, 0, getText(R.string.menu_edit));
+			menu.add(0, R.id.menu_hide, 0, getText(R.string.menu_hide));
 			if(markerIndex >= 0){
-				menu.add(0, R.id.menu_editpoi, 0, getText(R.string.menu_edit));
 				menu.add(0, R.id.menu_deletepoi, 0, getText(R.string.menu_delete));
-			}else{
-				menu.add(0, R.id.menu_addpoi, 0, getText(R.string.menu_addpoi));
 			}
 		}
 
