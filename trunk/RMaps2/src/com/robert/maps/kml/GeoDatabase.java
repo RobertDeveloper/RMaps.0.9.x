@@ -88,7 +88,10 @@ public class GeoDatabase {
 	public Cursor getPoi(final int id) {
 		if (isDatabaseReady()) {
 			// не менять порядок полей
-			return mDatabase.rawQuery("SELECT lat, lon, name, descr, pointid FROM points WHERE pointid = " + id + " ORDER BY lat, lon", null);
+			return mDatabase
+					.rawQuery(
+							"SELECT lat, lon, name, descr, pointid, alt, hidden, categoryid, pointsourceid FROM points WHERE pointid = "
+									+ id, null);
 		}
 
 		return null;
