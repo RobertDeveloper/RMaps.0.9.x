@@ -18,7 +18,7 @@ import android.widget.SimpleCursorAdapter;
 import com.robert.maps.R;
 
 public class PoiListActivity extends ListActivity {
-	private GeoDatabase db = null;
+	private PoiManager mPoiManager;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -28,14 +28,14 @@ public class PoiListActivity extends ListActivity {
 
 	@Override
 	protected void onStart() {
-		db = new GeoDatabase(this);
+		mPoiManager = new PoiManager(this);
 		super.onStart();
 	}
 
 	@Override
 	protected void onStop() {
-		db.FreeDatabases();
-		db = null;
+		mPoiManager.FreeDatabases();
+		mPoiManager = null;
 		super.onStop();
 	}
 
@@ -46,7 +46,7 @@ public class PoiListActivity extends ListActivity {
 	}
 
 	private void FillData() {
-		Cursor c = db.getPoiListCursor();
+		Cursor c = mPoiManager.getGeoDatabase().getPoiListCursor();
         startManagingCursor(c);
 
         ListAdapter adapter = new SimpleCursorAdapter(this,
@@ -85,9 +85,15 @@ public class PoiListActivity extends ListActivity {
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v,
 			ContextMenuInfo menuInfo) {
+		int pointid = (int) ((AdapterView.AdapterContextMenuInfo)menuInfo).id;
+		PoiPoint poi = mPoiManager.getPoiPoint(pointid);
 		
 		menu.add(0, R.id.menu_gotopoi, 0, getText(R.string.menu_goto));
 		menu.add(0, R.id.menu_editpoi, 0, getText(R.string.menu_edit));
+		if(poi.Hidden)
+			menu.add(0, R.id.menu_show, 0, getText(R.string.menu_show));
+		else
+			menu.add(0, R.id.menu_hide, 0, getText(R.string.menu_hide));
 		menu.add(0, R.id.menu_deletepoi, 0, getText(R.string.menu_delete));
 		
 		super.onCreateContextMenu(menu, v, menuInfo);
@@ -96,6 +102,7 @@ public class PoiListActivity extends ListActivity {
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
 		int pointid = (int) ((AdapterView.AdapterContextMenuInfo)item.getMenuInfo()).id;
+		PoiPoint poi = mPoiManager.getPoiPoint(pointid);
 		
 		switch(item.getItemId()){
 		case R.id.menu_editpoi:
@@ -106,7 +113,17 @@ public class PoiListActivity extends ListActivity {
 			finish();
 			break;
 		case R.id.menu_deletepoi:
-			new PoiManager(this).deletePoi(pointid);
+			mPoiManager.deletePoi(pointid);
+			FillData();
+	        break;
+		case R.id.menu_hide:
+			poi.Hidden = true;
+			mPoiManager.updatePoi(poi);
+			FillData();
+	        break;
+		case R.id.menu_show:
+			poi.Hidden = false;
+			mPoiManager.updatePoi(poi);
 			FillData();
 	        break;
 		}

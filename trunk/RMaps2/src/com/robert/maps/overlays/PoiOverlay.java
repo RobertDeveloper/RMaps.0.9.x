@@ -48,10 +48,11 @@ public class PoiOverlay extends OpenStreetMapViewOverlay {
 	protected HashMap<Integer, Drawable> mBtnMap;
 
 	public PoiOverlay(Context ctx, PoiManager poiManager,
-			OnItemTapListener<PoiPoint> onItemTapListener) 
+			OnItemTapListener<PoiPoint> onItemTapListener, boolean hidepoi) 
 	{
 		mCtx = ctx;
 		mPoiManager = poiManager;
+		mCanUpdateList = !hidepoi;
 		Bitmap mBubbleBitmap = BitmapFactory.decodeResource(ctx.getResources(), R.drawable.popup_button);
 		byte[] chunk = {8,8,31,28}; // left,top,right,bottom
 		this.mButton = new NinePatchDrawable(new NinePatch(mBubbleBitmap, chunk, ""));
@@ -82,38 +83,45 @@ public class PoiOverlay extends OpenStreetMapViewOverlay {
 	
 	@Override
 	public void onDraw(Canvas c, OpenStreetMapView mapView) {
-		if(mCanUpdateList)
+		if (mCanUpdateList)
 			this.mItemList = mPoiManager.getPoiListNotHidden();
 
-		final OpenStreetMapViewProjection pj = mapView.getProjection();
+		if (this.mItemList != null) {
+			final OpenStreetMapViewProjection pj = mapView.getProjection();
 
-		final Point curScreenCoords = new Point();
+			final Point curScreenCoords = new Point();
 
-		/* Draw in backward cycle, so the items with the least index are on the front. */
-		for (int i = this.mItemList.size() - 1; i >= 0; i--) {
-			if (i != mTapIndex) {
-				PoiPoint item = this.mItemList.get(i);
+			/*
+			 * Draw in backward cycle, so the items with the least index are on
+			 * the front.
+			 */
+			for (int i = this.mItemList.size() - 1; i >= 0; i--) {
+				if (i != mTapIndex) {
+					PoiPoint item = this.mItemList.get(i);
+					pj.toPixels(item.GeoPoint, curScreenCoords);
+
+					c.save();
+					c.rotate(mapView.getBearing(), curScreenCoords.x,
+							curScreenCoords.y);
+
+					onDrawItem(c, i, curScreenCoords);
+
+					c.restore();
+				}
+			}
+
+			if (mTapIndex >= 0 && mTapIndex < this.mItemList.size()) {
+				PoiPoint item = this.mItemList.get(mTapIndex);
 				pj.toPixels(item.GeoPoint, curScreenCoords);
 
 				c.save();
-				c.rotate(mapView.getBearing(), curScreenCoords.x, curScreenCoords.y);
-				
-				onDrawItem(c, i, curScreenCoords);
+				c.rotate(mapView.getBearing(), curScreenCoords.x,
+						curScreenCoords.y);
+
+				onDrawItem(c, mTapIndex, curScreenCoords);
 
 				c.restore();
 			}
-		}
-		
-		if(mTapIndex >= 0 && mTapIndex < this.mItemList.size()){
-			PoiPoint item = this.mItemList.get(mTapIndex);
-			pj.toPixels(item.GeoPoint, curScreenCoords);
-
-			c.save();
-			c.rotate(mapView.getBearing(), curScreenCoords.x, curScreenCoords.y);
-
-			onDrawItem(c, mTapIndex, curScreenCoords);
-
-			c.restore();
 		}
 	}
 
@@ -121,8 +129,8 @@ public class PoiOverlay extends OpenStreetMapViewOverlay {
 		final PoiPoint focusedItem = mItemList.get(index);
 
 		if (index == mTapIndex) {
-			int toUp = 7, toRight = 2; // int toUp = 25, toRight = 3;
-			int textToRight = 26, widthRightCut = 2, textPadding = 4, maxButtonWidth = 240;
+			int toUp = 8, toRight = 2; // int toUp = 25, toRight = 3;
+			int textToRight = 34, widthRightCut = 2, textPadding = 4, maxButtonWidth = 240;
 			int h0 = 40; // w0 = 40;// исходный размер
 
 			Ut.TextWriter twTitle = new Ut.TextWriter(maxButtonWidth - textToRight, 14, focusedItem.Title);
@@ -162,7 +170,7 @@ public class PoiOverlay extends OpenStreetMapViewOverlay {
 		
 //		final int pxUp = 2;
 //		final int left2 = screenCoords.x + 5 - pxUp;
-//		final int right2 = left + 30 + pxUp;
+//		final int right2 = left + 38 + pxUp;
 //		final int top2 = screenCoords.y - this.mMarkerHotSpot.y - pxUp;
 //		final int bottom2 = top + 33 + pxUp;
 //		Paint p = new Paint();
@@ -184,13 +192,9 @@ public class PoiOverlay extends OpenStreetMapViewOverlay {
 			final PoiPoint mItem = this.mItemList.get(i);
 			pj.toPixels(mItem.GeoPoint, mapView.getBearing(), mCurScreenCoords);
 
-//			final int left = mCurScreenCoords.x - this.mMarkerHotSpot.x;
-//			final int right = left + markerWidth;
-//			final int top = mCurScreenCoords.y - this.mMarkerHotSpot.y;
-//			final int bottom = top + markerHeight;
 			final int pxUp = 2;
 			final int left = mCurScreenCoords.x + 5 - pxUp;
-			final int right = left + 30 + pxUp;
+			final int right = left + 36 + pxUp;
 			final int top = mCurScreenCoords.y - this.mMarkerHotSpot.y - pxUp;
 			final int bottom = top + 33 + pxUp;
 
