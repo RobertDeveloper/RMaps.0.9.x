@@ -1,6 +1,7 @@
 package com.robert.maps.kml;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
@@ -8,6 +9,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.robert.maps.R;
@@ -16,6 +18,7 @@ import com.robert.maps.kml.constants.PoiConstants;
 public class PoiCategoryActivity extends Activity implements PoiConstants {
 	EditText mTitle;
 	CheckBox mHidden;
+	ImageView mIcon;
 	private PoiCategory mPoiCategory;
 	private PoiManager mPoiManager;
 	
@@ -31,6 +34,7 @@ public class PoiCategoryActivity extends Activity implements PoiConstants {
 
 		mTitle = (EditText) findViewById(R.id.Title);
 		mHidden = (CheckBox) findViewById(R.id.Hidden);
+		mIcon = (ImageView) findViewById(R.id.ImageIcon);
 
         Bundle extras = getIntent().getExtras();
         if(extras == null) extras = new Bundle();
@@ -40,7 +44,8 @@ public class PoiCategoryActivity extends Activity implements PoiConstants {
         	mPoiCategory = new PoiCategory();
 			mTitle.setText(extras.getString("title"));
 			mHidden.setChecked(false);
-       }else{
+			mIcon.setImageResource(mPoiCategory.IconId);
+		} else {
         	mPoiCategory = mPoiManager.getPoiCategory(id);
         	
         	if(mPoiCategory == null)
@@ -48,6 +53,7 @@ public class PoiCategoryActivity extends Activity implements PoiConstants {
         	
         	mTitle.setText(mPoiCategory.Title);
            	mHidden.setChecked(mPoiCategory.Hidden);
+			mIcon.setImageResource(mPoiCategory.IconId);
        }
 		
 		((Button) findViewById(R.id.saveButton))
@@ -62,6 +68,16 @@ public class PoiCategoryActivity extends Activity implements PoiConstants {
 				PoiCategoryActivity.this.finish();
 			}
 		});
+		mIcon.setOnClickListener(new OnClickListener() {
+			
+			public void onClick(View v) {
+				doSelectIcon();
+			}
+		});
+	}
+
+	protected void doSelectIcon() {
+		startActivityForResult(new Intent(this, PoiIconSetActivity.class), R.id.ImageIcon);
 	}
 
 	@Override
@@ -83,6 +99,17 @@ public class PoiCategoryActivity extends Activity implements PoiConstants {
 		finish();
 		
 		Toast.makeText(this, R.string.message_saved, Toast.LENGTH_SHORT).show();
+	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		
+		if(resultCode == RESULT_OK){
+			mPoiCategory.IconId = data.getIntExtra("iconid", R.drawable.poi);
+			mIcon.setImageResource(mPoiCategory.IconId);
+		}
+		
+		super.onActivityResult(requestCode, resultCode, data);
 	}
 
 

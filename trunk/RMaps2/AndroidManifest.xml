@@ -44,6 +44,7 @@
         <activity android:name=".kml.PoiListActivity"/>
     <activity android:name=".kml.PoiCategoryActivity"></activity>
 <activity android:name=".kml.PoiCategoryListActivity"></activity>
+<activity android:name=".kml.PoiIconSetActivity"></activity>
 </application>
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
     <uses-sdk android:minSdkVersion="3"/>

@@ -26,7 +26,19 @@
 			android:id="@+id/Hidden"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"></CheckBox>
-			
+		<TextView
+			android:text="@string/PoiIcon"
+			android:id="@+id/TextIcon"
+			android:textAppearance="?android:attr/textAppearance"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"></TextView>
+		<ImageView
+			android:id="@+id/ImageIcon"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			></ImageView>
+
+
 		<TextView
 			android:text=""
 			android:id="@+id/empty"
@@ -56,5 +68,6 @@
 				android:text="@string/menu_doNotSave" />
 
 		</LinearLayout>
-	</LinearLayout>
+	
+</LinearLayout>
 </ScrollView>

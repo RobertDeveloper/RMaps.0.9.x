@@ -83,7 +83,7 @@ With the assistance of\n
   Snake Joe\n
 All rights reserved\n
 \n
-Questions, sentences mail to robertk506@gmail.ru\n
+Questions, sentences mail to robertk506@gmail.com\n
 \n
 How to and FAQ you can find on http://robertdeveloper.blogspot.com/\n
 </string>
@@ -169,6 +169,7 @@ v.0.5.2
     <string name="menu_hide">Hide</string>
     <string name="menu_show">Show</string>
     <string name="PoiTitle">Title</string>
+    <string name="PoiIcon">Icon</string>
     <string name="PoiCategoryTitle">Category</string>
     <string name="PoiLat">Latitude</string>
     <string name="PoiLon">Longitude</string>
