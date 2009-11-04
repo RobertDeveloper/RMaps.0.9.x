@@ -729,7 +729,7 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 					}
 					c.close();
 				}
-			} catch (IllegalArgumentException e) {
+			} catch (Exception e) {
 				Toast.makeText(mCtx, R.string.message_corruptindex, Toast.LENGTH_LONG).show();
 				e.printStackTrace();
 			}
@@ -748,7 +748,7 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 					}
 					c.close();
 				}
-			} catch (IllegalArgumentException e) {
+			} catch (Exception e) {
 				Toast.makeText(mCtx, R.string.message_corruptindex, Toast.LENGTH_LONG).show();
 				e.printStackTrace();
 			}
