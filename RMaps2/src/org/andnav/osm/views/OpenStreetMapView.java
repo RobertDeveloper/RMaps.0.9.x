@@ -86,7 +86,7 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 	public OpenStreetMapView(final Context context, OpenStreetMapRendererInfo aRendererInfo) {
 		super(context);
 		this.mRendererInfo = aRendererInfo;
-		this.mTileProvider = new OpenStreetMapTileProvider(context, new SimpleInvalidationHandler(), aRendererInfo);
+		this.mTileProvider = new OpenStreetMapTileProvider(context, new SimpleInvalidationHandler(), aRendererInfo, 30);
 		this.mPaint.setAntiAlias(true);
 		
 		setFocusable(true);
@@ -559,6 +559,7 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 		final int[] mapTileCoords = new int[] { centerMapTileCoords[MAPTILE_LATITUDE_INDEX],
 				centerMapTileCoords[MAPTILE_LONGITUDE_INDEX] };
 
+/*		
 		if(mBearing > 0)
 		{
 //			additionalTilesNeededToLeftOfCenter = centerMapTileCoords[0]-Math.min(MapTileRB[0], Math.min(MapTileLB[0], Math.min(MapTileLT[0], MapTileRT[0])));
@@ -572,7 +573,7 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 			additionalTilesNeededToTopOfCenter += 1;
 			additionalTilesNeededToBottomOfCenter += 1;
 		}
-
+*/
 		/* Draw all the MapTiles (from the upper left to the lower right). */
 		for (int y = -additionalTilesNeededToTopOfCenter; y <= additionalTilesNeededToBottomOfCenter; y++) {
 			for (int x = -additionalTilesNeededToLeftOfCenter; x <= additionalTilesNeededToRightOfCenter; x++) {

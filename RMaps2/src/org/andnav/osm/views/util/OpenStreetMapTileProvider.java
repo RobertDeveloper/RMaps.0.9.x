@@ -40,10 +40,10 @@ public class OpenStreetMapTileProvider implements OpenStreetMapConstants, OpenSt
 	// Constructors
 	// ===========================================================
 
-	public OpenStreetMapTileProvider(final Context ctx, final Handler aDownloadFinishedListener, final OpenStreetMapRendererInfo aRendererInfo) {
+	public OpenStreetMapTileProvider(final Context ctx, final Handler aDownloadFinishedListener, final OpenStreetMapRendererInfo aRendererInfo, final int size) {
 		this.mCtx = ctx;
 		this.mLoadingMapTile = BitmapFactory.decodeResource(ctx.getResources(), R.drawable.maptile_loading);
-		this.mTileCache = new OpenStreetMapTileCache();
+		this.mTileCache = new OpenStreetMapTileCache(size);
 		this.mFSTileProvider = new OpenStreetMapTileFilesystemProvider(ctx, 4 * 1024 * 1024, this.mTileCache); // 4MB FSCache
 		this.mTileDownloader = new OpenStreetMapTileDownloader(ctx, this.mFSTileProvider);
 		this.mDownloadFinishedListenerHander = aDownloadFinishedListener;

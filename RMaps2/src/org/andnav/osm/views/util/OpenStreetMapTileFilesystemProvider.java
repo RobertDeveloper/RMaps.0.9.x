@@ -561,47 +561,63 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 		if (this.mPending.contains(aTileURLString))
 			return;
 
-		final String formattedTileURLString = OpenStreetMapTileNameFormatter.format(aTileURLString);
-		final InputStream in = new BufferedInputStream(OpenStreetMapTileFilesystemProvider.this.mCtx
-				.openFileInput(formattedTileURLString), 8192);
 
-		this.mPending.add(aTileURLString);
+		//try {
+			final String formattedTileURLString = OpenStreetMapTileNameFormatter.format(aTileURLString);
+			final InputStream in = new BufferedInputStream(OpenStreetMapTileFilesystemProvider.this.mCtx
+					.openFileInput(formattedTileURLString), 8192);
+			this.mPending.add(aTileURLString);
 
-		this.mThreadPool.execute(new Runnable() {
-			public void run() {
-				OutputStream out = null;
-				try {
-					// File exists, otherwise a FileNotFoundException would have been thrown
-					OpenStreetMapTileFilesystemProvider.this.mDatabase.incrementUse(formattedTileURLString);
-
-					final ByteArrayOutputStream dataStream = new ByteArrayOutputStream();
-					out = new BufferedOutputStream(dataStream, StreamUtils.IO_BUFFER_SIZE);
-					StreamUtils.copy(in, out);
-					out.flush();
-
-					final byte[] data = dataStream.toByteArray();
-					final Bitmap bmp = BitmapFactory.decodeByteArray(data, 0, data.length); // , BITMAPLOADOPTIONS);
-
-					OpenStreetMapTileFilesystemProvider.this.mCache.putTile(aTileURLString, bmp);
-
-					final Message successMessage = Message.obtain(callback, MAPTILEFSLOADER_SUCCESS_ID);
-					successMessage.sendToTarget();
-
-					if (DEBUGMODE)
-						Log.d(DEBUGTAG, "Loaded: " + aTileURLString + " to MemCache.");
-				} catch (IOException e) {
-					final Message failMessage = Message.obtain(callback, MAPTILEFSLOADER_FAIL_ID);
-					failMessage.sendToTarget();
-					if (DEBUGMODE)
-						Log.e(DEBUGTAG, "Error Loading MapTile from FS. Exception: " + e.getClass().getSimpleName(), e);
-				} finally {
-					StreamUtils.closeStream(in);
-					StreamUtils.closeStream(out);
+		
+			this.mThreadPool.execute(new Runnable() {
+				public void run() {
+					OutputStream out = null;
+					try {
+						// File exists, otherwise a FileNotFoundException would have been thrown
+						OpenStreetMapTileFilesystemProvider.this.mDatabase.incrementUse(formattedTileURLString);
+	
+						final ByteArrayOutputStream dataStream = new ByteArrayOutputStream();
+						out = new BufferedOutputStream(dataStream, StreamUtils.IO_BUFFER_SIZE);
+						StreamUtils.copy(in, out);
+						out.flush();
+	
+						final byte[] data = dataStream.toByteArray();
+						Ut.dd(""+data.length+" "+formattedTileURLString);
+						//final BitmapFactory.Options options = new BitmapFactory.Options();
+						//options.inSampleSize = 2;					
+						final Bitmap bmp = BitmapFactory.decodeByteArray(data, 0, data.length); // , BITMAPLOADOPTIONS);
+	
+						OpenStreetMapTileFilesystemProvider.this.mCache.putTile(aTileURLString, bmp);
+	
+						final Message successMessage = Message.obtain(callback, MAPTILEFSLOADER_SUCCESS_ID);
+						successMessage.sendToTarget();
+	
+						if (DEBUGMODE)
+							Log.d(DEBUGTAG, "Loaded: " + aTileURLString + " to MemCache.");
+					} catch (IOException e) {
+						final Message failMessage = Message.obtain(callback, MAPTILEFSLOADER_FAIL_ID);
+						failMessage.sendToTarget();
+						if (DEBUGMODE)
+							Log.e(DEBUGTAG, "Error Loading MapTile from FS. Exception: " + e.getClass().getSimpleName(), e);
+					} catch (Exception e) {
+						final Message failMessage = Message.obtain(callback, MAPTILEFSLOADER_FAIL_ID);
+						failMessage.sendToTarget();
+						if (DEBUGMODE)
+							Log.e(DEBUGTAG, "Error Loading MapTile from FS. Exception: " + e.getClass().getSimpleName(), e);
+					} finally {
+						StreamUtils.closeStream(in);
+						StreamUtils.closeStream(out);
+					}
+	
+					OpenStreetMapTileFilesystemProvider.this.mPending.remove(aTileURLString);
 				}
+			});
 
-				OpenStreetMapTileFilesystemProvider.this.mPending.remove(aTileURLString);
-			}
-		});
+		
+		//} catch (Exception e) {
+		//	Ut.dd("catch catch catch catch");
+		//};
+		
 	}
 
 	public void saveFile(final String aURLString, final byte[] someData) throws IOException {
