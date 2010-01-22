@@ -31,7 +31,7 @@ public class YandexTrafficOverlay extends OpenStreetMapViewOverlay implements Op
 		mMapView = mapView;
 		mRendererInfo = new OpenStreetMapRendererInfo(ctx.getResources(), "yandextraffic");
 		mRendererInfo.LoadFromResources("yandextraffic", null);
-		mTileProvider = new OpenStreetMapTileProvider(ctx, new SimpleInvalidationHandler(), mRendererInfo);
+		mTileProvider = new OpenStreetMapTileProvider(ctx, new SimpleInvalidationHandler(), mRendererInfo, 10);
 	}
 
 	@Override
