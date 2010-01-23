@@ -84,7 +84,7 @@ public class GeoDatabase implements PoiConstants{
 	public Cursor getPoiListNotHiddenCursor() {
 		if (isDatabaseReady()) {
 			// не менять порядок полей
-			return mDatabase.rawQuery("SELECT poi.lat, poi.lon, poi.name, poi.descr, poi.pointid, poi.pointid _id, poi.pointid ID FROM points poi LEFT JOIN category cat ON cat.categoryid = poi.categoryid WHERE poi.hidden = 0 AND cat.hidden = 0 ORDER BY lat, lon", null);
+			return mDatabase.rawQuery("SELECT poi.lat, poi.lon, poi.name, poi.descr, poi.pointid, poi.pointid _id, poi.pointid ID, poi.categoryid, cat.iconid FROM points poi LEFT JOIN category cat ON cat.categoryid = poi.categoryid WHERE poi.hidden = 0 AND cat.hidden = 0 ORDER BY lat, lon", null);
 		}
 
 		return null;
@@ -128,7 +128,7 @@ public class GeoDatabase implements PoiConstants{
 
 		if(mDatabase == null)
 			mDatabase = getDatabase();
-		
+
 		if(mDatabase == null)
 			ret = false;
 
@@ -137,7 +137,7 @@ public class GeoDatabase implements PoiConstants{
 
 		return ret;
 	}
-	
+
 	public void FreeDatabases(){
 		if(mDatabase != null){
 			if(mDatabase.isOpen()){
@@ -152,12 +152,12 @@ public class GeoDatabase implements PoiConstants{
 		File folder = Ut.getRMapsFolder("data", false);
 		if(!folder.exists()) // no sdcard
 			return null;
-		
+
 		SQLiteDatabase db = new GeoDatabaseHelper(mCtx, folder.getAbsolutePath() + "/geodata.db").getWritableDatabase();
 
 		return db;
 	}
-	
+
 	protected class GeoDatabaseHelper extends RSQLiteOpenHelper {
 		public GeoDatabaseHelper(final Context context, final String name) {
 			super(context, name, null, 2);
@@ -191,7 +191,7 @@ public class GeoDatabase implements PoiConstants{
 				db.execSQL(PoiConstants.SQL_UPDATE_1_12);
 			}
 		}
-		
+
 	}
 
 	public Cursor getPoiCategory(int id) {

@@ -5,11 +5,11 @@ import java.util.List;
 
 import org.andnav.osm.util.GeoPoint;
 
-import com.robert.maps.R;
-
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+
+import com.robert.maps.R;
 
 
 public class PoiManager {
@@ -21,7 +21,7 @@ public class PoiManager {
 		mCtx = ctx;
 		mGeoDatabase = new GeoDatabase(ctx);
 	}
-	
+
 	public GeoDatabase getGeoDatabase(){
 		return mGeoDatabase;
 	}
@@ -37,17 +37,17 @@ public class PoiManager {
 	public void updatePoi(final PoiPoint point){
 		if(point.getId() < 0)
 			mGeoDatabase.addPoi(point.Title, point.Descr, point.GeoPoint.getLatitude(), point.GeoPoint.getLongitude(), point.Alt, point.CategoryId, point.PointSourceId, point.Hidden == true ? 1 : 0, point.IconId);
-		else 
+		else
 			mGeoDatabase.updatePoi(point.getId(), point.Title, point.Descr, point.GeoPoint.getLatitude(), point.GeoPoint.getLongitude(), point.Alt, point.CategoryId, point.PointSourceId, point.Hidden == true ? 1 : 0, point.IconId);
 	}
-	
+
 	private List<PoiPoint> doCreatePoiListFromCursor(Cursor c){
 		final ArrayList<PoiPoint> items = new ArrayList<PoiPoint>();
 		if (c != null) {
 			if (c.moveToFirst()) {
 				do {
 					items.add(new PoiPoint(c.getInt(4), c.getString(2), c.getString(3), new GeoPoint(
-							(int) (1E6 * c.getDouble(0)), (int) (1E6 * c.getDouble(1))), 0));
+							(int) (1E6 * c.getDouble(0)), (int) (1E6 * c.getDouble(1))), c.getInt(7), c.getInt(8)));
 				} while (c.moveToNext());
 			}
 			c.close();
@@ -86,7 +86,7 @@ public class PoiManager {
 
 		return point;
 	}
-	
+
 	public void deletePoi(final int id){
 		mGeoDatabase.deletePoi(id);
 	}
@@ -110,7 +110,7 @@ public class PoiManager {
 	public void updatePoiCategory(PoiCategory poiCategory) {
 		if(poiCategory.getId() < 0)
 			mGeoDatabase.addPoiCategory(poiCategory.Title, poiCategory.Hidden == true ? 1 : 0, poiCategory.IconId);
-		else 
+		else
 			mGeoDatabase.updatePoiCategory(poiCategory.getId(), poiCategory.Title, poiCategory.Hidden == true ? 1 : 0, poiCategory.IconId);
 	}
 }

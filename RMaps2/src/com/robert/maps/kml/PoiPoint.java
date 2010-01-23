@@ -29,14 +29,13 @@ public class PoiPoint implements PoiConstants {
 		this.PointSourceId = sourseid;
 		this.Hidden = hidden == 1 ? true : false;
 	}
-	
+
 	public PoiPoint(){
 		this(EMPTY_ID, "", "", null, R.drawable.poi, 0, 0, 0, 0);
 	}
 
-	public PoiPoint(int id, String mTitle, String mDescr, GeoPoint mGeoPoint, int categoryid) {
-		this(id, mTitle, mDescr, mGeoPoint, R.drawable.poi, categoryid, 0, 0, 0);
-
+	public PoiPoint(int id, String mTitle, String mDescr, GeoPoint mGeoPoint, int categoryid, int iconid) {
+		this(id, mTitle, mDescr, mGeoPoint, iconid, categoryid, 0, 0, 0);
 	}
 
 	public PoiPoint(String mTitle, String mDescr, GeoPoint mGeoPoint, int iconid) {
@@ -46,7 +45,7 @@ public class PoiPoint implements PoiConstants {
 	public int getId() {
 		return Id;
 	}
-	
+
 	public static int EMPTY_ID(){
 		return EMPTY_ID;
 	}
