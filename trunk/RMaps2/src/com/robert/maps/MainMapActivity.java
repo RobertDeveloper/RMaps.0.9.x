@@ -401,7 +401,7 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 		case R.id.menu_addpoi:
 			GeoPoint point = this.mOsmv.getTouchDownPoint();
 			startActivity((new Intent(this, PoiActivity.class))
-					.putExtra("lat", point.getLatitude()).putExtra("lon", point.getLongitude()));
+					.putExtra("lat", point.getLatitude()).putExtra("lon", point.getLongitude()).putExtra("title", "POI"));
 			break;
 		case R.id.menu_editpoi:
 			startActivity((new Intent(this, PoiActivity.class)).putExtra("pointid", mPoiOverlay.getPoiPoint(markerIndex).getId()));
@@ -426,10 +426,12 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
 		if(mOsmv.canCreateContextMenu()){
 			int markerIndex = mPoiOverlay.getMarkerAtPoint(mOsmv.mTouchDownX, mOsmv.mTouchDownY, mOsmv);
-			menu.add(0, R.id.menu_editpoi, 0, getText(R.string.menu_edit));
-			menu.add(0, R.id.menu_hide, 0, getText(R.string.menu_hide));
 			if(markerIndex >= 0){
+				menu.add(0, R.id.menu_editpoi, 0, getText(R.string.menu_edit));
+				menu.add(0, R.id.menu_hide, 0, getText(R.string.menu_hide));
 				menu.add(0, R.id.menu_deletepoi, 0, getText(R.string.menu_delete));
+			} else {
+				menu.add(0, R.id.menu_addpoi, 0, getText(R.string.menu_addpoi));
 			}
 		}
 
@@ -783,10 +785,10 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 		mCompassView.setVisibility(mCompassEnabled ? View.VISIBLE : View.INVISIBLE);
 
 		setTitle();
-		
+
 		if(mPoiOverlay != null)
 			mPoiOverlay.setTapIndex(settings.getInt("curShowPoiId", -1));
-		
+
 		mSearchResultOverlay.fromPref(settings);
 
 		if(!settings.getString("app_version", "").equalsIgnoreCase(Ut.getAppVersion(this)))
