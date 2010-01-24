@@ -188,8 +188,8 @@ public class GeoDatabase implements PoiConstants{
 				db.execSQL(PoiConstants.SQL_UPDATE_1_9);
 				db.execSQL(PoiConstants.SQL_CREATE_category);
 				db.execSQL(PoiConstants.SQL_ADD_category);
-				db.execSQL(PoiConstants.SQL_UPDATE_1_11);
-				db.execSQL(PoiConstants.SQL_UPDATE_1_12);
+				//db.execSQL(PoiConstants.SQL_UPDATE_1_11);
+				//db.execSQL(PoiConstants.SQL_UPDATE_1_12);
 			}
 		}
 
