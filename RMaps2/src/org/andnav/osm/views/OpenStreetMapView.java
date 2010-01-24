@@ -88,7 +88,7 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 		this.mRendererInfo = aRendererInfo;
 		this.mTileProvider = new OpenStreetMapTileProvider(context, new SimpleInvalidationHandler(), aRendererInfo, 30);
 		this.mPaint.setAntiAlias(true);
-		
+
 		setFocusable(true);
 		setFocusableInTouchMode(true);
 	}
@@ -559,8 +559,8 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 		final int[] mapTileCoords = new int[] { centerMapTileCoords[MAPTILE_LATITUDE_INDEX],
 				centerMapTileCoords[MAPTILE_LONGITUDE_INDEX] };
 
-/*		
-		if(mBearing > 0)
+
+		if(mBearing > 0 && mRendererInfo.YANDEX_TRAFFIC_ON == 0)
 		{
 //			additionalTilesNeededToLeftOfCenter = centerMapTileCoords[0]-Math.min(MapTileRB[0], Math.min(MapTileLB[0], Math.min(MapTileLT[0], MapTileRT[0])));
 //			additionalTilesNeededToRightOfCenter = -centerMapTileCoords[0]+Math.max(MapTileRB[0], Math.max(MapTileLB[0], Math.max(MapTileLT[0], MapTileRT[0])));
@@ -573,7 +573,7 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 			additionalTilesNeededToTopOfCenter += 1;
 			additionalTilesNeededToBottomOfCenter += 1;
 		}
-*/
+
 		/* Draw all the MapTiles (from the upper left to the lower right). */
 		for (int y = -additionalTilesNeededToTopOfCenter; y <= additionalTilesNeededToBottomOfCenter; y++) {
 			for (int x = -additionalTilesNeededToLeftOfCenter; x <= additionalTilesNeededToRightOfCenter; x++) {
@@ -607,7 +607,7 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 							+ mRendererInfo.getQRTS(mapTileCoords[MAPTILE_LONGITUDE_INDEX], mapTileCoords[MAPTILE_LATITUDE_INDEX], zoomLevel), tileLeft + 5,
 							tileTop + 15, this.mPaint);
 				}
-				
+
 			}
 		}
 
@@ -746,7 +746,7 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 
 			return p;
 		}
-		
+
 		public GeoPoint fromPixels(float x, float y, double bearing){
 			final int x1 = (int) (x - OpenStreetMapView.this.getWidth()/2);
 			final int y1 = (int) (y - OpenStreetMapView.this.getHeight()/2);
@@ -755,7 +755,7 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 			final double angle2 = angle - bearing;
 			final int x2 = (int)(Math.cos(Math.toRadians(angle2))*hypot);
 			final int y2 = (int)(Math.sin(Math.toRadians(angle2-180))*hypot);
-			
+
 			return fromPixels((float)(OpenStreetMapView.this.getWidth()/2 + x2), (float)(OpenStreetMapView.this.getHeight()/2 + y2));
 		}
 
@@ -795,11 +795,11 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 		public Point toPixels(final GeoPoint in, final Point reuse) {
 			return toPixels(in, reuse, true);
 		}
-		
+
 		public Point toPixels(final GeoPoint in, final double bearing, final Point reuse){
 			final Point point = toPixels(in, reuse, true);
 			final Point out = (reuse != null) ? reuse : new Point();
-			
+
 			final int x1 = point.x - OpenStreetMapView.this.getWidth()/2;
 			final int y1 = point.y - OpenStreetMapView.this.getHeight()/2;
 			final double hypot = Math.hypot(x1, y1);
@@ -807,7 +807,7 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 			final double angle2 = angle + bearing;
 			final int x2 = (int)(Math.cos(Math.toRadians(angle2))*hypot);
 			final int y2 = (int)(Math.sin(Math.toRadians(angle2-180))*hypot);
-			
+
 			out.set(OpenStreetMapView.this.getWidth()/2 + x2, OpenStreetMapView.this.getHeight()/2 + y2);
 			return out;
 		}

@@ -89,7 +89,9 @@ How to and FAQ you can find on http://robertdeveloper.blogspot.com/\n
 </string>
     <string name="whats_new_dialog_text">
 v.0.7.5\n
-+ The back button close the search result window\n 
++ POI category\n
++ The back button close the search result window\n
+- Bug fix: OS Map\n
 \n
 v.0.7.4\n
 + Added new online maps (Docelu.pl Poland, Freemap.sk Slovakia, Slovakia Hiking, Slovakia Hiking HillShade)\n
