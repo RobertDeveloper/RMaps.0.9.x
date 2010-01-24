@@ -10,8 +10,8 @@ public interface PoiConstants {
 	public static final String SQL_CREATE_pointsource = "CREATE TABLE IF NOT EXISTS 'pointsource' (pointsourceid INTEGER NOT NULL PRIMARY KEY UNIQUE, name VARCHAR);";
 
 	public static final String SQL_ADD_category = "INSERT INTO 'category' (categoryid, name, hidden, iconid) VALUES (0, 'My POI', 0, "
-			+ R.drawable.poi + ");";
-	
+			+ R.drawable.poiblue + ");";
+
 	public static final String SQL_UPDATE_1_1 = "DROP TABLE IF EXISTS 'points_45392250'; ";
 	public static final String SQL_UPDATE_1_2 = "CREATE TABLE 'points_45392250' AS SELECT * FROM 'points';";
 	public static final String SQL_UPDATE_1_3 = "DROP TABLE 'points';";

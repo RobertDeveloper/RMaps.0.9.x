@@ -568,30 +568,30 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 					.openFileInput(formattedTileURLString), 8192);
 			this.mPending.add(aTileURLString);
 
-		
+
 			this.mThreadPool.execute(new Runnable() {
 				public void run() {
 					OutputStream out = null;
 					try {
 						// File exists, otherwise a FileNotFoundException would have been thrown
 						OpenStreetMapTileFilesystemProvider.this.mDatabase.incrementUse(formattedTileURLString);
-	
+
 						final ByteArrayOutputStream dataStream = new ByteArrayOutputStream();
 						out = new BufferedOutputStream(dataStream, StreamUtils.IO_BUFFER_SIZE);
 						StreamUtils.copy(in, out);
 						out.flush();
-	
+
 						final byte[] data = dataStream.toByteArray();
-						Ut.dd(""+data.length+" "+formattedTileURLString);
+
 						//final BitmapFactory.Options options = new BitmapFactory.Options();
-						//options.inSampleSize = 2;					
+						//options.inSampleSize = 2;
 						final Bitmap bmp = BitmapFactory.decodeByteArray(data, 0, data.length); // , BITMAPLOADOPTIONS);
-	
+
 						OpenStreetMapTileFilesystemProvider.this.mCache.putTile(aTileURLString, bmp);
-	
+
 						final Message successMessage = Message.obtain(callback, MAPTILEFSLOADER_SUCCESS_ID);
 						successMessage.sendToTarget();
-	
+
 						if (DEBUGMODE)
 							Log.d(DEBUGTAG, "Loaded: " + aTileURLString + " to MemCache.");
 					} catch (IOException e) {
@@ -608,16 +608,16 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 						StreamUtils.closeStream(in);
 						StreamUtils.closeStream(out);
 					}
-	
+
 					OpenStreetMapTileFilesystemProvider.this.mPending.remove(aTileURLString);
 				}
 			});
 
-		
+
 		//} catch (Exception e) {
 		//	Ut.dd("catch catch catch catch");
 		//};
-		
+
 	}
 
 	public void saveFile(final String aURLString, final byte[] someData) throws IOException {
@@ -749,7 +749,7 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 				Toast.makeText(mCtx, R.string.message_corruptindex, Toast.LENGTH_LONG).show();
 				e.printStackTrace();
 			}
-			
+
 			return ret;
 		}
 
