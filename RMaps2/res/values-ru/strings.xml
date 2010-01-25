@@ -25,7 +25,7 @@
     <string name="pref_turnoffautoreindex">Отключить реиндексацию</string>
     <string name="pref_turnoffautoreindex_summary">Отключить авто реиндексацию при изменении размера или даты времени файла карты</string>
     <string name="pref_gpsfastupdate">Частое обновление GPS данных</string>
-    <string name="pref_gpsfastupdate_summary">Редкое обновление GPS данных теоритически экономит батарею</string>
+    <string name="pref_gpsfastupdate_summary">Редкое обновление GPS данных теоретически экономит батарею</string>
     <string name="pref_usermap_enabled">Включить карту</string>
     <string name="pref_usermap_enabled_summary">Добавить карту в список карт</string>
     <string name="pref_usermap_name">Имя карты</string>
@@ -43,7 +43,7 @@
     <string name="btn_clear_cache_title">Очистить</string>
     <string name="pref_internalcache_title">Внутренний кэш</string>
     <string name="pref_internalcache_summary">Временное хранение тайлов карт. Размер: %dKB/4MB</string>
-    <string name="pref_index_title">Идексный файл</string>
+    <string name="pref_index_title">Индексный файл</string>
     <string name="pref_index_summary">Индекс тайлов offline карт. Размер: %dKB</string>
     <string name="hello">Hello World, OpenStreetMapViewer</string>
     <string name="app_name">RMaps</string>
