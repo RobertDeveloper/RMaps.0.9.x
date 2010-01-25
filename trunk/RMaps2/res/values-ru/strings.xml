@@ -52,7 +52,7 @@
     <string name="menu_exit">Выход</string>
     <string name="menu_mylocation">Где я?</string>
     <string name="menu_mapselector">Карты</string>
-    <string name="menu_compass">Компасс</string>
+    <string name="menu_compass">Компас</string>
     <string name="menu_about">О программе</string>
     <string name="menu_search">Поиск</string>
     <string name="menu_addpoi">Добавить POI</string>
@@ -145,7 +145,7 @@ v.0.5.2\n
     <string name="about_dialog_whats_new">Что нового</string>
     <string name="about_dialog_close">Закрыть</string>
     <string name="ya_dialog_title">Яндекс Пробки</string>
-    <string name="ya_dialog_message">В знак уважения и благодарности фирме Яндекс за предоставленную информацию о пробках предлагаю Вам добавить закладку на страницу Мобильный Яндекс. Это сообщение ни к чему Вас не обязыват и больше появляться не будет.</string>
+    <string name="ya_dialog_message">В знак уважения и благодарности фирме Яндекс за предоставленную информацию о пробках предлагаю Вам добавить закладку на страницу Мобильный Яндекс. Это сообщение ни к чему Вас не обязывает и больше появляться не будет.</string>
     <string name="ya_dialog_button_caption">OK</string>
     <string name="search_label">Адрес:</string>
     <string name="search_hint">напр. Москва Таганка</string>
