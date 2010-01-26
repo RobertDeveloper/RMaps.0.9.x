@@ -65,6 +65,7 @@
     <string name="menu_addpoi">Add POI</string>
     <string name="menu_poilist">POI</string>
     <string name="menu_categorylist">Category</string>
+    <string name="menu_import">Import</string>
     <string name="mnm">.mnm</string>
     <string name="tar">.tar</string>
     <string name="sqlitedb">.sqlitedb</string>
