@@ -7,10 +7,10 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.andnav.osm.util.GeoPoint;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.w3c.dom.Text;
 import org.xml.sax.SAXException;
 
 import android.app.ListActivity;
@@ -123,17 +123,26 @@ public class PoiListActivity extends ListActivity {
 				PoiPoint poi = new PoiPoint();
 				for(int j = 0; j < plk.getLength(); j++){
 					node = plk.item(j); //node.getLocalName() node.getNodeType()
-					if(node.getNodeName()=="name"){
-						//Text t = ((Text)(plk.item(j))).getData();
-						poi.Title = node.getNodeValue();
-					}
-					else if(node.getNodeName()=="description")
-						poi.Descr = node.getNodeValue();
-					else if(node.getNodeName()=="Point"){
 
+					if(node.getNodeName().equalsIgnoreCase("name")){
+						poi.Title = node.getFirstChild().getNodeValue();
 					}
+					else if(node.getNodeName().equalsIgnoreCase("description"))
+						poi.Descr = node.getFirstChild().getNodeValue();
+					else if(node.getNodeName().equalsIgnoreCase("Point")){
+						NodeList crd = node.getChildNodes();
+						for(int k = 0; k < crd.getLength(); k++){
+							if(crd.item(k).getNodeName().equalsIgnoreCase("coordinates")){
+								String [] f = crd.item(k).getFirstChild().getNodeValue().split(",");
+								poi.GeoPoint = GeoPoint.from2DoubleString(f[1], f[0]);
+							}
+						}
+						}
+
 				}
-				Ut.dd(poi.Title+" :: "+poi.Descr);
+				//Ut.dd(poi.Title+" :: "+poi.Descr);
+				if(poi.Title.equalsIgnoreCase("")) poi.Title = "POI";
+				mPoiManager.updatePoi(poi);
 			}
 		} catch (SAXException e1) {
 			e1.printStackTrace();
