@@ -183,24 +183,26 @@ public class PoiOverlay extends OpenStreetMapViewOverlay {
 	}
 	
 	public int getMarkerAtPoint(final int eventX, final int eventY, OpenStreetMapView mapView){
-		final OpenStreetMapViewProjection pj = mapView.getProjection();
-
-		final Rect curMarkerBounds = new Rect();
-		final Point mCurScreenCoords = new Point();
-
-		for(int i = 0; i < this.mItemList.size(); i++){
-			final PoiPoint mItem = this.mItemList.get(i);
-			pj.toPixels(mItem.GeoPoint, mapView.getBearing(), mCurScreenCoords);
-
-			final int pxUp = 2;
-			final int left = mCurScreenCoords.x + 5 - pxUp;
-			final int right = left + 36 + pxUp;
-			final int top = mCurScreenCoords.y - this.mMarkerHotSpot.y - pxUp;
-			final int bottom = top + 33 + pxUp;
-
-			curMarkerBounds.set(left, top, right, bottom);
-			if(curMarkerBounds.contains(eventX, eventY))
-				return i;
+		if(this.mItemList != null){
+			final OpenStreetMapViewProjection pj = mapView.getProjection();
+	
+			final Rect curMarkerBounds = new Rect();
+			final Point mCurScreenCoords = new Point();
+	
+			for(int i = 0; i < this.mItemList.size(); i++){
+				final PoiPoint mItem = this.mItemList.get(i);
+				pj.toPixels(mItem.GeoPoint, mapView.getBearing(), mCurScreenCoords);
+	
+				final int pxUp = 2;
+				final int left = mCurScreenCoords.x + 5 - pxUp;
+				final int right = left + 36 + pxUp;
+				final int top = mCurScreenCoords.y - this.mMarkerHotSpot.y - pxUp;
+				final int bottom = top + 33 + pxUp;
+	
+				curMarkerBounds.set(left, top, right, bottom);
+				if(curMarkerBounds.contains(eventX, eventY))
+					return i;
+			}
 		}
 		
 		return -1;
