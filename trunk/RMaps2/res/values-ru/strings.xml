@@ -81,6 +81,7 @@ All rights reserved\n
     <string name="whats_new_dialog_text">
 v.0.7.6\n
 + Добавлены онлайн карты (Topographic map of Norway, Sea map of Norway)\n
++ Добавлен выбор языка надписей на картах Google\n
 \n
 v.0.7.5\n
 + Категории POI\n
