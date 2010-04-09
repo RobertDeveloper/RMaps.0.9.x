@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <resources>
+    <string name="pref_googlelanguagecode_summary">Язык надписей на карте Google Map</string>
+    <string name="pref_googlelanguagecode">Код локализации Google Map</string>
     <string name="pref_northdirectionup_summary">Поворачивать карту вместе с компасом</string>
     <string name="pref_northdirectionup">По компасу</string>
     <string name="pref_drivingdirectionup_summary">Поворачивать карту в направлении движения</string>

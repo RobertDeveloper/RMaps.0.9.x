@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <resources>
+    <string name="pref_googlelanguagecode_summary">Localisation of Google Map</string>
+    <string name="pref_googlelanguagecode">Google Map language code</string>
     <string name="pref_hidepoi_summary">Dont show POI icons on the map</string>
     <string name="pref_hidepoi">Hide POI</string>
     <string name="prefcat_main_poi">POI</string>
