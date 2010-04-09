@@ -13,8 +13,16 @@
 				android:title="@string/pref_main_usermaps">
 			</PreferenceCategory>
 		</PreferenceScreen>
-	</PreferenceCategory>
-	<PreferenceCategory android:title="@string/prefcat_main_look">
+	
+</PreferenceCategory>
+	<ListPreference
+		android:entries="@array/languages_names"
+		android:entryValues="@array/languages_codes"
+		android:key="pref_googlelanguagecode"
+		android:title="@string/pref_googlelanguagecode"
+		android:summary="@string/pref_googlelanguagecode_summary"></ListPreference>
+	<PreferenceCategory
+		android:title="@string/prefcat_main_look">
 		<CheckBoxPreference android:key="pref_keepscreenon"
 			android:title="@string/pref_keepscreenon" android:summary="@string/pref_keepscreenon_summary"
 			android:summaryOn="@string/pref_keepscreenon_summary"
