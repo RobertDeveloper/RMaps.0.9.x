@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <resources>
+	<string name="pref_screen_orientation">Screen Orientation</string>
+	<string name="pref_screen_orientation_summary">Choose the screen orientation</string>
     <string name="pref_googlelanguagecode_summary">Localisation of Google Map</string>
     <string name="pref_googlelanguagecode">Google Map language code</string>
     <string name="pref_hidepoi_summary">Dont show POI icons on the map</string>
@@ -92,8 +94,9 @@ How to and FAQ you can find on http://robertdeveloper.blogspot.com/\n
 	</string>
     <string name="whats_new_dialog_text">
 v.0.7.6\n
-+ Added new online maps (Topographic map of Norway, Sea map of Norway)\n
 + Add localisation of Google Maps. See Preference\n
++ Added new online maps (Topographic map of Norway, Sea map of Norway)\n
++ Add screen orientation preference\n
 \n
 v.0.7.5\n
 + POI category\n

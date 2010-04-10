@@ -46,6 +46,13 @@
 			android:key="pref_showtitle"
 			android:defaultValue="true"></CheckBoxPreference>
 		<ListPreference
+			android:entryValues="@array/screen_orientation_pref_value"
+			android:entries="@array/screen_orientation_pref_title"
+			android:key="pref_screen_orientation"
+			android:defaultValue="-1"
+			android:title="@string/pref_screen_orientation"
+			android:summary="@string/pref_screen_orientation_summary"></ListPreference>
+		<ListPreference
 			android:key="pref_accuracy"
 			android:title="@string/pref_accuracy"
 			android:summary="@string/pref_accuracy_summary"
