@@ -114,6 +114,7 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 	private boolean mCompassEnabled;
 	private boolean mDrivingDirectionUp;
 	private boolean mNorthDirectionUp;
+	private int mScreenOrientation;
 	private float mLastSpeed, mLastBearing;
 	private PoiManager mPoiManager;
 	private String ACTION_SHOW_POINTS = "com.robert.maps.action.SHOW_POINTS";
@@ -309,6 +310,9 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 
 		mDrivingDirectionUp = pref.getBoolean("pref_drivingdirectionup", true);
 		mNorthDirectionUp = pref.getBoolean("pref_northdirectionup", true);
+		
+		mScreenOrientation = Integer.parseInt(pref.getString("pref_screen_orientation", "-1"));
+		this.setRequestedOrientation(mScreenOrientation);
 
      	mFullScreen = pref.getBoolean("pref_showstatusbar", true);
 		if (mFullScreen)

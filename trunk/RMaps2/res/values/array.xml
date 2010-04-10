@@ -190,4 +190,16 @@
 	<item>CHINESE (SIMPLIFIED)</item>
 	<item>CHINESE (TRADITIONAL)</item>
 </string-array>
+<string-array
+	name="screen_orientation_pref_title">
+	<item>Default</item>
+	<item>Force Landscape</item>
+	<item>Force Portrait</item>
+</string-array>
+<string-array
+	name="screen_orientation_pref_value">
+	<item>-1</item>
+	<item>0</item>
+	<item>1</item>
+</string-array>
 </resources>
