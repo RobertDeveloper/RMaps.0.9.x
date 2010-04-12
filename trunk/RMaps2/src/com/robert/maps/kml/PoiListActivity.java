@@ -124,11 +124,10 @@ public class PoiListActivity extends ListActivity {
 				for(int j = 0; j < plk.getLength(); j++){
 					node = plk.item(j); //node.getLocalName() node.getNodeType()
 
-					if(node.getNodeName().equalsIgnoreCase("name")){
-						poi.Title = node.getFirstChild().getNodeValue();
-					}
+					if(node.getNodeName().equalsIgnoreCase("name"))
+						poi.Title = node.getFirstChild().getNodeValue().trim();
 					else if(node.getNodeName().equalsIgnoreCase("description"))
-						poi.Descr = node.getFirstChild().getNodeValue();
+						poi.Descr = node.getFirstChild().getNodeValue().trim();
 					else if(node.getNodeName().equalsIgnoreCase("Point")){
 						NodeList crd = node.getChildNodes();
 						for(int k = 0; k < crd.getLength(); k++){
@@ -137,10 +136,9 @@ public class PoiListActivity extends ListActivity {
 								poi.GeoPoint = GeoPoint.from2DoubleString(f[1], f[0]);
 							}
 						}
-						}
+					}
 
 				}
-				//Ut.dd(poi.Title+" :: "+poi.Descr);
 				if(poi.Title.equalsIgnoreCase("")) poi.Title = "POI";
 				mPoiManager.updatePoi(poi);
 			}
