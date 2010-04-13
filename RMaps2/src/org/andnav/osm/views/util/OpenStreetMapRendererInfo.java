@@ -40,7 +40,7 @@ public class OpenStreetMapRendererInfo {
 	private final int OpenSpaceUpperBoundArray[] = { 2, 5, 10, 25 , 50, 100, 200, 500, 1000, 2000, 4000};
 	private final int OpenSpaceLayersArray[] = {2500, 1000, 500, 200, 100, 50, 25, 10, 5, 2, 1};
 
-	public String ID, BASEURL, NAME, IMAGE_FILENAMEENDING, GOOGLE_LANG_CODE;
+	public String ID, BASEURL, NAME, IMAGE_FILENAMEENDING;
 	public int ZOOM_MINLEVEL, ZOOM_MAXLEVEL,
 	URL_BUILDER_TYPE, // 0 - OSM, 1 - Google, 2 - Yandex, 3 - Yandex.Traffic, 4 - Google.Sattelite, 5 - openspace, 6 - microsoft
 	TILE_SOURCE_TYPE, // 0 - internet, 1 - AndNav ZIP file, 2 - SASGIS ZIP file, 3 - MapNav file, 4 - TAR, 5 - sqlitedb
@@ -70,15 +70,11 @@ public class OpenStreetMapRendererInfo {
 		this.TILE_SOURCE_TYPE = 0;
 		this.PROJECTION = 1;
 		this.YANDEX_TRAFFIC_ON = 0;
-		this.GOOGLE_LANG_CODE = "";
 	}
 
 	public void LoadFromResources(String aId, SharedPreferences pref) {
 		if (aId.equalsIgnoreCase(""))
 			aId = "mapnik";
-		
-		if(pref != null)
-			this.GOOGLE_LANG_CODE = pref.getString("pref_googlelanguagecode", "en");
 
 		if (aId.contains("usermap_")) {
 			String prefix = "pref_usermaps_" + aId.substring(8);
@@ -282,8 +278,6 @@ public class OpenStreetMapRendererInfo {
 					// ResultURL:=GetURLBase+inttostr(GetX)+'&y='+inttostr(GetY)+'&z='+inttostr(GetZ-1)+'&tm='+inttostr(get_ts(60));
 				case 1: // Google.Map
 					return new StringBuilder().append(this.BASEURL)
-					.append("hl=")
-					.append(GOOGLE_LANG_CODE)
 					.append("&x=")
 					.append(tileID[OpenStreetMapViewConstants.MAPTILE_LONGITUDE_INDEX])
 					.append("&y=")

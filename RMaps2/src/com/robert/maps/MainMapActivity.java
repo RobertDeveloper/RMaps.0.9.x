@@ -60,7 +60,6 @@ import android.os.PowerManager;
 import android.preference.PreferenceManager;
 import android.provider.Browser;
 import android.provider.SearchRecentSuggestions;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -115,7 +114,6 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 	private boolean mCompassEnabled;
 	private boolean mDrivingDirectionUp;
 	private boolean mNorthDirectionUp;
-	private int mScreenOrientation;
 	private float mLastSpeed, mLastBearing;
 	private PoiManager mPoiManager;
 	private String ACTION_SHOW_POINTS = "com.robert.maps.action.SHOW_POINTS";
@@ -179,14 +177,6 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState, false); // Pass true here to actually contribute to OSM!
-
-        Ut.dd("RMaps v."+Ut.getAppVersion(this));
-
-        //File f = new File("/data/data/com.robert.maps/shared_prefs/MainMapActivity.xml");
-        File f = new File("/data/data/com.robert.test15");
-        Log.d("TEST", "f.exists()="+f.exists());
-        Log.d("TEST", "f.canRead()="+f.canRead());
-        Log.d("TEST", "f.canWrite()="+f.canWrite());
 
         CheckNeedDataUpdate();
 
@@ -320,9 +310,6 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 		mDrivingDirectionUp = pref.getBoolean("pref_drivingdirectionup", true);
 		mNorthDirectionUp = pref.getBoolean("pref_northdirectionup", true);
 
-		mScreenOrientation = Integer.parseInt(pref.getString("pref_screen_orientation", "-1"));
-		this.setRequestedOrientation(mScreenOrientation);
-
      	mFullScreen = pref.getBoolean("pref_showstatusbar", true);
 		if (mFullScreen)
 			getWindow().setFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN,
@@ -385,7 +372,7 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 
 		if(versionDataUpdate < 3){
 			Ut.dd("Upgrade app data to v.3");
-/*			try {
+			try {
 				File folder = Ut.getRMapsFolder("data", false);
 				if(folder.exists()) {
 					File fileData2 = new File("/sdcard/rmaps/data/index.db");
@@ -399,7 +386,7 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
-*/		}
+		}
 
 		SharedPreferences uiState = getPreferences(0);
 		SharedPreferences.Editor editor = uiState.edit();

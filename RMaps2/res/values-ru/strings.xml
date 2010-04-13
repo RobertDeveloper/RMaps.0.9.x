@@ -1,9 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <resources>
-	<string name="pref_screen_orientation">Ориентация экрана</string>
-	<string name="pref_screen_orientation_summary">Зафиксировать или поворачивать в зависимости от ориентации</string>
-    <string name="pref_googlelanguagecode_summary">Язык надписей на карте Google Map</string>
-    <string name="pref_googlelanguagecode">Код локализации Google Map</string>
     <string name="pref_northdirectionup_summary">Поворачивать карту вместе с компасом</string>
     <string name="pref_northdirectionup">По компасу</string>
     <string name="pref_drivingdirectionup_summary">Поворачивать карту в направлении движения</string>
@@ -29,7 +25,7 @@
     <string name="pref_turnoffautoreindex">Отключить реиндексацию</string>
     <string name="pref_turnoffautoreindex_summary">Отключить авто реиндексацию при изменении размера или даты времени файла карты</string>
     <string name="pref_gpsfastupdate">Частое обновление GPS данных</string>
-    <string name="pref_gpsfastupdate_summary">Редкое обновление GPS данных теоретически экономит батарею</string>
+    <string name="pref_gpsfastupdate_summary">Редкое обновление GPS данных теоритически экономит батарею</string>
     <string name="pref_usermap_enabled">Включить карту</string>
     <string name="pref_usermap_enabled_summary">Добавить карту в список карт</string>
     <string name="pref_usermap_name">Имя карты</string>
@@ -47,7 +43,7 @@
     <string name="btn_clear_cache_title">Очистить</string>
     <string name="pref_internalcache_title">Внутренний кэш</string>
     <string name="pref_internalcache_summary">Временное хранение тайлов карт. Размер: %dKB/4MB</string>
-    <string name="pref_index_title">Индексный файл</string>
+    <string name="pref_index_title">Идексный файл</string>
     <string name="pref_index_summary">Индекс тайлов offline карт. Размер: %dKB</string>
     <string name="hello">Hello World, OpenStreetMapViewer</string>
     <string name="app_name">RMaps</string>
@@ -56,11 +52,10 @@
     <string name="menu_exit">Выход</string>
     <string name="menu_mylocation">Где я?</string>
     <string name="menu_mapselector">Карты</string>
-    <string name="menu_compass">Компас</string>
+    <string name="menu_compass">Компасс</string>
     <string name="menu_about">О программе</string>
     <string name="menu_search">Поиск</string>
     <string name="menu_addpoi">Добавить POI</string>
-    <string name="menu_import">Импорт</string>
     <string name="no_traffic">При таком значении зума пробки недоступны</string>
     <string name="auto_follow_enabled">Авто следование за текущим положением включено</string>
     <string name="auto_follow_disabled">Авто следование за текущим положением выключено</string>
@@ -74,7 +69,6 @@
 При участии\n
   Dmytro Sandu\n
   Snake Joe\n
-  Christoffer Blindheim\n
 All rights reserved\n
 \n
 Вопросы и предложения направляйте по электрической почте robertk506@gmail.com\n
@@ -82,12 +76,6 @@ All rights reserved\n
 Как сделать офф-лайн карту и прочее можно почитать здесь http://robertdeveloper.blogspot.com/\n
 </string>
     <string name="whats_new_dialog_text">
-v.0.7.6\n
-+ Добавлен выбор языка надписей на картах Google\n
-+ Добавлены онлайн карты (Topographic map of Norway, Sea map of Norway)\n
-+ Добавлены настройки ориентации экрана\n
-+ Обновил URL карт Yandex, Google\n
-\n
 v.0.7.5\n
 + Категории POI\n
 + Кнопка Назад теперь закрывает желтое окошко поиска\n
@@ -137,7 +125,7 @@ v.0.5.5\n
 + Диалог Что нового\n
 \n
 v.0.5.4\n
-+ Выключение/включение режима следования за текущим местоположением\n
++ Выключение/включение режима следования за текущим местопложением\n
 + Возможность перенесения кнопок зума вниз/наверх\n
 + Даблтап на карте центрирует и увеличивает карту в месте тапа\n
 + Долгое нажатие на кнопки зума устанавливает предустановленное в настройках значение зума\n
@@ -157,7 +145,7 @@ v.0.5.2\n
     <string name="about_dialog_whats_new">Что нового</string>
     <string name="about_dialog_close">Закрыть</string>
     <string name="ya_dialog_title">Яндекс Пробки</string>
-    <string name="ya_dialog_message">В знак уважения и благодарности фирме Яндекс за предоставленную информацию о пробках предлагаю Вам добавить закладку на страницу Мобильный Яндекс. Это сообщение ни к чему Вас не обязывает и больше появляться не будет.</string>
+    <string name="ya_dialog_message">В знак уважения и благодарности фирме Яндекс за предоставленную информацию о пробках предлагаю Вам добавить закладку на страницу Мобильный Яндекс. Это сообщение ни к чему Вас не обязыват и больше появляться не будет.</string>
     <string name="ya_dialog_button_caption">OK</string>
     <string name="search_label">Адрес:</string>
     <string name="search_hint">напр. Москва Таганка</string>

@@ -38,12 +38,9 @@ public class GeoPoint implements MathConstants, GeoConstants{
 	}
 
 	public static GeoPoint fromDoubleString(final String s){
-		//final int commaPos = s.indexOf(',');
-		final String[] f = s.split(",");
-		return new GeoPoint((int)(Double.parseDouble(f[0])* 1E6),
-				(int)(Double.parseDouble(f[1])* 1E6));
-		//return new GeoPoint((int)(Double.parseDouble(s.substring(0,commaPos-1))* 1E6),
-		//		(int)(Double.parseDouble(s.substring(commaPos+1,s.length()))* 1E6));
+		final int commaPos = s.indexOf(',');
+		return new GeoPoint((int)(Double.parseDouble(s.substring(0,commaPos-1))* 1E6),
+				(int)(Double.parseDouble(s.substring(commaPos+1,s.length()))* 1E6));
 	}
 
 	public static GeoPoint from2DoubleString(final String lat, final String lon) {

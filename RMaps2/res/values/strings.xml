@@ -1,9 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <resources>
-	<string name="pref_screen_orientation">Screen Orientation</string>
-	<string name="pref_screen_orientation_summary">Choose the screen orientation</string>
-    <string name="pref_googlelanguagecode_summary">Localisation of Google Map</string>
-    <string name="pref_googlelanguagecode">Google Map language code</string>
     <string name="pref_hidepoi_summary">Dont show POI icons on the map</string>
     <string name="pref_hidepoi">Hide POI</string>
     <string name="prefcat_main_poi">POI</string>
@@ -69,7 +65,6 @@
     <string name="menu_addpoi">Add POI</string>
     <string name="menu_poilist">POI</string>
     <string name="menu_categorylist">Category</string>
-    <string name="menu_import">Import</string>
     <string name="mnm">.mnm</string>
     <string name="tar">.tar</string>
     <string name="sqlitedb">.sqlitedb</string>
@@ -86,20 +81,13 @@
 With the assistance of\n
   Dmytro Sandu\n
   Snake Joe\n
-  Christoffer Blindheim\n
 All rights reserved\n
 \n
 Questions, sentences mail to robertk506@gmail.com\n
 \n
 How to and FAQ you can find on http://robertdeveloper.blogspot.com/\n
-	</string>
+</string>
     <string name="whats_new_dialog_text">
-v.0.7.6\n
-+ Add localisation of Google Maps. See Preference\n
-+ Added new online maps (Topographic map of Norway, Sea map of Norway)\n
-+ Add screen orientation preference\n
-+ Update Yandex.Map URL, Google.Map URL\n
-\n
 v.0.7.5\n
 + POI category\n
 + The back button close the search result window\n
@@ -121,8 +109,52 @@ v.0.7.0\n
 + Update Yandex.Map URL, Google.Map URL\n
 - Bug fix: Wrong compass orientation on landscape mode\n
 \n
-	</string>
-    <string name="about_dialog_whats_new">What s new</string>
+v.0.6.4\n
++ Update Yandex.Traffic\n
+\n
+v.0.6.3\n
++ Turning map in driving direction. Enable/disable mode in preferences. Doubletup on the map return base mode.\n
++ Turning map in the northern direction. Enable/disable mode in preferences. Map turning if compass is visible.\n
++ Added russian localisation\n
++ Update Yandex.Map URL\n
+\n
+v.0.6.2\n
+- Fix bug long time loading sqlite cash file\n
+\n
+v.0.6.1\n
++ Add support cash files in sqlite format created by TrekBuddy Atlas Creator. Creation of files became easier. Indexation now is not required. More information at my website\n
++ Update Google.Map URL\n
++ Change max zoom level of Google.Map from 18 to 20\n
+\n
+v.0.6.0\n
++ First version of search. Test it please and write to me.\n
+- Bug fix\n
+\n
+v.0.5.5\n
++ Compass on the map\n
++ About dialog\n
++ What's new dialog
+
+v.0.5.4
++ Enable/Disable auto-follow mode
++ Top/Bottom position of zoom buttons
++ Center and Zoom in on double tap map
++ Predefined zoom value for long press on zoom buttons
+
+v.0.5.3
++ Network provider usage while gps it is not ready yet
++ Status current provider in window title (test look)
++ Fast\slow update current location
++ Switch off auto reindexing (if you had problems after reboot)
+
+v.0.5.2
++ Update Google.Map URL
++ Support png images in tar files
++ Monitoring GPS turn on/off
++ Disconnecting from GPS at window turning off
+
+</string>
+    <string name="about_dialog_whats_new">What's new</string>
     <string name="about_dialog_close">Close</string>
     <string name="search_label">Address:</string>
     <string name="search_hint">e.g. Abbey Road, London</string>
