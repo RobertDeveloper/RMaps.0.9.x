@@ -98,6 +98,7 @@ v.0.7.6\n
 + Add localisation of Google Maps. See Preference\n
 + Added new online maps (Topographic map of Norway, Sea map of Norway)\n
 + Add screen orientation preference\n
++ Update Yandex.Map URL, Google.Map URL\n
 \n
 v.0.7.5\n
 + POI category\n
