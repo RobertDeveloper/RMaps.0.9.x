@@ -48,5 +48,8 @@
 </application>
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
     <uses-sdk android:minSdkVersion="3" />
-
+	<supports-screens android:smallScreens="true" 
+                  android:normalScreens="true" 
+                  android:largeScreens="true"
+                  android:anyDensity="true" />
 </manifest>
