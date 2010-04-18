@@ -2,6 +2,8 @@ package com.robert.maps.kml;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -13,7 +15,9 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import android.app.Dialog;
 import android.app.ListActivity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -33,6 +37,8 @@ import com.robert.maps.utils.Ut;
 
 public class PoiListActivity extends ListActivity {
 	private PoiManager mPoiManager;
+	private ProgressDialog dlgWait;
+	protected ExecutorService mThreadPool = Executors.newFixedThreadPool(2);
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -94,59 +100,72 @@ public class PoiListActivity extends ListActivity {
 		case R.id.menu_importpoi:
 			doImportPOI();
 			return true;
+		case R.id.menu_deleteall:
+			mPoiManager.DeleteAllPoi();
+			FillData();
+			return true;
 		}
 
 		return true;
 	}
 
 	private void doImportPOI() {
-		Ut.getRMapsFolder("import", false);
-		File file = new File("/sdcard/rmaps/import/1.kml");
+		showDialog(R.id.dialog_wait);
 
-		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-		DocumentBuilder db = null;
-		try {
-			db = dbf.newDocumentBuilder();
-		} catch (ParserConfigurationException e1) {
-			e1.printStackTrace();
-		}
-		Document doc = null;
-		try {
-			doc = db.parse(file);
+		this.mThreadPool.execute(new Runnable() {
+			public void run() {
+				Ut.getRMapsFolder("import", false);
+				File file = new File("/sdcard/rmaps/import/1.kml");
 
-			NodeList nl = doc.getDocumentElement().getElementsByTagName("Placemark");
-			NodeList plk = null;
-			Node node = null;
-			for(int i = 0; i < nl.getLength(); i++){
-				Ut.dd("placemark"+i);
-				plk = nl.item(i).getChildNodes();
-				PoiPoint poi = new PoiPoint();
-				for(int j = 0; j < plk.getLength(); j++){
-					node = plk.item(j); //node.getLocalName() node.getNodeType()
-
-					if(node.getNodeName().equalsIgnoreCase("name"))
-						poi.Title = node.getFirstChild().getNodeValue().trim();
-					else if(node.getNodeName().equalsIgnoreCase("description"))
-						poi.Descr = node.getFirstChild().getNodeValue().trim();
-					else if(node.getNodeName().equalsIgnoreCase("Point")){
-						NodeList crd = node.getChildNodes();
-						for(int k = 0; k < crd.getLength(); k++){
-							if(crd.item(k).getNodeName().equalsIgnoreCase("coordinates")){
-								String [] f = crd.item(k).getFirstChild().getNodeValue().split(",");
-								poi.GeoPoint = GeoPoint.from2DoubleString(f[1], f[0]);
-							}
-						}
-					}
-
+				DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+				DocumentBuilder db = null;
+				try {
+					db = dbf.newDocumentBuilder();
+				} catch (ParserConfigurationException e1) {
+					e1.printStackTrace();
 				}
-				if(poi.Title.equalsIgnoreCase("")) poi.Title = "POI";
-				mPoiManager.updatePoi(poi);
-			}
-		} catch (SAXException e1) {
-			e1.printStackTrace();
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
+				Document doc = null;
+				try {
+					doc = db.parse(file);
+
+					NodeList nl = doc.getDocumentElement().getElementsByTagName("Placemark");
+					NodeList plk = null;
+					Node node = null;
+					for(int i = 0; i < nl.getLength(); i++){
+						Ut.dd("placemark"+i);
+						plk = nl.item(i).getChildNodes();
+						PoiPoint poi = new PoiPoint();
+						for(int j = 0; j < plk.getLength(); j++){
+							node = plk.item(j); //node.getLocalName() node.getNodeType()
+
+							if(node.getNodeName().equalsIgnoreCase("name"))
+								poi.Title = node.getFirstChild().getNodeValue().trim();
+							else if(node.getNodeName().equalsIgnoreCase("description"))
+								poi.Descr = node.getFirstChild().getNodeValue().trim();
+							else if(node.getNodeName().equalsIgnoreCase("Point")){
+								NodeList crd = node.getChildNodes();
+								for(int k = 0; k < crd.getLength(); k++){
+									if(crd.item(k).getNodeName().equalsIgnoreCase("coordinates")){
+										String [] f = crd.item(k).getFirstChild().getNodeValue().split(",");
+										poi.GeoPoint = GeoPoint.from2DoubleString(f[1], f[0]);
+									}
+								}
+							}
+
+						}
+						if(poi.Title.equalsIgnoreCase("")) poi.Title = "POI";
+						mPoiManager.updatePoi(poi);
+					}
+				} catch (SAXException e1) {
+					e1.printStackTrace();
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+
+
+				dlgWait.dismiss();
+			};
+		});
 
 	}
 
@@ -202,5 +221,19 @@ public class PoiListActivity extends ListActivity {
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		super.onListItemClick(l, v, position, id);
+	}
+
+	@Override
+	protected Dialog onCreateDialog(int id) {
+		switch (id) {
+		case R.id.dialog_wait: {
+			dlgWait = new ProgressDialog(this);
+			dlgWait.setMessage("Please wait while loading...");
+			dlgWait.setIndeterminate(true);
+			dlgWait.setCancelable(false);
+			return dlgWait;
+		}
+		}
+		return null;
 	}
 }

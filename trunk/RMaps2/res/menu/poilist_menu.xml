@@ -11,5 +11,6 @@
 		android:icon="@drawable/ic_menu_archive"
 		android:title="@string/menu_categorylist">
 	</item>
-<item android:id="@+id/menu_importpoi" android:title="@string/menu_import" android:visible="true" android:enabled="false"></item>
+<item android:id="@+id/menu_importpoi" android:title="@string/menu_import" android:visible="true" android:enabled="true"></item>
+<item android:id="@+id/menu_deleteall" android:title="@string/menu_deleteall"></item>
 </menu>
