@@ -7,6 +7,8 @@
 <item android:id="@+id/add_yandex_bookmark"></item>
 <item android:id="@+id/settings_activity_closed"></item>
 
+<item android:id="@+id/dialog_wait"></item>
+
 <item android:id="@+id/menu_addpoi"></item>
 <item android:id="@+id/menu_editpoi"></item>
 <item android:id="@+id/menu_deletepoi"></item>

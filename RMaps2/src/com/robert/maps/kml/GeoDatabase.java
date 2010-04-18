@@ -224,4 +224,10 @@ public class GeoDatabase implements PoiConstants{
 			this.mDatabase.update("category", cv, "categoryid = @1", args);
 		}
 	}
+
+	public void DeleteAllPoi() {
+		if (isDatabaseReady()) {
+			mDatabase.execSQL("DELETE FROM points");
+		}
+	}
 }

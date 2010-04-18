@@ -113,4 +113,8 @@ public class PoiManager {
 		else
 			mGeoDatabase.updatePoiCategory(poiCategory.getId(), poiCategory.Title, poiCategory.Hidden == true ? 1 : 0, poiCategory.IconId);
 	}
+
+	public void DeleteAllPoi() {
+		mGeoDatabase.DeleteAllPoi();
+	}
 }
