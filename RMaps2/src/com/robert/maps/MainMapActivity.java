@@ -44,8 +44,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
-import android.database.SQLException;
-import android.database.sqlite.SQLiteDatabase;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -60,7 +58,6 @@ import android.os.PowerManager;
 import android.preference.PreferenceManager;
 import android.provider.Browser;
 import android.provider.SearchRecentSuggestions;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -181,12 +178,6 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
         super.onCreate(savedInstanceState, false); // Pass true here to actually contribute to OSM!
 
         Ut.dd("RMaps v."+Ut.getAppVersion(this));
-
-        //File f = new File("/data/data/com.robert.maps/shared_prefs/MainMapActivity.xml");
-        File f = new File("/data/data/com.robert.test15");
-        Log.d("TEST", "f.exists()="+f.exists());
-        Log.d("TEST", "f.canRead()="+f.canRead());
-        Log.d("TEST", "f.canWrite()="+f.canWrite());
 
         CheckNeedDataUpdate();
 
