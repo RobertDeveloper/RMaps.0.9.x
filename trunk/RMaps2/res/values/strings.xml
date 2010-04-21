@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <resources>
-    <string name="menu_deleteall">Delete All</string>
 	<string name="pref_screen_orientation">Screen Orientation</string>
 	<string name="pref_screen_orientation_summary">Choose the screen orientation</string>
     <string name="pref_googlelanguagecode_summary">Localisation of Google Map</string>
@@ -71,6 +70,7 @@
     <string name="menu_poilist">POI</string>
     <string name="menu_categorylist">Category</string>
     <string name="menu_import">Import</string>
+    <string name="menu_deleteall">Delete All</string>
     <string name="mnm">.mnm</string>
     <string name="tar">.tar</string>
     <string name="sqlitedb">.sqlitedb</string>
@@ -151,4 +151,9 @@ v.0.7.0\n
     <string name="ya_dialog_message"/>
     <string name="ya_dialog_button_caption"/>
     <string name="menu_goto">Go to POI</string>
+
+
+    <string name="FileName">File name</string>
+    <string name="SelectFile">Select file</string>
+    <string name="Import">Import</string>
 </resources>

@@ -45,11 +45,12 @@
     <activity android:name=".kml.PoiCategoryActivity"></activity>
 <activity android:name=".kml.PoiCategoryListActivity"></activity>
 <activity android:name=".kml.PoiIconSetActivity"></activity>
+        <activity android:name=".kml.ImportPoiActivity"/>
 </application>
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
     <uses-sdk android:minSdkVersion="3" />
-	<supports-screens android:smallScreens="true" 
-                  android:normalScreens="true" 
+	<supports-screens android:smallScreens="true"
+                  android:normalScreens="true"
                   android:largeScreens="true"
                   android:anyDensity="true" />
 </manifest>
