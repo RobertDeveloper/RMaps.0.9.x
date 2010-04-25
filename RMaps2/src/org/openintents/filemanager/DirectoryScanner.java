@@ -100,7 +100,7 @@ public class DirectoryScanner extends Thread {
 					String size = "";
 
 					String ext = FileUtils.getExtension(currentFile.getName());
-					if (ext.equalsIgnoreCase(".kml")) {
+					if (ext.equalsIgnoreCase(".kml") || ext.equalsIgnoreCase(".gpx")) {
 
 						try {
 							size = (String) formatter_formatFileSize.invoke(null, context, currentFile.length());

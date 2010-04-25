@@ -153,7 +153,8 @@ v.0.7.0\n
     <string name="menu_goto">Go to POI</string>
 
 
-    <string name="FileName">File name</string>
+    <string name="FileName">Import from KML, GPX file</string>
+    <string name="ToCategory">To category</string>
     <string name="SelectFile">Select file</string>
     <string name="Import">Import</string>
     <string name="this_folder_is_empty">This folder is empty.</string>
