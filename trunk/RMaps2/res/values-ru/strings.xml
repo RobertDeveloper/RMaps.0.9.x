@@ -176,4 +176,10 @@ v.0.5.2\n
     <string name="menu_gpsstatus">GPS Status</string>
     <string name="menu_delete">Удалить</string>
     <string name="menu_goto">Перейти к точке</string>
+
+    <string name="FileName">Импорт из файлов KML, GPX</string>
+    <string name="ToCategory">В категорию</string>
+    <string name="SelectFile">Выбрать</string>
+    <string name="Import">Импорт</string>
+    <string name="this_folder_is_empty">В этой папке нет файлов.</string>
 </resources>

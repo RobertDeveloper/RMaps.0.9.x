@@ -1,20 +1,15 @@
 package com.robert.maps.kml;
 
 import java.io.File;
-import java.io.IOException;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.util.Vector;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
 import org.andnav.osm.util.GeoPoint;
 import org.openintents.filemanager.FileManagerActivity;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
+import org.openintents.filemanager.util.FileUtils;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -162,9 +157,55 @@ public class ImportPoiActivity extends Activity {
 
 		this.mThreadPool.execute(new Runnable() {
 			public void run() {
+				int CategoryId = (int)mSpinner.getSelectedItemId();
 				File file = new File(mFileName.getText().toString());
-				int cnt = 0;
-
+				SimpleXML xml = null;
+				
+				try {
+					xml = SimpleXML.loadXml(new FileInputStream(file));
+				} catch (FileNotFoundException e) {
+					e.printStackTrace();
+				}
+				
+				if (xml != null) {
+					if(FileUtils.getExtension(file.getName()).equalsIgnoreCase(".kml")){
+						SimpleXML document = xml.getNodeByPath("document", false);
+						Vector<SimpleXML> placemarks = document.getChildren("placemark");
+						if (placemarks != null && placemarks.size() > 0) {
+							for (SimpleXML placemark : placemarks) {
+								PoiPoint poi = new PoiPoint();
+								poi.CategoryId = CategoryId;
+								poi.Title = placemark.getNodeText("name");
+								poi.Descr = placemark.getNodeText("description");
+								SimpleXML point = placemark.getNodeByPath("point", false);
+								if(point != null){
+									String [] f = point.getNodeText("coordinates").split(",");
+									poi.GeoPoint = GeoPoint.from2DoubleString(f[1], f[0]);
+								}
+								if(poi.Title.equalsIgnoreCase("")) poi.Title = "POI";
+								mPoiManager.updatePoi(poi);
+							}
+						}
+					}else if(FileUtils.getExtension(file.getName()).equalsIgnoreCase(".gpx")){
+						Vector<SimpleXML> wpts = xml.getChildren("wpt");
+						if (wpts != null && wpts.size() > 0) {
+							for (SimpleXML wpt : wpts) {
+								PoiPoint poi = new PoiPoint();
+								poi.CategoryId = CategoryId;
+								poi.GeoPoint = GeoPoint.from2DoubleString(wpt.getAttr("lat"), wpt.getAttr("lon"));
+								poi.Title = wpt.getNodeText("name");
+								poi.Descr = wpt.getNodeText("cmt");
+								if(poi.Title.equalsIgnoreCase("")) 
+									poi.Title = "POI";
+								if(poi.Descr.equalsIgnoreCase(""))
+									poi.Descr = wpt.getNodeText("desc");
+								mPoiManager.updatePoi(poi);
+							}
+						}
+					}
+				}
+				
+				/*
 				DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 				DocumentBuilder db = null;
 				try {
@@ -212,6 +253,7 @@ public class ImportPoiActivity extends Activity {
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
+				*/
 
 				dlgWait.dismiss();
 				ImportPoiActivity.this.finish();
@@ -240,12 +282,6 @@ public class ImportPoiActivity extends Activity {
 		editor.putString("IMPORT_POI_FILENAME", mFileName.getText().toString());
 		editor.commit();
 		super.onPause();
-	}
-
-	@Override
-	protected void onResume() {
-		// TODO Auto-generated method stub
-		super.onResume();
 	}
 
 }
