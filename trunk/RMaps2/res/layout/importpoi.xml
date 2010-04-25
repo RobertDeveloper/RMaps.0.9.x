@@ -15,16 +15,21 @@
 			android:textAppearance="?android:attr/textAppearance"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"></TextView>
-		<EditText
-			android:text="@+id/FileName"
-			android:layout_height="wrap_content"
+		<LinearLayout
 			android:layout_width="fill_parent"
-			android:id="@+id/FileName"></EditText>
-		<Button
-			android:id="@+id/SelectFileBtn"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:text="@string/SelectFile" />
+			android:layout_height="wrap_content" 
+			android:orientation="horizontal">
+			<EditText
+				android:layout_height="wrap_content"
+				android:id="@+id/FileName"
+				android:layout_weight="1" 
+				android:layout_width="0dip"/>
+			<Button
+				android:id="@+id/SelectFileBtn"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/SelectFile" />
+			</LinearLayout>
 		<TextView
 			android:text="@string/PoiCategoryTitle"
 			android:id="@+id/TextPoiCategoryTitle"
