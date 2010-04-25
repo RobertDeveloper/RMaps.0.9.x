@@ -10,6 +10,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.andnav.osm.util.GeoPoint;
+import org.openintents.filemanager.FileManagerActivity;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -18,8 +19,8 @@ import org.xml.sax.SAXException;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -46,12 +47,14 @@ public class ImportPoiActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		SharedPreferences settings = getPreferences(Activity.MODE_PRIVATE);
 		this.setContentView(R.layout.importpoi);
 
 		if (mPoiManager == null)
 			mPoiManager = new PoiManager(this);
 
 		mFileName = (EditText) findViewById(R.id.FileName);
+		mFileName.setText(settings.getString("IMPORT_POI_FILENAME", Ut.getRMapsFolder("import", false).getAbsolutePath()));
 
 		mSpinner = (Spinner) findViewById(R.id.spinnerCategory);
 		Cursor c = mPoiManager.getGeoDatabase().getPoiCategoryListCursor();
@@ -96,6 +99,10 @@ public class ImportPoiActivity extends Activity {
 	}
 
 	protected void doSelectFile() {
+		Intent intent = new Intent(this, FileManagerActivity.class);
+		intent.setData(Uri.parse(mFileName.getText().toString()));
+		startActivityForResult(intent, R.id.ImportBtn);
+/*
 //		Intent intent = new Intent("org.openintents.action.PICK_FILE");
 //		startActivityForResult(intent, 1);
 //
@@ -117,6 +124,7 @@ public class ImportPoiActivity extends Activity {
 			Toast.makeText(this, "No compatible file manager found",
 					Toast.LENGTH_SHORT).show();
 		}
+*/
 	}
 
 	@Override
@@ -143,12 +151,18 @@ public class ImportPoiActivity extends Activity {
 	}
 
 	private void doImportPOI() {
+		File file = new File(mFileName.getText().toString());
+		
+		if(!file.exists()){
+			Toast.makeText(this, "No such file", Toast.LENGTH_LONG).show();
+			return;
+		}
+		
 		showDialog(R.id.dialog_wait);
 
 		this.mThreadPool.execute(new Runnable() {
 			public void run() {
-				Ut.getRMapsFolder("import", false);
-				File file = new File("/sdcard/rmaps/import/1.kml");
+				File file = new File(mFileName.getText().toString());
 				int cnt = 0;
 
 				DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -211,6 +225,27 @@ public class ImportPoiActivity extends Activity {
 	protected void onDestroy() {
 		mPoiManager.FreeDatabases();
 		super.onDestroy();
+	}
+
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		outState.putString("IMPORT_POI_FILENAME", mFileName.toString());
+		super.onSaveInstanceState(outState);
+	}
+
+	@Override
+	protected void onPause() {
+		SharedPreferences uiState = getPreferences(0);
+		SharedPreferences.Editor editor = uiState.edit();
+		editor.putString("IMPORT_POI_FILENAME", mFileName.getText().toString());
+		editor.commit();
+		super.onPause();
+	}
+
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
 	}
 
 }
