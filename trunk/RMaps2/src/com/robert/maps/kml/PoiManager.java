@@ -60,8 +60,12 @@ public class PoiManager {
 		return doCreatePoiListFromCursor(mGeoDatabase.getPoiListCursor());
 	}
 
-	public List<PoiPoint> getPoiListNotHidden(int zoom){
-		return doCreatePoiListFromCursor(mGeoDatabase.getPoiListNotHiddenCursor(zoom));
+	public List<PoiPoint> getPoiListNotHidden(int zoom, GeoPoint center, GeoPoint lefttop){
+		return doCreatePoiListFromCursor(mGeoDatabase.getPoiListNotHiddenCursor(zoom, lefttop.getLongitude(), lefttop
+				.getLongitude()
+				+ 2 * (center.getLongitude() - lefttop.getLongitude()), lefttop.getLatitude(), lefttop
+				.getLatitude()
+				+ 2 * (center.getLatitude() - lefttop.getLatitude())));
 	}
 
 	public void addPoiStartActivity(Context ctx, GeoPoint touchDownPoint) {

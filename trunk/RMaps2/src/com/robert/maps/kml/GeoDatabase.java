@@ -81,13 +81,16 @@ public class GeoDatabase implements PoiConstants{
 		return null;
 	}
 
-	public Cursor getPoiListNotHiddenCursor(int zoom) {
+	public Cursor getPoiListNotHiddenCursor(int zoom, double left, double right, double top, double bottom) {
 		if (isDatabaseReady()) {
 			// не менять порядок полей
 			return mDatabase
 					.rawQuery(
-							"SELECT poi.lat, poi.lon, poi.name, poi.descr, poi.pointid, poi.pointid _id, poi.pointid ID, poi.categoryid, cat.iconid FROM points poi LEFT JOIN category cat ON cat.categoryid = poi.categoryid WHERE poi.hidden = 0 AND cat.hidden = 0 AND cat.minzoom <= "
-									+ (zoom + 1) + " ORDER BY lat, lon", null);
+							"SELECT poi.lat, poi.lon, poi.name, poi.descr, poi.pointid, poi.pointid _id, poi.pointid ID, poi.categoryid, cat.iconid FROM points poi LEFT JOIN category cat ON cat.categoryid = poi.categoryid WHERE poi.hidden = 0 AND cat.hidden = 0 "
+							+"AND cat.minzoom <= " + (zoom + 1)
+							+ " AND poi.lon BETWEEN " + left + " AND " + right
+							+ " AND poi.lat BETWEEN " + bottom + " AND " + top
+							+ " ORDER BY lat, lon", null);
 		}
 
 		return null;
@@ -163,7 +166,7 @@ public class GeoDatabase implements PoiConstants{
 
 	protected class GeoDatabaseHelper extends RSQLiteOpenHelper {
 		public GeoDatabaseHelper(final Context context, final String name) {
-			super(context, name, null, 2);
+			super(context, name, null, 3);
 		}
 
 		@Override
