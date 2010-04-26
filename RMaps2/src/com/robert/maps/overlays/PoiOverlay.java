@@ -83,13 +83,15 @@ public class PoiOverlay extends OpenStreetMapViewOverlay {
 	
 	@Override
 	public void onDraw(Canvas c, OpenStreetMapView mapView) {
-		if (mCanUpdateList)
-			this.mItemList = mPoiManager.getPoiListNotHidden(mapView.getZoomLevel());
+		final OpenStreetMapViewProjection pj = mapView.getProjection();
+		final Point curScreenCoords = new Point();
+
+		if (mCanUpdateList){
+			
+			this.mItemList = mPoiManager.getPoiListNotHidden(mapView.getZoomLevel(), mapView.getMapCenter(), pj.fromPixels(0, 0));
+		}
 
 		if (this.mItemList != null) {
-			final OpenStreetMapViewProjection pj = mapView.getProjection();
-
-			final Point curScreenCoords = new Point();
 
 			/*
 			 * Draw in backward cycle, so the items with the least index are on
