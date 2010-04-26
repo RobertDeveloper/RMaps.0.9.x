@@ -60,8 +60,8 @@ public class PoiManager {
 		return doCreatePoiListFromCursor(mGeoDatabase.getPoiListCursor());
 	}
 
-	public List<PoiPoint> getPoiListNotHidden(){
-		return doCreatePoiListFromCursor(mGeoDatabase.getPoiListNotHiddenCursor());
+	public List<PoiPoint> getPoiListNotHidden(int zoom){
+		return doCreatePoiListFromCursor(mGeoDatabase.getPoiListNotHiddenCursor(zoom));
 	}
 
 	public void addPoiStartActivity(Context ctx, GeoPoint touchDownPoint) {
@@ -100,7 +100,7 @@ public class PoiManager {
 		final Cursor c = mGeoDatabase.getPoiCategory(id);
 		if (c != null) {
 			if (c.moveToFirst())
-				category = new PoiCategory(id, c.getString(0), c.getInt(2) == 1 ? true : false, c.getInt(3));
+				category = new PoiCategory(id, c.getString(0), c.getInt(2) == 1 ? true : false, c.getInt(3), c.getInt(4));
 			c.close();
 		}
 
@@ -111,7 +111,7 @@ public class PoiManager {
 		if(poiCategory.getId() < 0)
 			mGeoDatabase.addPoiCategory(poiCategory.Title, poiCategory.Hidden == true ? 1 : 0, poiCategory.IconId);
 		else
-			mGeoDatabase.updatePoiCategory(poiCategory.getId(), poiCategory.Title, poiCategory.Hidden == true ? 1 : 0, poiCategory.IconId);
+			mGeoDatabase.updatePoiCategory(poiCategory.getId(), poiCategory.Title, poiCategory.Hidden == true ? 1 : 0, poiCategory.IconId, poiCategory.MinZoom);
 	}
 
 	public void DeleteAllPoi() {

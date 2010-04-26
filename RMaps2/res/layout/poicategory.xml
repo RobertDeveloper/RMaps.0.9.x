@@ -37,6 +37,16 @@
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			></ImageView>
+		<TextView
+			android:text="@string/MinZoom"
+			android:id="@+id/TextMinZoom"
+			android:textAppearance="?android:attr/textAppearance"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"></TextView>
+		<EditText
+			android:layout_height="wrap_content"
+			android:layout_width="fill_parent"
+			android:id="@+id/MinZoom"></EditText>
 
 
 		<TextView
