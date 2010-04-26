@@ -158,4 +158,6 @@ v.0.7.0\n
     <string name="SelectFile">Select file</string>
     <string name="Import">Import</string>
     <string name="this_folder_is_empty">This folder is empty.</string>
+    
+    <string name="MinZoom">Show poi since the zoom (0..23)</string>
 </resources>

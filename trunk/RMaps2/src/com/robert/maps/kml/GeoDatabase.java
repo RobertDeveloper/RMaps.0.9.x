@@ -81,10 +81,13 @@ public class GeoDatabase implements PoiConstants{
 		return null;
 	}
 
-	public Cursor getPoiListNotHiddenCursor() {
+	public Cursor getPoiListNotHiddenCursor(int zoom) {
 		if (isDatabaseReady()) {
 			// не менять порядок полей
-			return mDatabase.rawQuery("SELECT poi.lat, poi.lon, poi.name, poi.descr, poi.pointid, poi.pointid _id, poi.pointid ID, poi.categoryid, cat.iconid FROM points poi LEFT JOIN category cat ON cat.categoryid = poi.categoryid WHERE poi.hidden = 0 AND cat.hidden = 0 ORDER BY lat, lon", null);
+			return mDatabase
+					.rawQuery(
+							"SELECT poi.lat, poi.lon, poi.name, poi.descr, poi.pointid, poi.pointid _id, poi.pointid ID, poi.categoryid, cat.iconid FROM points poi LEFT JOIN category cat ON cat.categoryid = poi.categoryid WHERE poi.hidden = 0 AND cat.hidden = 0 AND cat.minzoom <= "
+									+ (zoom + 1) + " ORDER BY lat, lon", null);
 		}
 
 		return null;
@@ -191,6 +194,14 @@ public class GeoDatabase implements PoiConstants{
 				//db.execSQL(PoiConstants.SQL_UPDATE_1_11);
 				//db.execSQL(PoiConstants.SQL_UPDATE_1_12);
 			}
+			if (oldVersion < 3) {
+				db.execSQL(PoiConstants.SQL_UPDATE_2_7);
+				db.execSQL(PoiConstants.SQL_UPDATE_2_8);
+				db.execSQL(PoiConstants.SQL_UPDATE_2_9);
+				db.execSQL(PoiConstants.SQL_CREATE_category);
+				db.execSQL(PoiConstants.SQL_UPDATE_2_11);
+				db.execSQL(PoiConstants.SQL_UPDATE_2_12);
+			}
 		}
 
 	}
@@ -198,7 +209,7 @@ public class GeoDatabase implements PoiConstants{
 	public Cursor getPoiCategory(int id) {
 		if (isDatabaseReady()) {
 			// не менять порядок полей
-			return mDatabase.rawQuery("SELECT name, categoryid, hidden, iconid FROM category WHERE categoryid = " + id, null);
+			return mDatabase.rawQuery("SELECT name, categoryid, hidden, iconid, minzoom FROM category WHERE categoryid = " + id, null);
 		}
 
 		return null;
@@ -214,12 +225,13 @@ public class GeoDatabase implements PoiConstants{
 		}
 	}
 
-	public void updatePoiCategory(int id, String title, int hidden, int iconid) {
+	public void updatePoiCategory(int id, String title, int hidden, int iconid, int minzoom) {
 		if (isDatabaseReady()) {
 			final ContentValues cv = new ContentValues();
 			cv.put("name", title);
 			cv.put("hidden", hidden);
 			cv.put("iconid", iconid);
+			cv.put("minzoom", minzoom);
 			String[] args = {"" + id};
 			this.mDatabase.update("category", cv, "categoryid = @1", args);
 		}

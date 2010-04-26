@@ -182,4 +182,5 @@ v.0.5.2\n
     <string name="SelectFile">Выбрать</string>
     <string name="Import">Импорт</string>
     <string name="this_folder_is_empty">В этой папке нет файлов.</string>
+    <string name="MinZoom">Показывать POI на карте начиная с масштаба (0..23)</string>
 </resources>

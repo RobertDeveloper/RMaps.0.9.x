@@ -19,6 +19,7 @@ public class PoiCategoryActivity extends Activity implements PoiConstants {
 	EditText mTitle;
 	CheckBox mHidden;
 	ImageView mIcon;
+	EditText mMinZoom;
 	private PoiCategory mPoiCategory;
 	private PoiManager mPoiManager;
 	
@@ -35,6 +36,7 @@ public class PoiCategoryActivity extends Activity implements PoiConstants {
 		mTitle = (EditText) findViewById(R.id.Title);
 		mHidden = (CheckBox) findViewById(R.id.Hidden);
 		mIcon = (ImageView) findViewById(R.id.ImageIcon);
+		mMinZoom = (EditText) findViewById(R.id.MinZoom);
 
         Bundle extras = getIntent().getExtras();
         if(extras == null) extras = new Bundle();
@@ -45,6 +47,7 @@ public class PoiCategoryActivity extends Activity implements PoiConstants {
 			mTitle.setText(extras.getString("title"));
 			mHidden.setChecked(false);
 			mIcon.setImageResource(mPoiCategory.IconId);
+			mMinZoom.setText("14");
 		} else {
         	mPoiCategory = mPoiManager.getPoiCategory(id);
         	
@@ -54,7 +57,8 @@ public class PoiCategoryActivity extends Activity implements PoiConstants {
         	mTitle.setText(mPoiCategory.Title);
            	mHidden.setChecked(mPoiCategory.Hidden);
 			mIcon.setImageResource(mPoiCategory.IconId);
-       }
+			mMinZoom.setText(Integer.toString(mPoiCategory.MinZoom));
+      }
 		
 		((Button) findViewById(R.id.saveButton))
 		.setOnClickListener(new OnClickListener() {
@@ -94,6 +98,7 @@ public class PoiCategoryActivity extends Activity implements PoiConstants {
 	private void doSaveAction() {
 		mPoiCategory.Title = mTitle.getText().toString();
 		mPoiCategory.Hidden = mHidden.isChecked();
+		mPoiCategory.MinZoom = Integer.parseInt(mMinZoom.getText().toString());
 		
 		mPoiManager.updatePoiCategory(mPoiCategory);
 		finish();

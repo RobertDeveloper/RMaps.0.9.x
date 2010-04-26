@@ -84,7 +84,7 @@ public class PoiOverlay extends OpenStreetMapViewOverlay {
 	@Override
 	public void onDraw(Canvas c, OpenStreetMapView mapView) {
 		if (mCanUpdateList)
-			this.mItemList = mPoiManager.getPoiListNotHidden();
+			this.mItemList = mPoiManager.getPoiListNotHidden(mapView.getZoomLevel());
 
 		if (this.mItemList != null) {
 			final OpenStreetMapViewProjection pj = mapView.getProjection();
@@ -159,7 +159,11 @@ public class PoiOverlay extends OpenStreetMapViewOverlay {
 		if(mBtnMap.containsKey(key))
 			marker = mBtnMap.get(key);
 		else {
-			marker = mCtx.getResources().getDrawable(focusedItem.IconId);
+			try{
+				marker = mCtx.getResources().getDrawable(focusedItem.IconId);
+			} catch (Exception e) {
+				marker = mCtx.getResources().getDrawable(R.drawable.poi);
+			}
 			mBtnMap.put(key, marker);
 		}
 
