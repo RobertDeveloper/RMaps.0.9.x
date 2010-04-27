@@ -10,6 +10,7 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.openintents.filemanager.FileManagerActivity;
+import org.openintents.filemanager.util.FileUtils;
 import org.xml.sax.SAXException;
 
 import android.app.Activity;
@@ -29,6 +30,8 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.robert.maps.R;
+import com.robert.maps.kml.XMLparser.GPXparser;
+import com.robert.maps.kml.XMLparser.KMLparser;
 import com.robert.maps.utils.Ut;
 
 public class ImportPoiActivity extends Activity {
@@ -148,19 +151,19 @@ public class ImportPoiActivity extends Activity {
 
 	private void doImportPOI() {
 		File file = new File(mFileName.getText().toString());
-		
+
 		if(!file.exists()){
 			Toast.makeText(this, "No such file", Toast.LENGTH_LONG).show();
 			return;
 		}
-		
+
 		showDialog(R.id.dialog_wait);
 
 		this.mThreadPool.execute(new Runnable() {
 			public void run() {
 				int CategoryId = (int)mSpinner.getSelectedItemId();
 				File file = new File(mFileName.getText().toString());
-				
+
 				SAXParserFactory fac = SAXParserFactory.newInstance();
 				SAXParser parser = null;
 				try {
@@ -172,12 +175,16 @@ public class ImportPoiActivity extends Activity {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				
+
 				if(parser != null){
 					mPoiManager.beginTransaction();
 					Ut.dd("Start parsing file " + file.getName());
 					try {
-						parser.parse(file, new GPXparser(mPoiManager, CategoryId));
+						if(FileUtils.getExtension(file.getName()).equalsIgnoreCase(".kml"))
+							parser.parse(file, new KMLparser(mPoiManager, CategoryId));
+						else if(FileUtils.getExtension(file.getName()).equalsIgnoreCase(".gpx"))
+							parser.parse(file, new GPXparser(mPoiManager, CategoryId));
+
 						mPoiManager.commitTransaction();
 					} catch (SAXException e) {
 						// TODO Auto-generated catch block
@@ -190,17 +197,17 @@ public class ImportPoiActivity extends Activity {
 					}
 					Ut.dd("Pois commited");
 				}
-					
-				
+
+
 				/*
 				SimpleXML xml = null;
-				
+
 				try {
 					xml = SimpleXML.loadXml(new FileInputStream(file));
 				} catch (FileNotFoundException e) {
 					e.printStackTrace();
 				}
-				
+
 				if (xml != null) {
 					if(FileUtils.getExtension(file.getName()).equalsIgnoreCase(".kml")){
 						SimpleXML document = xml.getNodeByPath("document", false);
@@ -229,7 +236,7 @@ public class ImportPoiActivity extends Activity {
 								poi.GeoPoint = GeoPoint.from2DoubleString(wpt.getAttr("lat"), wpt.getAttr("lon"));
 								poi.Title = wpt.getNodeText("name");
 								poi.Descr = wpt.getNodeText("cmt");
-								if(poi.Title.equalsIgnoreCase("")) 
+								if(poi.Title.equalsIgnoreCase(""))
 									poi.Title = "POI";
 								if(poi.Descr.equalsIgnoreCase(""))
 									poi.Descr = wpt.getNodeText("desc");
