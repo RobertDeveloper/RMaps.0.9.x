@@ -1,9 +1,12 @@
-package com.robert.maps.kml;
+package com.robert.maps.kml.XMLparser;
 
 import org.andnav.osm.util.GeoPoint;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
+
+import com.robert.maps.kml.PoiManager;
+import com.robert.maps.kml.PoiPoint;
 
 public class GPXparser extends DefaultHandler {
 	private StringBuilder builder;
@@ -16,8 +19,8 @@ public class GPXparser extends DefaultHandler {
 	private static final String NAME = "name";
 	private static final String CMT = "cmt";
 	private static final String DESC = "desc";
-	
-	
+
+
 
 	public GPXparser(PoiManager poiManager, int CategoryId) {
 		super();
@@ -51,12 +54,12 @@ public class GPXparser extends DefaultHandler {
 			mPoiManager.updatePoi(mPoiPoint);
 		}
 		else if(localName.equalsIgnoreCase(NAME))
-			mPoiPoint.Title = builder.toString();
+			mPoiPoint.Title = builder.toString().trim();
 		else if(localName.equalsIgnoreCase(CMT))
-			mPoiPoint.Descr = builder.toString();
+			mPoiPoint.Descr = builder.toString().trim();
 		else if(localName.equalsIgnoreCase(DESC))
 			if(mPoiPoint.Descr.equals(""))
-				mPoiPoint.Descr = builder.toString();
+				mPoiPoint.Descr = builder.toString().trim();
 		super.endElement(uri, localName, name);
 	}
 
