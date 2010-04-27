@@ -121,4 +121,16 @@ public class PoiManager {
 	public void DeleteAllPoi() {
 		mGeoDatabase.DeleteAllPoi();
 	}
+	
+	public void beginTransaction(){
+		mGeoDatabase.beginTransaction();
+	}
+	
+	public void rollbackTransaction(){
+		mGeoDatabase.rollbackTransaction();
+	}
+	
+	public void commitTransaction(){
+		mGeoDatabase.commitTransaction();
+	}
 }

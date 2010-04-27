@@ -1,15 +1,21 @@
 package com.robert.maps.kml;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.util.Vector;
+import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.andnav.osm.util.GeoPoint;
 import org.openintents.filemanager.FileManagerActivity;
-import org.openintents.filemanager.util.FileUtils;
+import org.w3c.dom.Document;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -159,6 +165,8 @@ public class ImportPoiActivity extends Activity {
 			public void run() {
 				int CategoryId = (int)mSpinner.getSelectedItemId();
 				File file = new File(mFileName.getText().toString());
+				
+				/*
 				SimpleXML xml = null;
 				
 				try {
@@ -204,8 +212,8 @@ public class ImportPoiActivity extends Activity {
 						}
 					}
 				}
-				
-				/*
+				*/
+
 				DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 				DocumentBuilder db = null;
 				try {
@@ -215,8 +223,51 @@ public class ImportPoiActivity extends Activity {
 				}
 				Document doc = null;
 				try {
+					Ut.dd("Start parsing file " + file.getName());
 					doc = db.parse(file);
+					Ut.dd("Parsing file done");
+					mPoiManager.beginTransaction();
+					// gpx
+					NodeList wpts = doc.getDocumentElement().getElementsByTagName("wpt");
+					Node wpt = null;
+					NamedNodeMap attr = null;
+					NodeList wptchild = null;
+					Node node = null;
+					int cnt = 0;
 
+					for (int i = 0; i < wpts.getLength(); i++) {
+						//Ut.dd("Loading poi "+i);
+						wpt = wpts.item(i);
+						PoiPoint poi = new PoiPoint();
+						poi.CategoryId = CategoryId;
+
+						attr = wpt.getAttributes();
+						poi.GeoPoint = GeoPoint.from2DoubleString(attr.getNamedItem("lat").getNodeValue(), attr.getNamedItem("lon").getNodeValue());
+						wptchild = wpt.getChildNodes();
+
+						for (int j = 0; j < wptchild.getLength(); j++) {
+							node = wptchild.item(j);
+
+							if (node.getNodeName().equalsIgnoreCase("name"))
+								poi.Title = node.getFirstChild().getNodeValue().trim();
+							else if (node.getNodeName().equalsIgnoreCase("cmt"))
+								poi.Descr = node.getFirstChild().getNodeValue().trim();
+							else if (node.getNodeName().equalsIgnoreCase("desc"))
+								poi.Descr = node.getFirstChild().getNodeValue().trim();
+						}
+
+						if (poi.Title.equalsIgnoreCase(""))
+							poi.Title = "POI";
+						mPoiManager.updatePoi(poi);
+						cnt++;
+					}
+
+
+					Ut.dd("Loading done: "+cnt);
+					mPoiManager.commitTransaction();
+					Ut.dd("Pois commited");
+					/*
+					// kml
 					NodeList nl = doc.getDocumentElement().getElementsByTagName("Placemark");
 					NodeList plk = null;
 					Node node = null;
@@ -244,16 +295,18 @@ public class ImportPoiActivity extends Activity {
 						}
 						if(poi.Title.equalsIgnoreCase("")) poi.Title = "POI";
 						mPoiManager.updatePoi(poi);
-						cnt++;
 
 					}
+					Ut.dd("Loading done");
+					*/
 
 				} catch (SAXException e1) {
 					e1.printStackTrace();
+					mPoiManager.rollbackTransaction();
 				} catch (IOException e1) {
 					e1.printStackTrace();
+					mPoiManager.rollbackTransaction();
 				}
-				*/
 
 				dlgWait.dismiss();
 				ImportPoiActivity.this.finish();
