@@ -17,6 +17,7 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
+import android.os.Message;
 import android.view.MotionEvent;
 
 import com.robert.maps.R;
@@ -108,6 +109,7 @@ public class PoiOverlay extends OpenStreetMapViewOverlay {
 				looseCenter = true;
 
 			if(looseCenter){
+				mMapViewHandler = mapView.mMainActivityCallbackHandler;
 				mLastMapCenter = center;
 				mLastZoom = mapView.getZoomLevel();
 
@@ -307,7 +309,7 @@ public class PoiOverlay extends OpenStreetMapViewOverlay {
 		@Override
 		public void run() {
 			mItemList = mPoiManager.getPoiListNotHidden(mLastZoom, mLastMapCenter, mdeltaX, mdeltaY);
-
+			Message.obtain(mMapViewHandler, R.id.user_moved_map).sendToTarget();
 			super.run();
 		}
 

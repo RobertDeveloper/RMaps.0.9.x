@@ -24,6 +24,10 @@ public class PoiListActivity extends ListActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
         registerForContextMenu(getListView());
+
+      getListView().setTextFilterEnabled(true);
+      getListView().requestFocus();
+      getListView().requestFocusFromTouch();
 	}
 
 	@Override

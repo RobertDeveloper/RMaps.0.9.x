@@ -70,7 +70,7 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 	private OpenStreetMapViewController mController;
 	private int mMiniMapOverriddenVisibility = NOT_SET;
 	private int mMiniMapZoomDiff = NOT_SET;
-	private Handler mMainActivityCallbackHandler;
+	public Handler mMainActivityCallbackHandler;
 
 	// ===========================================================
 	// Constructors
