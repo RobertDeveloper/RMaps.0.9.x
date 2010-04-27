@@ -245,4 +245,17 @@ public class GeoDatabase implements PoiConstants{
 			mDatabase.execSQL("DELETE FROM points");
 		}
 	}
+	
+	public void beginTransaction(){
+		mDatabase.beginTransaction();
+	}
+	
+	public void rollbackTransaction(){
+		mDatabase.endTransaction();
+	}
+	
+	public void commitTransaction(){
+		mDatabase.setTransactionSuccessful();
+		mDatabase.endTransaction();
+	}
 }
