@@ -110,8 +110,7 @@ public class PoiOverlay extends OpenStreetMapViewOverlay {
 			if(looseCenter){
 				mLastMapCenter = center;
 				mLastZoom = mapView.getZoomLevel();
-				Ut.dd("Update poi list");
-				//this.mItemList = mPoiManager.getPoiListNotHidden(mLastZoom, mLastMapCenter, 1.5*deltaX, 1.5*deltaY);
+
 				mThread.setParams(1.5*deltaX, 1.5*deltaY);
 				mThread.run();
 			}
@@ -308,7 +307,7 @@ public class PoiOverlay extends OpenStreetMapViewOverlay {
 		@Override
 		public void run() {
 			mItemList = mPoiManager.getPoiListNotHidden(mLastZoom, mLastMapCenter, mdeltaX, mdeltaY);
-			
+
 			super.run();
 		}
 

@@ -651,7 +651,7 @@ public class FileManagerActivity extends ListActivity {
 			    	setResult(RESULT_OK, intent);
 			    	finish();
 				}
-					
+
 			}
 		}
      }
