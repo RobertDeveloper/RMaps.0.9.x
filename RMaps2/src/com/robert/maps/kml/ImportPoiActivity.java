@@ -5,16 +5,11 @@ import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 
-import org.andnav.osm.util.GeoPoint;
 import org.openintents.filemanager.FileManagerActivity;
-import org.w3c.dom.Document;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import android.app.Activity;
@@ -166,6 +161,37 @@ public class ImportPoiActivity extends Activity {
 				int CategoryId = (int)mSpinner.getSelectedItemId();
 				File file = new File(mFileName.getText().toString());
 				
+				SAXParserFactory fac = SAXParserFactory.newInstance();
+				SAXParser parser = null;
+				try {
+					parser = fac.newSAXParser();
+				} catch (ParserConfigurationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (SAXException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				if(parser != null){
+					mPoiManager.beginTransaction();
+					Ut.dd("Start parsing file " + file.getName());
+					try {
+						parser.parse(file, new GPXparser(mPoiManager, CategoryId));
+						mPoiManager.commitTransaction();
+					} catch (SAXException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+						mPoiManager.rollbackTransaction();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+						mPoiManager.rollbackTransaction();
+					}
+					Ut.dd("Pois commited");
+				}
+					
+				
 				/*
 				SimpleXML xml = null;
 				
@@ -213,7 +239,7 @@ public class ImportPoiActivity extends Activity {
 					}
 				}
 				*/
-
+				/*
 				DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 				DocumentBuilder db = null;
 				try {
@@ -266,6 +292,7 @@ public class ImportPoiActivity extends Activity {
 					Ut.dd("Loading done: "+cnt);
 					mPoiManager.commitTransaction();
 					Ut.dd("Pois commited");
+					*/
 					/*
 					// kml
 					NodeList nl = doc.getDocumentElement().getElementsByTagName("Placemark");
@@ -299,6 +326,7 @@ public class ImportPoiActivity extends Activity {
 					}
 					Ut.dd("Loading done");
 					*/
+				/*
 
 				} catch (SAXException e1) {
 					e1.printStackTrace();
@@ -307,6 +335,7 @@ public class ImportPoiActivity extends Activity {
 					e1.printStackTrace();
 					mPoiManager.rollbackTransaction();
 				}
+				*/
 
 				dlgWait.dismiss();
 				ImportPoiActivity.this.finish();
