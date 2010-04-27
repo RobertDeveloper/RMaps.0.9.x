@@ -34,7 +34,7 @@ public class PoiOverlay extends OpenStreetMapViewOverlay {
 	private GeoPoint mLastMapCenter;
 	private int mLastZoom;
 	private Handler mMapViewHandler;
-	private Thread mThread;
+	private PoiListThread mThread;
 
 	public int getTapIndex() {
 		return mTapIndex;
@@ -75,7 +75,7 @@ public class PoiOverlay extends OpenStreetMapViewOverlay {
 
         mLastMapCenter = null;
         mLastZoom = -1;
-        mThread = new Thread();
+        mThread = new PoiListThread();
 
 	}
 
@@ -111,7 +111,9 @@ public class PoiOverlay extends OpenStreetMapViewOverlay {
 				mLastMapCenter = center;
 				mLastZoom = mapView.getZoomLevel();
 				Ut.dd("Update poi list");
-				this.mItemList = mPoiManager.getPoiListNotHidden(mLastZoom, mLastMapCenter, 1.5*deltaX, 1.5*deltaY);
+				//this.mItemList = mPoiManager.getPoiListNotHidden(mLastZoom, mLastMapCenter, 1.5*deltaX, 1.5*deltaY);
+				mThread.setParams(1.5*deltaX, 1.5*deltaY);
+				mThread.run();
 			}
 		}
 
@@ -291,6 +293,27 @@ public class PoiOverlay extends OpenStreetMapViewOverlay {
 	@Override
 	protected void onDrawFinished(Canvas c, OpenStreetMapView osmv) {
 	}
+
+
+
+	private class PoiListThread extends Thread {
+		private double mdeltaX;
+		private double mdeltaY;
+
+		public void setParams(double deltaX, double deltaY){
+			mdeltaX = deltaX;
+			mdeltaY = deltaY;
+		}
+
+		@Override
+		public void run() {
+			mItemList = mPoiManager.getPoiListNotHidden(mLastZoom, mLastMapCenter, mdeltaX, mdeltaY);
+			
+			super.run();
+		}
+
+	}
+
 
 }
 
