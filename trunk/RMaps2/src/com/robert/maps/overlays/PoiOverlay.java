@@ -16,6 +16,7 @@ import android.graphics.Canvas;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.os.Handler;
 import android.view.MotionEvent;
 
 import com.robert.maps.R;
@@ -30,6 +31,10 @@ public class PoiOverlay extends OpenStreetMapViewOverlay {
 	private PoiManager mPoiManager;
 	private NinePatchDrawable mButton;
 	private int mTapIndex;
+	private GeoPoint mLastMapCenter;
+	private int mLastZoom;
+	private Handler mMapViewHandler;
+	private Thread mThread;
 
 	public int getTapIndex() {
 		return mTapIndex;
@@ -48,7 +53,7 @@ public class PoiOverlay extends OpenStreetMapViewOverlay {
 	protected HashMap<Integer, Drawable> mBtnMap;
 
 	public PoiOverlay(Context ctx, PoiManager poiManager,
-			OnItemTapListener<PoiPoint> onItemTapListener, boolean hidepoi) 
+			OnItemTapListener<PoiPoint> onItemTapListener, boolean hidepoi)
 	{
 		mCtx = ctx;
 		mPoiManager = poiManager;
@@ -61,34 +66,53 @@ public class PoiOverlay extends OpenStreetMapViewOverlay {
 		Drawable marker = ctx.getResources().getDrawable(R.drawable.poi);
 		this.mMarkerWidth = marker.getIntrinsicWidth();
 		this.mMarkerHeight = marker.getIntrinsicHeight();
-		
+
 		mBtnMap = new HashMap<Integer, Drawable>();
 		mBtnMap.put(new Integer(R.drawable.poi), marker);
 		this.mMarkerHotSpot = new Point(0, 45);
 
         this.mOnItemTapListener = onItemTapListener;
 
+        mLastMapCenter = null;
+        mLastZoom = -1;
+        mThread = new Thread();
+
 	}
-	
+
 	public void setGpsStatusGeoPoint(final GeoPoint geopoint, final String title, final String descr) {
 		PoiPoint poi = new PoiPoint(title, descr, geopoint, R.drawable.poi_satttelite);
 		if(mItemList == null)
 			mItemList = new ArrayList<PoiPoint>();
 		else
 			mItemList.clear();
-		
+
 		mItemList.add(poi);
 		mCanUpdateList = false;
 	}
-	
+
 	@Override
 	public void onDraw(Canvas c, OpenStreetMapView mapView) {
 		final OpenStreetMapViewProjection pj = mapView.getProjection();
 		final Point curScreenCoords = new Point();
 
 		if (mCanUpdateList){
-			
-			this.mItemList = mPoiManager.getPoiListNotHidden(mapView.getZoomLevel(), mapView.getMapCenter(), pj.fromPixels(0, 0));
+			boolean looseCenter = false;
+			GeoPoint center = mapView.getMapCenter();
+			GeoPoint lefttop = pj.fromPixels(0, 0);
+			double deltaX = Math.abs(center.getLongitude() - lefttop.getLongitude());
+			double deltaY = Math.abs(center.getLatitude() - lefttop.getLatitude());
+
+			if (mLastMapCenter == null || mLastZoom != mapView.getZoomLevel())
+				looseCenter = true;
+			else if(0.7 * deltaX < Math.abs(center.getLongitude() - mLastMapCenter.getLongitude()) || 0.7 * deltaY < Math.abs(center.getLatitude() - mLastMapCenter.getLatitude()))
+				looseCenter = true;
+
+			if(looseCenter){
+				mLastMapCenter = center;
+				mLastZoom = mapView.getZoomLevel();
+				Ut.dd("Update poi list");
+				this.mItemList = mPoiManager.getPoiListNotHidden(mLastZoom, mLastMapCenter, 1.5*deltaX, 1.5*deltaY);
+			}
 		}
 
 		if (this.mItemList != null) {
@@ -170,10 +194,10 @@ public class PoiOverlay extends OpenStreetMapViewOverlay {
 		}
 
 		marker.setBounds(left, top, right, bottom);
-		
+
 		marker.draw(c);
-		
-		
+
+
 //		final int pxUp = 2;
 //		final int left2 = screenCoords.x + 5 - pxUp;
 //		final int right2 = left + 38 + pxUp;
@@ -183,34 +207,34 @@ public class PoiOverlay extends OpenStreetMapViewOverlay {
 //		c.drawLine(left2, top2, right2, bottom2, p);
 //		c.drawLine(right2, top2, left2, bottom2, p);
 	}
-	
+
 	public PoiPoint getPoiPoint(final int index){
 		return this.mItemList.get(index);
 	}
-	
+
 	public int getMarkerAtPoint(final int eventX, final int eventY, OpenStreetMapView mapView){
 		if(this.mItemList != null){
 			final OpenStreetMapViewProjection pj = mapView.getProjection();
-	
+
 			final Rect curMarkerBounds = new Rect();
 			final Point mCurScreenCoords = new Point();
-	
+
 			for(int i = 0; i < this.mItemList.size(); i++){
 				final PoiPoint mItem = this.mItemList.get(i);
 				pj.toPixels(mItem.GeoPoint, mapView.getBearing(), mCurScreenCoords);
-	
+
 				final int pxUp = 2;
 				final int left = mCurScreenCoords.x + 5 - pxUp;
 				final int right = left + 36 + pxUp;
 				final int top = mCurScreenCoords.y - this.mMarkerHotSpot.y - pxUp;
 				final int bottom = top + 33 + pxUp;
-	
+
 				curMarkerBounds.set(left, top, right, bottom);
 				if(curMarkerBounds.contains(eventX, eventY))
 					return i;
 			}
 		}
-		
+
 		return -1;
 	}
 

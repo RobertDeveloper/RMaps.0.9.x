@@ -60,12 +60,9 @@ public class PoiManager {
 		return doCreatePoiListFromCursor(mGeoDatabase.getPoiListCursor());
 	}
 
-	public List<PoiPoint> getPoiListNotHidden(int zoom, GeoPoint center, GeoPoint lefttop){
-		return doCreatePoiListFromCursor(mGeoDatabase.getPoiListNotHiddenCursor(zoom, lefttop.getLongitude(), lefttop
-				.getLongitude()
-				+ 2 * (center.getLongitude() - lefttop.getLongitude()), lefttop.getLatitude(), lefttop
-				.getLatitude()
-				+ 2 * (center.getLatitude() - lefttop.getLatitude())));
+	public List<PoiPoint> getPoiListNotHidden(int zoom, GeoPoint center, double deltaX, double deltaY){
+		return doCreatePoiListFromCursor(mGeoDatabase.getPoiListNotHiddenCursor(zoom, center.getLongitude() - deltaX, center.getLongitude() + deltaX
+				, center.getLatitude() + deltaY, center.getLatitude() - deltaY));
 	}
 
 	public void addPoiStartActivity(Context ctx, GeoPoint touchDownPoint) {
@@ -121,15 +118,15 @@ public class PoiManager {
 	public void DeleteAllPoi() {
 		mGeoDatabase.DeleteAllPoi();
 	}
-	
+
 	public void beginTransaction(){
 		mGeoDatabase.beginTransaction();
 	}
-	
+
 	public void rollbackTransaction(){
 		mGeoDatabase.rollbackTransaction();
 	}
-	
+
 	public void commitTransaction(){
 		mGeoDatabase.commitTransaction();
 	}
