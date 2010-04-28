@@ -41,8 +41,8 @@ public class PoiOverlay extends OpenStreetMapViewOverlay {
 		return mTapIndex;
 	}
 
-	public void setTapIndex(int mTapIndex) {
-		this.mTapIndex = mTapIndex;
+	public void setTapIndex(int index) {
+		this.mTapIndex = index;
 	}
 
 	public void onResume(){
@@ -128,40 +128,44 @@ public class PoiOverlay extends OpenStreetMapViewOverlay {
 			 * Draw in backward cycle, so the items with the least index are on
 			 * the front.
 			 */
+			PoiPoint item = null, tapitem = null;
 			for (int i = this.mItemList.size() - 1; i >= 0; i--) {
-				if (i != mTapIndex) {
-					PoiPoint item = this.mItemList.get(i);
+				item = this.mItemList.get(i);
+
+				if (item.getId() != mTapIndex) {
 					pj.toPixels(item.GeoPoint, curScreenCoords);
 
 					c.save();
 					c.rotate(mapView.getBearing(), curScreenCoords.x,
 							curScreenCoords.y);
 
-					onDrawItem(c, i, curScreenCoords);
+					onDrawItem(c, item, curScreenCoords);
 
 					c.restore();
+				} else {
+					tapitem = this.mItemList.get(i);
 				}
 			}
 
-			if (mTapIndex >= 0 && mTapIndex < this.mItemList.size()) {
-				PoiPoint item = this.mItemList.get(mTapIndex);
+			if (tapitem != null) {
+				item = tapitem;
 				pj.toPixels(item.GeoPoint, curScreenCoords);
 
 				c.save();
 				c.rotate(mapView.getBearing(), curScreenCoords.x,
 						curScreenCoords.y);
 
-				onDrawItem(c, mTapIndex, curScreenCoords);
+				onDrawItem(c, item, curScreenCoords);
 
 				c.restore();
 			}
 		}
 	}
 
-	protected void onDrawItem(Canvas c, int index, Point screenCoords) {
-		final PoiPoint focusedItem = mItemList.get(index);
+	protected void onDrawItem(Canvas c, PoiPoint focusedItem, Point screenCoords) {
+		//final PoiPoint focusedItem = mItemList.get(index);
 
-		if (index == mTapIndex) {
+		if (focusedItem.getId() == mTapIndex) {
 			int toUp = 8, toRight = 2; // int toUp = 25, toRight = 3;
 			int textToRight = 34, widthRightCut = 2, textPadding = 4, maxButtonWidth = 240;
 			int h0 = 40; // w0 = 40;// исходный размер
@@ -274,13 +278,15 @@ public class PoiOverlay extends OpenStreetMapViewOverlay {
 	}
 
 	protected boolean onTap(int index) {
-		if(mTapIndex == index)
+		PoiPoint item = this.mItemList.get(index);
+
+		if(mTapIndex == item.getId())
 			mTapIndex = -1;
 		else
-			mTapIndex = index;
+			mTapIndex = item.getId();
 
 		if(this.mOnItemTapListener != null)
-			return this.mOnItemTapListener.onItemTap(index, this.mItemList.get(index));
+			return this.mOnItemTapListener.onItemTap(index, item);
 		else
 			return false;
 	}
