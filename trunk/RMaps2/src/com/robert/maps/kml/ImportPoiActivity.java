@@ -134,7 +134,7 @@ public class ImportPoiActivity extends Activity {
 		case R.id.ImportBtn:
 			if (resultCode == RESULT_OK && data != null) {
 				// obtain the filename
-				String filename = data.getDataString();
+				String filename = Uri.decode(data.getDataString());
 				if (filename != null) {
 					// Get rid of URI prefix:
 					if (filename.startsWith("file://")) {
