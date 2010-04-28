@@ -45,6 +45,10 @@ public class PoiOverlay extends OpenStreetMapViewOverlay {
 		this.mTapIndex = mTapIndex;
 	}
 
+	public void onResume(){
+		mLastMapCenter = null;
+	}
+
 	protected OnItemTapListener<PoiPoint> mOnItemTapListener;
 	protected OnItemLongPressListener<PoiPoint> mOnItemLongPressListener;
 	protected List<PoiPoint> mItemList;

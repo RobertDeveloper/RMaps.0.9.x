@@ -132,7 +132,11 @@ public class IconifiedTextListAdapter extends BaseAdapter implements Filterable 
 
      /** Use the array index as a unique id. */
      public long getItemId(int position) {
-          return position;
+    	 int id = mItems.get(position).getId();
+    	 if(id < 0)
+    		 return position;
+    	 else
+    		 return id;
      }
 
      /** @param convertView The old view to overwrite, if one is passed

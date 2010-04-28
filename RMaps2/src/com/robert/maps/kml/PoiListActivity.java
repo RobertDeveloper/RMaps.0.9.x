@@ -1,36 +1,75 @@
 package com.robert.maps.kml;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+import org.openintents.filemanager.IconifiedText;
+import org.openintents.filemanager.IconifiedTextListAdapter;
+
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ListActivity;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.AdapterView;
-import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
 
 import com.robert.maps.R;
 
 public class PoiListActivity extends ListActivity {
 	private PoiManager mPoiManager;
+	List<IconifiedText> mListPoi = new ArrayList<IconifiedText>();
+	static final public int MESSAGE_SHOW_DIRECTORY_CONTENTS = 500;	// List of contents is ready, obj = DirectoryContents
+    private Handler currentHandler;
+	protected ExecutorService mThreadPool = Executors.newFixedThreadPool(1);
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-        registerForContextMenu(getListView());
+		currentHandler = new Handler() {
+			public void handleMessage(Message msg) {
+				PoiListActivity.this.handleMessage(msg);
+			}
+		};
 
-      getListView().setTextFilterEnabled(true);
-      getListView().requestFocus();
-      getListView().requestFocusFromTouch();
+		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+		registerForContextMenu(getListView());
+
+		//getListView().setEmptyView(findViewById(R.id.empty));
+		getListView().setTextFilterEnabled(true);
+		getListView().requestFocus();
+		getListView().requestFocusFromTouch();
+
+		mPoiManager = new PoiManager(this);
+		FillData();
+	}
+
+	protected void handleMessage(Message msg) {
+   	 switch (msg.what) {
+	 case MESSAGE_SHOW_DIRECTORY_CONTENTS:
+		 showContents();
+		 break;
+	 }
+	}
+
+	private void showContents() {
+		IconifiedTextListAdapter itla = new IconifiedTextListAdapter(this);
+		itla.setListItems(mListPoi, getListView().hasTextFilter());
+		setListAdapter(itla);
+		getListView().setTextFilterEnabled(true);
+		setProgressBarIndeterminateVisibility(false);
 	}
 
 	@Override
@@ -53,14 +92,27 @@ public class PoiListActivity extends ListActivity {
 	}
 
 	private void FillData() {
-		Cursor c = mPoiManager.getGeoDatabase().getPoiListCursor();
-        startManagingCursor(c);
+		mListPoi.clear();
+		setProgressBarIndeterminateVisibility(true);
+		setListAdapter(null);
 
-        ListAdapter adapter = new SimpleCursorAdapter(this,
-                android.R.layout.simple_list_item_2, c,
-                        new String[] { "name", "descr" },
-                        new int[] { android.R.id.text1, android.R.id.text2 });
-        setListAdapter(adapter);
+		mThreadPool.execute(new Runnable(){
+
+			public void run() {
+				mListPoi = mPoiManager.getPoiListLikeIconifiedText();
+
+				Message msg = currentHandler.obtainMessage(MESSAGE_SHOW_DIRECTORY_CONTENTS);
+				msg.sendToTarget();
+			}});
+
+//		Cursor c = mPoiManager.getGeoDatabase().getPoiListCursor();
+//        startManagingCursor(c);
+//
+//        ListAdapter adapter = new SimpleCursorAdapter(this,
+//                android.R.layout.simple_list_item_2, c,
+//                        new String[] { "name", "descr" },
+//                        new int[] { android.R.id.text1, android.R.id.text2 });
+//        setListAdapter(adapter);
 	}
 
 	@Override
@@ -158,12 +210,10 @@ public class PoiListActivity extends ListActivity {
 		case R.id.menu_hide:
 			poi.Hidden = true;
 			mPoiManager.updatePoi(poi);
-			FillData();
 	        break;
 		case R.id.menu_show:
 			poi.Hidden = false;
 			mPoiManager.updatePoi(poi);
-			FillData();
 	        break;
 		}
 
