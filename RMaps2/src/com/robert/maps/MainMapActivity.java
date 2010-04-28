@@ -649,8 +649,11 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 
 	@Override
 	public void onStatusChanged(String provider, int status, Bundle extras) {
-		int cnt = extras.getInt("satellites", Integer.MIN_VALUE);
-		mStatusListener = provider+ " " + status + " " + (cnt >= 0 ? cnt : 0);
+		mStatusListener = provider;
+		if(extras != null){
+			int cnt = extras.getInt("satellites", Integer.MIN_VALUE);
+			mStatusListener = mStatusListener+ " " + status + " " + (cnt >= 0 ? cnt : 0);
+		}
 		setTitle();
 	}
 
