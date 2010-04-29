@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<resources>
+	<string name="pref_screen_orientation">Ориентация экрана</string>
+	<string name="pref_screen_orientation_summary">Зафиксировать или поворачивать в зависимости от ориентации</string>
+    <string name="pref_googlelanguagecode_summary">Язык надписей на карте Google Map</string>
+    <string name="pref_googlelanguagecode">Код локализации Google Map</string>
+    <string name="pref_northdirectionup_summary">Поворачивать карту вместе с компасом</string>
+    <string name="pref_northdirectionup">По компасу</string>
+    <string name="pref_drivingdirectionup_summary">Поворачивать карту в направлении движения</string>
+    <string name="pref_drivingdirectionup">По направленю движения</string>
+    <string name="pref_zoomminlevel_summary">Устанавливать этот зум при долгом нажатии на минус</string>
+    <string name="pref_zoomminlevel">Минимальный зум</string>
+    <string name="pref_zoommaxlevel_summary">Устанавливать этот зум при долгом нажатии на плюс</string>
+    <string name="pref_zoommaxlevel">Максимальный зум</string>
+    <string name="pref_bottomzoomcontrol_summary">Размещать кнопки зума в нижней части экрана</string>
+    <string name="pref_bottomzoomcontrol">Кнопки зума внизу</string>
+    <string name="app_user_id"/>
+    <string name="app_user_label">Robert.Developer</string>
+    <string name="prefcat_main_misc">Прочее</string>
+    <string name="pref_accuracy_summary">Показывать точность определения положения как голубую окружность как в Google Map</string>
+    <string name="pref_accuracy">Индикатор точности положения</string>
+    <string name="pref_keepscreenon_summaryoff">Экран будет автоматически выключаться</string>
+    <string name="pref_keepscreenon_summary">Экран не будет автоматически выключаться, пока на экране карта</string>
+    <string name="pref_keepscreenon">Не гасить экран</string>
+    <string name="pref_showtitle_summary">Показывать заголовок окна с именем карты и пр. индикаторами</string>
+    <string name="pref_showtitle">Показывать заголовок</string>
+    <string name="pref_showstatusbar_summary">Показывать системный статус бар с часами и пр. индикаторами</string>
+    <string name="pref_showstatusbar">Показывать статус бар</string>
+    <string name="pref_turnoffautoreindex">Отключить реиндексацию</string>
+    <string name="pref_turnoffautoreindex_summary">Отключить авто реиндексацию при изменении размера или даты времени файла карты</string>
+    <string name="pref_gpsfastupdate">Частое обновление GPS данных</string>
+    <string name="pref_gpsfastupdate_summary">Редкое обновление GPS данных теоретически экономит батарею</string>
+    <string name="pref_usermap_enabled">Включить карту</string>
+    <string name="pref_usermap_enabled_summary">Добавить карту в список карт</string>
+    <string name="pref_usermap_name">Имя карты</string>
+    <string name="pref_usermap_baseurl">Base URL</string>
+    <string name="pref_usermap_projection">Проекция</string>
+    <string name="pref_usermap_traffic">Яндекс.Пробки</string>
+    <string name="pref_usermap_traffic_summary">Добавить слой пробок на карту</string>
+    <string name="prefcat_main_look">Представление &amp; Управление</string>
+    <string name="prefcat_main_maps">Карты</string>
+    <string name="prefcat_main_indexing">Индексация</string>
+    <string name="pref_main_maps">Он-лайн карты</string>
+    <string name="pref_main_maps_summary">Требуется подключение к интернету</string>
+    <string name="pref_main_usermaps">Офф-лайн карты</string>
+    <string name="pref_main_usermaps_summary">Карты из папки /sdcard/rmaps/maps</string>
+    <string name="btn_clear_cache_title">Очистить</string>
+    <string name="pref_internalcache_title">Внутренний кэш</string>
+    <string name="pref_internalcache_summary">Временное хранение тайлов карт. Размер: %dKB/4MB</string>
+    <string name="pref_index_title">Индексный файл</string>
+    <string name="pref_index_summary">Индекс тайлов offline карт. Размер: %dKB</string>
+    <string name="hello">Hello World, OpenStreetMapViewer</string>
+    <string name="app_name">RMaps</string>
+    <string name="app_name_itemizedoverlay">OSMViewer ItemizedOverlay</string>
+    <string name="menu_settings">Настройки</string>
+    <string name="menu_exit">Выход</string>
+    <string name="menu_mylocation">Где я?</string>
+    <string name="menu_mapselector">Карты</string>
+    <string name="menu_compass">Компас</string>
+    <string name="menu_about">О программе</string>
+    <string name="menu_search">Поиск</string>
+    <string name="menu_addpoi">Добавить POI</string>
+    <string name="menu_import">Импорт</string>
+    <string name="no_traffic">При таком значении зума пробки недоступны</string>
+    <string name="auto_follow_enabled">Авто следование за текущим положением включено</string>
+    <string name="auto_follow_disabled">Авто следование за текущим положением выключено</string>
+    <string name="message_geodata_notavailable">Данные на SD карте недоступны. Операция не может быть выполнена.</string>
+    <string name="no_inet_conn">Нет соединения с интернетом...</string>
+    <string name="no_items">По вашему запросу ничего не найдено</string>
+    <string name="about_dialog_text">
+©2009 Robert.Developer\n
+  Osmdroid by Nicolas Gramlich\n
+  App icon by Everaldo Coelho\n
+При участии\n
+  Dmytro Sandu\n
+  Snake Joe\n
+  Christoffer Blindheim\n
+All rights reserved\n
+\n
+Вопросы и предложения направляйте по электрической почте robertk506@gmail.com\n
+\n
+Как сделать офф-лайн карту и прочее можно почитать здесь http://robertdeveloper.blogspot.com/\n
+</string>
+    <string name="whats_new_dialog_text">
+v.0.7.7\n
++ Импорт POI из KML, GPX файлов\n
++ Оптимизация отрисовки POI\n
++ Обновил URL карт Yandex, Google\n
+\n
+v.0.7.6\n
++ Добавлен выбор языка надписей на картах Google\n
++ Добавлены онлайн карты (Topographic map of Norway, Sea map of Norway)\n
++ Добавлены настройки ориентации экрана\n
++ Обновил URL карт Yandex, Google\n
+\n
+v.0.7.5\n
++ Категории POI\n
++ Кнопка Назад теперь закрывает желтое окошко поиска\n
+- Bug fix: OS Map\n
+- Bug fix: Сделал попытку поправить Force close при работе пробок. Должно работать стабильнее\n
+\n
+v.0.7.4\n
++ Добавлены онлайн карты (Docelu.pl Poland, Freemap.sk Slovakia, Slovakia Hiking, Slovakia Hiking HillShade)\n
+Хотите добавить какие-то онлайн карты? Напишите мне.\n
+\n
+v.0.7.3\n
+- Bug fix: Значение зума 100 в картах формата sqlitedb\n
++ Добавлены онлайн карты (Microsoft Maps, Maps China, Virtual Earth, Hybrid, OSM Hiking Germany, OSM Public Transport, Outdooractive.com, Cykloatlas CZ, UMP-pcPL Poland)\n
+\n
+v.0.7.0\n
++ Минимум функций для добавления точек (POI)\n
++ Интеграция с GPS Status by Rudolf Hornig. Вызов из меню GPS Status и обратный вызов RMaps\n
++ Индексные данные оффлайн карт перенесены на sd карту\n
++ Добавлены в настройки кнопки для очистки внутреннего кэша и индексного файла\n
++ Обновил URL карт Yandex, Google\n
+- Поправил работу компаса в ландскейп режиме\n
+\n
+v.0.6.4\n
++ Поправил Yandex.Пробки\n
+\n
+v.0.6.3\n
++ Поворот карты в направлении движения. Включение выключение режима в настройках. Даблтап разворачивает карту в обычное положение.\n
++ Поворот карты вместе с компасом. Включение выключение в настройках. Карта поворачивается, если показывается компас.\n
++ Добавлена русская локализация\n
++ Обновил URL карт Yandex.Map\n
+\n
+v.0.6.2\n
+- Исправлена ошибка долгой загрузки sqlite файла\n
+\n
+v.0.6.1\n
++ Поддержка кэша в файлах sqlite, созданных программой TrekBuddy Atlas Creator\n
++ Обновил URL карт Google\n
++ Увеличил макс зум карты Google до 20\n
+\n
+v.0.6.0\n
++ Первый упрощенный вариант поиска по адресу\n
+- Исправлены ошибки\n
+\n
+v.0.5.5\n
++ Компас на карте\n
++ Диалог О программе\n
++ Диалог Что нового\n
+\n
+v.0.5.4\n
++ Выключение/включение режима следования за текущим местоположением\n
++ Возможность перенесения кнопок зума вниз/наверх\n
++ Даблтап на карте центрирует и увеличивает карту в месте тапа\n
++ Долгое нажатие на кнопки зума устанавливает предустановленное в настройках значение зума\n
+\n
+v.0.5.3\n
++ Используется определение местоположение по базовым станциям пока GPS не нашел спутники\n
++ Отображение в заголовке окна Network/GPS/статус/кол спутников\n
++ Обновление данных GPS быстро/медленно с возможностью выбора в настройках\n
++ Возможность отключения автоматической реиндексации при изменении размера, даты времени файла карты (если у вас были проблемы с реиндексацией после перезагрузки телефона)\n
+\n
+v.0.5.2\n
++ Обновил URL карт Google\n
++ Поддержка png тайлов в TAR файле\n
++ Отключение от GPS при сворачивании окна\n
+
+</string>
+    <string name="about_dialog_whats_new">Что нового</string>
+    <string name="about_dialog_close">Закрыть</string>
+    <string name="ya_dialog_title">Яндекс Пробки</string>
+    <string name="ya_dialog_message">В знак уважения и благодарности фирме Яндекс за предоставленную информацию о пробках предлагаю Вам добавить закладку на страницу Мобильный Яндекс. Это сообщение ни к чему Вас не обязывает и больше появляться не будет.</string>
+    <string name="ya_dialog_button_caption">OK</string>
+    <string name="search_label">Адрес:</string>
+    <string name="search_hint">напр. Москва Таганка</string>
+    <string name="message_gpsdisabled">GPS выключен. Попытаюсь определить местоположение по базовым станциям...</string>
+    <string name="message_locationunavailable">GPS and определение по базовым станциям выключены. Определение местоположения невозможно...</string>
+    <string name="message_lastknownlocation">GPS and определение по базовым станциям выключены. Показываю последнее определенное когда-то местоположение...</string>
+    <string name="message_updateminmax">Обновление мин макс значений зума карты...</string>
+    <string name="PoiTitle">Наименование</string>
+    <string name="PoiLon">Долгота</string>
+    <string name="PoiLat">Широта</string>
+    <string name="PoiDescr">Описание</string>
+    <string name="menu_edit">Изменить</string>
+    <string name="menu_doNotSave">Отменить</string>
+    <string name="menu_done">Записать</string>
+    <string name="menu_poilist">POI</string>
+    <string name="menu_gpsstatus">GPS Status</string>
+    <string name="menu_delete">Удалить</string>
+    <string name="menu_goto">Перейти к точке</string>
+
+    <string name="FileName">Импорт из файлов KML, GPX</string>
+    <string name="ToCategory">В категорию</string>
+    <string name="SelectFile">Выбрать</string>
+    <string name="Import">Импорт</string>
+    <string name="this_folder_is_empty">В этой папке нет файлов.</string>
+    <string name="MinZoom">Показывать POI на карте начиная с масштаба (0..23)</string>
+    <string name="warning_delete_all_poi">Вы точно хотите удалить все POI?</string>
+</resources>
