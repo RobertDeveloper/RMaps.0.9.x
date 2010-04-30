@@ -17,7 +17,6 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
-import android.os.Message;
 import android.view.MotionEvent;
 
 import com.robert.maps.R;
@@ -41,12 +40,8 @@ public class PoiOverlay extends OpenStreetMapViewOverlay {
 		return mTapIndex;
 	}
 
-	public void setTapIndex(int index) {
-		this.mTapIndex = index;
-	}
-
-	public void onResume(){
-		mLastMapCenter = null;
+	public void setTapIndex(int mTapIndex) {
+		this.mTapIndex = mTapIndex;
 	}
 
 	protected OnItemTapListener<PoiPoint> mOnItemTapListener;
@@ -113,7 +108,6 @@ public class PoiOverlay extends OpenStreetMapViewOverlay {
 				looseCenter = true;
 
 			if(looseCenter){
-				mMapViewHandler = mapView.mMainActivityCallbackHandler;
 				mLastMapCenter = center;
 				mLastZoom = mapView.getZoomLevel();
 
@@ -128,44 +122,40 @@ public class PoiOverlay extends OpenStreetMapViewOverlay {
 			 * Draw in backward cycle, so the items with the least index are on
 			 * the front.
 			 */
-			PoiPoint item = null, tapitem = null;
 			for (int i = this.mItemList.size() - 1; i >= 0; i--) {
-				item = this.mItemList.get(i);
-
-				if (item.getId() != mTapIndex) {
+				if (i != mTapIndex) {
+					PoiPoint item = this.mItemList.get(i);
 					pj.toPixels(item.GeoPoint, curScreenCoords);
 
 					c.save();
 					c.rotate(mapView.getBearing(), curScreenCoords.x,
 							curScreenCoords.y);
 
-					onDrawItem(c, item, curScreenCoords);
+					onDrawItem(c, i, curScreenCoords);
 
 					c.restore();
-				} else {
-					tapitem = this.mItemList.get(i);
 				}
 			}
 
-			if (tapitem != null) {
-				item = tapitem;
+			if (mTapIndex >= 0 && mTapIndex < this.mItemList.size()) {
+				PoiPoint item = this.mItemList.get(mTapIndex);
 				pj.toPixels(item.GeoPoint, curScreenCoords);
 
 				c.save();
 				c.rotate(mapView.getBearing(), curScreenCoords.x,
 						curScreenCoords.y);
 
-				onDrawItem(c, item, curScreenCoords);
+				onDrawItem(c, mTapIndex, curScreenCoords);
 
 				c.restore();
 			}
 		}
 	}
 
-	protected void onDrawItem(Canvas c, PoiPoint focusedItem, Point screenCoords) {
-		//final PoiPoint focusedItem = mItemList.get(index);
+	protected void onDrawItem(Canvas c, int index, Point screenCoords) {
+		final PoiPoint focusedItem = mItemList.get(index);
 
-		if (focusedItem.getId() == mTapIndex) {
+		if (index == mTapIndex) {
 			int toUp = 8, toRight = 2; // int toUp = 25, toRight = 3;
 			int textToRight = 34, widthRightCut = 2, textPadding = 4, maxButtonWidth = 240;
 			int h0 = 40; // w0 = 40;// исходный размер
@@ -278,15 +268,13 @@ public class PoiOverlay extends OpenStreetMapViewOverlay {
 	}
 
 	protected boolean onTap(int index) {
-		PoiPoint item = this.mItemList.get(index);
-
-		if(mTapIndex == item.getId())
+		if(mTapIndex == index)
 			mTapIndex = -1;
 		else
-			mTapIndex = item.getId();
+			mTapIndex = index;
 
 		if(this.mOnItemTapListener != null)
-			return this.mOnItemTapListener.onItemTap(index, item);
+			return this.mOnItemTapListener.onItemTap(index, this.mItemList.get(index));
 		else
 			return false;
 	}
@@ -319,7 +307,7 @@ public class PoiOverlay extends OpenStreetMapViewOverlay {
 		@Override
 		public void run() {
 			mItemList = mPoiManager.getPoiListNotHidden(mLastZoom, mLastMapCenter, mdeltaX, mdeltaY);
-			Message.obtain(mMapViewHandler, R.id.user_moved_map).sendToTarget();
+
 			super.run();
 		}
 
