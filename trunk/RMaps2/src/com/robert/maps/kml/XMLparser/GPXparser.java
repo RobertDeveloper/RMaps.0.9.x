@@ -13,6 +13,7 @@ public class GPXparser extends DefaultHandler {
 	private PoiManager mPoiManager;
 	private PoiPoint mPoiPoint;
 	private int mCategoryId;
+	
 	private static final String WPT = "wpt";
 	private static final String LAT = "lat";
 	private static final String LON = "lon";
@@ -27,6 +28,7 @@ public class GPXparser extends DefaultHandler {
 		builder = new StringBuilder();
 		mPoiManager = poiManager;
 		mCategoryId = CategoryId;
+		mPoiPoint = new PoiPoint();
 	}
 
 	@Override
