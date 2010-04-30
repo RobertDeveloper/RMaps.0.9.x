@@ -42,7 +42,7 @@ public class OpenStreetMapRendererInfo {
 
 	public String ID, BASEURL, NAME, IMAGE_FILENAMEENDING, GOOGLE_LANG_CODE;
 	public int ZOOM_MINLEVEL, ZOOM_MAXLEVEL,
-	URL_BUILDER_TYPE, // 0 - OSM, 1 - Google, 2 - Yandex, 3 - Yandex.Traffic, 4 - Google.Sattelite, 5 - openspace, 6 - microsoft
+	URL_BUILDER_TYPE, // 0 - OSM, 1 - Google, 2 - Yandex, 3 - Yandex.Traffic, 4 - Google.Sattelite, 5 - openspace, 6 - microsoft, 8 - VFR Chart
 	TILE_SOURCE_TYPE, // 0 - internet, 1 - AndNav ZIP file, 2 - SASGIS ZIP file, 3 - MapNav file, 4 - TAR, 5 - sqlitedb
 	YANDEX_TRAFFIC_ON,
 	PROJECTION; // 1-меркатор на сфероид, 2- на эллипсоид, 3- OSGB 36 British national grid reference system
@@ -76,7 +76,7 @@ public class OpenStreetMapRendererInfo {
 	public void LoadFromResources(String aId, SharedPreferences pref) {
 		if (aId.equalsIgnoreCase(""))
 			aId = "mapnik";
-		
+
 		if(pref != null)
 			this.GOOGLE_LANG_CODE = pref.getString("pref_googlelanguagecode", "en");
 
@@ -294,6 +294,16 @@ public class OpenStreetMapRendererInfo {
 					.append(strGalileo.substring(0, (tileID[OpenStreetMapViewConstants.MAPTILE_LONGITUDE_INDEX]*3+tileID[OpenStreetMapViewConstants.MAPTILE_LATITUDE_INDEX])% 8))
 					.toString();
 					// ResultURL:=GetUrlBase+'&x='+inttostr(GetX)+'&y='+inttostr(GetY)+'&zoom='+inttostr(18-GetZ)+'&s='+copy('Galileo',1,(GetX*3+GetY)mod 8);
+				case 8: // VFR Chart
+					return new StringBuilder().append(this.BASEURL)
+					.append("x=")
+					.append(tileID[OpenStreetMapViewConstants.MAPTILE_LONGITUDE_INDEX])
+					.append("&y=")
+					.append(tileID[OpenStreetMapViewConstants.MAPTILE_LATITUDE_INDEX])
+					.append("&z=")
+					.append(18-zoomLevel-1)
+					.toString();
+					// http://www.runwayfinder.com/media/charts/?x=0&y=0&z=17
 				case 4: // Google.Sattelite
 					return new StringBuilder().append(this.BASEURL)
 					//http://khm0.google.com/maptilecompress?t=2&q=80&hl=ru
