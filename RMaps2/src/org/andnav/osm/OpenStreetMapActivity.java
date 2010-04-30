@@ -60,7 +60,7 @@ public abstract class OpenStreetMapActivity extends Activity implements OpenStre
 	 */
 	public void onCreate(final Bundle savedInstanceState, final boolean pDoGPSRecordingAndContributing) {
 		super.onCreate(savedInstanceState);
-
+		
 //		if(pDoGPSRecordingAndContributing)
 //			this.enableDoGPSRecordingAndContributing();
 //		else
@@ -79,39 +79,35 @@ public abstract class OpenStreetMapActivity extends Activity implements OpenStre
 		return this.mLocationManager;
 	}
 
-	private void getBestProvider() {
+	private void getBestProvider(){
 		int minTime = 0;
 		int minDistance = 0;
 
-		if (!mGPSFastUpdate) {
+		if(!mGPSFastUpdate){
 			minTime = 2000;
 			minDistance = 20;
-		}
+		};
 
 		getLocationManager().removeUpdates(mLocationListener);
-		if (mNetListener != null)
+		if(mNetListener != null)
 			getLocationManager().removeUpdates(mNetListener);
 
-		if (getLocationManager().isProviderEnabled(GPS)) {
-			OpenStreetMapActivity.this.onStatusChanged(GPS, 0, null);
-			getLocationManager().requestLocationUpdates(GPS, minTime, minDistance, this.mLocationListener);
+		if(getLocationManager().isProviderEnabled(GPS)){
+				getLocationManager().requestLocationUpdates(GPS, minTime, minDistance, this.mLocationListener);
 
-			try {
-				if (getLocationManager().isProviderEnabled(NETWORK)) {
-					this.mNetListener = new SampleLocationListener();
-					getLocationManager().requestLocationUpdates(NETWORK, minTime, minDistance, this.mNetListener);
-					OpenStreetMapActivity.this.onStatusChanged(NETWORK, 0, null);
+				try {
+					if(getLocationManager().isProviderEnabled(NETWORK)){
+						this.mNetListener = new SampleLocationListener();
+						getLocationManager().requestLocationUpdates(NETWORK, minTime, minDistance, this.mNetListener);
+					}
+				} catch (Exception e) {
+					Log.e(DEBUGTAG, "isProviderEnabled(NETWORK) exception");
+					e.printStackTrace();
 				}
-			} catch (Exception e) {
-				Log.e(DEBUGTAG, "isProviderEnabled(NETWORK) exception");
-				e.printStackTrace();
-			}
 
-		} else if (getLocationManager().isProviderEnabled(NETWORK)) {
+		} else if(getLocationManager().isProviderEnabled(NETWORK)) {
 			getLocationManager().requestLocationUpdates(NETWORK, minTime, minDistance, this.mLocationListener);
-			OpenStreetMapActivity.this.onStatusChanged(NETWORK, 0, null);
 		}
-
 	}
 
 	private void initLocation() {
@@ -187,7 +183,7 @@ public abstract class OpenStreetMapActivity extends Activity implements OpenStre
 	}
 
 	protected void StatusChanged(String provider, int status, Bundle b){
-		//Ut.dd("onStatusChanged povider = " + provider + " status = " + status + " satellites = " + b.getInt("satellites", NOT_SET));
+//		Log.e(DEBUGTAG, "onStatusChanged povider = " + provider + " status = " + status + " satellites = " + b.getInt("satellites", NOT_SET));
 		if(mNetListener != null) {
 			if(provider.equals(GPS) && status == 2) {
 				getLocationManager().removeUpdates(mNetListener);

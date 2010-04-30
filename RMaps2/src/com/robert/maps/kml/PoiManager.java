@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.andnav.osm.util.GeoPoint;
-import org.openintents.filemanager.IconifiedText;
 
 import android.content.Context;
 import android.content.Intent;
@@ -59,22 +58,6 @@ public class PoiManager {
 
 	public List<PoiPoint> getPoiList() {
 		return doCreatePoiListFromCursor(mGeoDatabase.getPoiListCursor());
-	}
-
-	public List<IconifiedText> getPoiListLikeIconifiedText(){
-		final ArrayList<IconifiedText> items = new ArrayList<IconifiedText>();
-		final Cursor c = mGeoDatabase.getPoiListCursor();
-
-		if (c != null) {
-			if (c.moveToFirst()) {
-				do {
-					items.add(new IconifiedText(c.getString(2), c.getString(3), null, c.getInt(4)));
-				} while (c.moveToNext());
-			}
-			c.close();
-		}
-
-		return items;
 	}
 
 	public List<PoiPoint> getPoiListNotHidden(int zoom, GeoPoint center, double deltaX, double deltaY){

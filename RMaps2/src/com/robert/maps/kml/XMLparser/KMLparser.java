@@ -15,7 +15,6 @@ public class KMLparser extends DefaultHandler {
 	private int mCategoryId;
 	private String [] mStrArray;
 	private boolean mItIsPoint;
-	
 	private static final String Placemark = "Placemark";
 	private static final String Point = "Point";
 	private static final String NAME = "name";
@@ -29,8 +28,6 @@ public class KMLparser extends DefaultHandler {
 		builder = new StringBuilder();
 		mPoiManager = poiManager;
 		mCategoryId = CategoryId;
-		mPoiPoint = new PoiPoint();
-		mItIsPoint = false;
 	}
 
 	@Override
