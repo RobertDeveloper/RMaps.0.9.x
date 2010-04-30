@@ -1,6 +1,9 @@
 package com.robert.maps.kml;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ListActivity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -81,12 +84,37 @@ public class PoiListActivity extends ListActivity {
 			startActivity((new Intent(this, ImportPoiActivity.class)));
 			return true;
 		case R.id.menu_deleteall:
-			mPoiManager.DeleteAllPoi();
-			FillData();
+			showDialog(R.id.menu_deleteall);
 			return true;
 		}
 
 		return true;
+	}
+
+	@Override
+	protected Dialog onCreateDialog(int id) {
+		switch (id) {
+		case R.id.menu_deleteall:
+			return new AlertDialog.Builder(this)
+				//.setIcon(R.drawable.alert_dialog_icon)
+				.setTitle(R.string.warning_delete_all_poi)
+				.setPositiveButton(android.R.string.yes,
+							new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog, int whichButton) {
+									mPoiManager.DeleteAllPoi();
+									FillData();
+								}
+							}).setNegativeButton(android.R.string.no,
+							new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog, int whichButton) {
+
+									/* User clicked Cancel so do some stuff */
+								}
+							}).create();
+		}
+		;
+
+		return super.onCreateDialog(id);
 	}
 
 	@Override
