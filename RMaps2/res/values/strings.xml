@@ -165,5 +165,4 @@ v.0.7.0\n
     <string name="this_folder_is_empty">This folder is empty.</string>
 
     <string name="MinZoom">Show poi since the zoom (0..23)</string>
-    <string name="warning_delete_all_poi">Are you sure you want to delete all poi?</string>
 </resources>

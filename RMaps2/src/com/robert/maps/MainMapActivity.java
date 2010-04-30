@@ -649,11 +649,8 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 
 	@Override
 	public void onStatusChanged(String provider, int status, Bundle extras) {
-		mStatusListener = provider;
-		if(extras != null){
-			int cnt = extras.getInt("satellites", Integer.MIN_VALUE);
-			mStatusListener = mStatusListener+ " " + status + " " + (cnt >= 0 ? cnt : 0);
-		}
+		int cnt = extras.getInt("satellites", Integer.MIN_VALUE);
+		mStatusListener = provider+ " " + status + " " + (cnt >= 0 ? cnt : 0);
 		setTitle();
 	}
 
@@ -759,9 +756,6 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 		if(mCompassEnabled)
 			mOrientationSensorManager.registerListener(mListener, mOrientationSensorManager
 				.getDefaultSensor(Sensor.TYPE_ORIENTATION), SensorManager.SENSOR_DELAY_UI);
-
-		if(mPoiOverlay != null)
-			mPoiOverlay.onResume();
 	}
 
 	private OpenStreetMapRendererInfo getRendererInfo(final Resources aRes, final SharedPreferences aPref, final String aName){
