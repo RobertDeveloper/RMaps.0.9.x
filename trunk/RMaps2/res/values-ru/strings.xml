@@ -82,6 +82,10 @@ All rights reserved\n
 Как сделать офф-лайн карту и прочее можно почитать здесь http://robertdeveloper.blogspot.com/\n
 </string>
     <string name="whats_new_dialog_text">
+v.0.7.7.1\n
+- Bug fix: Импорт некоторых poi файлов\n
++ Диалог подтверждения при удалении всех poi\n 
+\n
 v.0.7.7\n
 + Импорт POI из KML, GPX файлов\n
 + Оптимизация отрисовки POI\n
