@@ -95,6 +95,10 @@ Questions, sentences mail to robertk506@gmail.com\n
 How to and FAQ you can find on http://robertdeveloper.blogspot.com/\n
 	</string>
     <string name="whats_new_dialog_text">
+v.0.7.7.1\n
+- Bug fix: Import some poi files\n
++ Delete all poi confirm dialog\n 
+\n
 v.0.7.7\n
 + Import POI from KML, GPX files\n
 + Optimisation of drawing of POI\n
