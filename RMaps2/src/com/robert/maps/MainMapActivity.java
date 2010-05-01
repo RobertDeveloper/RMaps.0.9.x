@@ -82,6 +82,7 @@ import com.robert.maps.kml.TrackListActivity;
 import com.robert.maps.overlays.MyLocationOverlay;
 import com.robert.maps.overlays.PoiOverlay;
 import com.robert.maps.overlays.SearchResultOverlay;
+import com.robert.maps.overlays.TrackOverlay;
 import com.robert.maps.overlays.YandexTrafficOverlay;
 import com.robert.maps.utils.CompassView;
 import com.robert.maps.utils.SearchSuggestionsProvider;
@@ -99,6 +100,7 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 	private OpenStreetMapView mOsmv; //, mOsmvMinimap;
 	private MyLocationOverlay mMyLocationOverlay;
 	private PoiOverlay mPoiOverlay;
+	private TrackOverlay mTrackOverlay;
 	private SearchResultOverlay mSearchResultOverlay;
 
 	private PowerManager.WakeLock myWakeLock;
@@ -211,6 +213,9 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 		{
 			this.mPoiOverlay = new PoiOverlay(this, mPoiManager, null, pref.getBoolean("pref_hidepoi", false));
 			this.mOsmv.getOverlays().add(this.mPoiOverlay);
+
+			this.mTrackOverlay = new TrackOverlay(this, mPoiManager);
+			this.mOsmv.getOverlays().add(this.mTrackOverlay);
 		}
 
         {
@@ -511,9 +516,11 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 			if(RendererInfo.YANDEX_TRAFFIC_ON == 1){
 	       		this.mOsmv.getOverlays().add(new YandexTrafficOverlay(this, this.mOsmv));
 			}
-	        this.mOsmv.getOverlays().add(mMyLocationOverlay);
 	        if(mPoiOverlay != null)
 	        	this.mOsmv.getOverlays().add(mPoiOverlay);
+	        if(mTrackOverlay != null)
+	        	this.mOsmv.getOverlays().add(mTrackOverlay);
+	        this.mOsmv.getOverlays().add(mMyLocationOverlay);
 	        this.mOsmv.getOverlays().add(mSearchResultOverlay);
 
 	        setTitle();
@@ -781,9 +788,11 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 		if(RendererInfo.YANDEX_TRAFFIC_ON == 1){
        		this.mOsmv.getOverlays().add(new YandexTrafficOverlay(this, this.mOsmv));
 		}
-        this.mOsmv.getOverlays().add(mMyLocationOverlay);
         if(mPoiOverlay != null)
         	this.mOsmv.getOverlays().add(mPoiOverlay);
+        if(mTrackOverlay != null)
+        	this.mOsmv.getOverlays().add(mTrackOverlay);
+        this.mOsmv.getOverlays().add(mMyLocationOverlay);
         this.mOsmv.getOverlays().add(mSearchResultOverlay);
 
 		mOsmv.setZoomLevel(settings.getInt("ZoomLevel", 0));
