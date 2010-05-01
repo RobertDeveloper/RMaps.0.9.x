@@ -2,6 +2,7 @@ package com.robert.maps.kml;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -166,7 +167,7 @@ public class GeoDatabase implements PoiConstants{
 
 	protected class GeoDatabaseHelper extends RSQLiteOpenHelper {
 		public GeoDatabaseHelper(final Context context, final String name) {
-			super(context, name, null, 3);
+			super(context, name, null, 5);
 		}
 
 		@Override
@@ -175,6 +176,8 @@ public class GeoDatabase implements PoiConstants{
 			db.execSQL(PoiConstants.SQL_CREATE_pointsource);
 			db.execSQL(PoiConstants.SQL_CREATE_category);
 			db.execSQL(PoiConstants.SQL_ADD_category);
+			db.execSQL(PoiConstants.SQL_CREATE_tracks);
+			db.execSQL(PoiConstants.SQL_CREATE_trackpoints);
 		}
 
 		@Override
@@ -204,6 +207,10 @@ public class GeoDatabase implements PoiConstants{
 				db.execSQL(PoiConstants.SQL_CREATE_category);
 				db.execSQL(PoiConstants.SQL_UPDATE_2_11);
 				db.execSQL(PoiConstants.SQL_UPDATE_2_12);
+			}
+			if (oldVersion < 5) {
+				db.execSQL(PoiConstants.SQL_CREATE_tracks);
+				db.execSQL(PoiConstants.SQL_CREATE_trackpoints);
 			}
 		}
 
@@ -245,17 +252,63 @@ public class GeoDatabase implements PoiConstants{
 			mDatabase.execSQL("DELETE FROM points");
 		}
 	}
-	
+
 	public void beginTransaction(){
 		mDatabase.beginTransaction();
 	}
-	
+
 	public void rollbackTransaction(){
 		mDatabase.endTransaction();
 	}
-	
+
 	public void commitTransaction(){
 		mDatabase.setTransactionSuccessful();
 		mDatabase.endTransaction();
 	}
+
+	public Cursor getTrackListCursor() {
+		if (isDatabaseReady()) {
+			// не менять порядок полей
+			return mDatabase.rawQuery("SELECT name, descr, trackid _id FROM tracks", null);
+		}
+
+		return null;
+	}
+
+	public long addTrack(String name, String descr) {
+		long newId = -1;
+
+		if (isDatabaseReady()) {
+			final ContentValues cv = new ContentValues();
+			cv.put("name", name);
+			cv.put("descr", descr);
+			newId = this.mDatabase.insert("tracks", null, cv);
+		}
+
+		return newId;
+	}
+
+	public void updateTrack(int id, String name, String descr) {
+		if (isDatabaseReady()) {
+			final ContentValues cv = new ContentValues();
+			cv.put("name", name);
+			cv.put("descr", descr);
+			String[] args = {"" + id};
+			this.mDatabase.update("tracks", cv, "trackid = @1", args);
+		}
+	}
+
+	public void addTrackPoint(long trackid, double lat, double lon, double alt, double speed, Date date) {
+		if (isDatabaseReady()) {
+			final ContentValues cv = new ContentValues();
+			cv.put("trackid", trackid);
+			cv.put("lat", lat);
+			cv.put("lon", lon);
+			cv.put("alt", alt);
+			cv.put("speed", speed);
+			//cv.put("date", date.getTime());
+			this.mDatabase.insert("trackpoints", null, cv);
+		}
+	}
+
 }

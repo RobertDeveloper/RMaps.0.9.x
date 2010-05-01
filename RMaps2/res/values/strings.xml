@@ -97,7 +97,7 @@ How to and FAQ you can find on http://robertdeveloper.blogspot.com/\n
     <string name="whats_new_dialog_text">
 v.0.7.7.1\n
 - Bug fix: Import some poi files\n
-+ Delete all poi confirm dialog\n 
++ Delete all poi confirm dialog\n
 \n
 v.0.7.7\n
 + Import POI from KML, GPX files\n
@@ -170,4 +170,5 @@ v.0.7.0\n
 
     <string name="MinZoom">Show poi since the zoom (0..23)</string>
     <string name="warning_delete_all_poi">Are you sure you want to delete all poi?</string>
+    <string name="menu_tracks">Tracks</string>
 </resources>
