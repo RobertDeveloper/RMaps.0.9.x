@@ -10,6 +10,8 @@ import android.content.Intent;
 import android.database.Cursor;
 
 import com.robert.maps.R;
+import com.robert.maps.kml.Track.TrackPoint;
+import com.robert.maps.utils.Ut;
 
 
 public class PoiManager {
@@ -129,5 +131,17 @@ public class PoiManager {
 
 	public void commitTransaction(){
 		mGeoDatabase.commitTransaction();
+	}
+
+	public void updateTrack(Track track) {
+		if(track.getId() < 0){
+			long newId = mGeoDatabase.addTrack(track.Name, track.Descr);
+
+			for(TrackPoint trackpoint: track.trackpoints){
+				//Ut.dd("lat="+trackpoint.lat);
+				mGeoDatabase.addTrackPoint(newId, trackpoint.lat, trackpoint.lon, trackpoint.alt, trackpoint.speed, trackpoint.date);
+			}
+		} else
+			mGeoDatabase.updateTrack(track.getId(), track.Name, track.Descr);
 	}
 }

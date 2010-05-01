@@ -78,6 +78,7 @@ import com.robert.maps.kml.PoiActivity;
 import com.robert.maps.kml.PoiListActivity;
 import com.robert.maps.kml.PoiManager;
 import com.robert.maps.kml.PoiPoint;
+import com.robert.maps.kml.TrackListActivity;
 import com.robert.maps.overlays.MyLocationOverlay;
 import com.robert.maps.overlays.PoiOverlay;
 import com.robert.maps.overlays.SearchResultOverlay;
@@ -474,6 +475,9 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 			return true;
 		case (R.id.poilist):
 			startActivityForResult(new Intent(this, PoiListActivity.class), R.id.poilist);
+			return true;
+		case (R.id.tracks):
+			startActivityForResult(new Intent(this, TrackListActivity.class), R.id.tracks);
 			return true;
 		case (R.id.search):
 			onSearchRequested();

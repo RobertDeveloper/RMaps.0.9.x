@@ -42,6 +42,7 @@
             android:authorities="com.robert.maps.SuggestionProvider" android:name=".utils.SearchSuggestionsProvider"/>
         <activity android:name=".kml.PoiActivity"/>
         <activity android:name=".kml.PoiListActivity"/>
+        <activity android:name=".kml.TrackListActivity"/>
     <activity android:name=".kml.PoiCategoryActivity"></activity>
 <activity android:name=".kml.PoiCategoryListActivity"></activity>
 <activity android:name=".kml.PoiIconSetActivity"></activity>
