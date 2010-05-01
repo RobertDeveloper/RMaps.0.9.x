@@ -11,7 +11,6 @@ import android.database.Cursor;
 
 import com.robert.maps.R;
 import com.robert.maps.kml.Track.TrackPoint;
-import com.robert.maps.utils.Ut;
 
 
 public class PoiManager {
@@ -144,4 +143,30 @@ public class PoiManager {
 		} else
 			mGeoDatabase.updateTrack(track.getId(), track.Name, track.Descr);
 	}
+
+	public Track getTrack(int id){
+		Track track = null;
+		Cursor c = mGeoDatabase.getTrack(id);
+		if (c != null) {
+			if (c.moveToFirst())
+				track = new Track(id, c.getString(0), c.getString(1));
+			c.close();
+
+			c = mGeoDatabase.getTrackPoints(id);
+			if (c != null) {
+				if (c.moveToFirst()) {
+					do {
+						track.AddTrackPoint();
+						track.LastTrackPoint.lat = c.getDouble(0);
+						track.LastTrackPoint.lon = c.getDouble(1);
+					} while (c.moveToNext());
+				}
+				c.close();
+			}
+
+		}
+
+		return track;
+	}
+
 }

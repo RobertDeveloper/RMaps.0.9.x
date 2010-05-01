@@ -311,4 +311,24 @@ public class GeoDatabase implements PoiConstants{
 		}
 	}
 
+	public Cursor getTrack(long trackid) {
+		if (isDatabaseReady()) {
+			// не менять порядок полей
+			return mDatabase.rawQuery("SELECT name, descr FROM tracks WHERE trackid = " + trackid,
+					null);
+		}
+
+		return null;
+	}
+
+	public Cursor getTrackPoints(long trackid) {
+		if (isDatabaseReady()) {
+			// не менять порядок полей
+			return mDatabase.rawQuery("SELECT lat, lon FROM trackpoints WHERE trackid = " + trackid + " ORDER BY id",
+					null);
+		}
+
+		return null;
+	}
+
 }
