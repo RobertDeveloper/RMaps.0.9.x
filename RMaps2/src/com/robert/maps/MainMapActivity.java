@@ -211,11 +211,11 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 
         /* Itemized Overlay */
 		{
-			this.mPoiOverlay = new PoiOverlay(this, mPoiManager, null, pref.getBoolean("pref_hidepoi", false));
-			this.mOsmv.getOverlays().add(this.mPoiOverlay);
-
 			this.mTrackOverlay = new TrackOverlay(this, mPoiManager);
 			this.mOsmv.getOverlays().add(this.mTrackOverlay);
+
+			this.mPoiOverlay = new PoiOverlay(this, mPoiManager, null, pref.getBoolean("pref_hidepoi", false));
+			this.mOsmv.getOverlays().add(this.mPoiOverlay);
 		}
 
         {
@@ -516,10 +516,10 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 			if(RendererInfo.YANDEX_TRAFFIC_ON == 1){
 	       		this.mOsmv.getOverlays().add(new YandexTrafficOverlay(this, this.mOsmv));
 			}
-	        if(mPoiOverlay != null)
-	        	this.mOsmv.getOverlays().add(mPoiOverlay);
 	        if(mTrackOverlay != null)
 	        	this.mOsmv.getOverlays().add(mTrackOverlay);
+	        if(mPoiOverlay != null)
+	        	this.mOsmv.getOverlays().add(mPoiOverlay);
 	        this.mOsmv.getOverlays().add(mMyLocationOverlay);
 	        this.mOsmv.getOverlays().add(mSearchResultOverlay);
 
@@ -788,10 +788,10 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 		if(RendererInfo.YANDEX_TRAFFIC_ON == 1){
        		this.mOsmv.getOverlays().add(new YandexTrafficOverlay(this, this.mOsmv));
 		}
-        if(mPoiOverlay != null)
-        	this.mOsmv.getOverlays().add(mPoiOverlay);
         if(mTrackOverlay != null)
         	this.mOsmv.getOverlays().add(mTrackOverlay);
+        if(mPoiOverlay != null)
+        	this.mOsmv.getOverlays().add(mPoiOverlay);
         this.mOsmv.getOverlays().add(mMyLocationOverlay);
         this.mOsmv.getOverlays().add(mSearchResultOverlay);
 
