@@ -48,6 +48,9 @@
 <activity android:name=".kml.PoiIconSetActivity"></activity>
         <activity android:name=".kml.ImportPoiActivity"/>
         <activity android:name="org.openintents.filemanager.FileManagerActivity"/>
+<service android:name=".trackwriter.TrackWriterService" android:process=":remote"><intent-filter><action android:name="com.robert.maps.trackwriter"></action>
+</intent-filter>
+</service>
 </application>
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
     <uses-sdk android:minSdkVersion="3" />
