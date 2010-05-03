@@ -35,6 +35,8 @@ import android.view.GestureDetector.OnDoubleTapListener;
 import android.view.GestureDetector.OnGestureListener;
 
 import com.robert.maps.R;
+import com.robert.maps.kml.Track.TrackPoint;
+import com.robert.maps.utils.Ut;
 
 public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 		OpenStreetMapViewConstants {
@@ -47,6 +49,7 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 	// Fields
 	// ===========================================================
 
+	private SimpleInvalidationHandler mSimpleInvalidationHandler;
 	protected int mLatitudeE6 = 0, mLongitudeE6 = 0;
 	protected int mZoomLevel = 0;
 	private float mBearing = 0;
@@ -85,12 +88,17 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 	 */
 	public OpenStreetMapView(final Context context, OpenStreetMapRendererInfo aRendererInfo) {
 		super(context);
+		this.mSimpleInvalidationHandler = new SimpleInvalidationHandler();
 		this.mRendererInfo = aRendererInfo;
-		this.mTileProvider = new OpenStreetMapTileProvider(context, new SimpleInvalidationHandler(), aRendererInfo, 30);
+		this.mTileProvider = new OpenStreetMapTileProvider(context, mSimpleInvalidationHandler, aRendererInfo, 30);
 		this.mPaint.setAntiAlias(true);
 
 		setFocusable(true);
 		setFocusableInTouchMode(true);
+	}
+
+	public Handler getHandler(){
+		return mSimpleInvalidationHandler;
 	}
 
 	/**
@@ -287,7 +295,7 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 
 	public boolean setRenderer(final OpenStreetMapRendererInfo aRenderer) {
 		this.mRendererInfo = aRenderer;
-		final boolean ret = this.mTileProvider.setRender(aRenderer, new SimpleInvalidationHandler());
+		final boolean ret = this.mTileProvider.setRender(aRenderer, mSimpleInvalidationHandler);
 
 		if (this.mZoomLevel > aRenderer.ZOOM_MAXLEVEL)
 			this.mZoomLevel = aRenderer.ZOOM_MAXLEVEL;
@@ -911,6 +919,68 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 				else
 					out.lineTo(x + OpenStreetMapView.this.mTouchMapOffsetX, y
 							+ OpenStreetMapView.this.mTouchMapOffsetY);
+			}
+
+			return out;
+		}
+
+		public Path toPixelsTrackPoints(List<TrackPoint> in, Path reuse) throws IllegalArgumentException {
+			if (in.size() < 2)
+				throw new IllegalArgumentException("List of GeoPoints needs to be at least 2.");
+
+			final Path out = (reuse != null) ? reuse : new Path();
+			final boolean doGudermann = true;
+
+			int i = 0;
+			int lastX = 0, lastY = 0;
+			for (TrackPoint tp : in) {
+				final int[] underGeopointTileCoords = Util.getMapTileFromCoordinates(tp.getLatitudeE6(), tp
+						.getLongitudeE6(), zoomLevel, null, OpenStreetMapView.this.mRendererInfo.PROJECTION);
+
+				/*
+				 * Calculate the Latitude/Longitude on the left-upper ScreenCoords of the MapTile.
+				 */
+				final BoundingBoxE6 bb = Util.getBoundingBoxFromMapTile(underGeopointTileCoords, zoomLevel,
+						mRendererInfo.PROJECTION);
+
+				final float[] relativePositionInCenterMapTile;
+				if (doGudermann && zoomLevel < 7)
+					relativePositionInCenterMapTile = bb
+							.getRelativePositionOfGeoPointInBoundingBoxWithExactGudermannInterpolation(tp
+									.getLatitudeE6(), tp.getLongitudeE6(), null);
+				else
+					relativePositionInCenterMapTile = bb
+							.getRelativePositionOfGeoPointInBoundingBoxWithLinearInterpolation(tp.getLatitudeE6(), tp
+									.getLongitudeE6(), null);
+
+				final int tileDiffX = centerMapTileCoords[MAPTILE_LONGITUDE_INDEX]
+						- underGeopointTileCoords[MAPTILE_LONGITUDE_INDEX];
+				final int tileDiffY = centerMapTileCoords[MAPTILE_LATITUDE_INDEX]
+						- underGeopointTileCoords[MAPTILE_LATITUDE_INDEX];
+				final int underGeopointTileScreenLeft = upperLeftCornerOfCenterMapTile.x - (tileSizePx * tileDiffX);
+				final int underGeopointTileScreenTop = upperLeftCornerOfCenterMapTile.y - (tileSizePx * tileDiffY);
+
+				final int x = underGeopointTileScreenLeft
+						+ (int) (relativePositionInCenterMapTile[MAPTILE_LONGITUDE_INDEX] * tileSizePx);
+				final int y = underGeopointTileScreenTop
+						+ (int) (relativePositionInCenterMapTile[MAPTILE_LATITUDE_INDEX] * tileSizePx);
+
+				/* Add up the offset caused by touch. */
+				if (i == 0) {
+					out.setLastPoint(x, y);
+					lastX = x;
+					lastY = y;
+					i++;
+				} else {
+					if (Math.abs(lastX - x) > 5 || Math.abs(lastY - y) > 5) {
+						out.lineTo(x, y);
+						lastX = x;
+						lastY = y;
+						i++;
+
+						if(i < 10 ) Ut.dd("x="+x+" y="+y);
+					}
+				}
 			}
 
 			return out;

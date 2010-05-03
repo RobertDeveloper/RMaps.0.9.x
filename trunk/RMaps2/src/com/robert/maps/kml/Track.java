@@ -29,6 +29,14 @@ public class Track implements PoiConstants {
 			speed = 0;
 			date = new Date();
 		}
+
+		public int getLatitudeE6() {
+			return (int) (lat * 1E6);
+		}
+
+		public int getLongitudeE6() {
+			return (int) (lon * 1E6);
+		}
 	};
 
 	public void AddTrackPoint(){
