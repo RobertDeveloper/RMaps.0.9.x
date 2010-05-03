@@ -171,4 +171,6 @@ v.0.7.0\n
     <string name="MinZoom">Show poi since the zoom (0..23)</string>
     <string name="warning_delete_all_poi">Are you sure you want to delete all poi?</string>
     <string name="menu_tracks">Tracks</string>
+
+    <string name="remote_service_started">RMaps track writer</string>
 </resources>
