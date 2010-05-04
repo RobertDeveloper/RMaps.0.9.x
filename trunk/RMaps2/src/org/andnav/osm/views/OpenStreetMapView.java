@@ -36,7 +36,6 @@ import android.view.GestureDetector.OnGestureListener;
 
 import com.robert.maps.R;
 import com.robert.maps.kml.Track.TrackPoint;
-import com.robert.maps.utils.Ut;
 
 public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 		OpenStreetMapViewConstants {
@@ -924,11 +923,11 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 			return out;
 		}
 
-		public Path toPixelsTrackPoints(List<TrackPoint> in, Path reuse) throws IllegalArgumentException {
+		public Path toPixelsTrackPoints(List<TrackPoint> in, Point baseCoord, GeoPoint baseLocation) throws IllegalArgumentException {
 			if (in.size() < 2)
 				throw new IllegalArgumentException("List of GeoPoints needs to be at least 2.");
 
-			final Path out = (reuse != null) ? reuse : new Path();
+			final Path out = new Path();
 			final boolean doGudermann = true;
 
 			int i = 0;
@@ -970,6 +969,9 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 					out.setLastPoint(x, y);
 					lastX = x;
 					lastY = y;
+					baseCoord.x = x;
+					baseCoord.y = y;
+					baseLocation.setCoordsE6(tp.getLatitudeE6(), tp.getLongitudeE6());
 					i++;
 				} else {
 					if (Math.abs(lastX - x) > 5 || Math.abs(lastY - y) > 5) {
@@ -977,8 +979,6 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 						lastX = x;
 						lastY = y;
 						i++;
-
-						if(i < 10 ) Ut.dd("x="+x+" y="+y);
 					}
 				}
 			}

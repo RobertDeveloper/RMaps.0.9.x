@@ -20,7 +20,6 @@ import com.robert.maps.MainMapActivity;
 import com.robert.maps.R;
 import com.robert.maps.kml.PoiManager;
 import com.robert.maps.kml.Track;
-import com.robert.maps.kml.Track.TrackPoint;
 import com.robert.maps.utils.Ut;
 
 public class TrackOverlay extends OpenStreetMapViewOverlay {
@@ -45,7 +44,6 @@ public class TrackOverlay extends OpenStreetMapViewOverlay {
 			Ut.dd("run TrackThread");
 
 			mPath = null;
-			final Path path = new Path();
 
 			if(mTrack == null){
 				mTrack = mPoiManager.getTrack(1);
@@ -53,46 +51,13 @@ public class TrackOverlay extends OpenStreetMapViewOverlay {
 			}
 
 			final OpenStreetMapViewProjection pj = mOsmv.getProjection();
-//			pj.toPixelsTrackPoints(mTrack.trackpoints, path);
-			mPath =path;
-
-			final Point screenCoords = new Point();
-			final Point screenCoords2 = new Point();
-			final GeoPoint loc = new GeoPoint(0, 0);
-
-			pj.toPixels(mBaseLocation, mBaseCoords);
-			int i = 0;
-			boolean isFirstPoint = true;
-			for (TrackPoint trackpoint : mTrack.trackpoints) {
-				loc.setCoordsE6((int) (trackpoint.lat * 1E6), (int) (trackpoint.lon * 1E6));
-				pj.toPixels(loc, screenCoords);
-
-				if(!isFirstPoint){
-					if (Math.abs(screenCoords2.x - screenCoords.x) > 5
-							|| Math.abs(screenCoords2.y - screenCoords.y) > 5) {
-						path.lineTo(screenCoords.x, screenCoords.y);
-						screenCoords2.x = screenCoords.x;
-						screenCoords2.y = screenCoords.y;
-						i++;
-						if(i<10) Ut.dd("test coord "+screenCoords.x+" "+screenCoords.y);
-					}
-				} else {
-					path.setLastPoint(screenCoords.x, screenCoords.y);
-					screenCoords2.x = screenCoords.x;
-					screenCoords2.y = screenCoords.y;
-					isFirstPoint = false;
-					i++;
-				}
-			}
-
-			mPath = path;
+			mPath = pj.toPixelsTrackPoints(mTrack.trackpoints, mBaseCoords, mBaseLocation);
 
 			Ut.dd("Track maped");
 
 			Message.obtain(mMainMapActivityCallbackHandler, OpenStreetMapTileFilesystemProvider.MAPTILEFSLOADER_SUCCESS_ID).sendToTarget();
 
 			mThreadRunned = false;
-			//super.run();
 		}
 	}
 
@@ -162,8 +127,6 @@ public class TrackOverlay extends OpenStreetMapViewOverlay {
 
 	@Override
 	protected void onDrawFinished(Canvas c, OpenStreetMapView osmv) {
-		// TODO Auto-generated method stub
-
 	}
 
 }
