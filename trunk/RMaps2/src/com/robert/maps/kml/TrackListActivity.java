@@ -9,8 +9,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import org.andnav.osm.views.util.OpenStreetMapTileDownloader;
-import org.andnav.osm.views.util.OpenStreetMapTileFilesystemProvider;
 import org.openintents.filemanager.FileManagerActivity;
 import org.openintents.filemanager.util.FileUtils;
 import org.xml.sax.SAXException;
