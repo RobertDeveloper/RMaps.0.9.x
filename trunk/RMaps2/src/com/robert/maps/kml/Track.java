@@ -12,6 +12,7 @@ public class Track implements PoiConstants {
 	public String Name;
 	public String Descr;
 	public TrackPoint LastTrackPoint;
+	public boolean Show;
 
 	public List<TrackPoint> trackpoints = null;
 
@@ -47,13 +48,14 @@ public class Track implements PoiConstants {
 	}
 
 	public Track() {
-		this(EMPTY_ID, "", "");
+		this(EMPTY_ID, "", "", false);
 	}
 
-	public Track(int id, String name, String descr) {
+	public Track(int id, String name, String descr, boolean show) {
 		Id = id;
 		Name = name;
 		Descr = descr;
+		Show = show;
 	}
 
 	public int getId() {

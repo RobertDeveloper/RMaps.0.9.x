@@ -46,7 +46,11 @@ public class TrackOverlay extends OpenStreetMapViewOverlay {
 			mPath = null;
 
 			if(mTrack == null){
-				mTrack = mPoiManager.getTrack(1);
+				mTrack = mPoiManager.getTrackChecked();
+				if(mTrack == null){
+					mThreadRunned = false;
+					return;
+				}
 				Ut.dd("Track loaded");
 			}
 
