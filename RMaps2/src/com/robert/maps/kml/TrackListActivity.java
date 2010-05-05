@@ -29,6 +29,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Toast;
 
@@ -90,9 +91,10 @@ public class TrackListActivity extends ListActivity {
         startManagingCursor(c);
 
         ListAdapter adapter = new SimpleCursorAdapter(this,
-                android.R.layout.simple_list_item_2, c,
-                        new String[] { "name", "descr" },
-                        new int[] { android.R.id.text1, android.R.id.text2 });
+                R.layout.list_item
+                , c,
+                        new String[] { "name", "descr", "image" },
+                        new int[] { android.R.id.text1, android.R.id.text2, R.id.ImageView01 });
         setListAdapter(adapter);
 	}
 
@@ -264,6 +266,15 @@ public class TrackListActivity extends ListActivity {
 		}
 		}
 		return super.onCreateDialog(id);
+	}
+
+	@Override
+	protected void onListItemClick(ListView l, View v, int position, long id) {
+		Ut.dd("pos="+position);
+		Ut.dd("id="+id);
+		mPoiManager.setTrackChecked((int)id);
+		FillData();
+		super.onListItemClick(l, v, position, id);
 	}
 
 }

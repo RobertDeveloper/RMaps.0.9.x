@@ -269,30 +269,34 @@ public class GeoDatabase implements PoiConstants{
 	public Cursor getTrackListCursor() {
 		if (isDatabaseReady()) {
 			// не менять порядок полей
-			return mDatabase.rawQuery("SELECT name, descr, trackid _id FROM tracks", null);
+			return mDatabase.rawQuery("SELECT name, descr, trackid _id, CASE WHEN show=1 THEN "
+					+ R.drawable.btn_check_buttonless_on + " ELSE " + R.drawable.btn_check_buttonless_off
+					+ " END as image FROM tracks", null);
 		}
 
 		return null;
 	}
 
-	public long addTrack(String name, String descr) {
+	public long addTrack(String name, String descr, int show) {
 		long newId = -1;
 
 		if (isDatabaseReady()) {
 			final ContentValues cv = new ContentValues();
 			cv.put("name", name);
 			cv.put("descr", descr);
+			cv.put("show", show);
 			newId = this.mDatabase.insert("tracks", null, cv);
 		}
 
 		return newId;
 	}
 
-	public void updateTrack(int id, String name, String descr) {
+	public void updateTrack(int id, String name, String descr, int show) {
 		if (isDatabaseReady()) {
 			final ContentValues cv = new ContentValues();
 			cv.put("name", name);
 			cv.put("descr", descr);
+			cv.put("show", show);
 			String[] args = {"" + id};
 			this.mDatabase.update("tracks", cv, "trackid = @1", args);
 		}
@@ -311,10 +315,20 @@ public class GeoDatabase implements PoiConstants{
 		}
 	}
 
+	public Cursor getTrackChecked() {
+		if (isDatabaseReady()) {
+			// не менять порядок полей
+			return mDatabase.rawQuery("SELECT name, descr, show, trackid FROM tracks WHERE show = 1 LIMIT 1",
+					null);
+		}
+
+		return null;
+	}
+
 	public Cursor getTrack(long trackid) {
 		if (isDatabaseReady()) {
 			// не менять порядок полей
-			return mDatabase.rawQuery("SELECT name, descr FROM tracks WHERE trackid = " + trackid,
+			return mDatabase.rawQuery("SELECT name, descr, show FROM tracks WHERE trackid = " + trackid,
 					null);
 		}
 
@@ -331,4 +345,10 @@ public class GeoDatabase implements PoiConstants{
 		return null;
 	}
 
+	public void setTrackChecked(int id){
+		if (isDatabaseReady()) {
+			mDatabase.execSQL("UPDATE tracks SET show = 1 - show * 1 WHERE trackid = " + id);
+			mDatabase.execSQL("UPDATE tracks SET show = 0 WHERE trackid <> " + id);
+		}
+	}
 }

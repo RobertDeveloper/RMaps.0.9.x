@@ -134,14 +134,40 @@ public class PoiManager {
 
 	public void updateTrack(Track track) {
 		if(track.getId() < 0){
-			long newId = mGeoDatabase.addTrack(track.Name, track.Descr);
+			long newId = mGeoDatabase.addTrack(track.Name, track.Descr, track.Show ? 1: 0);
 
 			for(TrackPoint trackpoint: track.trackpoints){
 				//Ut.dd("lat="+trackpoint.lat);
 				mGeoDatabase.addTrackPoint(newId, trackpoint.lat, trackpoint.lon, trackpoint.alt, trackpoint.speed, trackpoint.date);
 			}
 		} else
-			mGeoDatabase.updateTrack(track.getId(), track.Name, track.Descr);
+			mGeoDatabase.updateTrack(track.getId(), track.Name, track.Descr, track.Show ? 1: 0);
+	}
+
+	public Track getTrackChecked(){
+		Track track = null;
+		Cursor c = mGeoDatabase.getTrackChecked();
+		if (c != null) {
+			if (c.moveToFirst())
+				track = new Track(c.getInt(3), c.getString(0), c.getString(1), c.getInt(2) == 1 ? true : false);
+			else
+				return null;
+			c.close();
+
+			c = mGeoDatabase.getTrackPoints(track.getId());
+			if (c != null) {
+				if (c.moveToFirst()) {
+					do {
+						track.AddTrackPoint();
+						track.LastTrackPoint.lat = c.getDouble(0);
+						track.LastTrackPoint.lon = c.getDouble(1);
+					} while (c.moveToNext());
+				}
+				c.close();
+			}
+
+		}
+		return track;
 	}
 
 	public Track getTrack(int id){
@@ -149,7 +175,7 @@ public class PoiManager {
 		Cursor c = mGeoDatabase.getTrack(id);
 		if (c != null) {
 			if (c.moveToFirst())
-				track = new Track(id, c.getString(0), c.getString(1));
+				track = new Track(id, c.getString(0), c.getString(1), c.getInt(2) == 1 ? true : false);
 			c.close();
 
 			c = mGeoDatabase.getTrackPoints(id);
@@ -167,6 +193,10 @@ public class PoiManager {
 		}
 
 		return track;
+	}
+
+	public void setTrackChecked(int id) {
+		mGeoDatabase.setTrackChecked(id);
 	}
 
 }
