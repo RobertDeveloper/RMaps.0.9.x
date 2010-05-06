@@ -102,7 +102,7 @@ public class TrackListActivity extends ListActivity {
 //		PoiPoint poi = mPoiManager.getPoiPoint(pointid);
 //
 		menu.add(0, R.id.menu_gotopoi, 0, getText(R.string.menu_goto_track));
-//		menu.add(0, R.id.menu_editpoi, 0, getText(R.string.menu_edit));
+		menu.add(0, R.id.menu_editpoi, 0, getText(R.string.menu_edit));
 //		if(poi.Hidden)
 //			menu.add(0, R.id.menu_show, 0, getText(R.string.menu_show));
 //		else
@@ -118,9 +118,9 @@ public class TrackListActivity extends ListActivity {
 //		PoiPoint poi = mPoiManager.getPoiPoint(pointid);
 //
 		switch(item.getItemId()){
-//		case R.id.menu_editpoi:
-//			startActivity((new Intent(this, PoiActivity.class)).putExtra("pointid", pointid));
-//			break;
+		case R.id.menu_editpoi:
+			startActivity((new Intent(this, TrackActivity.class)).putExtra("id", id));
+			break;
 		case R.id.menu_gotopoi:
 			setResult(RESULT_OK, (new Intent()).putExtra("trackid", id));
 			finish();
