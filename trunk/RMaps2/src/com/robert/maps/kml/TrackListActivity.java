@@ -1,24 +1,14 @@
 package com.robert.maps.kml;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-
-import org.openintents.filemanager.FileManagerActivity;
-import org.openintents.filemanager.util.FileUtils;
-import org.xml.sax.SAXException;
 
 import android.app.Dialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -31,10 +21,8 @@ import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
-import android.widget.Toast;
 
 import com.robert.maps.R;
-import com.robert.maps.kml.XMLparser.GpxTrackParser;
 import com.robert.maps.utils.Ut;
 
 public class TrackListActivity extends ListActivity {
@@ -114,95 +102,11 @@ public class TrackListActivity extends ListActivity {
 
 		switch(item.getItemId()){
 		case R.id.menu_importpoi:
-			Intent intent = new Intent(this, FileManagerActivity.class);
-			File file = Ut.getRMapsFolder("import", false);
-			intent.setData(Uri.parse(file.getAbsolutePath()));
-			startActivityForResult(intent, R.id.menu_importpoi);
+			startActivity((new Intent(this, ImportTrackActivity.class)));
 			return true;
 		}
 
 		return true;
-	}
-
-	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		super.onActivityResult(requestCode, resultCode, data);
-
-		switch (requestCode) {
-		case R.id.menu_importpoi:
-			if (resultCode == RESULT_OK && data != null) {
-				// obtain the filename
-				String filename = Uri.decode(data.getDataString());
-				if (filename != null) {
-					// Get rid of URI prefix:
-					if (filename.startsWith("file://")) {
-						filename = filename.substring(7);
-					}
-
-					doImportTrack(filename);
-				}
-
-			}
-			break;
-		}
-	}
-
-
-	private void doImportTrack(String filename) {
-		mFile = new File(filename);
-
-		if(!mFile.exists()){
-			Toast.makeText(this, "No such file", Toast.LENGTH_LONG).show();
-			return;
-		}
-
-		showDialog(R.id.dialog_wait);
-
-		this.mThreadPool.execute(new Runnable() {
-			public void run() {
-				SAXParserFactory fac = SAXParserFactory.newInstance();
-				SAXParser parser = null;
-				try {
-					parser = fac.newSAXParser();
-				} catch (ParserConfigurationException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (SAXException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-
-				if(parser != null){
-					PoiManager poimanager = mPoiManager; //new PoiManager(TrackListActivity.this);
-					poimanager.beginTransaction();
-					Ut.dd("Start parsing file " + mFile.getName());
-					try {
-//						if(FileUtils.getExtension(mFile.getName()).equalsIgnoreCase(".kml"))
-//							parser.parse(mFile, new KMLparser(mPoiManager, CategoryId));
-//						else
-						if(FileUtils.getExtension(mFile.getName()).equalsIgnoreCase(".gpx"))
-							parser.parse(mFile, new GpxTrackParser(poimanager));
-
-						poimanager.commitTransaction();
-					} catch (SAXException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-						poimanager.rollbackTransaction();
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-						poimanager.rollbackTransaction();
-					}
-					Ut.dd("Track commited");
-					//poimanager.FreeDatabases();
-					//poimanager = null;
-				}
-
-				dlgWait.dismiss();
-				Message.obtain(TrackListActivity.this.mHandler, R.id.tracks).sendToTarget();
-			};
-		});
-
 	}
 
 	@Override
