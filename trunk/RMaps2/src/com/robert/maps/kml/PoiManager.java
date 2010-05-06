@@ -199,4 +199,9 @@ public class PoiManager {
 		mGeoDatabase.setTrackChecked(id);
 	}
 
+	public void deleteTrack(int id) {
+		mGeoDatabase.deleteTrack(id);
+
+	}
+
 }

@@ -173,4 +173,5 @@ v.0.7.0\n
     <string name="menu_tracks">Tracks</string>
 
     <string name="remote_service_started">RMaps track writer</string>
+    <string name="menu_goto_track">Go to Track</string>
 </resources>

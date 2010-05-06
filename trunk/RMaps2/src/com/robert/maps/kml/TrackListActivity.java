@@ -1,6 +1,5 @@
 package com.robert.maps.kml;
 
-import java.io.File;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -18,6 +17,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.widget.AdapterView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
@@ -27,7 +27,6 @@ import com.robert.maps.utils.Ut;
 
 public class TrackListActivity extends ListActivity {
 	private PoiManager mPoiManager;
-	private File mFile;
 
 	private ProgressDialog dlgWait;
 	protected ExecutorService mThreadPool = Executors.newFixedThreadPool(2);
@@ -53,19 +52,6 @@ public class TrackListActivity extends ListActivity {
         mPoiManager = new PoiManager(this);
 
         mHandler = new SimpleInvalidationHandler();
-	}
-
-	@Override
-	protected void onStart() {
-		//mPoiManager = new PoiManager(this);
-		super.onStart();
-	}
-
-	@Override
-	protected void onStop() {
-		//mPoiManager.FreeDatabases();
-		//mPoiManager = null;
-		super.onStop();
 	}
 
 	@Override
@@ -115,34 +101,34 @@ public class TrackListActivity extends ListActivity {
 //		int pointid = (int) ((AdapterView.AdapterContextMenuInfo)menuInfo).id;
 //		PoiPoint poi = mPoiManager.getPoiPoint(pointid);
 //
-//		menu.add(0, R.id.menu_gotopoi, 0, getText(R.string.menu_goto));
+		menu.add(0, R.id.menu_gotopoi, 0, getText(R.string.menu_goto_track));
 //		menu.add(0, R.id.menu_editpoi, 0, getText(R.string.menu_edit));
 //		if(poi.Hidden)
 //			menu.add(0, R.id.menu_show, 0, getText(R.string.menu_show));
 //		else
 //			menu.add(0, R.id.menu_hide, 0, getText(R.string.menu_hide));
-//		menu.add(0, R.id.menu_deletepoi, 0, getText(R.string.menu_delete));
+		menu.add(0, R.id.menu_deletepoi, 0, getText(R.string.menu_delete));
 
 		super.onCreateContextMenu(menu, v, menuInfo);
 	}
 
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
-//		int pointid = (int) ((AdapterView.AdapterContextMenuInfo)item.getMenuInfo()).id;
+		int id = (int) ((AdapterView.AdapterContextMenuInfo)item.getMenuInfo()).id;
 //		PoiPoint poi = mPoiManager.getPoiPoint(pointid);
 //
-//		switch(item.getItemId()){
+		switch(item.getItemId()){
 //		case R.id.menu_editpoi:
 //			startActivity((new Intent(this, PoiActivity.class)).putExtra("pointid", pointid));
 //			break;
-//		case R.id.menu_gotopoi:
-//			setResult(RESULT_OK, (new Intent()).putExtra("pointid", pointid));
-//			finish();
-//			break;
-//		case R.id.menu_deletepoi:
-//			mPoiManager.deletePoi(pointid);
-//			FillData();
-//	        break;
+		case R.id.menu_gotopoi:
+			setResult(RESULT_OK, (new Intent()).putExtra("trackid", id));
+			finish();
+			break;
+		case R.id.menu_deletepoi:
+			mPoiManager.deleteTrack(id);
+			FillData();
+	        break;
 //		case R.id.menu_hide:
 //			poi.Hidden = true;
 //			mPoiManager.updatePoi(poi);
@@ -153,7 +139,7 @@ public class TrackListActivity extends ListActivity {
 //			mPoiManager.updatePoi(poi);
 //			FillData();
 //	        break;
-//		}
+		}
 
 		return super.onContextItemSelected(item);
 	}

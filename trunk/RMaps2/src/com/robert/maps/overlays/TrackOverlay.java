@@ -133,4 +133,8 @@ public class TrackOverlay extends OpenStreetMapViewOverlay {
 	protected void onDrawFinished(Canvas c, OpenStreetMapView osmv) {
 	}
 
+	public void clearTrack(){
+		mTrack = null;
+	}
+
 }

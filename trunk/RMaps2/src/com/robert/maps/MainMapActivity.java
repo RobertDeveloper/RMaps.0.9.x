@@ -78,6 +78,7 @@ import com.robert.maps.kml.PoiActivity;
 import com.robert.maps.kml.PoiListActivity;
 import com.robert.maps.kml.PoiManager;
 import com.robert.maps.kml.PoiPoint;
+import com.robert.maps.kml.Track;
 import com.robert.maps.kml.TrackListActivity;
 import com.robert.maps.overlays.MyLocationOverlay;
 import com.robert.maps.overlays.PoiOverlay;
@@ -770,6 +771,14 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 				.getDefaultSensor(Sensor.TYPE_ORIENTATION), SensorManager.SENSOR_DELAY_UI);
 	}
 
+	@Override
+	protected void onRestart() {
+		if(mTrackOverlay != null)
+			mTrackOverlay.clearTrack();
+
+		super.onRestart();
+	}
+
 	private OpenStreetMapRendererInfo getRendererInfo(final Resources aRes, final SharedPreferences aPref, final String aName){
 		OpenStreetMapRendererInfo RendererInfo = new OpenStreetMapRendererInfo(aRes, aName);
 		RendererInfo.LoadFromResources(aName, PreferenceManager.getDefaultSharedPreferences(this));
@@ -835,6 +844,15 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 				if(point != null){
 					setAutoFollow(false);
 					mOsmv.setMapCenter(point.GeoPoint);
+				}
+			}
+			break;
+		case R.id.tracks:
+			if(resultCode == RESULT_OK){
+				Track track = mPoiManager.getTrack(data.getIntExtra("trackid", PoiPoint.EMPTY_ID()));
+				if(track != null){
+					setAutoFollow(false);
+					mOsmv.setMapCenter(track.getBeginGeoPoint());
 				}
 			}
 			break;
