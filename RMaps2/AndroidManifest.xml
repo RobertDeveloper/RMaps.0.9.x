@@ -51,6 +51,7 @@
 <service android:name=".trackwriter.TrackWriterService" android:process=":remote"><intent-filter><action android:name="com.robert.maps.trackwriter"></action>
 </intent-filter>
 </service>
+<activity android:name=".kml.ImportTrackActivity"></activity>
 </application>
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
     <uses-sdk android:minSdkVersion="3" />
