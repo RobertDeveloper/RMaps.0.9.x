@@ -95,6 +95,9 @@ Questions, sentences mail to robertk506@gmail.com\n
 How to and FAQ you can find on http://robertdeveloper.blogspot.com/\n
 	</string>
     <string name="whats_new_dialog_text">
+v.0.8.0\n
++ Import tracks from KML, GPX files\n
+\n
 v.0.7.7.1\n
 - Bug fix: Import some poi files\n
 + Delete all poi confirm dialog\n

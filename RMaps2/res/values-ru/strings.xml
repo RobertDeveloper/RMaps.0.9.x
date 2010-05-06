@@ -82,9 +82,12 @@ All rights reserved\n
 Как сделать офф-лайн карту и прочее можно почитать здесь http://robertdeveloper.blogspot.com/\n
 </string>
     <string name="whats_new_dialog_text">
+v.0.8.0\n
++ Импорт треков из KML, GPX файлов\n
+\n
 v.0.7.7.1\n
 - Bug fix: Импорт некоторых poi файлов\n
-+ Диалог подтверждения при удалении всех poi\n 
++ Диалог подтверждения при удалении всех poi\n
 \n
 v.0.7.7\n
 + Импорт POI из KML, GPX файлов\n
@@ -193,4 +196,7 @@ v.0.5.2\n
     <string name="this_folder_is_empty">В этой папке нет файлов.</string>
     <string name="MinZoom">Показывать POI на карте начиная с масштаба (0..23)</string>
     <string name="warning_delete_all_poi">Вы точно хотите удалить все POI?</string>
+    <string name="menu_tracks">Треки</string>
+
+    <string name="menu_goto_track">Перейти к треку</string>
 </resources>
