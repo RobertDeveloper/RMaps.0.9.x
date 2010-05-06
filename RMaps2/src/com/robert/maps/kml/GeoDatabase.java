@@ -351,4 +351,13 @@ public class GeoDatabase implements PoiConstants{
 			mDatabase.execSQL("UPDATE tracks SET show = 0 WHERE trackid <> " + id);
 		}
 	}
+
+	public void deleteTrack(int id) {
+		if (isDatabaseReady()) {
+			beginTransaction();
+			mDatabase.execSQL("DELETE FROM trackpoints WHERE trackid = " + id);
+			mDatabase.execSQL("DELETE FROM tracks WHERE trackid = " + id);
+			commitTransaction();
+		}
+	}
 }

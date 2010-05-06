@@ -8,7 +8,7 @@ import org.xml.sax.helpers.DefaultHandler;
 import com.robert.maps.kml.PoiManager;
 import com.robert.maps.kml.PoiPoint;
 
-public class KMLparser extends DefaultHandler {
+public class KmlPoiParser extends DefaultHandler {
 	private StringBuilder builder;
 	private PoiManager mPoiManager;
 	private PoiPoint mPoiPoint;
@@ -24,7 +24,7 @@ public class KMLparser extends DefaultHandler {
 
 
 
-	public KMLparser(PoiManager poiManager, int CategoryId) {
+	public KmlPoiParser(PoiManager poiManager, int CategoryId) {
 		super();
 		builder = new StringBuilder();
 		mPoiManager = poiManager;

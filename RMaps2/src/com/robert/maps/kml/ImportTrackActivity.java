@@ -28,6 +28,7 @@ import android.widget.Toast;
 
 import com.robert.maps.R;
 import com.robert.maps.kml.XMLparser.GpxTrackParser;
+import com.robert.maps.kml.XMLparser.KmlTrackParser;
 import com.robert.maps.utils.Ut;
 
 public class ImportTrackActivity extends Activity {
@@ -143,10 +144,9 @@ public class ImportTrackActivity extends Activity {
 					mPoiManager.beginTransaction();
 					Ut.dd("Start parsing file " + file.getName());
 					try {
-//						if(FileUtils.getExtension(file.getName()).equalsIgnoreCase(".kml"))
-//							parser.parse(file, new KMLparser(mPoiManager, CategoryId));
-//						else
-						if(FileUtils.getExtension(file.getName()).equalsIgnoreCase(".gpx"))
+						if(FileUtils.getExtension(file.getName()).equalsIgnoreCase(".kml"))
+							parser.parse(file, new KmlTrackParser(mPoiManager));
+						else if(FileUtils.getExtension(file.getName()).equalsIgnoreCase(".gpx"))
 							parser.parse(file, new GpxTrackParser(mPoiManager));
 
 						mPoiManager.commitTransaction();

@@ -8,7 +8,7 @@ import org.xml.sax.helpers.DefaultHandler;
 import com.robert.maps.kml.PoiManager;
 import com.robert.maps.kml.PoiPoint;
 
-public class GPXparser extends DefaultHandler {
+public class GpxPoiParser extends DefaultHandler {
 	private StringBuilder builder;
 	private PoiManager mPoiManager;
 	private PoiPoint mPoiPoint;
@@ -23,7 +23,7 @@ public class GPXparser extends DefaultHandler {
 
 
 
-	public GPXparser(PoiManager poiManager, int CategoryId) {
+	public GpxPoiParser(PoiManager poiManager, int CategoryId) {
 		super();
 		builder = new StringBuilder();
 		mPoiManager = poiManager;

@@ -30,8 +30,8 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.robert.maps.R;
-import com.robert.maps.kml.XMLparser.GPXparser;
-import com.robert.maps.kml.XMLparser.KMLparser;
+import com.robert.maps.kml.XMLparser.GpxPoiParser;
+import com.robert.maps.kml.XMLparser.KmlPoiParser;
 import com.robert.maps.utils.Ut;
 
 public class ImportPoiActivity extends Activity {
@@ -181,9 +181,9 @@ public class ImportPoiActivity extends Activity {
 					Ut.dd("Start parsing file " + file.getName());
 					try {
 						if(FileUtils.getExtension(file.getName()).equalsIgnoreCase(".kml"))
-							parser.parse(file, new KMLparser(mPoiManager, CategoryId));
+							parser.parse(file, new KmlPoiParser(mPoiManager, CategoryId));
 						else if(FileUtils.getExtension(file.getName()).equalsIgnoreCase(".gpx"))
-							parser.parse(file, new GPXparser(mPoiManager, CategoryId));
+							parser.parse(file, new GpxPoiParser(mPoiManager, CategoryId));
 
 						mPoiManager.commitTransaction();
 					} catch (SAXException e) {

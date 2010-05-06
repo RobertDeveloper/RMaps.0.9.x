@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.andnav.osm.util.GeoPoint;
+
 import com.robert.maps.kml.constants.PoiConstants;
 
 public class Track implements PoiConstants {
@@ -60,5 +62,11 @@ public class Track implements PoiConstants {
 
 	public int getId() {
 		return Id;
+	}
+
+	public GeoPoint getBeginGeoPoint() {
+		if(trackpoints.size()>0)
+			return new GeoPoint(trackpoints.get(0).getLatitudeE6(), trackpoints.get(0).getLongitudeE6());
+		return null;
 	}
 }
