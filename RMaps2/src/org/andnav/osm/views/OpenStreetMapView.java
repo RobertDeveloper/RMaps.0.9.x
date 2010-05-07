@@ -925,7 +925,8 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 
 		public Path toPixelsTrackPoints(List<TrackPoint> in, Point baseCoord, GeoPoint baseLocation) throws IllegalArgumentException {
 			if (in.size() < 2)
-				throw new IllegalArgumentException("List of GeoPoints needs to be at least 2.");
+				return null;
+				//throw new IllegalArgumentException("List of GeoPoints needs to be at least 2.");
 
 			final Path out = new Path();
 			final boolean doGudermann = true;
