@@ -6,7 +6,6 @@ import org.xml.sax.helpers.DefaultHandler;
 
 import com.robert.maps.kml.PoiManager;
 import com.robert.maps.kml.Track;
-import com.robert.maps.utils.Ut;
 
 public class KmlTrackParser extends DefaultHandler {
 	private StringBuilder builder;
@@ -63,12 +62,16 @@ public class KmlTrackParser extends DefaultHandler {
 			mTrack.Descr = builder.toString().trim();
 		else if(localName.equalsIgnoreCase(coordinates)){
 			mStrArray = builder.toString().split("\n");
+			if(mStrArray.length < 2)
+				mStrArray = builder.toString().split(" ");
 			for(int i = 0; i < mStrArray.length; i++){
 				if(!mStrArray[i].trim().equals("")){
 					mStrArray2 = mStrArray[i].trim().split(",");
 					mTrack.AddTrackPoint();
 					mTrack.LastTrackPoint.lat = Double.parseDouble(mStrArray2[1]);
 					mTrack.LastTrackPoint.lon = Double.parseDouble(mStrArray2[0]);
+					if(mStrArray2.length > 2)
+						mTrack.LastTrackPoint.alt = Double.parseDouble(mStrArray2[2]);
 				}
 			}
 		}
