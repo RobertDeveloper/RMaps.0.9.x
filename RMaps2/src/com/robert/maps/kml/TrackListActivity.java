@@ -17,7 +17,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
@@ -48,10 +50,24 @@ public class TrackListActivity extends ListActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		this.setContentView(R.layout.track_list);
         registerForContextMenu(getListView());
         mPoiManager = new PoiManager(this);
 
         mHandler = new SimpleInvalidationHandler();
+
+		((Button) findViewById(R.id.startButton))
+		.setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				startService(new Intent("com.robert.maps.trackwriter"));
+			}
+		});
+		((Button) findViewById(R.id.stopButton))
+		.setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				stopService(new Intent("com.robert.maps.trackwriter"));
+			}
+		});
 	}
 
 	@Override

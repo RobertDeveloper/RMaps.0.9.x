@@ -484,7 +484,6 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 			return true;
 		case (R.id.tracks):
 			startActivityForResult(new Intent(this, TrackListActivity.class), R.id.tracks);
-			//startService(new Intent("com.robert.maps.trackwriter"));
 			return true;
 		case (R.id.search):
 			onSearchRequested();

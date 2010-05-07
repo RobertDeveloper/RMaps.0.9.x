@@ -177,4 +177,8 @@ v.0.7.0\n
 
     <string name="remote_service_started">RMaps track writer</string>
     <string name="menu_goto_track">Go to Track</string>
+
+    <string name="btn_start">Start rec track</string>
+    <string name="btn_stop">Stop</string>
+
 </resources>
