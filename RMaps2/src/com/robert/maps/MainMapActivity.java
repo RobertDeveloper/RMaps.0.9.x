@@ -89,6 +89,8 @@ import com.robert.maps.utils.CompassView;
 import com.robert.maps.utils.SearchSuggestionsProvider;
 import com.robert.maps.utils.Ut;
 
+import dalvik.system.VMRuntime;
+
 public class MainMapActivity extends OpenStreetMapActivity implements OpenStreetMapConstants {
 	// ===========================================================
 	// Constants
@@ -182,6 +184,13 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
         super.onCreate(savedInstanceState, false); // Pass true here to actually contribute to OSM!
 
         Ut.dd("RMaps v."+Ut.getAppVersion(this));
+
+        try {
+			VMRuntime.getRuntime().setMinimumHeapSize(6000000);
+			Ut.dd("getMinimumHeapSize="+VMRuntime.getRuntime().getMinimumHeapSize());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
         CheckNeedDataUpdate();
 
