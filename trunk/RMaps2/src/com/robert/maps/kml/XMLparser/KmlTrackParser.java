@@ -61,9 +61,9 @@ public class KmlTrackParser extends DefaultHandler {
 		else if(localName.equalsIgnoreCase(description))
 			mTrack.Descr = builder.toString().trim();
 		else if(localName.equalsIgnoreCase(coordinates)){
-			mStrArray = builder.toString().split("\n");
+			mStrArray = builder.toString().trim().split("\n");
 			if(mStrArray.length < 2)
-				mStrArray = builder.toString().split(" ");
+				mStrArray = builder.toString().trim().split(" ");
 			for(int i = 0; i < mStrArray.length; i++){
 				if(!mStrArray[i].trim().equals("")){
 					mStrArray2 = mStrArray[i].trim().split(",");
@@ -71,7 +71,15 @@ public class KmlTrackParser extends DefaultHandler {
 					mTrack.LastTrackPoint.lat = Double.parseDouble(mStrArray2[1]);
 					mTrack.LastTrackPoint.lon = Double.parseDouble(mStrArray2[0]);
 					if(mStrArray2.length > 2)
-						mTrack.LastTrackPoint.alt = Double.parseDouble(mStrArray2[2]);
+						try {
+							mTrack.LastTrackPoint.alt = Double.parseDouble(mStrArray2[2]);
+						} catch (NumberFormatException e) {
+							try {
+								mTrack.LastTrackPoint.alt = (double)Integer.parseInt(mStrArray2[2]);
+							} catch (NumberFormatException e1) {
+								e1.printStackTrace();
+							}
+						}
 				}
 			}
 		}

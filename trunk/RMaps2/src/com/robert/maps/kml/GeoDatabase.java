@@ -360,4 +360,42 @@ public class GeoDatabase implements PoiConstants{
 			commitTransaction();
 		}
 	}
+
+	public void saveTrackFromWriter(SQLiteDatabase db){
+		if (isDatabaseReady()) {
+			final Cursor c = db.rawQuery("SELECT lat, lon, alt, speed, date FROM trackpoints ORDER BY id;", null);
+			if(c != null){
+				if(c.getCount() > 1){
+					long newId = -1;
+
+					final ContentValues cv = new ContentValues();
+					cv.put("name", "Track");
+					newId = mDatabase.insert("tracks", null, cv);
+
+					cv.put("name", "Track "+newId);
+					final String[] args = {"" + newId};
+					mDatabase.update("tracks", cv, "trackid = @1", args);
+
+					if (c.moveToFirst()) {
+						do {
+							cv.clear();
+							cv.put("trackid", newId);
+							cv.put("lat", c.getDouble(0));
+							cv.put("lon", c.getDouble(1));
+							cv.put("alt", c.getDouble(2));
+							cv.put("speed", c.getDouble(3));
+							cv.put("date", c.getInt(4));
+							mDatabase.insert("trackpoints", null, cv);
+						} while (c.moveToNext());
+					}
+				}
+				c.close();
+
+				db.execSQL("DELETE FROM 'trackpoints';");
+			}
+
+		}
+	}
+
+
 }

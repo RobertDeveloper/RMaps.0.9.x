@@ -1,5 +1,6 @@
 package com.robert.maps.kml;
 
+import java.io.File;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -8,6 +9,7 @@ import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -25,6 +27,7 @@ import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
 import com.robert.maps.R;
+import com.robert.maps.trackwriter.DatabaseHelper;
 import com.robert.maps.utils.Ut;
 
 public class TrackListActivity extends ListActivity {
@@ -66,6 +69,13 @@ public class TrackListActivity extends ListActivity {
 		.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 				stopService(new Intent("com.robert.maps.trackwriter"));
+
+				final SQLiteDatabase db;
+				File folder = Ut.getRMapsFolder("data", false);
+				db = new DatabaseHelper(TrackListActivity.this, folder.getAbsolutePath() + "/writedtrack.db").getWritableDatabase();
+				mPoiManager.getGeoDatabase().saveTrackFromWriter(db);
+				db.releaseReference();
+				FillData();
 			}
 		});
 	}

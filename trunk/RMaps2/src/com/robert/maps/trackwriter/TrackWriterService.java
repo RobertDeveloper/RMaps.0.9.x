@@ -23,9 +23,12 @@ import android.os.RemoteException;
 
 import com.robert.maps.R;
 import com.robert.maps.kml.TrackListActivity;
+import com.robert.maps.utils.RSQLiteOpenHelper;
 import com.robert.maps.utils.Ut;
 
 public class TrackWriterService extends Service implements OpenStreetMapConstants {
+	private SQLiteDatabase db;
+    NotificationManager mNM;
 
 	protected LocationManager mLocationManager;
 	protected SampleLocationListener mLocationListener;
@@ -48,8 +51,6 @@ public class TrackWriterService extends Service implements OpenStreetMapConstant
 		showNotification();
 }
 
-	private SQLiteDatabase db;
-    NotificationManager mNM;
     //final RemoteCallbackList<IRemoteServiceCallback> mCallbacks = new RemoteCallbackList<IRemoteServiceCallback>();
 
 	private void showNotification() {
