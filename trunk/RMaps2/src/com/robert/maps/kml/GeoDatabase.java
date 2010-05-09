@@ -370,6 +370,7 @@ public class GeoDatabase implements PoiConstants{
 
 					final ContentValues cv = new ContentValues();
 					cv.put("name", "Track");
+					cv.put("show", 0);
 					newId = mDatabase.insert("tracks", null, cv);
 
 					cv.put("name", "Track "+newId);

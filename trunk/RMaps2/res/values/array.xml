@@ -202,4 +202,54 @@
 	<item>0</item>
 	<item>1</item>
 </string-array>
+<string-array name="mintime_pref_title">
+	<item>1 s</item>
+	<item>2 s (recommended)</item>
+	<item>3 s</item>
+	<item>4 s</item>
+	<item>5 s</item>
+	<item>10 s</item>
+	<item>20 s</item>
+	<item>30 s</item>
+	<item>1 min</item>
+	<item>2 min</item>
+	<item>3 min</item>
+	<item>5 min</item>
+	<item>10 min</item>
+	<item>15 min</item>
+	<item>30 min</item>
+</string-array>
+<string-array name="mintime_pref_values">
+	<item>1000</item>
+	<item>2000</item>
+	<item>3000</item>
+	<item>4000</item>
+	<item>5000</item>
+	<item>10000</item>
+	<item>20000</item>
+	<item>30000</item>
+	<item>60000</item>
+	<item>120000</item>
+	<item>180000</item>
+	<item>300000</item>
+	<item>600000</item>
+	<item>900000</item>
+	<item>1800000</item>
+</string-array>
+<string-array name="mindistance_pref_title">
+	<item>5 m</item>
+	<item>10 m (recommended)</item>
+	<item>50 m</item>
+	<item>100 m</item>
+	<item>200 m</item>
+	<item>500 m</item>
+</string-array>
+<string-array name="mindistance_pref_values">
+	<item>5</item>
+	<item>10</item>
+	<item>50</item>
+	<item>100</item>
+	<item>200</item>
+	<item>500</item>
+</string-array>
 </resources>

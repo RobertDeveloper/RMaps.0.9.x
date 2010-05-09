@@ -105,7 +105,9 @@
 			android:summary="@string/pref_hidepoi_summary"
 			android:defaultValue="false"></CheckBoxPreference>
 	</PreferenceCategory>
-	<PreferenceCategory
+	<PreferenceCategory android:title="@string/prefcat_main_trackwriter"><ListPreference android:title="@string/pref_trackwriter_mintime" android:entries="@array/mintime_pref_title" android:entryValues="@array/mintime_pref_values" android:key="pref_trackwriter_mintime" android:summary="@string/pref_trackwriter_mintime_summary" android:defaultValue="2000"></ListPreference>
+<ListPreference android:entries="@array/mindistance_pref_title" android:entryValues="@array/mindistance_pref_values" android:title="@string/pref_trackwriter_mindistance" android:key="pref_trackwriter_mindistance" android:summary="@string/pref_trackwriter_mindistance_summary" android:defaultValue="10"></ListPreference>
+</PreferenceCategory><PreferenceCategory
 		android:title="@string/prefcat_main_indexing">
 		<CheckBoxPreference
 			android:key="pref_turnoffautoreindex"
@@ -120,6 +122,7 @@
 			android:key="pref_index"
 			android:title="@string/pref_index_title"
 			android:summary="@string/pref_index_summary" />
-	</PreferenceCategory>
+	
+</PreferenceCategory>
 
 </PreferenceScreen>

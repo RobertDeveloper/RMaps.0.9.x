@@ -11,6 +11,7 @@ import android.app.Service;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
 import android.location.LocationListener;
@@ -20,10 +21,10 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Parcel;
 import android.os.RemoteException;
+import android.preference.PreferenceManager;
 
 import com.robert.maps.R;
 import com.robert.maps.kml.TrackListActivity;
-import com.robert.maps.utils.RSQLiteOpenHelper;
 import com.robert.maps.utils.Ut;
 
 public class TrackWriterService extends Service implements OpenStreetMapConstants {
@@ -43,8 +44,10 @@ public class TrackWriterService extends Service implements OpenStreetMapConstant
 		db = new DatabaseHelper(this, folder.getAbsolutePath() + "/writedtrack.db").getWritableDatabase();
 
 		mLocationListener = new SampleLocationListener();
+		final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+		mLocationListener.Init(Integer.parseInt(pref.getString("pref_trackwriter_mintime", "2000")), Integer.parseInt(pref.getString("pref_trackwriter_mindistance", "10")));
 		final int minTime = 1000;
-		final int minDistance = 5;
+		final int minDistance = 1;
 		getLocationManager().requestLocationUpdates(GPS, minTime, minDistance, this.mLocationListener);
 
 
@@ -113,11 +116,46 @@ public class TrackWriterService extends Service implements OpenStreetMapConstant
 	}
 
 	private class SampleLocationListener implements LocationListener {
+		private Location mLastWritedLocation = null;
+		private Location mLastLocation = null;
+		private long mMinTime = 2000;
+		private long mMaxTime = 10000;
+		private int mMinDistance = 10;
+		private double mDistanceFromLastWriting = 0;
+		private long mTimeFromLastWriting = 0;
 
 		public void onLocationChanged(final Location loc) {
 			if (loc != null){
-				addPoint(loc.getLatitude(), loc.getLongitude(), loc.getAltitude(), loc.getSpeed(), System.currentTimeMillis());
+				boolean needWrite = false;
+				if(mLastLocation != null)
+					mDistanceFromLastWriting =+ loc.distanceTo(mLastLocation);
+				if(mLastWritedLocation != null)
+					mTimeFromLastWriting = loc.getTime() - mLastWritedLocation.getTime();
+
+				if(mLastWritedLocation == null || mLastLocation == null)
+					needWrite = true;
+				else if (mTimeFromLastWriting > mMaxTime)
+					needWrite = true;
+				else if(mDistanceFromLastWriting > mMinDistance && mTimeFromLastWriting > mMinTime)
+					needWrite = true;
+
+				if(needWrite){
+					Ut.dd("addPoint mDistanceFromLastWriting="+mDistanceFromLastWriting+" mTimeFromLastWriting="+(mTimeFromLastWriting/1000));
+					mLastWritedLocation = loc;
+					mLastLocation = loc;
+					mDistanceFromLastWriting = 0;
+					addPoint(loc.getLatitude(), loc.getLongitude(), loc.getAltitude(), loc.getSpeed(), System.currentTimeMillis());
+				} else {
+					Ut.dd("NOT addPoint mDistanceFromLastWriting="+mDistanceFromLastWriting+" mTimeFromLastWriting="+(mTimeFromLastWriting/1000));
+					mLastLocation = loc;
+				}
 			}
+		}
+
+		public void Init(int mintime, int mindistance) {
+			mMinTime = mintime;
+			mMinDistance = mindistance;
+			Ut.dd("mintime="+mintime+" mindistance="+mindistance);
 		}
 
 		public void onStatusChanged(String a, int status, Bundle b) {
