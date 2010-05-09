@@ -62,6 +62,7 @@ public class TrackWriterService extends Service implements OpenStreetMapConstant
 
 		// Set the icon, scrolling text and timestamp
 		Notification notification = new Notification(R.drawable.track_writer_service, text, System.currentTimeMillis());
+		notification.flags = notification.flags | Notification.FLAG_NO_CLEAR;
 
 		// The PendingIntent to launch our activity if the user selects this notification
 		PendingIntent contentIntent = PendingIntent.getActivity(this, 0,

@@ -25,6 +25,7 @@ import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
+import android.widget.Toast;
 
 import com.robert.maps.R;
 import com.robert.maps.trackwriter.DatabaseHelper;
@@ -73,9 +74,14 @@ public class TrackListActivity extends ListActivity {
 				final SQLiteDatabase db;
 				File folder = Ut.getRMapsFolder("data", false);
 				db = new DatabaseHelper(TrackListActivity.this, folder.getAbsolutePath() + "/writedtrack.db").getWritableDatabase();
-				mPoiManager.getGeoDatabase().saveTrackFromWriter(db);
+				final int res = mPoiManager.getGeoDatabase().saveTrackFromWriter(db);
 				db.releaseReference();
 				FillData();
+
+				if(res == 0)
+					Toast.makeText(TrackListActivity.this, R.string.trackwriter_nothing, Toast.LENGTH_LONG).show();
+				else
+					Toast.makeText(TrackListActivity.this, R.string.trackwriter_saved, Toast.LENGTH_LONG).show();
 			}
 		});
 	}
