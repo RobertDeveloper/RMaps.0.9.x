@@ -448,7 +448,7 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 							final Bitmap bmp = BitmapFactory.decodeByteArray(data, 0, data.length);
 
 							OpenStreetMapTileFilesystemProvider.this.mCache.putTile(aTileURLString, bmp);
-						} catch (Exception e) {
+						} catch (OutOfMemoryError e) {
 							// TODO Попытка отловить OutOfMemory
 							e.printStackTrace();
 						}
@@ -493,7 +493,7 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 					try {
 						bmp = BitmapFactory.decodeByteArray(data, 0, data.length);
 						OpenStreetMapTileFilesystemProvider.this.mCache.putTile(aTileURLString, bmp);
-					} catch (Exception e) {
+					} catch (OutOfMemoryError e) {
 						// TODO Попытка отловить OutOfMemory
 						e.printStackTrace();
 					}
@@ -542,7 +542,7 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 						try {
 							bmp = BitmapFactory.decodeByteArray(data, 0, data.length);
 							OpenStreetMapTileFilesystemProvider.this.mCache.putTile(aTileURLString, bmp);
-						} catch (Exception e) {
+						} catch (OutOfMemoryError e) {
 							// TODO Попытка отловить OutOfMemory
 							e.printStackTrace();
 						}
@@ -604,7 +604,7 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 							final Bitmap bmp = BitmapFactory.decodeByteArray(data, 0, data.length); // , BITMAPLOADOPTIONS);
 
 							OpenStreetMapTileFilesystemProvider.this.mCache.putTile(aTileURLString, bmp);
-						} catch (Exception e) {
+						} catch (OutOfMemoryError e) {
 							// TODO Попытка отловить OutOfMemory
 							e.printStackTrace();
 						}
