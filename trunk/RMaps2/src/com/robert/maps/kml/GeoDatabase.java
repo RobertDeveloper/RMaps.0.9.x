@@ -271,7 +271,7 @@ public class GeoDatabase implements PoiConstants{
 			// не менять порядок полей
 			return mDatabase.rawQuery("SELECT name, descr, trackid _id, CASE WHEN show=1 THEN "
 					+ R.drawable.btn_check_buttonless_on + " ELSE " + R.drawable.btn_check_buttonless_off
-					+ " END as image FROM tracks", null);
+					+ " END as image FROM tracks ORDER BY trackid DESC;", null);
 		}
 
 		return null;
@@ -361,11 +361,13 @@ public class GeoDatabase implements PoiConstants{
 		}
 	}
 
-	public void saveTrackFromWriter(SQLiteDatabase db){
+	public int saveTrackFromWriter(SQLiteDatabase db){
+		int res = 0;
 		if (isDatabaseReady()) {
 			final Cursor c = db.rawQuery("SELECT lat, lon, alt, speed, date FROM trackpoints ORDER BY id;", null);
 			if(c != null){
 				if(c.getCount() > 1){
+					res = c.getCount();
 					long newId = -1;
 
 					final ContentValues cv = new ContentValues();
@@ -396,6 +398,8 @@ public class GeoDatabase implements PoiConstants{
 			}
 
 		}
+
+		return res;
 	}
 
 

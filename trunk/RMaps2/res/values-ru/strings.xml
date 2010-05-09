@@ -199,4 +199,13 @@ v.0.5.2\n
     <string name="menu_tracks">Треки</string>
 
     <string name="menu_goto_track">Перейти к треку</string>
+    <string name="btn_start">Начать запись трека</string>
+    <string name="btn_stop">Остановить</string>
+    <string name="trackwriter_nothing">Нечего сохранять</string>
+    <string name="trackwriter_saved">Трек сохранен</string>
+    <string name="pref_trackwriter_mindistance_summary">Минимальная дистанция</string>
+    <string name="pref_trackwriter_mindistance">Минимальная дистанция между двумя записываемыми точками трека</string>
+    <string name="pref_trackwriter_mintime_summary">Минимальная время между двумя записываемыми точками трека</string>
+    <string name="pref_trackwriter_mintime">Минимальное время</string>
+    <string name="prefcat_main_trackwriter">Track writer</string>
 </resources>

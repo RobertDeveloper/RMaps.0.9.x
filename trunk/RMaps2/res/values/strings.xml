@@ -1,10 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <resources>
-    <string name="pref_trackwriter_mindistance_summary">Smallest distance between two recordings of your position</string>
-    <string name="pref_trackwriter_mindistance">Min distance between points</string>
-    <string name="pref_trackwriter_mintime_summary">Smallest time interval between two recordings of your position</string>
-    <string name="pref_trackwriter_mintime">Min time between points</string>
-    <string name="prefcat_main_trackwriter">Track writer</string>
 	<string name="pref_screen_orientation">Screen Orientation</string>
 	<string name="pref_screen_orientation_summary">Choose the screen orientation</string>
     <string name="pref_googlelanguagecode_summary">Localisation of Google Map</string>
@@ -183,7 +178,14 @@ v.0.7.0\n
     <string name="remote_service_started">RMaps track writer</string>
     <string name="menu_goto_track">Go to Track</string>
 
-    <string name="btn_start">Start rec track</string>
+    <string name="btn_start">Start track record</string>
     <string name="btn_stop">Stop</string>
+    <string name="trackwriter_nothing">Nothing to save</string>
+    <string name="trackwriter_saved">Track saved</string>
+    <string name="pref_trackwriter_mindistance_summary">Smallest distance between two recordings of your position</string>
+    <string name="pref_trackwriter_mindistance">Min distance between points</string>
+    <string name="pref_trackwriter_mintime_summary">Smallest time interval between two recordings of your position</string>
+    <string name="pref_trackwriter_mintime">Min time between points</string>
+    <string name="prefcat_main_trackwriter">Track writer</string>
 
 </resources>
