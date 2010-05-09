@@ -95,6 +95,11 @@ Questions, sentences mail to robertk506@gmail.com\n
 How to and FAQ you can find on http://robertdeveloper.blogspot.com/\n
 	</string>
     <string name="whats_new_dialog_text">
+v.0.8.1\n
++ Track writer\n
++ Integration with Radar programs\n
++ New maps for USA aviators: VFR Chart, IFR Low, IFR High\n
+\n
 v.0.8.0\n
 + Import tracks from KML, GPX files\n
 \n
@@ -187,5 +192,5 @@ v.0.7.0\n
     <string name="pref_trackwriter_mintime_summary">Smallest time interval between two recordings of your position</string>
     <string name="pref_trackwriter_mintime">Min time between points</string>
     <string name="prefcat_main_trackwriter">Track writer</string>
-
+	<string name="menu_toradar">To Radar</string>
 </resources>

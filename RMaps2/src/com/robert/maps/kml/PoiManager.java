@@ -150,8 +150,10 @@ public class PoiManager {
 		if (c != null) {
 			if (c.moveToFirst())
 				track = new Track(c.getInt(3), c.getString(0), c.getString(1), c.getInt(2) == 1 ? true : false);
-			else
+			else {
+				c.close();
 				return null;
+			}
 			c.close();
 
 			c = mGeoDatabase.getTrackPoints(track.getId());
@@ -177,6 +179,7 @@ public class PoiManager {
 			if (c.moveToFirst())
 				track = new Track(id, c.getString(0), c.getString(1), c.getInt(2) == 1 ? true : false);
 			c.close();
+			c = null;
 
 			c = mGeoDatabase.getTrackPoints(id);
 			if (c != null) {

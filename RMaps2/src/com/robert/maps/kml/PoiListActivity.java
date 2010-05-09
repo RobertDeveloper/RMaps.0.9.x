@@ -130,6 +130,7 @@ public class PoiListActivity extends ListActivity {
 		else
 			menu.add(0, R.id.menu_hide, 0, getText(R.string.menu_hide));
 		menu.add(0, R.id.menu_deletepoi, 0, getText(R.string.menu_delete));
+		menu.add(0, R.id.menu_toradar, 0, getText(R.string.menu_toradar));
 
 		super.onCreateContextMenu(menu, v, menuInfo);
 	}
@@ -161,6 +162,12 @@ public class PoiListActivity extends ListActivity {
 			mPoiManager.updatePoi(poi);
 			FillData();
 	        break;
+		case R.id.menu_toradar:
+			Intent i = new Intent("com.google.android.radar.SHOW_RADAR");
+			i.putExtra("latitude",  (float)(poi.GeoPoint.getLatitudeE6() / 1000000f));
+			i.putExtra("longitude", (float)(poi.GeoPoint.getLongitudeE6() / 1000000f));
+			startActivity(i);
+			break;
 		}
 
 		return super.onContextItemSelected(item);

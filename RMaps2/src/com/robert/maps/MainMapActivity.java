@@ -432,10 +432,17 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 			mOsmv.invalidate();
 			break;
 		case R.id.menu_hide:
-			PoiPoint poi = mPoiOverlay.getPoiPoint(markerIndex);
+			final PoiPoint poi = mPoiOverlay.getPoiPoint(markerIndex);
 			poi.Hidden = true;
 			mPoiManager.updatePoi(poi);
 			mOsmv.invalidate();
+			break;
+		case R.id.menu_toradar:
+			final PoiPoint poi1 = mPoiOverlay.getPoiPoint(markerIndex);
+			Intent i = new Intent("com.google.android.radar.SHOW_RADAR");
+			i.putExtra("latitude",  (float)(poi1.GeoPoint.getLatitudeE6() / 1000000f));
+			i.putExtra("longitude", (float)(poi1.GeoPoint.getLongitudeE6() / 1000000f));
+			startActivity(i);
 			break;
 		}
 
@@ -450,6 +457,7 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 				menu.add(0, R.id.menu_editpoi, 0, getText(R.string.menu_edit));
 				menu.add(0, R.id.menu_hide, 0, getText(R.string.menu_hide));
 				menu.add(0, R.id.menu_deletepoi, 0, getText(R.string.menu_delete));
+				menu.add(0, R.id.menu_toradar, 0, getText(R.string.menu_toradar));
 			} else {
 				menu.add(0, R.id.menu_addpoi, 0, getText(R.string.menu_addpoi));
 			}
