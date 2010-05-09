@@ -139,6 +139,9 @@ public class GeoDatabase implements PoiConstants{
 		if(mDatabase == null)
 			ret = false;
 
+		if(!mDatabase.isOpen())
+			mDatabase = getDatabase();
+
 		if(ret == false)
 			Toast.makeText(mCtx, mCtx.getText(R.string.message_geodata_notavailable), Toast.LENGTH_LONG).show();
 
@@ -367,6 +370,8 @@ public class GeoDatabase implements PoiConstants{
 			final Cursor c = db.rawQuery("SELECT lat, lon, alt, speed, date FROM trackpoints ORDER BY id;", null);
 			if(c != null){
 				if(c.getCount() > 1){
+					beginTransaction();
+
 					res = c.getCount();
 					long newId = -1;
 
@@ -391,6 +396,8 @@ public class GeoDatabase implements PoiConstants{
 							mDatabase.insert("trackpoints", null, cv);
 						} while (c.moveToNext());
 					}
+
+					commitTransaction();
 				}
 				c.close();
 

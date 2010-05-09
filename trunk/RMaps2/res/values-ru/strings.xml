@@ -82,6 +82,11 @@ All rights reserved\n
 Как сделать офф-лайн карту и прочее можно почитать здесь http://robertdeveloper.blogspot.com/\n
 </string>
     <string name="whats_new_dialog_text">
+v.0.8.1\n
++ Запись треков\n
++ Интеграция с программами типа Radar\n
++ Новые карты для американских летчиков: VFR Chart, IFR Low, IFR High\n
+\n
 v.0.8.0\n
 + Импорт треков из KML, GPX файлов\n
 \n

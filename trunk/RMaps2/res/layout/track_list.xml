@@ -3,15 +3,27 @@
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
-	<TextView android:id="@+id/path"
-	    style="?android:attr/listSeparatorTextViewStyle"
-	    android:layout_width="fill_parent"
-	    android:layout_height="wrap_content"
-		android:textAppearance="?android:attr/textAppearanceMedium"
-		android:gravity="left" />
+	<LinearLayout
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:orientation="horizontal"
+		style="@android:style/ButtonBar">
 
-    <!-- The frame layout is here since we will be showing either
-    the empty view or the list view.  -->
+		<Button
+			android:id="@+id/startButton"
+			android:layout_width="0dip"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:text="@string/btn_start" />
+
+		<Button
+			android:id="@+id/stopButton"
+			android:layout_width="0dip"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:text="@string/btn_stop" />
+
+	</LinearLayout>
     <FrameLayout
         android:layout_width="fill_parent"
         android:layout_height="0dip"
@@ -27,25 +39,4 @@
         <!-- Here is the view to show if the list is empty -->
 
     </FrameLayout>
-		<LinearLayout
-			android:layout_width="fill_parent"
-			android:layout_height="wrap_content"
-			android:orientation="horizontal"
-			style="@android:style/ButtonBar">
-
-			<Button
-				android:id="@+id/startButton"
-				android:layout_width="0dip"
-				android:layout_height="wrap_content"
-				android:layout_weight="1"
-				android:text="@string/btn_start" />
-
-			<Button
-				android:id="@+id/stopButton"
-				android:layout_width="0dip"
-				android:layout_height="wrap_content"
-				android:layout_weight="1"
-				android:text="@string/btn_stop" />
-
-		</LinearLayout>
 </LinearLayout>
