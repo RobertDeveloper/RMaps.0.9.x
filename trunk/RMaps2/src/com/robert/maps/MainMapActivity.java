@@ -785,6 +785,9 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 		if(mCompassEnabled)
 			mOrientationSensorManager.registerListener(mListener, mOrientationSensorManager
 				.getDefaultSensor(Sensor.TYPE_ORIENTATION), SensorManager.SENSOR_DELAY_UI);
+		
+		if(mTrackOverlay != null)
+			mTrackOverlay.setStopDraw(!mPoiManager.haveTrackChecked());
 	}
 
 	@Override

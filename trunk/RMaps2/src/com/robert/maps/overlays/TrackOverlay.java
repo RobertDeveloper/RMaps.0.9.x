@@ -34,6 +34,7 @@ public class TrackOverlay extends OpenStreetMapViewOverlay {
 	private boolean mThreadRunned = false;
 	private OpenStreetMapView mOsmv;
 	private Handler mMainMapActivityCallbackHandler;
+	private boolean mStopDraw = false;
 
 	protected ExecutorService mThreadExecutor = Executors.newSingleThreadExecutor();
 
@@ -41,7 +42,7 @@ public class TrackOverlay extends OpenStreetMapViewOverlay {
 
 		@Override
 		public void run() {
-			Ut.dd("run TrackThread");
+			Ut.d("run TrackThread");
 
 			mPath = null;
 
@@ -51,13 +52,13 @@ public class TrackOverlay extends OpenStreetMapViewOverlay {
 					mThreadRunned = false;
 					return;
 				}
-				Ut.dd("Track loaded");
+				Ut.d("Track loaded");
 			}
 
 			final OpenStreetMapViewProjection pj = mOsmv.getProjection();
 			mPath = pj.toPixelsTrackPoints(mTrack.trackpoints, mBaseCoords, mBaseLocation);
 
-			Ut.dd("Track maped");
+			Ut.d("Track maped");
 
 			Message.obtain(mMainMapActivityCallbackHandler, OpenStreetMapTileFilesystemProvider.MAPTILEFSLOADER_SUCCESS_ID).sendToTarget();
 
@@ -81,16 +82,22 @@ public class TrackOverlay extends OpenStreetMapViewOverlay {
 		mPaint.setStyle(Paint.Style.STROKE);
 		mPaint.setColor(mainMapActivity.getResources().getColor(R.color.track));
 	}
+	
+	public void setStopDraw(boolean stopdraw){
+		mStopDraw = stopdraw;
+	}
 
 	@Override
 	protected void onDraw(Canvas c, OpenStreetMapView osmv) {
+		if(mStopDraw) return;
+		
 		if (!mThreadRunned && (mTrack == null || mLastZoom != osmv.getZoomLevel())) {
 			mPath = null;
 			mLastZoom = osmv.getZoomLevel();
 			mMainMapActivityCallbackHandler = osmv.getHandler();
 			mOsmv = osmv;
 			//mThread.run();
-			Ut.dd("mThreadExecutor.execute "+mThread.isAlive());
+			Ut.d("mThreadExecutor.execute "+mThread.isAlive());
 			mThreadRunned = true;
 			mThreadExecutor.execute(mThread);
 			return;
@@ -99,7 +106,7 @@ public class TrackOverlay extends OpenStreetMapViewOverlay {
 		if(mPath == null)
 			return;
 
-		Ut.dd("Draw track");
+		Ut.d("Draw track");
 		final OpenStreetMapViewProjection pj = osmv.getProjection();
 		final Point screenCoords = new Point();
 
@@ -115,14 +122,14 @@ public class TrackOverlay extends OpenStreetMapViewOverlay {
 		} else
 			c.drawPath(mPath, mPaint);
 
-		if(osmv.getBearing() != 0.0){
-			final int viewWidth = osmv.getWidth();
-			final int viewHeight = osmv.getHeight();
-			final float aRotateToAngle = 360 - osmv.getBearing();
-			c.save();
-			c.rotate(aRotateToAngle, viewWidth/2, viewHeight/2);
-			c.restore();
-		}
+//		if(osmv.getBearing() != 0.0){
+//			final int viewWidth = osmv.getWidth();
+//			final int viewHeight = osmv.getHeight();
+//			final float aRotateToAngle = 360 - osmv.getBearing();
+//			c.save();
+//			c.rotate(aRotateToAngle, viewWidth/2, viewHeight/2);
+//			c.restore();
+//		}
 
 //		final long endMs = System.currentTimeMillis();
 //		Ut.dd("Rendering overall: " + (endMs - startMs) + "ms");
