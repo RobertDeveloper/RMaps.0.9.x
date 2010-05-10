@@ -44,6 +44,11 @@ public class TrackListActivity extends ListActivity {
 		public void handleMessage(final Message msg) {
 			switch (msg.what) {
 			case R.id.tracks:
+				if(msg.arg1 == 0)
+					Toast.makeText(TrackListActivity.this, R.string.trackwriter_nothing, Toast.LENGTH_LONG).show();
+				else
+					Toast.makeText(TrackListActivity.this, R.string.trackwriter_saved, Toast.LENGTH_LONG).show();
+
 				FillData();
 				break;
 			}
@@ -70,18 +75,24 @@ public class TrackListActivity extends ListActivity {
 		.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 				stopService(new Intent("com.robert.maps.trackwriter"));
+				doSaveTrack();
+			}
+		});
+	}
+	
+	private void doSaveTrack(){
+		showDialog(R.id.dialog_wait);
 
+		this.mThreadPool.execute(new Runnable() {
+			public void run() {
 				final SQLiteDatabase db;
 				File folder = Ut.getRMapsFolder("data", false);
 				db = new DatabaseHelper(TrackListActivity.this, folder.getAbsolutePath() + "/writedtrack.db").getWritableDatabase();
 				final int res = mPoiManager.getGeoDatabase().saveTrackFromWriter(db);
 				db.releaseReference();
-				FillData();
 
-				if(res == 0)
-					Toast.makeText(TrackListActivity.this, R.string.trackwriter_nothing, Toast.LENGTH_LONG).show();
-				else
-					Toast.makeText(TrackListActivity.this, R.string.trackwriter_saved, Toast.LENGTH_LONG).show();
+				dlgWait.dismiss();
+				Message.obtain(mHandler, R.id.tracks, res, 0).sendToTarget();
 			}
 		});
 	}
@@ -135,10 +146,6 @@ public class TrackListActivity extends ListActivity {
 //
 		menu.add(0, R.id.menu_gotopoi, 0, getText(R.string.menu_goto_track));
 		menu.add(0, R.id.menu_editpoi, 0, getText(R.string.menu_edit));
-//		if(poi.Hidden)
-//			menu.add(0, R.id.menu_show, 0, getText(R.string.menu_show));
-//		else
-//			menu.add(0, R.id.menu_hide, 0, getText(R.string.menu_hide));
 		menu.add(0, R.id.menu_deletepoi, 0, getText(R.string.menu_delete));
 
 		super.onCreateContextMenu(menu, v, menuInfo);
@@ -161,16 +168,6 @@ public class TrackListActivity extends ListActivity {
 			mPoiManager.deleteTrack(id);
 			FillData();
 	        break;
-//		case R.id.menu_hide:
-//			poi.Hidden = true;
-//			mPoiManager.updatePoi(poi);
-//			FillData();
-//	        break;
-//		case R.id.menu_show:
-//			poi.Hidden = false;
-//			mPoiManager.updatePoi(poi);
-//			FillData();
-//	        break;
 		}
 
 		return super.onContextItemSelected(item);
