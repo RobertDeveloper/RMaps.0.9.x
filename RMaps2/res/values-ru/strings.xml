@@ -213,4 +213,6 @@ v.0.5.2\n
     <string name="pref_trackwriter_mintime_summary">Минимальная время между двумя записываемыми точками трека</string>
     <string name="pref_trackwriter_mintime">Минимальное время</string>
     <string name="prefcat_main_trackwriter">Track writer</string>
+	<string name="message_noradar">Не найдено приложение, работающее как радар. Пожалуйста, установите его из Маркета! Можно установить GPS Status или, например, Radar.</string>
+	<string name="message_nogpsstatus">Приложение GPS Status не найдено. Пожалуйста, установите его из Маркета!</string>
 </resources>

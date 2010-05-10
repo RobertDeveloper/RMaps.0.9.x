@@ -17,6 +17,7 @@ import android.widget.AdapterView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
+import android.widget.Toast;
 
 import com.robert.maps.R;
 
@@ -163,10 +164,14 @@ public class PoiListActivity extends ListActivity {
 			FillData();
 	        break;
 		case R.id.menu_toradar:
-			Intent i = new Intent("com.google.android.radar.SHOW_RADAR");
-			i.putExtra("latitude",  (float)(poi.GeoPoint.getLatitudeE6() / 1000000f));
-			i.putExtra("longitude", (float)(poi.GeoPoint.getLongitudeE6() / 1000000f));
-			startActivity(i);
+			try {
+					Intent i = new Intent("com.google.android.radar.SHOW_RADAR");
+					i.putExtra("latitude",  (float)(poi.GeoPoint.getLatitudeE6() / 1000000f));
+					i.putExtra("longitude", (float)(poi.GeoPoint.getLongitudeE6() / 1000000f));
+					startActivity(i);
+				} catch (Exception e) {
+					Toast.makeText(this, R.string.message_noradar, Toast.LENGTH_LONG).show();
+				}
 			break;
 		}
 

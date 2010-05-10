@@ -439,10 +439,14 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 			break;
 		case R.id.menu_toradar:
 			final PoiPoint poi1 = mPoiOverlay.getPoiPoint(markerIndex);
-			Intent i = new Intent("com.google.android.radar.SHOW_RADAR");
-			i.putExtra("latitude",  (float)(poi1.GeoPoint.getLatitudeE6() / 1000000f));
-			i.putExtra("longitude", (float)(poi1.GeoPoint.getLongitudeE6() / 1000000f));
-			startActivity(i);
+			try {
+					Intent i = new Intent("com.google.android.radar.SHOW_RADAR");
+					i.putExtra("latitude",  (float)(poi1.GeoPoint.getLatitudeE6() / 1000000f));
+					i.putExtra("longitude", (float)(poi1.GeoPoint.getLongitudeE6() / 1000000f));
+					startActivity(i);
+				} catch (Exception e) {
+					Toast.makeText(this, R.string.message_noradar, Toast.LENGTH_LONG).show();
+				}
 			break;
 		}
 
@@ -486,7 +490,7 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 				startActivity(new Intent("com.eclipsim.gpsstatus.VIEW"));
 			} catch (ActivityNotFoundException e) {
 				Toast.makeText(this,
-						"GPS Status not found. Please install it!",
+						R.string.message_nogpsstatus,
 						Toast.LENGTH_LONG).show();
 				try {
 					startActivity(new Intent(Intent.ACTION_VIEW).setData(Uri
@@ -785,7 +789,7 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 		if(mCompassEnabled)
 			mOrientationSensorManager.registerListener(mListener, mOrientationSensorManager
 				.getDefaultSensor(Sensor.TYPE_ORIENTATION), SensorManager.SENSOR_DELAY_UI);
-		
+
 		if(mTrackOverlay != null)
 			mTrackOverlay.setStopDraw(!mPoiManager.haveTrackChecked());
 	}
