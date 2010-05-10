@@ -193,4 +193,6 @@ v.0.7.0\n
     <string name="pref_trackwriter_mintime">Min time between points</string>
     <string name="prefcat_main_trackwriter">Track writer</string>
 	<string name="menu_toradar">To Radar</string>
+	<string name="message_noradar">Radar application not found. Please install it! You can install GPS Status or Radar from the Market.</string>
+	<string name="message_nogpsstatus">GPS Status not found. Please install it!</string>
 </resources>
