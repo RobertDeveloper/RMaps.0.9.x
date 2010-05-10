@@ -16,10 +16,11 @@ import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.os.Binder;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
-import android.os.Parcel;
+import android.os.Message;
+import android.os.RemoteCallbackList;
 import android.os.RemoteException;
 import android.preference.PreferenceManager;
 
@@ -33,6 +34,40 @@ public class TrackWriterService extends Service implements OpenStreetMapConstant
 
 	protected LocationManager mLocationManager;
 	protected SampleLocationListener mLocationListener;
+
+    final RemoteCallbackList<ITrackWriterCallback> mCallbacks = new RemoteCallbackList<ITrackWriterCallback>();
+
+    private final IRemoteService.Stub mBinder = new IRemoteService.Stub() {
+        public void registerCallback(ITrackWriterCallback cb) {
+            if (cb != null) mCallbacks.register(cb);
+        }
+        public void unregisterCallback(ITrackWriterCallback cb) {
+            if (cb != null) mCallbacks.unregister(cb);
+        }
+    };
+
+    private final Handler mHandler = new Handler() {
+        @Override public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case 1: {
+                    // Broadcast to all clients the new value.
+                    final int N = mCallbacks.beginBroadcast();
+                    for (int i=0; i<N; i++) {
+                        try {
+                        	final Location loc = (Location)msg.obj;
+                            mCallbacks.getBroadcastItem(i).newPointWrited(loc.getLatitude(), loc.getLongitude());
+                        } catch (RemoteException e) {
+                            // The RemoteCallbackList will take care of removing
+                            // the dead object for us.
+                        }
+                    }
+                    mCallbacks.finishBroadcast();
+                } break;
+                default:
+                    super.handleMessage(msg);
+            }
+        }
+    };
 
 	@Override
 	public void onCreate() {
@@ -52,7 +87,7 @@ public class TrackWriterService extends Service implements OpenStreetMapConstant
 
 
 		showNotification();
-}
+	}
 
     //final RemoteCallbackList<IRemoteServiceCallback> mCallbacks = new RemoteCallbackList<IRemoteServiceCallback>();
 
@@ -92,20 +127,20 @@ public class TrackWriterService extends Service implements OpenStreetMapConstant
         //Toast.makeText(this, R.string.remote_service_stopped, Toast.LENGTH_SHORT).show();
 
         // Unregister all callbacks.
-        //mCallbacks.kill();
+        mCallbacks.kill();
 
         // Remove the next pending message to increment the counter, stopping
         // the increment loop.
         //mHandler.removeMessages(REPORT_MSG);
 	}
 
-    private final IBinder mBinder = new Binder() {
-        @Override
-		protected boolean onTransact(int code, Parcel data, Parcel reply,
-		        int flags) throws RemoteException {
-            return super.onTransact(code, data, reply, flags);
-        }
-    };
+//    private final IBinder mBinder = new Binder() {
+//        @Override
+//		protected boolean onTransact(int code, Parcel data, Parcel reply,
+//		        int flags) throws RemoteException {
+//            return super.onTransact(code, data, reply, flags);
+//        }
+//    };
 
 
 
@@ -120,7 +155,7 @@ public class TrackWriterService extends Service implements OpenStreetMapConstant
 		private Location mLastWritedLocation = null;
 		private Location mLastLocation = null;
 		private long mMinTime = 2000;
-		private long mMaxTime = 10000;
+		private long mMaxTime = 2000;
 		private int mMinDistance = 10;
 		private double mDistanceFromLastWriting = 0;
 		private long mTimeFromLastWriting = 0;
@@ -146,6 +181,8 @@ public class TrackWriterService extends Service implements OpenStreetMapConstant
 					mLastLocation = loc;
 					mDistanceFromLastWriting = 0;
 					addPoint(loc.getLatitude(), loc.getLongitude(), loc.getAltitude(), loc.getSpeed(), System.currentTimeMillis());
+
+					Message.obtain(TrackWriterService.this.mHandler, 1, loc);
 				} else {
 					Ut.dd("NOT addPoint mDistanceFromLastWriting="+mDistanceFromLastWriting+" mTimeFromLastWriting="+(mTimeFromLastWriting/1000));
 					mLastLocation = loc;

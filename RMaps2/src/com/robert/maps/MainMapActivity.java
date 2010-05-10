@@ -80,6 +80,7 @@ import com.robert.maps.kml.PoiManager;
 import com.robert.maps.kml.PoiPoint;
 import com.robert.maps.kml.Track;
 import com.robert.maps.kml.TrackListActivity;
+import com.robert.maps.overlays.CurrentTrackOverlay;
 import com.robert.maps.overlays.MyLocationOverlay;
 import com.robert.maps.overlays.PoiOverlay;
 import com.robert.maps.overlays.SearchResultOverlay;
@@ -103,6 +104,7 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 	private OpenStreetMapView mOsmv; //, mOsmvMinimap;
 	private MyLocationOverlay mMyLocationOverlay;
 	private PoiOverlay mPoiOverlay;
+	private CurrentTrackOverlay mCurrentTrackOverlay;
 	private TrackOverlay mTrackOverlay;
 	private SearchResultOverlay mSearchResultOverlay;
 
@@ -223,6 +225,9 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 		{
 			this.mTrackOverlay = new TrackOverlay(this, mPoiManager);
 			this.mOsmv.getOverlays().add(this.mTrackOverlay);
+
+			this.mCurrentTrackOverlay = new CurrentTrackOverlay(this, mPoiManager);
+			this.mOsmv.getOverlays().add(this.mCurrentTrackOverlay);
 
 			this.mPoiOverlay = new PoiOverlay(this, mPoiManager, null, pref.getBoolean("pref_hidepoi", false));
 			this.mOsmv.getOverlays().add(this.mPoiOverlay);
@@ -540,6 +545,8 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 			}
 	        if(mTrackOverlay != null)
 	        	this.mOsmv.getOverlays().add(mTrackOverlay);
+	        if(mCurrentTrackOverlay != null)
+	        	this.mOsmv.getOverlays().add(mCurrentTrackOverlay);
 	        if(mPoiOverlay != null)
 	        	this.mOsmv.getOverlays().add(mPoiOverlay);
 	        this.mOsmv.getOverlays().add(mMyLocationOverlay);
@@ -793,12 +800,16 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 
 		if(mTrackOverlay != null)
 			mTrackOverlay.setStopDraw(!mPoiManager.haveTrackChecked());
+//		if(mCurrentTrackOverlay != null)
+//			mCurrentTrackOverlay.setStopDraw(!mPoiManager.haveTrackChecked());
 	}
 
 	@Override
 	protected void onRestart() {
 		if(mTrackOverlay != null)
 			mTrackOverlay.clearTrack();
+//		if(mCurrentTrackOverlay != null)
+//			mCurrentTrackOverlay.clearTrack();
 
 		super.onRestart();
 	}
@@ -824,6 +835,8 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 		}
         if(mTrackOverlay != null)
         	this.mOsmv.getOverlays().add(mTrackOverlay);
+        if(mCurrentTrackOverlay != null)
+        	this.mOsmv.getOverlays().add(mCurrentTrackOverlay);
         if(mPoiOverlay != null)
         	this.mOsmv.getOverlays().add(mPoiOverlay);
         this.mOsmv.getOverlays().add(mMyLocationOverlay);

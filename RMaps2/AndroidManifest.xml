@@ -49,6 +49,7 @@
         <activity android:name=".kml.ImportPoiActivity"/>
         <activity android:name="org.openintents.filemanager.FileManagerActivity"/>
 <service android:name=".trackwriter.TrackWriterService" android:process=":trackwriter" android:icon="@drawable/track_writer_service"><intent-filter><action android:name="com.robert.maps.trackwriter"></action>
+<action android:name="com.robert.maps.trackwriter.IRemoteService"></action>
 </intent-filter>
 </service>
 <activity android:name=".kml.ImportTrackActivity"></activity>
