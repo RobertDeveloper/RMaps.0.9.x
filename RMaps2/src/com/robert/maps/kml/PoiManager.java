@@ -143,6 +143,18 @@ public class PoiManager {
 		} else
 			mGeoDatabase.updateTrack(track.getId(), track.Name, track.Descr, track.Show ? 1: 0);
 	}
+	
+	public boolean haveTrackChecked(){
+		boolean ret = false;
+		Cursor c = mGeoDatabase.getTrackChecked();
+		if (c != null) {
+			if (c.moveToFirst())
+				ret = true;
+			c.close();
+		}
+		
+		return ret;
+	}
 
 	public Track getTrackChecked(){
 		Track track = null;
