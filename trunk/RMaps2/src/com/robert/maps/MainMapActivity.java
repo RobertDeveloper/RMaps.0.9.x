@@ -757,6 +757,7 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 		editor.putInt("Longitude", mOsmv.getMapCenterLongitudeE6());
 		editor.putInt("ZoomLevel", mOsmv.getZoomLevel());
 		editor.putBoolean("CompassEnabled", mCompassEnabled);
+		editor.putBoolean("AutoFollow", mAutoFollow);
 		editor.putString("app_version", Ut.getAppVersion(this));
 		if(mPoiOverlay != null)
 			editor.putInt("curShowPoiId", mPoiOverlay.getTapIndex());
@@ -833,6 +834,9 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 
 		mCompassEnabled = settings.getBoolean("CompassEnabled", false);
 		mCompassView.setVisibility(mCompassEnabled ? View.VISIBLE : View.INVISIBLE);
+
+		mAutoFollow = settings.getBoolean("AutoFollow", true);
+		ivAutoFollow.setVisibility(mAutoFollow ? ImageView.INVISIBLE : View.VISIBLE);
 
 		setTitle();
 
