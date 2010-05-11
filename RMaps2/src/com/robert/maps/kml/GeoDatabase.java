@@ -138,8 +138,7 @@ public class GeoDatabase implements PoiConstants{
 
 		if(mDatabase == null)
 			ret = false;
-
-		if(!mDatabase.isOpen())
+		else if(!mDatabase.isOpen())
 			mDatabase = getDatabase();
 
 		if(ret == false)
