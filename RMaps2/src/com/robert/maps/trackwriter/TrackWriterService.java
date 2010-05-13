@@ -79,7 +79,7 @@ public class TrackWriterService extends Service implements OpenStreetMapConstant
 
         mNM = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
 
-		File folder = Ut.getRMapsFolder("data", false);
+		final File folder = Ut.getRMapsFolder("data", false);
 		db = new DatabaseHelper(this, folder.getAbsolutePath() + "/writedtrack.db").getWritableDatabase();
 
 		mLocationListener = new SampleLocationListener();

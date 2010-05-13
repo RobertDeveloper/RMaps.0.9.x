@@ -31,6 +31,7 @@ public class Track implements PoiConstants {
 			alt = 0;
 			speed = 0;
 			date = new Date();
+			trackpoints = new ArrayList<TrackPoint>(0);
 		}
 
 		public int getLatitudeE6() {
