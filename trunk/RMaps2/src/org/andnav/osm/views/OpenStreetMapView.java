@@ -863,6 +863,50 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 			return out;
 		}
 
+		public Point toPixels2(final GeoPoint in) {
+
+			final Point out = new Point();
+			final boolean doGudermann = true;
+
+			final int[] underGeopointTileCoords = Util.getMapTileFromCoordinates(
+					in.getLatitudeE6(), in.getLongitudeE6(), zoomLevel, null, OpenStreetMapView.this.mRendererInfo.PROJECTION);
+
+			/*
+			 * Calculate the Latitude/Longitude on the left-upper ScreenCoords
+			 * of the MapTile.
+			 */
+			final BoundingBoxE6 bb = Util.getBoundingBoxFromMapTile(underGeopointTileCoords,
+					zoomLevel, mRendererInfo.PROJECTION);
+
+			final float[] relativePositionInCenterMapTile;
+			if (doGudermann && zoomLevel < 7)
+				relativePositionInCenterMapTile = bb
+						.getRelativePositionOfGeoPointInBoundingBoxWithExactGudermannInterpolation(
+								in.getLatitudeE6(), in.getLongitudeE6(), null);
+			else
+				relativePositionInCenterMapTile = bb
+						.getRelativePositionOfGeoPointInBoundingBoxWithLinearInterpolation(in
+								.getLatitudeE6(), in.getLongitudeE6(), null);
+
+			final int tileDiffX = centerMapTileCoords[MAPTILE_LONGITUDE_INDEX]
+					- underGeopointTileCoords[MAPTILE_LONGITUDE_INDEX];
+			final int tileDiffY = centerMapTileCoords[MAPTILE_LATITUDE_INDEX]
+					- underGeopointTileCoords[MAPTILE_LATITUDE_INDEX];
+			final int underGeopointTileScreenLeft = upperLeftCornerOfCenterMapTile.x
+					- (tileSizePx * tileDiffX);
+			final int underGeopointTileScreenTop = upperLeftCornerOfCenterMapTile.y
+					- (tileSizePx * tileDiffY);
+
+			final int x = underGeopointTileScreenLeft
+					+ (int) (relativePositionInCenterMapTile[MAPTILE_LONGITUDE_INDEX] * tileSizePx);
+			final int y = underGeopointTileScreenTop
+					+ (int) (relativePositionInCenterMapTile[MAPTILE_LATITUDE_INDEX] * tileSizePx);
+
+			/* Add up the offset caused by touch. */
+			out.set(x, y);
+			return out;
+		}
+
 		public Path toPixels(final List<GeoPoint> in, final Path reuse) {
 			return toPixels(in, reuse, true);
 		}

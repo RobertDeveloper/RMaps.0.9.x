@@ -56,8 +56,7 @@ public class TrackWriterService extends Service implements OpenStreetMapConstant
                         try {
                         	final Location loc = (Location)msg.obj;
                         	Ut.dd("mCallbacks.getBroadcastItem(i).newPointWrited");
-                            //mCallbacks.getBroadcastItem(i).newPointWrited(loc.getLatitude(), loc.getLongitude());
-                        	mCallbacks.getBroadcastItem(i).newPointWrited(777, 999);
+                            mCallbacks.getBroadcastItem(i).newPointWrited(loc.getLatitude(), loc.getLongitude());
                         } catch (RemoteException e) {
                             // The RemoteCallbackList will take care of removing
                             // the dead object for us.
@@ -66,7 +65,7 @@ public class TrackWriterService extends Service implements OpenStreetMapConstant
                     }
                     mCallbacks.finishBroadcast();
 
-                    sendMessageDelayed(obtainMessage(1), 1*1000);
+                    //sendMessageDelayed(obtainMessage(1), 1*1000);
                } break;
                 default:
                     super.handleMessage(msg);
@@ -92,7 +91,7 @@ public class TrackWriterService extends Service implements OpenStreetMapConstant
 
 
 		showNotification();
-        mHandler.sendEmptyMessage(1) ;
+        //mHandler.sendEmptyMessage(1) ;
 	}
 
     //final RemoteCallbackList<IRemoteServiceCallback> mCallbacks = new RemoteCallbackList<IRemoteServiceCallback>();
@@ -182,15 +181,15 @@ public class TrackWriterService extends Service implements OpenStreetMapConstant
 					needWrite = true;
 
 				if(needWrite){
-					Ut.dd("addPoint mDistanceFromLastWriting="+mDistanceFromLastWriting+" mTimeFromLastWriting="+(mTimeFromLastWriting/1000));
+					//Ut.dd("addPoint mDistanceFromLastWriting="+mDistanceFromLastWriting+" mTimeFromLastWriting="+(mTimeFromLastWriting/1000));
 					mLastWritedLocation = loc;
 					mLastLocation = loc;
 					mDistanceFromLastWriting = 0;
 					addPoint(loc.getLatitude(), loc.getLongitude(), loc.getAltitude(), loc.getSpeed(), System.currentTimeMillis());
 
-					Message.obtain(TrackWriterService.this.mHandler, 1, loc);
+					mHandler.sendMessage(mHandler.obtainMessage(1, loc));
 				} else {
-					Ut.dd("NOT addPoint mDistanceFromLastWriting="+mDistanceFromLastWriting+" mTimeFromLastWriting="+(mTimeFromLastWriting/1000));
+					//Ut.dd("NOT addPoint mDistanceFromLastWriting="+mDistanceFromLastWriting+" mTimeFromLastWriting="+(mTimeFromLastWriting/1000));
 					mLastLocation = loc;
 				}
 			}

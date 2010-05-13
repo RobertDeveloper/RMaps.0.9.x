@@ -226,7 +226,7 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 			this.mTrackOverlay = new TrackOverlay(this, mPoiManager);
 			this.mOsmv.getOverlays().add(this.mTrackOverlay);
 
-			this.mCurrentTrackOverlay = new CurrentTrackOverlay(this, mPoiManager);
+			this.mCurrentTrackOverlay = new CurrentTrackOverlay(this, mPoiManager, mOsmv);
 			this.mOsmv.getOverlays().add(this.mCurrentTrackOverlay);
 
 			this.mPoiOverlay = new PoiOverlay(this, mPoiManager, null, pref.getBoolean("pref_hidepoi", false));
@@ -799,9 +799,7 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 				.getDefaultSensor(Sensor.TYPE_ORIENTATION), SensorManager.SENSOR_DELAY_UI);
 
 		if(mTrackOverlay != null)
-			mTrackOverlay.setStopDraw(!mPoiManager.haveTrackChecked());
-//		if(mCurrentTrackOverlay != null)
-//			mCurrentTrackOverlay.setStopDraw(!mPoiManager.haveTrackChecked());
+			mTrackOverlay.setStopDraw(false);
 	}
 
 	@Override
