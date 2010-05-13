@@ -1,21 +1,28 @@
 package com.robert.maps.overlays;
 
+import java.io.File;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 import org.andnav.osm.util.GeoPoint;
 import org.andnav.osm.views.OpenStreetMapView;
 import org.andnav.osm.views.OpenStreetMapView.OpenStreetMapViewProjection;
 import org.andnav.osm.views.overlay.OpenStreetMapViewOverlay;
+import org.andnav.osm.views.util.OpenStreetMapTileFilesystemProvider;
 
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
 import android.os.IBinder;
+import android.os.Message;
 import android.os.RemoteException;
-import android.widget.Toast;
 
 import com.robert.maps.MainMapActivity;
 import com.robert.maps.R;
@@ -34,11 +41,11 @@ public class CurrentTrackOverlay extends OpenStreetMapViewOverlay {
 	private Point mBaseCoords;
 	private GeoPoint mBaseLocation;
 	private PoiManager mPoiManager;
-//	private TrackThread mThread;
-//	private boolean mThreadRunned = false;
+	private TrackThread mThread;
+	private boolean mThreadRunned = false;
+	protected ExecutorService mThreadExecutor = Executors.newSingleThreadExecutor();
 	private OpenStreetMapView mOsmv;
 //	private Handler mMainMapActivityCallbackHandler;
-	private boolean mStopDraw = false;
 	private Context mContext;
 
     IRemoteService mService = null;
@@ -53,8 +60,8 @@ public class CurrentTrackOverlay extends OpenStreetMapViewOverlay {
 		mLastZoom = -1;
 
 		mOsmv = osmv;
-//		mThread = new TrackThread();
-//		mThread.setName("Track thread");
+		mThread = new TrackThread();
+		mThread.setName("Current Track thread");
 
 
 		mPaint = new Paint();
@@ -65,6 +72,46 @@ public class CurrentTrackOverlay extends OpenStreetMapViewOverlay {
 
 		mContext.bindService(new Intent(IRemoteService.class.getName()), mConnection, 0 /*Context.BIND_AUTO_CREATE*/);
 		mIsBound = true;
+	}
+
+	private class TrackThread extends Thread {
+
+		@Override
+		public void run() {
+			Ut.d("run CurrentTrackThread");
+
+			mPath = null;
+
+			final File folder = Ut.getRMapsFolder("data", false);
+			final SQLiteDatabase db = new com.robert.maps.trackwriter.DatabaseHelper(mContext, folder.getAbsolutePath() + "/writedtrack.db").getReadableDatabase();
+			final Cursor c = db.rawQuery("SELECT lat, lon FROM trackpoints ORDER BY id", null);
+			if(mTrack == null)
+				mTrack = new Track();
+			else if(mTrack.trackpoints != null)
+				mTrack.trackpoints.clear();
+
+			if(c != null){
+				if (c.moveToFirst()) {
+					do {
+						mTrack.AddTrackPoint();
+						mTrack.LastTrackPoint.lat = c.getDouble(0);
+						mTrack.LastTrackPoint.lon = c.getDouble(1);
+					} while (c.moveToNext());
+				}
+				c.close();
+			}
+			db.close();
+
+			mBasePj = mOsmv.getProjection();
+			if(mTrack.trackpoints != null)
+				mPath = mBasePj.toPixelsTrackPoints(mTrack.trackpoints, mBaseCoords, mBaseLocation);
+
+			Ut.d("Track maped");
+
+			Message.obtain(mOsmv.getHandler(), OpenStreetMapTileFilesystemProvider.MAPTILEFSLOADER_SUCCESS_ID).sendToTarget();
+
+			mThreadRunned = false;
+		}
 	}
 
     private ServiceConnection mConnection = new ServiceConnection() {
@@ -85,17 +132,15 @@ public class CurrentTrackOverlay extends OpenStreetMapViewOverlay {
 
 	@Override
 	protected void onDraw(Canvas c, OpenStreetMapView osmv) {
-//		if (!mThreadRunned && (mTrack == null || mLastZoom != osmv.getZoomLevel())) {
-//			mPath = null;
-//			mLastZoom = osmv.getZoomLevel();
-//			mMainMapActivityCallbackHandler = osmv.getHandler();
-//			mOsmv = osmv;
-//			//mThread.run();
-//			Ut.d("mThreadExecutor.execute "+mThread.isAlive());
-//			mThreadRunned = true;
-//			mThreadExecutor.execute(mThread);
-//			return;
-//		}
+		if (!mThreadRunned && (mTrack == null || mLastZoom != osmv.getZoomLevel())) {
+			//mPath = null;
+			mLastZoom = osmv.getZoomLevel();
+			//mMainMapActivityCallbackHandler = osmv.getHandler();
+			Ut.d("mThreadExecutor.execute "+mThread.isAlive());
+			mThreadRunned = true;
+			mThreadExecutor.execute(mThread);
+			return;
+		}
 
 		if(mPath == null)
 			return;
@@ -148,7 +193,12 @@ public class CurrentTrackOverlay extends OpenStreetMapViewOverlay {
 
     private ITrackWriterCallback mCallback = new ITrackWriterCallback.Stub() {
         public void newPointWrited(double lat, double lon) {
-        	Ut.dd("newPointWrited "+lat+" "+lon);
+        	Ut.dd("newPointWrited "+lat+" "+lon+" mThreadRunned="+mThreadRunned);
+
+        	if(mThreadRunned)
+        		return;
+
+        	Ut.dd("hello");
 
         	if(mPath == null){
         		mPath = new Path();
@@ -159,6 +209,7 @@ public class CurrentTrackOverlay extends OpenStreetMapViewOverlay {
         		Ut.dd("setLastPoint "+mBaseCoords.x+" "+mBaseCoords.y);
         	} else {
            		final GeoPoint geopoint = new GeoPoint((int)(lat*1E6), (int)(lon*1E6));
+           		mBasePj = mOsmv.getProjection();
            	    final Point point = mBasePj.toPixels2(geopoint);
         		mPath.lineTo(point.x, point.y);
         		Ut.dd("lineTo "+point.x+" "+point.y);
