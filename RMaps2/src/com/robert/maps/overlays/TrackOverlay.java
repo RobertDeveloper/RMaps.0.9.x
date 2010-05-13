@@ -50,6 +50,7 @@ public class TrackOverlay extends OpenStreetMapViewOverlay {
 				mTrack = mPoiManager.getTrackChecked();
 				if(mTrack == null){
 					mThreadRunned = false;
+					mStopDraw = true;
 					return;
 				}
 				Ut.d("Track loaded");
@@ -82,7 +83,7 @@ public class TrackOverlay extends OpenStreetMapViewOverlay {
 		mPaint.setStyle(Paint.Style.STROKE);
 		mPaint.setColor(mainMapActivity.getResources().getColor(R.color.track));
 	}
-	
+
 	public void setStopDraw(boolean stopdraw){
 		mStopDraw = stopdraw;
 	}
@@ -90,7 +91,7 @@ public class TrackOverlay extends OpenStreetMapViewOverlay {
 	@Override
 	protected void onDraw(Canvas c, OpenStreetMapView osmv) {
 		if(mStopDraw) return;
-		
+
 		if (!mThreadRunned && (mTrack == null || mLastZoom != osmv.getZoomLevel())) {
 			mPath = null;
 			mLastZoom = osmv.getZoomLevel();
