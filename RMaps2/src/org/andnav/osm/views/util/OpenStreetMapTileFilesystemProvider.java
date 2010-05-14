@@ -286,7 +286,8 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 		if (mDatabase.NeedIndex(fileLength, fileModified, mBlockIndexing))
 		{
 			mStopIndexing = false;
-			Toast.makeText(mCtx, R.string.message_updateminmax, Toast.LENGTH_LONG).show();
+			ShowWaitDialog(mCtx.getString(R.string.message_updateminmax));
+			//Toast.makeText(mCtx, R.string.message_updateminmax, Toast.LENGTH_LONG).show();
 
 			this.mThreadPool.execute(new Runnable() {
 				public void run() {
@@ -297,6 +298,8 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 					Ut.dd("Update min max zoom data: minzoom="+minzoom+" maxzoom="+maxzoom);
 
 					mDatabase.CommitIndex(fileLength, fileModified, minzoom, maxzoom);
+					
+					mProgressDialog.dismiss();
 
 					final Message successMessage = Message.obtain(callback, INDEXIND_SUCCESS_ID);
 					successMessage.sendToTarget();
@@ -403,6 +406,15 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 		});
 		mProgressDialog.show();
 		mProgressDialog.setProgress(0);
+	}
+
+	private void ShowWaitDialog(String message) {
+		mProgressDialog = new ProgressDialog(mCtx);
+		mProgressDialog.setMessage(message);
+		mProgressDialog.setIndeterminate(true);
+		mProgressDialog.setCancelable(false);
+
+		mProgressDialog.show();
 	}
 
 	public int getCurrentFSCacheByteSize() {
