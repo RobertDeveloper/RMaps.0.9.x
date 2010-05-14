@@ -57,7 +57,7 @@ public class TrackOverlay extends OpenStreetMapViewOverlay {
 			}
 
 			final OpenStreetMapViewProjection pj = mOsmv.getProjection();
-			mPath = pj.toPixelsTrackPoints(mTrack.trackpoints, mBaseCoords, mBaseLocation);
+			mPath = pj.toPixelsTrackPoints(mTrack.getPoints(), mBaseCoords, mBaseLocation);
 
 			Ut.d("Track maped");
 
@@ -122,19 +122,6 @@ public class TrackOverlay extends OpenStreetMapViewOverlay {
 			c.restore();
 		} else
 			c.drawPath(mPath, mPaint);
-
-//		if(osmv.getBearing() != 0.0){
-//			final int viewWidth = osmv.getWidth();
-//			final int viewHeight = osmv.getHeight();
-//			final float aRotateToAngle = 360 - osmv.getBearing();
-//			c.save();
-//			c.rotate(aRotateToAngle, viewWidth/2, viewHeight/2);
-//			c.restore();
-//		}
-
-//		final long endMs = System.currentTimeMillis();
-//		Ut.dd("Rendering overall: " + (endMs - startMs) + "ms");
-
 	}
 
 	@Override

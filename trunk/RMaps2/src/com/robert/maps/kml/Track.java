@@ -16,7 +16,7 @@ public class Track implements PoiConstants {
 	public TrackPoint LastTrackPoint;
 	public boolean Show;
 
-	public List<TrackPoint> trackpoints = null;
+	private List<TrackPoint> trackpoints = null;
 
 	public class TrackPoint{
 		public double lat;
@@ -31,7 +31,7 @@ public class Track implements PoiConstants {
 			alt = 0;
 			speed = 0;
 			date = new Date();
-			trackpoints = new ArrayList<TrackPoint>(0);
+			//trackpoints = new ArrayList<TrackPoint>(1);
 		}
 
 		public int getLatitudeE6() {
@@ -42,6 +42,13 @@ public class Track implements PoiConstants {
 			return (int) (lon * 1E6);
 		}
 	};
+	
+	public List<TrackPoint> getPoints(){
+		if(trackpoints == null)
+			return new ArrayList<TrackPoint>(0);
+		
+		return trackpoints;
+	}
 
 	public void AddTrackPoint(){
 		LastTrackPoint = new TrackPoint();
