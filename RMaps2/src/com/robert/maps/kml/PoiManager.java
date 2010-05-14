@@ -136,7 +136,7 @@ public class PoiManager {
 		if(track.getId() < 0){
 			long newId = mGeoDatabase.addTrack(track.Name, track.Descr, track.Show ? 1: 0);
 
-			for(TrackPoint trackpoint: track.trackpoints){
+			for(TrackPoint trackpoint: track.getPoints()){
 				//Ut.dd("lat="+trackpoint.lat);
 				mGeoDatabase.addTrackPoint(newId, trackpoint.lat, trackpoint.lon, trackpoint.alt, trackpoint.speed, trackpoint.date);
 			}
@@ -172,7 +172,7 @@ public class PoiManager {
 			if (c != null) {
 				if (c.moveToFirst()) {
 					do {
-						track.AddTrackPoint();
+						track.AddTrackPoint(); //track.trackpoints.size()
 						track.LastTrackPoint.lat = c.getDouble(0);
 						track.LastTrackPoint.lon = c.getDouble(1);
 					} while (c.moveToNext());

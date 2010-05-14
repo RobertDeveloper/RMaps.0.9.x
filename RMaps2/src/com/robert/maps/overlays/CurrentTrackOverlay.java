@@ -87,8 +87,8 @@ public class CurrentTrackOverlay extends OpenStreetMapViewOverlay {
 			final Cursor c = db.rawQuery("SELECT lat, lon FROM trackpoints ORDER BY id", null);
 			if(mTrack == null)
 				mTrack = new Track();
-			else if(mTrack.trackpoints != null)
-				mTrack.trackpoints.clear();
+			else 
+				mTrack.getPoints().clear();
 
 			if(c != null){
 				if (c.moveToFirst()) {
@@ -103,8 +103,7 @@ public class CurrentTrackOverlay extends OpenStreetMapViewOverlay {
 			db.close();
 
 			mBasePj = mOsmv.getProjection();
-			if(mTrack.trackpoints != null)
-				mPath = mBasePj.toPixelsTrackPoints(mTrack.trackpoints, mBaseCoords, mBaseLocation);
+			mPath = mBasePj.toPixelsTrackPoints(mTrack.getPoints(), mBaseCoords, mBaseLocation);
 
 			Ut.d("Track maped");
 
