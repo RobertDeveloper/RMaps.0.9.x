@@ -58,6 +58,7 @@ public class CurrentTrackOverlay extends OpenStreetMapViewOverlay {
 		mBaseCoords = new Point();
 		mBaseLocation = new GeoPoint(0, 0);
 		mLastZoom = -1;
+		mBasePj = null;
 
 		mOsmv = osmv;
 		mThread = new TrackThread();
@@ -87,7 +88,7 @@ public class CurrentTrackOverlay extends OpenStreetMapViewOverlay {
 			final Cursor c = db.rawQuery("SELECT lat, lon FROM trackpoints ORDER BY id", null);
 			if(mTrack == null)
 				mTrack = new Track();
-			else 
+			else
 				mTrack.getPoints().clear();
 
 			if(c != null){
@@ -208,7 +209,6 @@ public class CurrentTrackOverlay extends OpenStreetMapViewOverlay {
         		Ut.dd("setLastPoint "+mBaseCoords.x+" "+mBaseCoords.y);
         	} else {
            		final GeoPoint geopoint = new GeoPoint((int)(lat*1E6), (int)(lon*1E6));
-           		mBasePj = mOsmv.getProjection();
            	    final Point point = mBasePj.toPixels2(geopoint);
         		mPath.lineTo(point.x, point.y);
         		Ut.dd("lineTo "+point.x+" "+point.y);
