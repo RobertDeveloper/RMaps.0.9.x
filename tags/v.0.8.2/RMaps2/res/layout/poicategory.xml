@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent"
+	android:orientation="vertical"
+	android:fillViewport="true">
+	<LinearLayout
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent"
+		android:orientation="vertical">
+		<TextView
+			android:text="@string/PoiTitle"
+			android:id="@+id/TextTitle"
+			android:textAppearance="?android:attr/textAppearance"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"></TextView>
+		<EditText
+			android:text="@+id/Title"
+			android:layout_height="wrap_content"
+			android:layout_width="fill_parent"
+			android:id="@+id/Title"></EditText>
+
+		<CheckBox
+			android:text="@string/hiddencategory"
+			android:id="@+id/Hidden"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"></CheckBox>
+		<TextView
+			android:text="@string/PoiIcon"
+			android:id="@+id/TextIcon"
+			android:textAppearance="?android:attr/textAppearance"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"></TextView>
+		<ImageView
+			android:id="@+id/ImageIcon"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			></ImageView>
+		<TextView
+			android:text="@string/MinZoom"
+			android:id="@+id/TextMinZoom"
+			android:textAppearance="?android:attr/textAppearance"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"></TextView>
+		<EditText
+			android:layout_height="wrap_content"
+			android:layout_width="fill_parent"
+			android:id="@+id/MinZoom"></EditText>
+
+
+		<TextView
+			android:text=""
+			android:id="@+id/empty"
+			android:textAppearance="?android:attr/textAppearanceMedium"
+			android:layout_weight="1"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"></TextView>
+
+		<LinearLayout
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:orientation="horizontal"
+			style="@android:style/ButtonBar">
+
+			<Button
+				android:id="@+id/saveButton"
+				android:layout_width="0dip"
+				android:layout_height="wrap_content"
+				android:layout_weight="1"
+				android:text="@string/menu_done" />
+
+			<Button
+				android:id="@+id/discardButton"
+				android:layout_width="0dip"
+				android:layout_height="wrap_content"
+				android:layout_weight="1"
+				android:text="@string/menu_doNotSave" />
+
+		</LinearLayout>
+	
+</LinearLayout>
+</ScrollView>
