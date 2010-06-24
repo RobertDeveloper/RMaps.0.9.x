@@ -176,7 +176,7 @@ public class OpenStreetMapRendererInfo {
 			OutputStream out = null;
 
 			try {
-				in = new BufferedInputStream(new URL("http://trf.maps.yandex.net/trf/stat.js").openStream(), StreamUtils.IO_BUFFER_SIZE);
+				in = new BufferedInputStream(new URL("http://jgo.maps.yandex.net/trf/stat.js").openStream(), StreamUtils.IO_BUFFER_SIZE);
 
 				final ByteArrayOutputStream dataStream = new ByteArrayOutputStream();
 				out = new BufferedOutputStream(dataStream, StreamUtils.IO_BUFFER_SIZE);
