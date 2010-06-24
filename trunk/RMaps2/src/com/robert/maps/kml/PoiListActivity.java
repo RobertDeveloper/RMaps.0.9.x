@@ -166,6 +166,8 @@ public class PoiListActivity extends ListActivity {
 		case R.id.menu_toradar:
 			try {
 					Intent i = new Intent("com.google.android.radar.SHOW_RADAR");
+					i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+					i.putExtra("name", poi.Title);
 					i.putExtra("latitude",  (float)(poi.GeoPoint.getLatitudeE6() / 1000000f));
 					i.putExtra("longitude", (float)(poi.GeoPoint.getLongitudeE6() / 1000000f));
 					startActivity(i);
