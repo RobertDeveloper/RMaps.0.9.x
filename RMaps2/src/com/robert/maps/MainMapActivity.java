@@ -446,6 +446,8 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 			final PoiPoint poi1 = mPoiOverlay.getPoiPoint(markerIndex);
 			try {
 					Intent i = new Intent("com.google.android.radar.SHOW_RADAR");
+					i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+					i.putExtra("name", poi1.Title);
 					i.putExtra("latitude",  (float)(poi1.GeoPoint.getLatitudeE6() / 1000000f));
 					i.putExtra("longitude", (float)(poi1.GeoPoint.getLongitudeE6() / 1000000f));
 					startActivity(i);
