@@ -218,4 +218,5 @@ v.0.5.2\n
     <string name="prefcat_main_trackwriter">Track writer</string>
 	<string name="message_noradar">Не найдено приложение, работающее как радар. Пожалуйста, установите его из Маркета! Можно установить GPS Status или, например, Radar.</string>
 	<string name="message_nogpsstatus">Приложение GPS Status не найдено. Пожалуйста, установите его из Маркета!</string>
+	<string name="menu_exporttogpx">Экспорт в GPX файл</string>
 </resources>

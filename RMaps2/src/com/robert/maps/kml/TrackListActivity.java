@@ -1,6 +1,10 @@
 package com.robert.maps.kml;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -28,6 +32,7 @@ import android.widget.SimpleCursorAdapter;
 import android.widget.Toast;
 
 import com.robert.maps.R;
+import com.robert.maps.kml.XMLparser.SimpleXML;
 import com.robert.maps.trackwriter.DatabaseHelper;
 import com.robert.maps.utils.Ut;
 
@@ -147,6 +152,7 @@ public class TrackListActivity extends ListActivity {
 		menu.add(0, R.id.menu_gotopoi, 0, getText(R.string.menu_goto_track));
 		menu.add(0, R.id.menu_editpoi, 0, getText(R.string.menu_edit));
 		menu.add(0, R.id.menu_deletepoi, 0, getText(R.string.menu_delete));
+		menu.add(0, R.id.menu_exporttogpxpoi, 0, getText(R.string.menu_exporttogpx));
 
 		super.onCreateContextMenu(menu, v, menuInfo);
 	}
@@ -168,9 +174,36 @@ public class TrackListActivity extends ListActivity {
 			mPoiManager.deleteTrack(id);
 			FillData();
 	        break;
+		case R.id.menu_exporttogpxpoi:
+			DoExportTrack(id);
+	        break;
 		}
 
 		return super.onContextItemSelected(item);
+	}
+
+	private void DoExportTrack(int id) {
+		final Track track = mPoiManager.getTrack(id);
+
+		SimpleXML xml = new SimpleXML("gpx");
+		
+		File folder = Ut.getRMapsFolder("export", false);
+		File file = new File(folder.getAbsolutePath() + "/track" + id + ".gpx");
+		FileOutputStream out;
+		try {
+			file.createNewFile();
+			out = new FileOutputStream(file);
+			OutputStreamWriter wr = new OutputStreamWriter(out);
+			wr.write(SimpleXML.saveXml(xml));
+			wr.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 
 	@Override

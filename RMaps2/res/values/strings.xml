@@ -198,4 +198,5 @@ v.0.7.0\n
 	<string name="menu_toradar">To Radar</string>
 	<string name="message_noradar">Radar application not found. Please install it! You can install GPS Status or Radar from the Market.</string>
 	<string name="message_nogpsstatus">GPS Status not found. Please install it!</string>
+	<string name="menu_exporttogpx">Export to GPX file</string>
 </resources>
