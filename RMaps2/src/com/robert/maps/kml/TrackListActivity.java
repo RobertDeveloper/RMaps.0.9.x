@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.sql.Date;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -32,6 +33,7 @@ import android.widget.SimpleCursorAdapter;
 import android.widget.Toast;
 
 import com.robert.maps.R;
+import com.robert.maps.kml.Track.TrackPoint;
 import com.robert.maps.kml.XMLparser.SimpleXML;
 import com.robert.maps.trackwriter.DatabaseHelper;
 import com.robert.maps.utils.Ut;
@@ -186,6 +188,25 @@ public class TrackListActivity extends ListActivity {
 		final Track track = mPoiManager.getTrack(id);
 
 		SimpleXML xml = new SimpleXML("gpx");
+		xml.setAttr("xsi:schemaLocation", "http://www.topografix.com/GPX/1/0 http://www.topografix.com/GPX/1/0/gpx.xsd");
+		xml.setAttr("xmlns", "http://www.topografix.com/GPX/1/0");
+		xml.setAttr("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
+		xml.setAttr("creator", "RMaps - http://code.google.com/p/robertprojects/");
+		xml.setAttr("version", "1.0");
+		
+		xml.createChild("name").setText(track.Name);
+		xml.createChild("desc").setText(track.Descr);
+		
+		SimpleXML trk = xml.createChild("trk");
+		SimpleXML trkseg = trk.createChild("trkseg");
+		SimpleXML trkpt = null;
+		for (TrackPoint tp : track.getPoints()){
+			trkpt = trkseg.createChild("trkpt");
+			trkpt.setAttr("lat", Double.toString(tp.lat));
+			trkpt.setAttr("lon", Double.toString(tp.lon));
+			trkpt.createChild("ele").setText(Double.toString(tp.alt));
+			trkpt.createChild("time").setText(tp.date.toString());
+		}
 		
 		File folder = Ut.getRMapsFolder("export", false);
 		File file = new File(folder.getAbsolutePath() + "/track" + id + ".gpx");
