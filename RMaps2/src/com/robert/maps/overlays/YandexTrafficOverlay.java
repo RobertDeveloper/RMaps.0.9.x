@@ -12,6 +12,7 @@ import org.andnav.osm.views.util.OpenStreetMapTileProvider;
 import org.andnav.osm.views.util.Util;
 import org.andnav.osm.views.util.constants.OpenStreetMapViewConstants;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -19,6 +20,7 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import android.os.Handler;
 import android.os.Message;
+import android.util.DisplayMetrics;
 
 public class YandexTrafficOverlay extends OpenStreetMapViewOverlay implements OpenStreetMapConstants,
 		OpenStreetMapViewConstants {
@@ -31,7 +33,15 @@ public class YandexTrafficOverlay extends OpenStreetMapViewOverlay implements Op
 		mMapView = mapView;
 		mRendererInfo = new OpenStreetMapRendererInfo(ctx.getResources(), "yandextraffic");
 		mRendererInfo.LoadFromResources("yandextraffic", null);
-		mTileProvider = new OpenStreetMapTileProvider(ctx, new SimpleInvalidationHandler(), mRendererInfo, 10);
+
+		DisplayMetrics metrics = new DisplayMetrics();
+		((Activity) ctx).getWindowManager().getDefaultDisplay().getMetrics(metrics);
+		int OpenStreetMapTileCacheSize = 10;
+		if (metrics.heightPixels > 480 || metrics.widthPixels > 480)
+			OpenStreetMapTileCacheSize = 20;
+
+		mTileProvider = new OpenStreetMapTileProvider(ctx, new SimpleInvalidationHandler(), mRendererInfo,
+				OpenStreetMapTileCacheSize);
 	}
 
 	@Override
