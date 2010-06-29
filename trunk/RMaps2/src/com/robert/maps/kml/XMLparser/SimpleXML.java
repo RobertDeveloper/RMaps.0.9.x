@@ -22,46 +22,46 @@ import android.util.Xml;
 import com.robert.maps.utils.Ut;
 
 public class SimpleXML {
-	 
+
 	  private SimpleXML fparent;
 	  private String ftext;
 	  private String fname;
 	  private Vector<SimpleXML> fchild;
 	  private HashMap<String, String> fattrs;
-	 
+
 	  public String getText() {
 	    return ftext;
 	  }
-	 
+
 	  public void setText(String newText) {
 	    ftext = newText;
 	  }
-	 
+
 	  public String getAttr(String attrName) {
 	    if (fattrs.containsKey(attrName)) return fattrs.get(attrName);
 	    return "";
 	  }
-	 
+
 	  public void setAttr(String attrName, String attrValue) {
 	    fattrs.put(attrName, attrValue);
 	  }
-	 
+
 	  public int getAttrCount() {
 	    return fattrs.size();
 	  }
-	 
+
 	  public int getChildCount() {
 	    return fchild.size();
 	  }
-	 
+
 	  public Vector<SimpleXML> getChildren() {
 	    return fchild;
 	  }
-	 
+
 	  public SimpleXML getParent() {
 	    return fparent;
 	  }
-	 
+
 	  public void setParent(SimpleXML newParent) {
 	    if (fparent != null) {
 	      try {
@@ -77,7 +77,7 @@ public class SimpleXML {
 	      fparent = null;
 	    }
 	  }
-	 
+
 	  public SimpleXML(String nodeName) {
 	    fname = nodeName;
 	    ftext = "";
@@ -85,23 +85,23 @@ public class SimpleXML {
 	    fchild = new Vector<SimpleXML>();
 	    fparent = null;
 	  }
-	 
+
 	  public static SimpleXML fromNode(Node node) {
 	    SimpleXML ret = null;
 	    if (node != null) {
 	      try {
 	        ret = new SimpleXML(node.getNodeName());
-	 
+
 	        if (node.hasAttributes()) {
 	          NamedNodeMap nattr = node.getAttributes();
 	          for(int f = 0; f < nattr.getLength(); ++f) {
 	            ret.setAttr(nattr.item(f).getNodeName(), nattr.item(f).getNodeValue());
 	          }
 	        }
-	 
+
 	        if (node.hasChildNodes()) {
 	          NodeList nlc = node.getChildNodes();
-	 
+
 	          for(int f = 0; f < nlc.getLength(); ++f) {
 	            if (nlc.item(f).getNodeType() == Node.TEXT_NODE) {
 	              ret.ftext += nlc.item(f).getNodeValue();
@@ -112,7 +112,7 @@ public class SimpleXML {
 	                try {
 	                  int[] z =  { Integer.parseInt(nv) };
 	                  String s = new String(z, 0, z.length);
-	                  ret.ftext += s; 
+	                  ret.ftext += s;
 	                } catch (Exception e) { }
 	              }
 	            } else {
@@ -121,18 +121,18 @@ public class SimpleXML {
 	            }
 	          }
 	        }
-	 
+
 	      } catch (Exception e) { }
 	    }
 	    return ret;
 	  }
-	 
+
 	  public SimpleXML createChild(String nodeName) {
 	    SimpleXML child = new SimpleXML(nodeName);
 	    child.setParent(this);
 	    return child;
 	  }
-	 
+
 	  public Vector<SimpleXML> getChildren(String nodeName) {
 	    Vector<SimpleXML> ret = new Vector<SimpleXML>();
 	    try {
@@ -144,16 +144,16 @@ public class SimpleXML {
 	        }
 	      }
 	    } catch (Exception e) { }
-	 
+
 	    return ret;
 	  }
-	 
+
 	  public SimpleXML getNodeByPath(String nodePath, boolean createIfNotExists) {
-	 
+
 	    if (nodePath == null || nodePath.trim().equalsIgnoreCase("")) return null;
-	 
+
 	    SimpleXML ret = null;
-	 
+
 	    try {
 	      String[] bpath = nodePath.split("\\\\");
 	      if (bpath != null && bpath.length > 0) {
@@ -162,7 +162,7 @@ public class SimpleXML {
 	          String c = bpath[f].trim();
 	          if (c != null && c.length() > 0) scnt++;
 	        }
-	 
+
 	        if (scnt > 0) {
 	          ret = this;
 	          for(int f = 0; f < bpath.length; ++f) {
@@ -185,52 +185,53 @@ public class SimpleXML {
 	      }
 	    } catch (Exception e) {
 	    }
-	 
+
 	    return ret;
 	  }
-	 
+
 	  public static SimpleXML loadXml(String txxml) {
 	    SimpleXML ret = null;
 	    try {
 	      ret = SimpleXML.loadXml(new ByteArrayInputStream(txxml.getBytes()));
 	    } catch (Exception e) { }
-	 
+
 	    return ret;
 	  }
-	 
+
 	  public static SimpleXML loadXml(InputStream isxml) {
 	    SimpleXML ret = null;
 	    try {
 	      DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 	      DocumentBuilder dbBuilder = dbFactory.newDocumentBuilder();
-	 
+
 	      Document doc = dbBuilder.parse(isxml);
 	      ret = SimpleXML.fromNode(doc.getDocumentElement());
 	    } catch (Exception e) { }
-	 
+
 	    return ret;
 	  }
-	 
+
 	  void serializeNode(XmlSerializer ser) {
 	    try {
 	      ser.startTag("", fname);
 	      for(Entry<String, String> ee : fattrs.entrySet()) {
 	        ser.attribute("", ee.getKey(), ee.getValue());
 	      }
-	 
+
 	      if (fchild.size() > 0) {
-	        for(SimpleXML c: fchild) {
-	          c.serializeNode(ser);
-	        }
-	      } else {
-	        ser.text(ftext);
-	      }
+				for (SimpleXML c : fchild) {
+					c.serializeNode(ser);
+				}
+			} else {
+				if (ftext != null)
+					ser.text(ftext);
+			}
 	      ser.endTag("", fname);
-	    } catch(Exception e) { 
+	    } catch(Exception e) {
 	      Ut.d("e: " + e.toString());
 	    }
 	  }
-	 
+
 	  public static String saveXml(SimpleXML document) {
 	    try {
 	      ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -241,7 +242,7 @@ public class SimpleXML {
 	      xs.endDocument();
 	      return new String(baos.toByteArray());
 	    } catch(Exception e) { }
-	 
+
 	    return "";
 	  }
 }

@@ -40,7 +40,7 @@ public class CurrentTrackOverlay extends OpenStreetMapViewOverlay {
 	private Track mTrack;
 	private Point mBaseCoords;
 	private GeoPoint mBaseLocation;
-	private PoiManager mPoiManager;
+	//private PoiManager mPoiManager;
 	private TrackThread mThread;
 	private boolean mThreadRunned = false;
 	protected ExecutorService mThreadExecutor = Executors.newSingleThreadExecutor();
@@ -54,7 +54,7 @@ public class CurrentTrackOverlay extends OpenStreetMapViewOverlay {
 	public CurrentTrackOverlay(MainMapActivity mainMapActivity, PoiManager poiManager, OpenStreetMapView osmv) {
 		mTrack = new Track();
 		mContext = mainMapActivity;
-		mPoiManager = poiManager;
+		//mPoiManager = poiManager;
 		mBaseCoords = new Point();
 		mBaseLocation = new GeoPoint(0, 0);
 		mLastZoom = -1;
