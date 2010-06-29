@@ -95,6 +95,9 @@ Questions, sentences mail to robertk506@gmail.com\n
 How to and FAQ you can find on http://robertdeveloper.blogspot.com/\n
 	</string>
     <string name="whats_new_dialog_text">
+v.0.8.3\n
++ Export track to GPX, KML file\n
+\n
 v.0.8.2\n
 + Drawing of a current written track\n
 \n
@@ -199,4 +202,7 @@ v.0.7.0\n
 	<string name="message_noradar">Radar application not found. Please install it! You can install GPS Status or Radar from the Market.</string>
 	<string name="message_nogpsstatus">GPS Status not found. Please install it!</string>
 	<string name="menu_exporttogpx">Export to GPX file</string>
+	<string name="menu_exporttokml">Export to KML file</string>
+	<string name="message_trackexported">The track is exported to </string>
+	<string name="message_error">Error: </string>
 </resources>

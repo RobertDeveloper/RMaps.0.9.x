@@ -82,6 +82,10 @@ All rights reserved\n
 Как сделать офф-лайн карту и прочее можно почитать здесь http://robertdeveloper.blogspot.com/\n
 </string>
     <string name="whats_new_dialog_text">
+v.0.8.3\n
++ Экспорт трека в GPX, KML файл\n
++ Поправлена загрузка Яндекс.Пробок\n
+\n
 v.0.8.2\n
 + Отображение текущего записываемого трека\n
 \n
