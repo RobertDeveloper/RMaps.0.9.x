@@ -5,7 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -57,6 +57,17 @@ public class TrackListActivity extends ListActivity {
 					Toast.makeText(TrackListActivity.this, R.string.trackwriter_saved, Toast.LENGTH_LONG).show();
 
 				FillData();
+				break;
+			case R.id.menu_exporttogpxpoi:
+				if (msg.arg1 == 0)
+					Toast
+							.makeText(TrackListActivity.this,
+									getString(R.string.message_error) + " " + (String) msg.obj,
+									Toast.LENGTH_LONG).show();
+				else
+					Toast.makeText(TrackListActivity.this,
+							getString(R.string.message_trackexported) + " " + (String) msg.obj,
+							Toast.LENGTH_LONG).show();
 				break;
 			}
 		}
@@ -155,6 +166,7 @@ public class TrackListActivity extends ListActivity {
 		menu.add(0, R.id.menu_editpoi, 0, getText(R.string.menu_edit));
 		menu.add(0, R.id.menu_deletepoi, 0, getText(R.string.menu_delete));
 		menu.add(0, R.id.menu_exporttogpxpoi, 0, getText(R.string.menu_exporttogpx));
+		menu.add(0, R.id.menu_exporttokmlpoi, 0, getText(R.string.menu_exporttokml));
 
 		super.onCreateContextMenu(menu, v, menuInfo);
 	}
@@ -177,53 +189,119 @@ public class TrackListActivity extends ListActivity {
 			FillData();
 	        break;
 		case R.id.menu_exporttogpxpoi:
-			DoExportTrack(id);
+			DoExportTrackGPX(id);
+	        break;
+		case R.id.menu_exporttokmlpoi:
+			DoExportTrackKML(id);
 	        break;
 		}
 
 		return super.onContextItemSelected(item);
 	}
 
-	private void DoExportTrack(int id) {
-		final Track track = mPoiManager.getTrack(id);
+	private void DoExportTrackKML(int id) {
+		showDialog(R.id.dialog_wait);
+		final int trackid = id;
 
-		SimpleXML xml = new SimpleXML("gpx");
-		xml.setAttr("xsi:schemaLocation", "http://www.topografix.com/GPX/1/0 http://www.topografix.com/GPX/1/0/gpx.xsd");
-		xml.setAttr("xmlns", "http://www.topografix.com/GPX/1/0");
-		xml.setAttr("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
-		xml.setAttr("creator", "RMaps - http://code.google.com/p/robertprojects/");
-		xml.setAttr("version", "1.0");
+		this.mThreadPool.execute(new Runnable() {
+			public void run() {
+				final Track track = mPoiManager.getTrack(trackid);
+				
+				SimpleXML xml = new SimpleXML("kml");
+				xml.setAttr("xmlns:gx", "http://www.google.com/kml/ext/2.2");
+				xml.setAttr("xmlns", "http://www.opengis.net/kml/2.2");
+				
+				SimpleXML Placemark = xml.createChild("Placemark");
+				Placemark.createChild("name").setText(track.Name);
+				Placemark.createChild("desc").setText(track.Descr);
+				SimpleXML LineString = Placemark.createChild("LineString");
+				SimpleXML coordinates = LineString.createChild("coordinates");
+				StringBuilder builder = new StringBuilder();
+				
+				for (TrackPoint tp : track.getPoints()){
+					builder.append(tp.lon).append(",").append(tp.lat).append(",").append(tp.alt).append(" ");
+				}
+				coordinates.setText(builder.toString().trim());
+				
+				File folder = Ut.getRMapsFolder("export", false);
+				String filename = folder.getAbsolutePath() + "/track" + trackid + ".kml";
+				File file = new File(filename);
+				FileOutputStream out;
+				try {
+					file.createNewFile();
+					out = new FileOutputStream(file);
+					OutputStreamWriter wr = new OutputStreamWriter(out);
+					wr.write(SimpleXML.saveXml(xml));
+					wr.close();
+					Message.obtain(mHandler, R.id.menu_exporttogpxpoi, 1, 0, filename).sendToTarget();
+				} catch (FileNotFoundException e) {
+					Message.obtain(mHandler, R.id.menu_exporttogpxpoi, 0, 0, e.getMessage()).sendToTarget();
+					e.printStackTrace();
+				} catch (IOException e) {
+					Message.obtain(mHandler, R.id.menu_exporttogpxpoi, 0, 0, e.getMessage()).sendToTarget();
+					e.printStackTrace();
+				}
+
+				dlgWait.dismiss();
+			}
+		});
+
 		
-		xml.createChild("name").setText(track.Name);
-		xml.createChild("desc").setText(track.Descr);
-		
-		SimpleXML trk = xml.createChild("trk");
-		SimpleXML trkseg = trk.createChild("trkseg");
-		SimpleXML trkpt = null;
-		for (TrackPoint tp : track.getPoints()){
-			trkpt = trkseg.createChild("trkpt");
-			trkpt.setAttr("lat", Double.toString(tp.lat));
-			trkpt.setAttr("lon", Double.toString(tp.lon));
-			trkpt.createChild("ele").setText(Double.toString(tp.alt));
-			trkpt.createChild("time").setText(tp.date.toString());
-		}
-		
-		File folder = Ut.getRMapsFolder("export", false);
-		File file = new File(folder.getAbsolutePath() + "/track" + id + ".gpx");
-		FileOutputStream out;
-		try {
-			file.createNewFile();
-			out = new FileOutputStream(file);
-			OutputStreamWriter wr = new OutputStreamWriter(out);
-			wr.write(SimpleXML.saveXml(xml));
-			wr.close();
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	}
+
+	private void DoExportTrackGPX(int id) {
+		showDialog(R.id.dialog_wait);
+		final int trackid = id;
+
+		this.mThreadPool.execute(new Runnable() {
+			public void run() {
+				final Track track = mPoiManager.getTrack(trackid);
+				
+				SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss'Z'");
+				SimpleXML xml = new SimpleXML("gpx");
+				xml.setAttr("xsi:schemaLocation", "http://www.topografix.com/GPX/1/0 http://www.topografix.com/GPX/1/0/gpx.xsd");
+				xml.setAttr("xmlns", "http://www.topografix.com/GPX/1/0");
+				xml.setAttr("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
+				xml.setAttr("creator", "RMaps - http://code.google.com/p/robertprojects/");
+				xml.setAttr("version", "1.0");
+				
+				xml.createChild("name").setText(track.Name);
+				xml.createChild("desc").setText(track.Descr);
+				
+				SimpleXML trk = xml.createChild("trk");
+				SimpleXML trkseg = trk.createChild("trkseg");
+				SimpleXML trkpt = null;
+				for (TrackPoint tp : track.getPoints()){
+					trkpt = trkseg.createChild("trkpt");
+					trkpt.setAttr("lat", Double.toString(tp.lat));
+					trkpt.setAttr("lon", Double.toString(tp.lon));
+					trkpt.createChild("ele").setText(Double.toString(tp.alt));
+					trkpt.createChild("time").setText(formatter.format(tp.date));
+				}
+				
+				File folder = Ut.getRMapsFolder("export", false);
+				String filename = folder.getAbsolutePath() + "/track" + trackid + ".gpx";
+				File file = new File(filename);
+				FileOutputStream out;
+				try {
+					file.createNewFile();
+					out = new FileOutputStream(file);
+					OutputStreamWriter wr = new OutputStreamWriter(out);
+					wr.write(SimpleXML.saveXml(xml));
+					wr.close();
+					Message.obtain(mHandler, R.id.menu_exporttogpxpoi, 1, 0, filename).sendToTarget();
+				} catch (FileNotFoundException e) {
+					Message.obtain(mHandler, R.id.menu_exporttogpxpoi, 0, 0, e.getMessage()).sendToTarget();
+					e.printStackTrace();
+				} catch (IOException e) {
+					Message.obtain(mHandler, R.id.menu_exporttogpxpoi, 0, 0, e.getMessage()).sendToTarget();
+					e.printStackTrace();
+				}
+
+				dlgWait.dismiss();
+			}
+		});
+
 		
 	}
 
@@ -232,7 +310,7 @@ public class TrackListActivity extends ListActivity {
 		switch (id) {
 		case R.id.dialog_wait: {
 			dlgWait = new ProgressDialog(this);
-			dlgWait.setMessage("Please wait while loading...");
+			dlgWait.setMessage("Please wait...");
 			dlgWait.setIndeterminate(true);
 			dlgWait.setCancelable(false);
 			return dlgWait;
