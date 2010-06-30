@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+	xmlns:android="http://schemas.android.com/apk/res/android">
+	<item
+		android:id="@+id/search"
+		android:title="@string/menu_search"
+		android:icon="@android:drawable/ic_menu_search"></item>
+	<item
+		android:id="@+id/compass"
+		android:icon="@android:drawable/ic_menu_compass"
+		android:title="@string/menu_compass"></item>
+	<item
+		android:id="@+id/poilist"
+		android:icon="@android:drawable/ic_menu_myplaces"
+		android:title="@string/menu_poilist"></item>
+	<item
+		android:id="@+id/mylocation"
+		android:icon="@android:drawable/ic_menu_mylocation"
+		android:title="@string/menu_mylocation"></item>
+	<item
+		android:id="@+id/mapselector"
+		android:title="@string/menu_mapselector"
+		android:icon="@android:drawable/ic_menu_mapmode">
+		<menu>
+			<group
+				android:menuCategory="container"
+				android:id="@+id/menu_group_maps">
+
+			</group>
+		</menu>
+	</item>
+
+	<item
+		android:id="@+id/tracks"
+		android:title="@string/menu_tracks"></item>
+	<item
+		android:id="@+id/gpsstatus"
+		android:title="@string/menu_gpsstatus"></item>
+	<item
+		android:id="@+id/settings"
+		android:icon="@android:drawable/ic_menu_preferences"
+		android:title="@string/menu_settings"></item>
+	<item
+		android:id="@+id/about"
+		android:title="@string/menu_about"
+		android:icon="@android:drawable/ic_menu_info_details"></item>
+
+</menu>

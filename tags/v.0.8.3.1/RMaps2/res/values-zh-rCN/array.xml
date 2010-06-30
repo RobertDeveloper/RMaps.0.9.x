@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string-array name="projection_title">
+		<item>墨卡托 (球状体 - 如 Google.Map)</item>
+		<item>墨卡托 (椭圆体 - 如 Yandex.Map)</item>
+	</string-array>
+	<string-array name="projection_value">
+		<item>1</item>
+		<item>2</item>
+	</string-array>
+	<string-array name="accuracy_pref_value">
+		<item>1</item>
+		<item>0</item>
+		<item>5</item>
+		<item>10</item>
+		<item>20</item>
+		<item>50</item>
+		<item>100</item>
+	</string-array>
+	<string-array name="accuracy_pref_title">
+		<item>总是</item>
+		<item>从不</item>
+		<item>准确性 &gt; 5 m</item>
+		<item>准确性 &gt; 10 m</item>
+		<item>准确性 &gt; 20 m</item>
+		<item>准确性 &gt; 50 m</item>
+		<item>准确性 &gt; 100</item>
+	</string-array>
+<string-array name="zoomlevel_pref_title">
+	<item>未设置</item>
+	<item>1</item>
+	<item>2</item>
+	<item>3</item>
+	<item>4</item>
+	<item>5</item>
+	<item>6</item>
+	<item>7</item>
+	<item>8</item>
+	<item>9</item>
+	<item>10</item>
+	<item>11</item>
+	<item>12</item>
+	<item>13</item>
+	<item>14</item>
+	<item>15</item>
+	<item>16</item>
+	<item>17</item>
+	<item>18</item>
+	<item>19</item>
+	<item>20</item>
+</string-array>
+<string-array name="zoomlevel_pref_value">
+	<item>0</item>
+	<item>1</item>
+	<item>2</item>
+	<item>3</item>
+	<item>4</item>
+	<item>5</item>
+	<item>6</item>
+	<item>7</item>
+	<item>8</item>
+	<item>9</item>
+	<item>10</item>
+	<item>11</item>
+	<item>12</item>
+	<item>13</item>
+	<item>14</item>
+	<item>15</item>
+	<item>16</item>
+	<item>17</item>
+	<item>18</item>
+	<item>19</item>
+	<item>20</item>
+</string-array>
+</resources>
