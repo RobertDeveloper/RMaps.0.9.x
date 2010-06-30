@@ -340,7 +340,7 @@ public class GeoDatabase implements PoiConstants{
 	public Cursor getTrackPoints(long trackid) {
 		if (isDatabaseReady()) {
 			// не менять порядок полей
-			return mDatabase.rawQuery("SELECT lat, lon FROM trackpoints WHERE trackid = " + trackid + " ORDER BY id",
+			return mDatabase.rawQuery("SELECT lat, lon, alt, speed, date FROM trackpoints WHERE trackid = " + trackid + " ORDER BY id",
 					null);
 		}
 

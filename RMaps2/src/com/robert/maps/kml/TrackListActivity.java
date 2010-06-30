@@ -213,7 +213,7 @@ public class TrackListActivity extends ListActivity {
 				
 				SimpleXML Placemark = xml.createChild("Placemark");
 				Placemark.createChild("name").setText(track.Name);
-				Placemark.createChild("desc").setText(track.Descr);
+				Placemark.createChild("description").setText(track.Descr);
 				SimpleXML LineString = Placemark.createChild("LineString");
 				SimpleXML coordinates = LineString.createChild("coordinates");
 				StringBuilder builder = new StringBuilder();
