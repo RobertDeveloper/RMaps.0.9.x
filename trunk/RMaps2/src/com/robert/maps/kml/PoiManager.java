@@ -202,7 +202,7 @@ public class PoiManager {
 						track.LastTrackPoint.lon = c.getDouble(1);
 						track.LastTrackPoint.alt = c.getDouble(2);
 						track.LastTrackPoint.speed = c.getDouble(3);
-						track.LastTrackPoint.date.setTime(c.getLong(4)); //System.currentTimeMillis()
+						track.LastTrackPoint.date.setTime(c.getLong(4) * 1000); // System.currentTimeMillis()
 					} while (c.moveToNext());
 				}
 				c.close();
