@@ -217,7 +217,7 @@ public class TrackWriterService extends Service implements OpenStreetMapConstant
 		cv.put("lon", longitude);
 		cv.put("alt", altitude);
 		cv.put("speed", speed);
-		cv.put("date", currentTimeMillis);
+		cv.put("date", currentTimeMillis / 1000);
 		this.db.insert("trackpoints", null, cv);
 	}
 

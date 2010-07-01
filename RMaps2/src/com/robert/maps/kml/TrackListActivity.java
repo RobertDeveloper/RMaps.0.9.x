@@ -257,7 +257,7 @@ public class TrackListActivity extends ListActivity {
 			public void run() {
 				final Track track = mPoiManager.getTrack(trackid);
 				
-				SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss'Z'");
+				SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
 				SimpleXML xml = new SimpleXML("gpx");
 				xml.setAttr("xsi:schemaLocation", "http://www.topografix.com/GPX/1/0 http://www.topografix.com/GPX/1/0/gpx.xsd");
 				xml.setAttr("xmlns", "http://www.topografix.com/GPX/1/0");
