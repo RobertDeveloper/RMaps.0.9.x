@@ -23,6 +23,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
+import android.graphics.Rect;
 import android.graphics.Paint.Style;
 import android.os.Handler;
 import android.os.Message;
@@ -603,7 +604,9 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 						mapTileCoords[MAPTILE_LATITUDE_INDEX], zoomLevel);
 				final int tileLeft = this.mTouchMapOffsetX + centerMapTileScreenLeft + (x * tileSizePx);
 				final int tileTop = this.mTouchMapOffsetY + centerMapTileScreenTop + (y * tileSizePx);
-				c.drawBitmap(currentMapTile, tileLeft, tileTop, this.mPaint);
+				final Rect r = new Rect(tileLeft, tileTop, tileLeft+tileSizePx, tileTop+tileSizePx);
+				c.drawBitmap(currentMapTile, null, r, this.mPaint);
+				//c.drawBitmap(currentMapTile, tileLeft, tileTop, this.mPaint);
 
 				if (DEBUGMODE)
 				{
