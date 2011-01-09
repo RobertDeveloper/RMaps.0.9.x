@@ -142,7 +142,11 @@ public class GeoDatabase implements PoiConstants{
 			mDatabase = getDatabase();
 
 		if(ret == false)
-			Toast.makeText(mCtx, mCtx.getText(R.string.message_geodata_notavailable), Toast.LENGTH_LONG).show();
+			try {
+				Toast.makeText(mCtx, mCtx.getText(R.string.message_geodata_notavailable), Toast.LENGTH_LONG).show();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 
 		return ret;
 	}
