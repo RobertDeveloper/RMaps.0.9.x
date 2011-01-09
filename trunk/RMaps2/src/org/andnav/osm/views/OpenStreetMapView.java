@@ -602,20 +602,22 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 				final Bitmap currentMapTile = this.mTileProvider.getMapTile(tileURLString,
 						this.mRendererInfo.TILE_SOURCE_TYPE, mapTileCoords[MAPTILE_LONGITUDE_INDEX],
 						mapTileCoords[MAPTILE_LATITUDE_INDEX], zoomLevel);
-				final int tileLeft = this.mTouchMapOffsetX + centerMapTileScreenLeft + (x * tileSizePx);
-				final int tileTop = this.mTouchMapOffsetY + centerMapTileScreenTop + (y * tileSizePx);
-				final Rect r = new Rect(tileLeft, tileTop, tileLeft+tileSizePx, tileTop+tileSizePx);
-				c.drawBitmap(currentMapTile, null, r, this.mPaint);
-				//c.drawBitmap(currentMapTile, tileLeft, tileTop, this.mPaint);
+				if (currentMapTile != null){
+					final int tileLeft = this.mTouchMapOffsetX + centerMapTileScreenLeft + (x * tileSizePx);
+					final int tileTop = this.mTouchMapOffsetY + centerMapTileScreenTop + (y * tileSizePx);
+					final Rect r = new Rect(tileLeft, tileTop, tileLeft+tileSizePx, tileTop+tileSizePx);
+					c.drawBitmap(currentMapTile, null, r, this.mPaint);
 
-				if (DEBUGMODE)
-				{
-					c.drawLine(tileLeft, tileTop, tileLeft + tileSizePx, tileTop, this.mPaint);
-					c.drawLine(tileLeft, tileTop, tileLeft, tileTop + tileSizePx, this.mPaint);
-					c.drawText("y x = " + mapTileCoords[MAPTILE_LATITUDE_INDEX] + " "
-							+ mapTileCoords[MAPTILE_LONGITUDE_INDEX] + " zoom " + zoomLevel + " "
-							+ mRendererInfo.getQRTS(mapTileCoords[MAPTILE_LONGITUDE_INDEX], mapTileCoords[MAPTILE_LATITUDE_INDEX], zoomLevel), tileLeft + 5,
-							tileTop + 15, this.mPaint);
+					if (DEBUGMODE)
+					{
+						c.drawLine(tileLeft, tileTop, tileLeft + tileSizePx, tileTop, this.mPaint);
+						c.drawLine(tileLeft, tileTop, tileLeft, tileTop + tileSizePx, this.mPaint);
+						c.drawText("y x = " + mapTileCoords[MAPTILE_LATITUDE_INDEX] + " "
+								+ mapTileCoords[MAPTILE_LONGITUDE_INDEX] + " zoom " + zoomLevel + " "
+								+ mRendererInfo.getQRTS(mapTileCoords[MAPTILE_LONGITUDE_INDEX], mapTileCoords[MAPTILE_LATITUDE_INDEX], zoomLevel), tileLeft + 5,
+								tileTop + 15, this.mPaint);
+					}
+
 				}
 
 			}
