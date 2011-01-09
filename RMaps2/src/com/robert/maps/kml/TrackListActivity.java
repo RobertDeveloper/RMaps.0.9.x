@@ -97,7 +97,7 @@ public class TrackListActivity extends ListActivity {
 			}
 		});
 	}
-	
+
 	private void doSaveTrack(){
 		showDialog(R.id.dialog_wait);
 
@@ -107,7 +107,8 @@ public class TrackListActivity extends ListActivity {
 				File folder = Ut.getRMapsFolder("data", false);
 				db = new DatabaseHelper(TrackListActivity.this, folder.getAbsolutePath() + "/writedtrack.db").getWritableDatabase();
 				final int res = mPoiManager.getGeoDatabase().saveTrackFromWriter(db);
-				db.releaseReference();
+				//db.releaseReference();
+				db.close();
 
 				dlgWait.dismiss();
 				Message.obtain(mHandler, R.id.tracks, res, 0).sendToTarget();
@@ -206,23 +207,23 @@ public class TrackListActivity extends ListActivity {
 		this.mThreadPool.execute(new Runnable() {
 			public void run() {
 				final Track track = mPoiManager.getTrack(trackid);
-				
+
 				SimpleXML xml = new SimpleXML("kml");
 				xml.setAttr("xmlns:gx", "http://www.google.com/kml/ext/2.2");
 				xml.setAttr("xmlns", "http://www.opengis.net/kml/2.2");
-				
+
 				SimpleXML Placemark = xml.createChild("Placemark");
 				Placemark.createChild("name").setText(track.Name);
 				Placemark.createChild("description").setText(track.Descr);
 				SimpleXML LineString = Placemark.createChild("LineString");
 				SimpleXML coordinates = LineString.createChild("coordinates");
 				StringBuilder builder = new StringBuilder();
-				
+
 				for (TrackPoint tp : track.getPoints()){
 					builder.append(tp.lon).append(",").append(tp.lat).append(",").append(tp.alt).append(" ");
 				}
 				coordinates.setText(builder.toString().trim());
-				
+
 				File folder = Ut.getRMapsFolder("export", false);
 				String filename = folder.getAbsolutePath() + "/track" + trackid + ".kml";
 				File file = new File(filename);
@@ -246,7 +247,7 @@ public class TrackListActivity extends ListActivity {
 			}
 		});
 
-		
+
 	}
 
 	private void DoExportTrackGPX(int id) {
@@ -256,7 +257,7 @@ public class TrackListActivity extends ListActivity {
 		this.mThreadPool.execute(new Runnable() {
 			public void run() {
 				final Track track = mPoiManager.getTrack(trackid);
-				
+
 				SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
 				SimpleXML xml = new SimpleXML("gpx");
 				xml.setAttr("xsi:schemaLocation", "http://www.topografix.com/GPX/1/0 http://www.topografix.com/GPX/1/0/gpx.xsd");
@@ -264,10 +265,10 @@ public class TrackListActivity extends ListActivity {
 				xml.setAttr("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
 				xml.setAttr("creator", "RMaps - http://code.google.com/p/robertprojects/");
 				xml.setAttr("version", "1.0");
-				
+
 				xml.createChild("name").setText(track.Name);
 				xml.createChild("desc").setText(track.Descr);
-				
+
 				SimpleXML trk = xml.createChild("trk");
 				SimpleXML trkseg = trk.createChild("trkseg");
 				SimpleXML trkpt = null;
@@ -278,7 +279,7 @@ public class TrackListActivity extends ListActivity {
 					trkpt.createChild("ele").setText(Double.toString(tp.alt));
 					trkpt.createChild("time").setText(formatter.format(tp.date));
 				}
-				
+
 				File folder = Ut.getRMapsFolder("export", false);
 				String filename = folder.getAbsolutePath() + "/track" + trackid + ".gpx";
 				File file = new File(filename);
@@ -302,7 +303,7 @@ public class TrackListActivity extends ListActivity {
 			}
 		});
 
-		
+
 	}
 
 	@Override
