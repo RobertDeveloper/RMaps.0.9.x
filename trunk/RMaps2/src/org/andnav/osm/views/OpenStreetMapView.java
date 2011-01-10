@@ -54,6 +54,7 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 	protected int mZoomLevel = 0;
 	private float mBearing = 0;
 	private boolean mActionMoveDetected;
+	private boolean mStopMoveDetecting;
 
 	protected OpenStreetMapRendererInfo mRendererInfo;
 	protected final OpenStreetMapTileProvider mTileProvider;
@@ -67,6 +68,8 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 	public int mTouchDownY;
 	public int mTouchMapOffsetX;
 	public int mTouchMapOffsetY;
+	public double mTouchScale;
+	private double mTouchDiagonalSize;
 
 	private OpenStreetMapView mMiniMap, mMaxiMap;
 
@@ -92,6 +95,7 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 		this.mRendererInfo = aRendererInfo;
 		this.mTileProvider = new OpenStreetMapTileProvider(context, mSimpleInvalidationHandler, aRendererInfo, 30);
 		this.mPaint.setAntiAlias(true);
+		this.mTouchScale = 1;
 
 		setFocusable(true);
 		setFocusableInTouchMode(true);
@@ -459,18 +463,25 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 		switch (event.getAction()) {
 		case MotionEvent.ACTION_DOWN:
 			mActionMoveDetected = false;
+			mStopMoveDetecting = false;
 			this.mTouchDownX = (int) event.getX();
 			this.mTouchDownY = (int) event.getY();
 			invalidate();
 			break;
 		case MotionEvent.ACTION_MOVE:
-			if (Math.max(Math.abs(mTouchDownX - event.getX()), Math.abs(mTouchDownY - event.getY())) > 6) {
+			if (Math.max(Math.abs(mTouchDownX - event.getX()), Math.abs(mTouchDownY - event.getY())) > 6 && !mStopMoveDetecting) {
 				mActionMoveDetected = true; // компенсируем дрожание рук
 				final float aRotateToAngle = 360 - mBearing;
 				this.mTouchMapOffsetX = (int) (Math.sin(Math.toRadians(aRotateToAngle)) * (event.getY() - this.mTouchDownY))
 						+ (int) (Math.cos(Math.toRadians(aRotateToAngle)) * (event.getX() - this.mTouchDownX));
 				this.mTouchMapOffsetY = (int) (Math.cos(Math.toRadians(aRotateToAngle)) * (event.getY() - this.mTouchDownY))
 						- (int) (Math.sin(Math.toRadians(aRotateToAngle)) * (event.getX() - this.mTouchDownX));
+
+				if(event.getPointerCount()>1){
+					final double DiagonalSize = Math.hypot((double)(event.getX(event.findPointerIndex(0))-event.getX(event.findPointerIndex(1))), (double)(event.getY(event.findPointerIndex(0))-event.getY(event.findPointerIndex(1))));
+					mTouchScale = (DiagonalSize / mTouchDiagonalSize);
+				}
+
 				invalidate();
 
 				Message.obtain(mMainActivityCallbackHandler, R.id.user_moved_map).sendToTarget();
@@ -479,12 +490,35 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 			break;
 		case MotionEvent.ACTION_UP:
 			mActionMoveDetected = false;
+			mStopMoveDetecting = true;
 			final int viewWidth_2 = this.getWidth() / 2;
 			final int viewHeight_2 = this.getHeight() / 2;
 			final GeoPoint newCenter = this.getProjection().fromPixels(viewWidth_2, viewHeight_2);
 			this.mTouchMapOffsetX = 0;
 			this.mTouchMapOffsetY = 0;
 			this.setMapCenter(newCenter); // Calls invalidate
+			break;
+		case MotionEvent.ACTION_POINTER_DOWN:
+		case MotionEvent.ACTION_POINTER_2_DOWN:
+			mTouchDiagonalSize = Math.hypot((double)(event.getX(event.findPointerIndex(0))-event.getX(event.findPointerIndex(1))), (double)(event.getY(event.findPointerIndex(0))-event.getY(event.findPointerIndex(1))));
+			mActionMoveDetected = true;
+			break;
+		case MotionEvent.ACTION_POINTER_UP:
+		case MotionEvent.ACTION_POINTER_2_UP:
+			if(mTouchScale > 1)
+				setZoomLevel(getZoomLevel()+(int)Math.round(mTouchScale)-1);
+			else
+				setZoomLevel(getZoomLevel()-(int)Math.round(1/mTouchScale)+1);
+			mTouchScale = 1;
+
+			mActionMoveDetected = false;
+			mStopMoveDetecting = true;
+			final GeoPoint newCenter2 = this.getProjection().fromPixels(this.getWidth() / 2, this.getHeight() / 2);
+			this.mTouchMapOffsetX = 0;
+			this.mTouchMapOffsetY = 0;
+			this.setMapCenter(newCenter2); // Calls invalidate
+
+			Message.obtain(mMainActivityCallbackHandler, R.id.set_title).sendToTarget();
 			break;
 		}
 
@@ -502,7 +536,8 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 		final int zoomLevel = this.mZoomLevel;
 		final int viewWidth = this.getWidth();
 		final int viewHeight = this.getHeight();
-		final int tileSizePx = this.mRendererInfo.getTileSizePx(this.mZoomLevel);
+		final int tileSizePxNotScale = this.mRendererInfo.getTileSizePx(this.mZoomLevel);
+		final int tileSizePx = (int)(tileSizePxNotScale*mTouchScale);
 
 		c.save();
 		final float aRotateToAngle = 360 - mBearing;
@@ -551,17 +586,17 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 		 */
 		// TODO Нужен адекватный алгоритм для отбора необходимых тайлов, попадающих в экран при повороте карты
 		int additionalTilesNeededToLeftOfCenter = (int) Math
-				.ceil((float) centerMapTileScreenLeft / tileSizePx); // i.e.
+				.ceil((float) centerMapTileScreenLeft / tileSizePxNotScale); // i.e.
 																		// "30 / 256"
 																		// = 1;
 		int additionalTilesNeededToRightOfCenter = (int) Math
-				.ceil((float) (viewWidth - centerMapTileScreenRight) / tileSizePx);
+				.ceil((float) (viewWidth - centerMapTileScreenRight) / tileSizePxNotScale);
 		int additionalTilesNeededToTopOfCenter = (int) Math
-				.ceil((float) centerMapTileScreenTop / tileSizePx); // i.e.
+				.ceil((float) centerMapTileScreenTop / tileSizePxNotScale); // i.e.
 																	// "30 / 256"
 																	// = 1;
 		int additionalTilesNeededToBottomOfCenter = (int) Math
-				.ceil((float) (viewHeight - centerMapTileScreenBottom) / tileSizePx);
+				.ceil((float) (viewHeight - centerMapTileScreenBottom) / tileSizePxNotScale);
 
 		final int mapTileUpperBound = mRendererInfo.getTileUpperBound(zoomLevel);
 		final int[] mapTileCoords = new int[] { centerMapTileCoords[MAPTILE_LATITUDE_INDEX],
@@ -716,7 +751,7 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 															// make it only
 															// 'valid' for a
 															// short time.
-			tileSizePx = OpenStreetMapView.this.mRendererInfo.getTileSizePx(OpenStreetMapView.this.mZoomLevel);
+			tileSizePx = (int)(OpenStreetMapView.this.mRendererInfo.getTileSizePx(OpenStreetMapView.this.mZoomLevel)*OpenStreetMapView.this.mTouchScale);
 
 			/*
 			 * Get the center MapTile which is above this.mLatitudeE6 and
