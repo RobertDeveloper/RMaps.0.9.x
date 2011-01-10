@@ -64,13 +64,9 @@
 			android:defaultValue="true"
 			android:summary="@string/pref_gpsfastupdate_summary"
 			android:title="@string/pref_gpsfastupdate"></CheckBoxPreference>
-		<CheckBoxPreference
-			android:title="@string/pref_bottomzoomcontrol"
-			android:summary="@string/pref_bottomzoomcontrol_summary"
-			android:key="pref_bottomzoomcontrol"
-			android:defaultValue="true"></CheckBoxPreference>
+		
 
-		<ListPreference
+		<ListPreference android:entryValues="@array/zoomctrl_pref_values" android:entries="@array/zoomctrl_pref_title" android:title="@string/pref_zoomctrl" android:key="pref_zoomctrl" android:summary="@string/pref_zoomctrl_summary" android:defaultValue="1"></ListPreference><ListPreference
 			android:title="@string/pref_zoomminlevel"
 			android:summary="@string/pref_zoomminlevel_summary"
 			android:key="pref_zoomminlevel"
@@ -95,7 +91,8 @@
 			android:summary="@string/pref_northdirectionup_summary"
 			android:defaultValue="true"></CheckBoxPreference>
 
-	</PreferenceCategory>
+	
+</PreferenceCategory>
 
 	<PreferenceCategory
 		android:title="@string/prefcat_main_poi">

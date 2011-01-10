@@ -234,15 +234,15 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 		}
 
         {
-        	final boolean sideBottom = pref.getBoolean("pref_bottomzoomcontrol", true);
+        	final int sideBottom = Integer.parseInt(pref.getString("pref_zoomctrl", "1"));
 
             /* Compass */
-        	mCompassView = new CompassView(this, sideBottom);
+        	mCompassView = new CompassView(this, sideBottom == 2 ? false : true);
 	        mCompassView.setVisibility(mCompassEnabled ? View.VISIBLE : View.INVISIBLE);
 	        /* Create RelativeLayoutParams, that position in in the top right corner. */
 	        final RelativeLayout.LayoutParams compassParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
 	        compassParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-	        compassParams.addRule(!sideBottom ? RelativeLayout.ALIGN_PARENT_BOTTOM : RelativeLayout.ALIGN_PARENT_TOP);
+	        compassParams.addRule(!(sideBottom == 2 ? false : true) ? RelativeLayout.ALIGN_PARENT_BOTTOM : RelativeLayout.ALIGN_PARENT_TOP);
 	        rl.addView(mCompassView, compassParams);
 
             /* AutoFollow */
@@ -252,7 +252,7 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 	        /* Create RelativeLayoutParams, that position in in the top right corner. */
 	        final RelativeLayout.LayoutParams followParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
 	        followParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-	        followParams.addRule(!sideBottom ? RelativeLayout.ALIGN_PARENT_BOTTOM : RelativeLayout.ALIGN_PARENT_TOP);
+	        followParams.addRule(!(sideBottom == 2 ? false : true) ? RelativeLayout.ALIGN_PARENT_BOTTOM : RelativeLayout.ALIGN_PARENT_TOP);
 	        rl.addView(ivAutoFollow, followParams);
 
 	        ivAutoFollow.setOnClickListener(new OnClickListener(){
@@ -265,68 +265,70 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 	        });
 
 	        /* ZoomControls */
-	        /* Create a ImageView with a zoomIn-Icon. */
-	        final ImageView ivZoomIn = new ImageView(this);
-	        ivZoomIn.setImageResource(R.drawable.zoom_in);
-	        /* Create RelativeLayoutParams, that position in in the top right corner. */
-	        final RelativeLayout.LayoutParams zoominParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-	        zoominParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-	        zoominParams.addRule(sideBottom ? RelativeLayout.ALIGN_PARENT_BOTTOM : RelativeLayout.ALIGN_PARENT_TOP);
-	        rl.addView(ivZoomIn, zoominParams);
+	        if(sideBottom > 0){
+		        /* Create a ImageView with a zoomIn-Icon. */
+		        final ImageView ivZoomIn = new ImageView(this);
+		        ivZoomIn.setImageResource(R.drawable.zoom_in);
+		        /* Create RelativeLayoutParams, that position in in the top right corner. */
+		        final RelativeLayout.LayoutParams zoominParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+		        zoominParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+		        zoominParams.addRule((sideBottom == 2 ? false : true) ? RelativeLayout.ALIGN_PARENT_BOTTOM : RelativeLayout.ALIGN_PARENT_TOP);
+		        rl.addView(ivZoomIn, zoominParams);
 
-	        ivZoomIn.setOnClickListener(new OnClickListener(){
-				// @Override
-				public void onClick(View v) {
-					MainMapActivity.this.mOsmv.zoomIn();
-					setTitle();
+		        ivZoomIn.setOnClickListener(new OnClickListener(){
+					// @Override
+					public void onClick(View v) {
+						MainMapActivity.this.mOsmv.zoomIn();
+						setTitle();
 
-					if(MainMapActivity.this.mOsmv.getZoomLevel() > 16 && MainMapActivity.this.mOsmv.getRenderer().YANDEX_TRAFFIC_ON == 1)
-						Toast.makeText(MainMapActivity.this, R.string.no_traffic, Toast.LENGTH_SHORT).show();
-				}
-	        });
-	        ivZoomIn.setOnLongClickListener(new OnLongClickListener(){
-				// @Override
-				public boolean onLongClick(View v) {
-					SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(MainMapActivity.this);
-					final int zoom = Integer.parseInt(pref.getString("pref_zoommaxlevel", "17"));
-					if (zoom > 0) {
-						MainMapActivity.this.mOsmv.setZoomLevel(zoom - 1);
+						if(MainMapActivity.this.mOsmv.getZoomLevel() > 16 && MainMapActivity.this.mOsmv.getRenderer().YANDEX_TRAFFIC_ON == 1)
+							Toast.makeText(MainMapActivity.this, R.string.no_traffic, Toast.LENGTH_SHORT).show();
+					}
+		        });
+		        ivZoomIn.setOnLongClickListener(new OnLongClickListener(){
+					// @Override
+					public boolean onLongClick(View v) {
+						SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(MainMapActivity.this);
+						final int zoom = Integer.parseInt(pref.getString("pref_zoommaxlevel", "17"));
+						if (zoom > 0) {
+							MainMapActivity.this.mOsmv.setZoomLevel(zoom - 1);
+							setTitle();
+						}
+						return true;
+					}
+		        });
+
+
+		        /* Create a ImageView with a zoomOut-Icon. */
+		        final ImageView ivZoomOut = new ImageView(this);
+		        ivZoomOut.setImageResource(R.drawable.zoom_out);
+
+		        /* Create RelativeLayoutParams, that position in in the top left corner. */
+		        final RelativeLayout.LayoutParams zoomoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+		        zoomoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+		        zoomoutParams.addRule((sideBottom == 2 ? false : true) ? RelativeLayout.ALIGN_PARENT_BOTTOM : RelativeLayout.ALIGN_PARENT_TOP);
+		        rl.addView(ivZoomOut, zoomoutParams);
+
+		        ivZoomOut.setOnClickListener(new OnClickListener(){
+					// @Override
+					public void onClick(View v) {
+						MainMapActivity.this.mOsmv.zoomOut();
 						setTitle();
 					}
-					return true;
-				}
-	        });
-
-
-	        /* Create a ImageView with a zoomOut-Icon. */
-	        final ImageView ivZoomOut = new ImageView(this);
-	        ivZoomOut.setImageResource(R.drawable.zoom_out);
-
-	        /* Create RelativeLayoutParams, that position in in the top left corner. */
-	        final RelativeLayout.LayoutParams zoomoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-	        zoomoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-	        zoomoutParams.addRule(sideBottom ? RelativeLayout.ALIGN_PARENT_BOTTOM : RelativeLayout.ALIGN_PARENT_TOP);
-	        rl.addView(ivZoomOut, zoomoutParams);
-
-	        ivZoomOut.setOnClickListener(new OnClickListener(){
-				// @Override
-				public void onClick(View v) {
-					MainMapActivity.this.mOsmv.zoomOut();
-					setTitle();
-				}
-	        });
-	        ivZoomOut.setOnLongClickListener(new OnLongClickListener(){
-				// @Override
-				public boolean onLongClick(View v) {
-					SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(MainMapActivity.this);
-					final int zoom = Integer.parseInt(pref.getString("pref_zoomminlevel", "10"));
-					if (zoom > 0) {
-						MainMapActivity.this.mOsmv.setZoomLevel(zoom - 1);
-						setTitle();
+		        });
+		        ivZoomOut.setOnLongClickListener(new OnLongClickListener(){
+					// @Override
+					public boolean onLongClick(View v) {
+						SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(MainMapActivity.this);
+						final int zoom = Integer.parseInt(pref.getString("pref_zoomminlevel", "10"));
+						if (zoom > 0) {
+							MainMapActivity.this.mOsmv.setZoomLevel(zoom - 1);
+							setTitle();
+						}
+						return true;
 					}
-					return true;
-				}
-	        });
+		        });
+	        };
         }
 
 		mDrivingDirectionUp = pref.getBoolean("pref_drivingdirectionup", true);

@@ -12,8 +12,6 @@
     <string name="pref_zoomminlevel">Минимальный зум</string>
     <string name="pref_zoommaxlevel_summary">Устанавливать этот зум при долгом нажатии на плюс</string>
     <string name="pref_zoommaxlevel">Максимальный зум</string>
-    <string name="pref_bottomzoomcontrol_summary">Размещать кнопки зума в нижней части экрана</string>
-    <string name="pref_bottomzoomcontrol">Кнопки зума внизу</string>
     <string name="app_user_id"/>
     <string name="app_user_label">Robert.Developer</string>
     <string name="prefcat_main_misc">Прочее</string>
