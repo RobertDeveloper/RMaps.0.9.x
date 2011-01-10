@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <resources>
+    <string name="pref_zoomctrl_summary">Position of buttons on the screen</string>
+    <string name="pref_zoomctrl">Zoom buttons</string>
 	<string name="pref_screen_orientation">Screen Orientation</string>
 	<string name="pref_screen_orientation_summary">Choose the screen orientation</string>
     <string name="pref_googlelanguagecode_summary">Localisation of Google Map</string>
@@ -15,8 +17,6 @@
     <string name="pref_zoomminlevel">Favourite min zoom</string>
     <string name="pref_zoommaxlevel_summary">Set this zoom level at long press on plus button</string>
     <string name="pref_zoommaxlevel">Favourite max zoom</string>
-    <string name="pref_bottomzoomcontrol_summary">Show zoom buttons at bottom side</string>
-    <string name="pref_bottomzoomcontrol">Bottom zoom</string>
     <string name="app_user_id"/>
     <string name="app_user_label">Robert.Developer</string>
     <string name="prefcat_main_misc">Misc</string>

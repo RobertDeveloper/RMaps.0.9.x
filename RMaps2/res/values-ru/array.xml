@@ -36,4 +36,9 @@
 	<item>19</item>
 	<item>20</item>
 </string-array>
+<string-array name="zoomctrl_pref_title">
+	<item>Внизу</item>
+	<item>Вверху</item>
+	<item>Не показывать</item>
+</string-array>
 </resources>
