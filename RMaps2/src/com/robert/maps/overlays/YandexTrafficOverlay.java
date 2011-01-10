@@ -18,6 +18,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Point;
+import android.graphics.Rect;
 import android.os.Handler;
 import android.os.Message;
 import android.util.DisplayMetrics;
@@ -54,7 +55,7 @@ public class YandexTrafficOverlay extends OpenStreetMapViewOverlay implements Op
 		final int zoomLevel = mMapView.getZoomLevel();
 		final int viewWidth = mMapView.getWidth();
 		final int viewHeight = mMapView.getHeight();
-		final int tileSizePx = this.mRendererInfo.getTileSizePx(zoomLevel);
+		final int tileSizePx = (int)(this.mRendererInfo.getTileSizePx(zoomLevel)*osmv.mTouchScale);
 
 		/*
 		 * Get the center MapTile which is above this.mLatitudeE6 and this.mLongitudeE6 .
@@ -111,7 +112,8 @@ public class YandexTrafficOverlay extends OpenStreetMapViewOverlay implements Op
 				if (currentMapTile != null) {
 					final int tileLeft = mMapView.mTouchMapOffsetX + centerMapTileScreenLeft + (x * tileSizePx);
 					final int tileTop = mMapView.mTouchMapOffsetY + centerMapTileScreenTop + (y * tileSizePx);
-					c.drawBitmap(currentMapTile, tileLeft, tileTop, this.mPaint);
+					final Rect r = new Rect(tileLeft, tileTop, tileLeft+tileSizePx, tileTop+tileSizePx);
+					c.drawBitmap(currentMapTile, null, r, this.mPaint);
 					if (DEBUGMODE) {
 						c.drawText("y x = " + mapTileCoords[0] + " " + mapTileCoords[1] + " zoom " + zoomLevel,
 								tileLeft + 5, tileTop + 45, this.mPaint);
