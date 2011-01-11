@@ -15,6 +15,7 @@ import org.andnav.osm.views.util.OpenStreetMapTileDownloader;
 import org.andnav.osm.views.util.OpenStreetMapTileFilesystemProvider;
 import org.andnav.osm.views.util.OpenStreetMapTileProvider;
 import org.andnav.osm.views.util.Util;
+import org.andnav.osm.views.util.VersionedGestureDetector;
 import org.andnav.osm.views.util.constants.OpenStreetMapViewConstants;
 
 import android.content.Context;
@@ -60,6 +61,7 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 	protected final OpenStreetMapTileProvider mTileProvider;
 
 	protected final GestureDetector mGestureDetector = new GestureDetector(new OpenStreetMapViewGestureDetectorListener());
+	private VersionedGestureDetector mDetector = VersionedGestureDetector.newInstance(new GestureCallback());
 
 	protected final List<OpenStreetMapViewOverlay> mOverlays = new ArrayList<OpenStreetMapViewOverlay>();
 
@@ -452,33 +454,27 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 		return this.getProjection().fromPixels(mTouchDownX, mTouchDownY, mBearing);
 	}
 
-	@Override
-	public boolean onTouchEvent(final MotionEvent event) {
-		for (OpenStreetMapViewOverlay osmvo : this.mOverlays)
-			if (osmvo.onTouchEvent(event, this))
-				return true;
+	private class GestureCallback implements VersionedGestureDetector.OnGestureListener {
 
-		this.mGestureDetector.onTouchEvent(event);
-
-		switch (event.getAction()) {
-		case MotionEvent.ACTION_DOWN:
+		public void onDown(MotionEvent event) {
 			mActionMoveDetected = false;
 			mStopMoveDetecting = false;
-			this.mTouchDownX = (int) event.getX();
-			this.mTouchDownY = (int) event.getY();
+			OpenStreetMapView.this.mTouchDownX = (int) event.getX();
+			OpenStreetMapView.this.mTouchDownY = (int) event.getY();
 			invalidate();
-			break;
-		case MotionEvent.ACTION_MOVE:
+		}
+
+		public void onMove(MotionEvent event, int count, float x1, float y1, float x2, float y2) {
 			if (Math.max(Math.abs(mTouchDownX - event.getX()), Math.abs(mTouchDownY - event.getY())) > 6 && !mStopMoveDetecting) {
 				mActionMoveDetected = true; // компенсируем дрожание рук
 				final float aRotateToAngle = 360 - mBearing;
-				this.mTouchMapOffsetX = (int) (Math.sin(Math.toRadians(aRotateToAngle)) * (event.getY() - this.mTouchDownY))
-						+ (int) (Math.cos(Math.toRadians(aRotateToAngle)) * (event.getX() - this.mTouchDownX));
-				this.mTouchMapOffsetY = (int) (Math.cos(Math.toRadians(aRotateToAngle)) * (event.getY() - this.mTouchDownY))
-						- (int) (Math.sin(Math.toRadians(aRotateToAngle)) * (event.getX() - this.mTouchDownX));
+				OpenStreetMapView.this.mTouchMapOffsetX = (int) (Math.sin(Math.toRadians(aRotateToAngle)) * (event.getY() - OpenStreetMapView.this.mTouchDownY))
+						+ (int) (Math.cos(Math.toRadians(aRotateToAngle)) * (event.getX() - OpenStreetMapView.this.mTouchDownX));
+				OpenStreetMapView.this.mTouchMapOffsetY = (int) (Math.cos(Math.toRadians(aRotateToAngle)) * (event.getY() - OpenStreetMapView.this.mTouchDownY))
+						- (int) (Math.sin(Math.toRadians(aRotateToAngle)) * (event.getX() - OpenStreetMapView.this.mTouchDownX));
 
-				if(event.getPointerCount()>1){
-					final double DiagonalSize = Math.hypot((double)(event.getX(event.findPointerIndex(0))-event.getX(event.findPointerIndex(1))), (double)(event.getY(event.findPointerIndex(0))-event.getY(event.findPointerIndex(1))));
+				if(count > 1){
+					final double DiagonalSize = Math.hypot((double)(x1 - x2), (double)(y1 - y2));
 					mTouchScale = (DiagonalSize / mTouchDiagonalSize);
 				}
 
@@ -486,25 +482,25 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 
 				Message.obtain(mMainActivityCallbackHandler, R.id.user_moved_map).sendToTarget();
 			}
+		}
 
-			break;
-		case MotionEvent.ACTION_UP:
+		public void onUp(MotionEvent event) {
 			mActionMoveDetected = false;
 			mStopMoveDetecting = true;
-			final int viewWidth_2 = this.getWidth() / 2;
-			final int viewHeight_2 = this.getHeight() / 2;
-			final GeoPoint newCenter = this.getProjection().fromPixels(viewWidth_2, viewHeight_2);
-			this.mTouchMapOffsetX = 0;
-			this.mTouchMapOffsetY = 0;
-			this.setMapCenter(newCenter); // Calls invalidate
-			break;
-		case MotionEvent.ACTION_POINTER_DOWN:
-		case MotionEvent.ACTION_POINTER_2_DOWN:
-			mTouchDiagonalSize = Math.hypot((double)(event.getX(event.findPointerIndex(0))-event.getX(event.findPointerIndex(1))), (double)(event.getY(event.findPointerIndex(0))-event.getY(event.findPointerIndex(1))));
+			final int viewWidth_2 = OpenStreetMapView.this.getWidth() / 2;
+			final int viewHeight_2 = OpenStreetMapView.this.getHeight() / 2;
+			final GeoPoint newCenter = OpenStreetMapView.this.getProjection().fromPixels(viewWidth_2, viewHeight_2);
+			OpenStreetMapView.this.mTouchMapOffsetX = 0;
+			OpenStreetMapView.this.mTouchMapOffsetY = 0;
+			OpenStreetMapView.this.setMapCenter(newCenter); // Calls invalidate
+		}
+
+		public void onDown2(MotionEvent event, float x1, float y1, float x2, float y2) {
+			mTouchDiagonalSize = Math.hypot((double)(x1 - x2), (double)(y1 - y2));
 			mActionMoveDetected = true;
-			break;
-		case MotionEvent.ACTION_POINTER_UP:
-		case MotionEvent.ACTION_POINTER_2_UP:
+		}
+
+		public void onUp2(MotionEvent event) {
 			if(mTouchScale > 1)
 				setZoomLevel(getZoomLevel()+(int)Math.round(mTouchScale)-1);
 			else
@@ -513,14 +509,24 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 
 			mActionMoveDetected = false;
 			mStopMoveDetecting = true;
-			final GeoPoint newCenter2 = this.getProjection().fromPixels(this.getWidth() / 2, this.getHeight() / 2);
-			this.mTouchMapOffsetX = 0;
-			this.mTouchMapOffsetY = 0;
-			this.setMapCenter(newCenter2); // Calls invalidate
+			final GeoPoint newCenter2 = OpenStreetMapView.this.getProjection().fromPixels(OpenStreetMapView.this.getWidth() / 2, OpenStreetMapView.this.getHeight() / 2);
+			OpenStreetMapView.this.mTouchMapOffsetX = 0;
+			OpenStreetMapView.this.mTouchMapOffsetY = 0;
+			OpenStreetMapView.this.setMapCenter(newCenter2); // Calls invalidate
 
 			Message.obtain(mMainActivityCallbackHandler, R.id.set_title).sendToTarget();
-			break;
 		}
+
+	}
+
+	@Override
+	public boolean onTouchEvent(final MotionEvent event) {
+		for (OpenStreetMapViewOverlay osmvo : this.mOverlays)
+			if (osmvo.onTouchEvent(event, this))
+				return true;
+
+		this.mGestureDetector.onTouchEvent(event);
+		this.mDetector.onTouchEvent(event);
 
 		return super.onTouchEvent(event);
 	}
@@ -1154,3 +1160,4 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 	}
 
 }
+
