@@ -95,8 +95,11 @@ Questions, sentences mail to robertk506@gmail.com\n
 How to and FAQ you can find on http://robertdeveloper.blogspot.com/\n
 	</string>
     <string name="whats_new_dialog_text">
+v.0.8.4.1\n
++ Bug fix: Force close on Android 1.5-1.6\n
+\n
 v.0.8.4\n
-+ Mutlitouch zooming\n
+-  Mutlitouch zooming\n
 + Zoom buttons settings: top, bottom, hide\n
 \n
 v.0.8.3.2\n
