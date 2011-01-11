@@ -86,6 +86,7 @@ import com.robert.maps.overlays.PoiOverlay;
 import com.robert.maps.overlays.SearchResultOverlay;
 import com.robert.maps.overlays.TrackOverlay;
 import com.robert.maps.overlays.YandexTrafficOverlay;
+import com.robert.maps.utils.BitmapDrawable;
 import com.robert.maps.utils.CompassView;
 import com.robert.maps.utils.SearchSuggestionsProvider;
 import com.robert.maps.utils.Ut;
@@ -302,6 +303,7 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 		        /* Create a ImageView with a zoomOut-Icon. */
 		        final ImageView ivZoomOut = new ImageView(this);
 		        ivZoomOut.setImageResource(R.drawable.zoom_out);
+		        ivZoomOut.setId(R.id.whatsnew);
 
 		        /* Create RelativeLayoutParams, that position in in the top left corner. */
 		        final RelativeLayout.LayoutParams zoomoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
@@ -328,6 +330,15 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 						return true;
 					}
 		        });
+
+		        /*ScaleBarView*/
+		        final ImageView ivZoomOut2 = new ImageView(this);
+		        final BitmapDrawable dr = new BitmapDrawable(this);
+		        ivZoomOut2.setImageDrawable(dr);
+		        final RelativeLayout.LayoutParams scaleParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+		        scaleParams.addRule(RelativeLayout.RIGHT_OF, R.id.whatsnew);
+		        scaleParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+		        rl.addView(ivZoomOut2, scaleParams);
 	        };
         }
 
