@@ -91,7 +91,6 @@ public class YandexTrafficOverlay extends OpenStreetMapViewOverlay implements Op
 				.ceil((float) (viewHeight - centerMapTileScreenBottom) / tileSizePx);
 
 		final int mapTileUpperBound = (int) Math.pow(2, zoomLevel);
-		final int[] mapTileCoords = new int[] { centerMapTileCoords[0], centerMapTileCoords[1] };
 
 		/* Draw all the MapTiles (from the upper left to the lower right). */
 		for (int y = -additionalTilesNeededToTopOfCenter; y <= additionalTilesNeededToBottomOfCenter; y++) {
@@ -99,23 +98,22 @@ public class YandexTrafficOverlay extends OpenStreetMapViewOverlay implements Op
 				/*
 				 * Add/substract the difference of the tile-position to the one of the center.
 				 */
-				mapTileCoords[0] = MyMath.mod(centerMapTileCoords[0] + y, mapTileUpperBound);
-				mapTileCoords[1] = MyMath.mod(centerMapTileCoords[1] + x, mapTileUpperBound);
-				/* Construct a URLString, which represents the MapTile. */
-				final String tileURLString = this.mRendererInfo.getTileURLString(mapTileCoords, zoomLevel);
+				int tileY = MyMath.mod(centerMapTileCoords[0] + y, mapTileUpperBound);
+				int tileX = MyMath.mod(centerMapTileCoords[1] + x, mapTileUpperBound);
 
 //				Log.i(DEBUGTAG, tileURLString);
 
 				/* Draw the MapTile 'i tileSizePx' above of the centerMapTile */
-				final Bitmap currentMapTile = this.mTileProvider.getMapTile(tileURLString,
-						this.mRendererInfo.TILE_SOURCE_TYPE, null, 0, 0, 0);
+				final Bitmap currentMapTile = this.mTileProvider.getMapTile(
+						this.mRendererInfo.TILE_SOURCE_TYPE, tileX, tileY, zoomLevel);
+
 				if (currentMapTile != null) {
 					final int tileLeft = mMapView.mTouchMapOffsetX + centerMapTileScreenLeft + (x * tileSizePx);
 					final int tileTop = mMapView.mTouchMapOffsetY + centerMapTileScreenTop + (y * tileSizePx);
 					final Rect r = new Rect(tileLeft, tileTop, tileLeft+tileSizePx, tileTop+tileSizePx);
 					c.drawBitmap(currentMapTile, null, r, this.mPaint);
 					if (DEBUGMODE) {
-						c.drawText("y x = " + mapTileCoords[0] + " " + mapTileCoords[1] + " zoom " + zoomLevel,
+						c.drawText("y x = " + tileY + " " + tileX + " zoom " + zoomLevel,
 								tileLeft + 5, tileTop + 45, this.mPaint);
 					}
 				}
