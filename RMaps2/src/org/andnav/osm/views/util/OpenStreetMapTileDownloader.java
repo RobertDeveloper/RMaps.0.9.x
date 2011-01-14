@@ -89,7 +89,6 @@ public class OpenStreetMapTileDownloader implements OpenStreetMapConstants, Open
 
 					final Message successMessage = Message.obtain(callback, MAPTILEDOWNLOADER_SUCCESS_ID);
 					successMessage.sendToTarget();
-					OpenStreetMapTileDownloader.this.mPending.remove(aURLString);
 				} catch (Exception e) {
 					final Message failMessage = Message.obtain(callback, MAPTILEDOWNLOADER_FAIL_ID);
 					failMessage.sendToTarget();
@@ -102,6 +101,7 @@ public class OpenStreetMapTileDownloader implements OpenStreetMapConstants, Open
 				} finally {
 					StreamUtils.closeStream(in);
 					StreamUtils.closeStream(out);
+					OpenStreetMapTileDownloader.this.mPending.remove(aURLString);
 				}
 			}
 		});

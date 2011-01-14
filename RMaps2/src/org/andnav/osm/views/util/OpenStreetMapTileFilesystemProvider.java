@@ -428,7 +428,7 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 
 	public void loadMapTileFromMNM(final String aTileURLString, final Handler callback, final int x, final int y,
 			final int z) throws IOException {
-		if (this.mPending.contains(aTileURLString))
+		if (this.mPending.contains(aTileURLString) || mCache.getMapTile(aTileURLString) != null)
 			return;
 
 		this.mPending.add(aTileURLString);
@@ -495,7 +495,7 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 
 	public void loadMapTileFromSQLite(final String aTileURLString, final Handler callback, final int x, final int y,
 			final int z) throws IOException {
-		if (this.mPending.contains(aTileURLString))
+		if (this.mPending.contains(aTileURLString) || mCache.getMapTile(aTileURLString) != null)
 			return;
 
 		this.mPending.add(aTileURLString);
@@ -528,9 +528,9 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 
 					final Message successMessage = Message.obtain(callback, MAPTILEFSLOADER_SUCCESS_ID);
 					successMessage.sendToTarget();
-
-					OpenStreetMapTileFilesystemProvider.this.mPending.remove(aTileURLString);
 				}
+
+				OpenStreetMapTileFilesystemProvider.this.mPending.remove(aTileURLString);
 			}
 		});
 
@@ -538,7 +538,7 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 
 	public void loadMapTileFromTAR(final String aTileURLString, final Handler callback, final OpenStreetMapRendererInfo render, final int x, final int y,
 			final int z) throws IOException {
-		if (this.mPending.contains(aTileURLString))
+		if (this.mPending.contains(aTileURLString) || mCache.getMapTile(aTileURLString) != null)
 			return;
 
 		this.mPending.add(aTileURLString);
@@ -615,13 +615,13 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 
 	public void loadMapTileToMemCacheAsync(final String aTileURLString, final Handler callback, final OpenStreetMapRendererInfo render, final int x, final int y,
 			final int z) throws FileNotFoundException {
-		if (this.mPending.contains(aTileURLString))
+		if (this.mPending.contains(aTileURLString) || (mCache.getMapTile(aTileURLString) != null && !mCache.needsTileUpdate(aTileURLString)))
 			return;
 
 		this.mPending.add(aTileURLString);
 
 		//try {
-			final String formattedTileURLString = OpenStreetMapTileNameFormatter.format(aTileURLString);
+			String formattedTileURLString = OpenStreetMapTileNameFormatter.format(aTileURLString);
 	
 			InputStream input = null;
 			int i=0;
@@ -636,16 +636,21 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 				try{
 					input = new BufferedInputStream(OpenStreetMapTileFilesystemProvider.this.mCtx
 						.openFileInput(formattedZoomURLString), 8192);
-				} catch (FileNotFoundException e){
+					if (input.available()==0)
+						input = null;
+				} catch (IOException e){
 					if(DEBUGMODE)
 						Log.i(DEBUGTAG, "File " + formattedZoomURLString + " not found on disk");
 				}
 				
-				if (input != null)
+				if (input != null || mCache.getMapTile(aTileURLString) != null){
+					formattedTileURLString = formattedZoomURLString;
 					break;
+				}
 			}
 	
 			final InputStream in = input;
+			final String formattedURLString = formattedTileURLString;
 			final int zoom = i;
 
 			if (in != null){
@@ -655,7 +660,7 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 						OutputStream out = null;
 						try {
 							// File exists, otherwise a FileNotFoundException would have been thrown
-							OpenStreetMapTileFilesystemProvider.this.mDatabase.incrementUse(formattedTileURLString);
+							OpenStreetMapTileFilesystemProvider.this.mDatabase.incrementUse(formattedURLString);
 	
 							final ByteArrayOutputStream dataStream = new ByteArrayOutputStream();
 							out = new BufferedOutputStream(dataStream, StreamUtils.IO_BUFFER_SIZE);
@@ -714,11 +719,8 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 
 	private Bitmap zoom(Bitmap tile, int zoom, int xOffset, int yOffset) {
 		if (tile != null && zoom > 0){
-			int width = tile.getWidth();
-			int height = tile.getHeight();
-
-			// zoom in and then crop the image
-			tile = Bitmap.createScaledBitmap(tile, width << zoom, height << zoom, true);
+			int width = tile.getWidth() >> zoom;
+			int height = tile.getHeight() >> zoom;
 			tile = Bitmap.createBitmap(tile, xOffset * width, yOffset * height, width, height);
 		}
 		
