@@ -122,14 +122,12 @@ public class OpenStreetMapTileProvider implements OpenStreetMapConstants, OpenSt
 		
 		String aTileURLString = this.mRendererInfo.getTileURLString(tileID, z);
 		Bitmap ret = this.mTileCache.getMapTile(aTileURLString);
-		if(ret != null){
+		if(ret != null && !this.mTileCache.needsTileUpdate(aTileURLString)){
 			if(DEBUGMODE)
 				Log.i(DEBUGTAG, "MapTileCache succeded for: " + aTileURLString);
-		}
-
-		if (ret == null || this.mTileCache.needsTileUpdate(aTileURLString)){
+		}else{
 			if(DEBUGMODE)
-				Log.i(DEBUGTAG, "Cache needs update, trying from FS.");
+				Log.i(DEBUGTAG, "Cache failed, trying from FS.");
 			try {
 				if(aTypeCash == 5)  // sqlitedb files
 					this.mFSTileProvider.loadMapTileFromSQLite(aTileURLString, this.mLoadCallbackHandler, x, y, z);
@@ -142,14 +140,14 @@ public class OpenStreetMapTileProvider implements OpenStreetMapConstants, OpenSt
 			} catch (Exception e) {
 				if(DEBUGMODE)
 					Log.d(DEBUGTAG, "Error(" + e.getClass().getSimpleName() + ") loading MapTile from Filesystem: " + OpenStreetMapTileNameFormatter.format(aTileURLString));
-			}
-			if(ret == null){ /* FS did not contain the MapTile, we need to download it asynchronous. */
+
+				/* FS did not contain the MapTile, we need to download it asynchronous. */
 				if(DEBUGMODE)
 					Log.i(DEBUGTAG, "Requesting Maptile for download.");
-				ret = mLoadingMapTile;
-
 				this.mTileDownloader.requestMapTileAsync(aTileURLString, this.mLoadCallbackHandler);
 			}
+			if(ret == null)
+				ret = mLoadingMapTile;
 		}
 		return ret;
 	}
