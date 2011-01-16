@@ -84,6 +84,9 @@ All rights reserved\n
 Как сделать офф-лайн карту и прочее можно почитать здесь http://robertdeveloper.blogspot.com/\n
 </string>
     <string name="whats_new_dialog_text">
+v.0.8.5\n
++ Линейка масштаба, настройки единиц измерения\n
+\n
 v.0.8.4.1\n
 + Bug fix: Force close on Android 1.5-1.6\n
 \n
