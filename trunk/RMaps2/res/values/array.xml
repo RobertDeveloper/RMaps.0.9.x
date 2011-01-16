@@ -72,18 +72,6 @@
 	<item>19</item>
 	<item>20</item>
 </string-array>
-<string-array name="overzoom_pref_title">
-	<item>Disabled</item>
-	<item>1</item>
-	<item>2</item>
-	<item>3</item>
-</string-array>
-<string-array name="overzoom_pref_value">
-	<item>0</item>
-	<item>1</item>
-	<item>2</item>
-	<item>3</item>
-</string-array>
 <string-array name="languages_codes">
 	<item>ar</item>
 	<item>eu</item>

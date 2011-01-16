@@ -80,13 +80,6 @@
 			android:entries="@array/zoomlevel_pref_title"
 			android:entryValues="@array/zoomlevel_pref_value"
 			android:defaultValue="17"></ListPreference>
-		<ListPreference
-			android:title="@string/pref_overzoom"
-			android:summary="@string/pref_overzoom_summary"
-			android:key="pref_overzoom"
-			android:entries="@array/overzoom_pref_title"
-			android:entryValues="@array/overzoom_pref_value"
-			android:defaultValue="0"></ListPreference>
 		<CheckBoxPreference
 			android:key="pref_drivingdirectionup"
 			android:title="@string/pref_drivingdirectionup"

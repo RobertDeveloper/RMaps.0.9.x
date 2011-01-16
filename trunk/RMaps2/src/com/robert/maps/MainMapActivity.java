@@ -345,9 +345,6 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 		mDrivingDirectionUp = pref.getBoolean("pref_drivingdirectionup", true);
 		mNorthDirectionUp = pref.getBoolean("pref_northdirectionup", true);
 
-		int overzoom = Integer.parseInt(pref.getString("pref_overzoom", "0"));
-		mOsmv.setOverzoom(overzoom);
-
 		mScreenOrientation = Integer.parseInt(pref.getString("pref_screen_orientation", "-1"));
 		this.setRequestedOrientation(mScreenOrientation);
 
