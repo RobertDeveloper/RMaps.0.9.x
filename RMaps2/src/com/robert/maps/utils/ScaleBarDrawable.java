@@ -12,7 +12,7 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 
-public class BitmapDrawable extends Drawable {
+public class ScaleBarDrawable extends Drawable {
 
     private Paint mPaint = new Paint();
     private Paint mPaint2 = new Paint();
@@ -23,9 +23,11 @@ public class BitmapDrawable extends Drawable {
     private double mTouchScale = 1;
     private String mDist = "";
     private int mWidth = 100;
+    private int mUnits;
 
-    public BitmapDrawable(Context ctx, OpenStreetMapView osmv) {
+    public ScaleBarDrawable(Context ctx, OpenStreetMapView osmv, int units) {
     	mOsmv = osmv;
+    	mUnits = units;
 
         mPaint.setColor(ctx.getResources().getColor(android.R.color.black));
         mPaint2.setColor(ctx.getResources().getColor(android.R.color.white));
@@ -53,17 +55,28 @@ public class BitmapDrawable extends Drawable {
     		final OpenStreetMapViewProjection pr = mOsmv.getProjection();
     		final GeoPoint geop = pr.fromPixels(0, 0);
     		final GeoPoint geop2 = pr.fromPixels((float) (100 / mTouchScale), 0);
-    		final int dist1 = geop.distanceTo(geop2);
+    		int dist1 = geop.distanceTo(geop2);
+    		if(mUnits == 1){
+    			dist1 = (int) (dist1 * 3.2808399);
+    			mDist = " ft";
+    			if(dist1 > 5279){
+    				dist1 = dist1 / 5280;
+    				mDist = " ml";
+    			}
+    		}
+
     		int dist = 0;
-    		for(int i = 10; i > 0; i -= 1){
+    		for(int i = 6; i >= 0; i -= 1){
     			final double div = Math.pow(10, i);
-    			if(dist1 > div){
+    			if(dist1 >= div){
     				dist = (int) (div*((int)(dist1/div)));
     				mWidth = (int) (100 * dist1 / dist);
     				break;
     			}
     		}
-    		if(dist > 999)
+    		if(mUnits == 1)
+    			mDist = ""+dist+mDist;
+    		else if(dist > 999 && mUnits == 0)
     			mDist = ""+(dist/1000)+" km";
     		else
     			mDist = ""+dist+" m";

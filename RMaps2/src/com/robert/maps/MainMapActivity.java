@@ -86,7 +86,7 @@ import com.robert.maps.overlays.PoiOverlay;
 import com.robert.maps.overlays.SearchResultOverlay;
 import com.robert.maps.overlays.TrackOverlay;
 import com.robert.maps.overlays.YandexTrafficOverlay;
-import com.robert.maps.utils.BitmapDrawable;
+import com.robert.maps.utils.ScaleBarDrawable;
 import com.robert.maps.utils.CompassView;
 import com.robert.maps.utils.SearchSuggestionsProvider;
 import com.robert.maps.utils.Ut;
@@ -336,7 +336,7 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 	        /*ScaleBarView*/
 	        if(pref.getBoolean("pref_showscalebar", true)){
 		        final ImageView ivZoomOut2 = new ImageView(this);
-		        final BitmapDrawable dr = new BitmapDrawable(this, mOsmv);
+		        final ScaleBarDrawable dr = new ScaleBarDrawable(this, mOsmv, Integer.parseInt(pref.getString("pref_units", "0")));
 		        ivZoomOut2.setImageDrawable(dr);
 		        final RelativeLayout.LayoutParams scaleParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
 		        scaleParams.addRule(RelativeLayout.RIGHT_OF, R.id.whatsnew);

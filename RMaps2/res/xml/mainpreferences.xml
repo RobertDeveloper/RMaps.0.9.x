@@ -93,6 +93,7 @@
 
 	
 <CheckBoxPreference android:key="pref_showscalebar" android:title="@string/pref_showscalebar" android:defaultValue="true" android:summary="@string/pref_showscalebar_summary"></CheckBoxPreference>
+<ListPreference android:summary="@string/pref_units_summary" android:key="pref_units" android:title="@string/pref_units" android:defaultValue="0" android:entryValues="@array/units_pref_values" android:entries="@array/units_pref_title"></ListPreference>
 </PreferenceCategory>
 
 	<PreferenceCategory
