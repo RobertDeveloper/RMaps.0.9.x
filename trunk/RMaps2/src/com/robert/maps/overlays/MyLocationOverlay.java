@@ -110,7 +110,7 @@ public class MyLocationOverlay extends OpenStreetMapViewOverlay {
 
 			if (mPrefAccuracy != 0
 					&& ((mAccuracy > 0 && mPrefAccuracy == 1) || (mPrefAccuracy > 1 && mAccuracy >= mPrefAccuracy))) {
-				int PixelRadius = (int) (mAccuracy / ((float)METER_IN_PIXEL / (1 << osmv.getZoomLevel())));
+				int PixelRadius = (int) (osmv.mTouchScale * mAccuracy / ((float)METER_IN_PIXEL / (1 << osmv.getZoomLevel())));
 				c.drawCircle(screenCoords.x, screenCoords.y, PixelRadius, mPaintAccurasyFill);
 				c.drawCircle(screenCoords.x, screenCoords.y, PixelRadius, mPaintAccurasyBorder);
 			}
