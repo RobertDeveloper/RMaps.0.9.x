@@ -262,4 +262,12 @@
 	<item>2</item>
 	<item>0</item>
 </string-array>
+<string-array name="units_pref_title">
+	<item>km, m, km/h, m/s</item>
+	<item>ml, ft, mph</item>
+</string-array>
+<string-array name="units_pref_values">
+	<item>0</item>
+	<item>1</item>
+</string-array>
 </resources>
