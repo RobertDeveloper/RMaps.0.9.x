@@ -342,10 +342,6 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 		this.postInvalidate();
 	}
 
-	public void setOverzoom(int overzoom) {
-		this.mTileProvider.setOverzoom(overzoom);
-	}
-
 	/**
 	 * Zooms in if possible.
 	 */
@@ -609,6 +605,9 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 				.ceil((float) (viewHeight - centerMapTileScreenBottom) / tileSizePxNotScale);
 
 		final int mapTileUpperBound = mRendererInfo.getTileUpperBound(zoomLevel);
+		final int[] mapTileCoords = new int[] { centerMapTileCoords[MAPTILE_LATITUDE_INDEX],
+				centerMapTileCoords[MAPTILE_LONGITUDE_INDEX] };
+
 
 		if(mBearing > 0 && mRendererInfo.YANDEX_TRAFFIC_ON == 0)
 		{
@@ -631,12 +630,19 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 				 * Add/substract the difference of the tile-position to the one
 				 * of the center.
 				 */
-				int tileY = MyMath.mod(centerMapTileCoords[MAPTILE_LATITUDE_INDEX] + y, mapTileUpperBound);
-				int tileX = MyMath.mod(centerMapTileCoords[MAPTILE_LONGITUDE_INDEX] + x, mapTileUpperBound);
+				mapTileCoords[MAPTILE_LATITUDE_INDEX] = MyMath.mod(
+						centerMapTileCoords[MAPTILE_LATITUDE_INDEX] + y, mapTileUpperBound);
+				mapTileCoords[MAPTILE_LONGITUDE_INDEX] = MyMath.mod(
+						centerMapTileCoords[MAPTILE_LONGITUDE_INDEX] + x, mapTileUpperBound);
+				/* Construct a URLString, which represents the MapTile. */
+				final String tileURLString = this.mRendererInfo.getTileURLString(mapTileCoords,
+						zoomLevel);
+//				Ut.dd("onDraw: " + tileURLString);
 
 				/* Draw the MapTile 'i tileSizePx' above of the centerMapTile */
-				final Bitmap currentMapTile = this.mTileProvider.getMapTile(
-						this.mRendererInfo.TILE_SOURCE_TYPE, tileX, tileY, zoomLevel);
+				final Bitmap currentMapTile = this.mTileProvider.getMapTile(tileURLString,
+						this.mRendererInfo.TILE_SOURCE_TYPE, mapTileCoords[MAPTILE_LONGITUDE_INDEX],
+						mapTileCoords[MAPTILE_LATITUDE_INDEX], zoomLevel);
 				if (currentMapTile != null){
 					final int tileLeft = this.mTouchMapOffsetX + centerMapTileScreenLeft + (x * tileSizePx);
 					final int tileTop = this.mTouchMapOffsetY + centerMapTileScreenTop + (y * tileSizePx);
@@ -647,8 +653,9 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 					{
 						c.drawLine(tileLeft, tileTop, tileLeft + tileSizePx, tileTop, this.mPaint);
 						c.drawLine(tileLeft, tileTop, tileLeft, tileTop + tileSizePx, this.mPaint);
-						c.drawText("y x = " + tileY + " " + tileX + " zoom " + zoomLevel + " "
-								+ mRendererInfo.getQRTS(tileX, tileY, zoomLevel), tileLeft + 5,
+						c.drawText("y x = " + mapTileCoords[MAPTILE_LATITUDE_INDEX] + " "
+								+ mapTileCoords[MAPTILE_LONGITUDE_INDEX] + " zoom " + zoomLevel + " "
+								+ mRendererInfo.getQRTS(mapTileCoords[MAPTILE_LONGITUDE_INDEX], mapTileCoords[MAPTILE_LATITUDE_INDEX], zoomLevel), tileLeft + 5,
 								tileTop + 15, this.mPaint);
 					}
 

@@ -17,8 +17,6 @@
     <string name="pref_zoomminlevel">Favourite min zoom</string>
     <string name="pref_zoommaxlevel_summary">Set this zoom level at long press on plus button</string>
     <string name="pref_zoommaxlevel">Favourite max zoom</string>
-    <string name="pref_overzoom_summary">Allow zooming past max tile depth</string>
-    <string name="pref_overzoom">Over-zoom</string>
     <string name="app_user_id"/>
     <string name="app_user_label">Robert.Developer</string>
     <string name="prefcat_main_misc">Misc</string>
