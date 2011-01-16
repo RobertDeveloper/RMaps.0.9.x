@@ -53,6 +53,8 @@
     <string name="pref_internalcache_summary">Used for temp storage map tiles. Size: %dKB/4MB</string>
     <string name="pref_index_title">Index database</string>
     <string name="pref_index_summary">Tiles index of offline maps. Size: %dKB</string>
+    <string name="pref_showscalebar_summary">Show scale bar at left bottom corner</string>
+    <string name="pref_showscalebar">Show scale bar</string>
     <string name="hello">Hello World, OpenStreetMapViewer</string>
     <string name="app_name">RMaps</string>
     <string name="app_name_itemizedoverlay">OSMViewer ItemizedOverlay</string>

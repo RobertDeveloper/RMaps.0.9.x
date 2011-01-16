@@ -331,14 +331,17 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 					}
 		        });
 
-		        /*ScaleBarView*/
-//		        final ImageView ivZoomOut2 = new ImageView(this);
-//		        final BitmapDrawable dr = new BitmapDrawable(this);
-//		        ivZoomOut2.setImageDrawable(dr);
-//		        final RelativeLayout.LayoutParams scaleParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-//		        scaleParams.addRule(RelativeLayout.RIGHT_OF, R.id.whatsnew);
-//		        scaleParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-//		        rl.addView(ivZoomOut2, scaleParams);
+	        };
+
+	        /*ScaleBarView*/
+	        if(pref.getBoolean("pref_showscalebar", true)){
+		        final ImageView ivZoomOut2 = new ImageView(this);
+		        final BitmapDrawable dr = new BitmapDrawable(this, mOsmv);
+		        ivZoomOut2.setImageDrawable(dr);
+		        final RelativeLayout.LayoutParams scaleParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+		        scaleParams.addRule(RelativeLayout.RIGHT_OF, R.id.whatsnew);
+		        scaleParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+		        rl.addView(ivZoomOut2, scaleParams);
 	        };
         }
 
