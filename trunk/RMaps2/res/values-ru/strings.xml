@@ -47,6 +47,8 @@
     <string name="pref_internalcache_summary">Временное хранение тайлов карт. Размер: %dKB/4MB</string>
     <string name="pref_index_title">Индексный файл</string>
     <string name="pref_index_summary">Индекс тайлов offline карт. Размер: %dKB</string>
+    <string name="pref_showscalebar_summary">Показывать линейку масштаба в левом нижнем углу</string>
+    <string name="pref_showscalebar">Линейка масштаба</string>
     <string name="hello">Hello World, OpenStreetMapViewer</string>
     <string name="app_name">RMaps</string>
     <string name="app_name_itemizedoverlay">OSMViewer ItemizedOverlay</string>

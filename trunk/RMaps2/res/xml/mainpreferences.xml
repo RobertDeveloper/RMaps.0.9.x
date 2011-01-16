@@ -92,6 +92,7 @@
 			android:defaultValue="true"></CheckBoxPreference>
 
 	
+<CheckBoxPreference android:key="pref_showscalebar" android:title="@string/pref_showscalebar" android:defaultValue="true" android:summary="@string/pref_showscalebar_summary"></CheckBoxPreference>
 </PreferenceCategory>
 
 	<PreferenceCategory
