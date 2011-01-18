@@ -82,26 +82,36 @@ public class CurrentTrackOverlay extends OpenStreetMapViewOverlay {
 			Ut.d("run CurrentTrackThread");
 
 			mPath = null;
-
-			final File folder = Ut.getRMapsFolder("data", false);
-			final SQLiteDatabase db = new com.robert.maps.trackwriter.DatabaseHelper(mContext, folder.getAbsolutePath() + "/writedtrack.db").getReadableDatabase();
-			final Cursor c = db.rawQuery("SELECT lat, lon FROM trackpoints ORDER BY id", null);
 			if(mTrack == null)
 				mTrack = new Track();
 			else
 				mTrack.getPoints().clear();
 
-			if(c != null){
-				if (c.moveToFirst()) {
-					do {
-						mTrack.AddTrackPoint();
-						mTrack.LastTrackPoint.lat = c.getDouble(0);
-						mTrack.LastTrackPoint.lon = c.getDouble(1);
-					} while (c.moveToNext());
+			final File folder = Ut.getRMapsFolder("data", false);
+			if(folder.canRead()){
+				SQLiteDatabase db = null;
+				try {
+					db = new com.robert.maps.trackwriter.DatabaseHelper(mContext, folder.getAbsolutePath() + "/writedtrack.db").getReadableDatabase();
+				} catch (Exception e) {
+					db = null;
 				}
-				c.close();
-			}
-			db.close();
+
+				if(db != null){
+					final Cursor c = db.rawQuery("SELECT lat, lon FROM trackpoints ORDER BY id", null);
+
+					if(c != null){
+						if (c.moveToFirst()) {
+							do {
+								mTrack.AddTrackPoint();
+								mTrack.LastTrackPoint.lat = c.getDouble(0);
+								mTrack.LastTrackPoint.lon = c.getDouble(1);
+							} while (c.moveToNext());
+						}
+						c.close();
+					}
+					db.close();
+				};
+			};
 
 			mBasePj = mOsmv.getProjection();
 			mPath = mBasePj.toPixelsTrackPoints(mTrack.getPoints(), mBaseCoords, mBaseLocation);
