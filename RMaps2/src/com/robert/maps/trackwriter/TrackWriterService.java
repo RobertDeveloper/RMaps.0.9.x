@@ -23,6 +23,7 @@ import android.os.Message;
 import android.os.RemoteCallbackList;
 import android.os.RemoteException;
 import android.preference.PreferenceManager;
+import android.widget.Toast;
 
 import com.robert.maps.R;
 import com.robert.maps.kml.TrackListActivity;
@@ -77,10 +78,24 @@ public class TrackWriterService extends Service implements OpenStreetMapConstant
 	public void onCreate() {
 		super.onCreate();
 
-        mNM = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
-
 		final File folder = Ut.getRMapsFolder("data", false);
-		db = new DatabaseHelper(this, folder.getAbsolutePath() + "/writedtrack.db").getWritableDatabase();
+		if(folder.canRead()){
+			try {
+				db = new DatabaseHelper(this, folder.getAbsolutePath() + "/writedtrack.db").getWritableDatabase();
+			} catch (Exception e) {
+				db = null;
+			}
+		};
+
+		if(db == null){
+			Toast.makeText(this,
+					getString(R.string.message_cantstarttrackwriter)+" "+folder.getAbsolutePath(),
+					Toast.LENGTH_LONG).show();
+			this.stopSelf();
+			return;
+		};
+
+        mNM = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
 
 		mLocationListener = new SampleLocationListener();
 		final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
@@ -124,15 +139,18 @@ public class TrackWriterService extends Service implements OpenStreetMapConstant
 	@Override
 	public void onDestroy() {
 	       // Cancel the persistent notification.
-        mNM.cancel(R.string.remote_service_started);
+		if(mNM != null)
+			mNM.cancel(R.string.remote_service_started);
 
-        getLocationManager().removeUpdates(mLocationListener);
+		if(mLocationListener != null)
+			getLocationManager().removeUpdates(mLocationListener);
 
         // Tell the user we stopped.
         //Toast.makeText(this, R.string.remote_service_stopped, Toast.LENGTH_SHORT).show();
 
         // Unregister all callbacks.
-        mCallbacks.kill();
+        if(mCallbacks != null)
+        	mCallbacks.kill();
 
         // Remove the next pending message to increment the counter, stopping
         // the increment loop.

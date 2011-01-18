@@ -103,12 +103,21 @@ public class TrackListActivity extends ListActivity {
 
 		this.mThreadPool.execute(new Runnable() {
 			public void run() {
-				final SQLiteDatabase db;
+				SQLiteDatabase db = null;
 				File folder = Ut.getRMapsFolder("data", false);
-				db = new DatabaseHelper(TrackListActivity.this, folder.getAbsolutePath() + "/writedtrack.db").getWritableDatabase();
-				final int res = mPoiManager.getGeoDatabase().saveTrackFromWriter(db);
-				//db.releaseReference();
-				db.close();
+				if(folder.canRead()){
+					try {
+						db = new DatabaseHelper(TrackListActivity.this, folder.getAbsolutePath() + "/writedtrack.db").getWritableDatabase();
+					} catch (Exception e) {
+						db = null;
+					}
+				};
+				int res = 0;
+				if(db != null){
+					res = mPoiManager.getGeoDatabase().saveTrackFromWriter(db);
+					//db.releaseReference();
+					db.close();
+				};
 
 				dlgWait.dismiss();
 				Message.obtain(mHandler, R.id.tracks, res, 0).sendToTarget();
