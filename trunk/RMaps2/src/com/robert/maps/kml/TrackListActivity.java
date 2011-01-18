@@ -124,14 +124,16 @@ public class TrackListActivity extends ListActivity {
 
 	private void FillData() {
 		Cursor c = mPoiManager.getGeoDatabase().getTrackListCursor();
-        startManagingCursor(c);
+		if(c != null){
+	        startManagingCursor(c);
 
-        ListAdapter adapter = new SimpleCursorAdapter(this,
-                R.layout.list_item
-                , c,
-                        new String[] { "name", "descr", "image" },
-                        new int[] { android.R.id.text1, android.R.id.text2, R.id.ImageView01 });
-        setListAdapter(adapter);
+	        ListAdapter adapter = new SimpleCursorAdapter(this,
+	                R.layout.list_item
+	                , c,
+	                        new String[] { "name", "descr", "image" },
+	                        new int[] { android.R.id.text1, android.R.id.text2, R.id.ImageView01 });
+	        setListAdapter(adapter);
+		};
 	}
 
 	@Override
