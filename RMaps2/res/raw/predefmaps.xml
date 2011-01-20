@@ -9,6 +9,7 @@
 		6 - microsoft,
 		7 - Docelu.pl
 		8 - VFR Chart
+		9 - http://www.avcharts.com/
 	TILE_SOURCE_TYPE, //
 		0 - internet,
 		1 - AndNav ZIP file,
@@ -62,6 +63,6 @@
 	<map id="ifrcharts" name="IFR Low" descr="www.runwayfinder.com" baseurl="http://www.runwayfinder.com/media/ifrcharts/?" IMAGE_FILENAMEENDING="" ZOOM_MINLEVEL="0" ZOOM_MAXLEVEL="11" MAPTILE_SIZEPX="256" URL_BUILDER_TYPE="8" TILE_SOURCE_TYPE="0" PROJECTION="1" YANDEX_TRAFFIC_ON="0"></map>
 	<map id="ifrhicharts" name="IFR High" descr="www.runwayfinder.com" baseurl="http://www.runwayfinder.com/media/ifrhicharts/?" IMAGE_FILENAMEENDING="" ZOOM_MINLEVEL="0" ZOOM_MAXLEVEL="9" MAPTILE_SIZEPX="256" URL_BUILDER_TYPE="8" TILE_SOURCE_TYPE="0" PROJECTION="1" YANDEX_TRAFFIC_ON="0"></map>
 
-	<map id="vfr_avcharts" name="VFR from avcharts" descr="www.avcharts.com" baseurl="http://s3.amazonaws.com/AvCharts/tiles/" IMAGE_FILENAMEENDING=".png" ZOOM_MINLEVEL="0" ZOOM_MAXLEVEL="11" MAPTILE_SIZEPX="256" URL_BUILDER_TYPE="0" TILE_SOURCE_TYPE="0" PROJECTION="1" YANDEX_TRAFFIC_ON="0"></map>
+	<map id="vfr_avcharts" name="VFR by avcharts" descr="www.avcharts.com" baseurl="http://s3.amazonaws.com/AvCharts/tiles/" IMAGE_FILENAMEENDING=".png" ZOOM_MINLEVEL="0" ZOOM_MAXLEVEL="11" MAPTILE_SIZEPX="256" URL_BUILDER_TYPE="9" TILE_SOURCE_TYPE="0" PROJECTION="1" YANDEX_TRAFFIC_ON="0"></map>
 	<map id="mytopo" name="MyTopo" descr="http://www.mytopo.com" baseurl="http://maps.mytopo.com/mytopob04g82H/tilecache.py/1.0.0/topoG/" IMAGE_FILENAMEENDING=".jpg" ZOOM_MINLEVEL="9" ZOOM_MAXLEVEL="15" MAPTILE_SIZEPX="256" URL_BUILDER_TYPE="0" TILE_SOURCE_TYPE="0" PROJECTION="1" YANDEX_TRAFFIC_ON="0"></map>
 </root>

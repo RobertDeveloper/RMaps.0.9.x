@@ -249,6 +249,15 @@ public class OpenStreetMapRendererInfo {
 					.append(million*(1+(getTileUpperBound(zoomLevel)-1-tileID[OpenStreetMapViewConstants.MAPTILE_LATITUDE_INDEX])))
 					.append("&WIDTH=").append(size).append("&HEIGHT=").append(size)
 					.toString();
+				case 9: // http://www.avcharts.com/
+					return new StringBuilder().append(this.BASEURL)
+					.append(zoomLevel)
+					.append("/")
+					.append(tileID[OpenStreetMapViewConstants.MAPTILE_LONGITUDE_INDEX])
+					.append("/")
+					.append((2<<(zoomLevel-1))-tileID[OpenStreetMapViewConstants.MAPTILE_LATITUDE_INDEX]-1)
+					.append(this.IMAGE_FILENAMEENDING)
+					.toString();
 				case 0: // OSM
 					return new StringBuilder().append(this.BASEURL)
 					.append(zoomLevel)
