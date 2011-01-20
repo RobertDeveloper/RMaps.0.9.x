@@ -780,7 +780,7 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 			return fromPixels((float)(OpenStreetMapView.this.getWidth()/2 + x2), (float)(OpenStreetMapView.this.getHeight()/2 + y2));
 		}
 
-		private static final int EQUATORCIRCUMFENCE = 40075004;
+		private static final int EQUATORCIRCUMFENCE = 40075676; //40075004;
 
 		public float metersToEquatorPixels(final float aMeters) {
 			return aMeters / EQUATORCIRCUMFENCE
