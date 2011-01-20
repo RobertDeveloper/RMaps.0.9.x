@@ -255,7 +255,7 @@ public class OpenStreetMapRendererInfo {
 					.append("/")
 					.append(tileID[OpenStreetMapViewConstants.MAPTILE_LONGITUDE_INDEX])
 					.append("/")
-					.append((2<<(zoomLevel-1))-tileID[OpenStreetMapViewConstants.MAPTILE_LATITUDE_INDEX]-1)
+					.append((1<<zoomLevel)-tileID[OpenStreetMapViewConstants.MAPTILE_LATITUDE_INDEX]-1)
 					.append(this.IMAGE_FILENAMEENDING)
 					.toString();
 				case 0: // OSM
