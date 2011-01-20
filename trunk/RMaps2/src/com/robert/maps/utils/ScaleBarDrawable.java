@@ -1,9 +1,7 @@
 package com.robert.maps.utils;
 
 
-import org.andnav.osm.util.GeoPoint;
 import org.andnav.osm.views.OpenStreetMapView;
-import org.andnav.osm.views.OpenStreetMapView.OpenStreetMapViewProjection;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -24,6 +22,13 @@ public class ScaleBarDrawable extends Drawable {
     private String mDist = "";
     private int mWidth = 100;
     private int mUnits;
+    private int mWidth2 = 100;
+
+    private static final int SCALE[][] = {{25000000,15000000,8000000,4000000,2000000,1000000,500000,250000,100000,50000,25000,15000,8000,4000,2000,1000,500,250,100,50}
+    ,{15000,8000,4000,2000,1000,500,250,100,50,25,15,8,4,2,1,3000,1500,500,250,100}};
+    private static int EQUATOR_M = 40075676;
+    private static int EQUATOR_ML = 24902;
+    private static int EQUATOR_FT = 131481877;
 
     public ScaleBarDrawable(Context ctx, OpenStreetMapView osmv, int units) {
     	mOsmv = osmv;
@@ -46,49 +51,40 @@ public class ScaleBarDrawable extends Drawable {
 
     @Override
     public void draw(Canvas canvas) {
-		final int h = 13, margin = 7;
+		final int h = 13, h2 = 6, margin = 7;
 
         if(mZoomLevel != mOsmv.getZoomLevel() || mTouchScale != mOsmv.mTouchScale){
         	mZoomLevel = mOsmv.getZoomLevel();
         	mTouchScale = mOsmv.mTouchScale;
 
-    		final OpenStreetMapViewProjection pr = mOsmv.getProjection();
-    		final GeoPoint geop = pr.fromPixels(0, 0);
-    		final GeoPoint geop2 = pr.fromPixels((float) (100 / mTouchScale), 0);
-    		int dist1 = geop.distanceTo(geop2);
-    		if(mUnits == 1){
-    			dist1 = (int) (dist1 * 3.2808399);
-    			mDist = " ft";
-    			if(dist1 > 5279){
-    				dist1 = dist1 / 5280;
-    				mDist = " ml";
-    			}
+			final int dist = SCALE[mUnits][Math.max(0, Math.min(19, mZoomLevel + (int)(mTouchScale > 1 ? Math.round(mTouchScale)-1 : -Math.round(1/mTouchScale)+1)))];
+    		if(mUnits == 0){
+	    		mWidth = (int) ((double)dist*mTouchScale*256*(1<<mZoomLevel)/EQUATOR_M);
+
+	    		if(dist > 999)
+	    			mDist = ""+(dist/1000)+" km";
+	    		else
+	    			mDist = ""+dist+" m";
+    		} else if(mZoomLevel < 15){
+	    		mWidth = (int) ((double)dist*mTouchScale*256*(1<<mZoomLevel)/EQUATOR_ML);
+	    		mDist = ""+dist+" ml";
+    		} else {
+	    		mWidth = (int) ((double)dist*mTouchScale*256*(1<<mZoomLevel)/EQUATOR_FT);
+	    		mDist = ""+dist+" ft";
     		}
 
-    		int dist = 0;
-    		for(int i = 6; i >= 0; i -= 1){
-    			final double div = Math.pow(10, i);
-    			if(dist1 >= div){
-    				dist = (int) (div*((int)(dist1/div)));
-    				mWidth = (int) (100 * dist1 / dist);
-    				break;
-    			}
-    		}
-    		if(mUnits == 1)
-    			mDist = ""+dist+mDist;
-    		else if(dist > 999 && mUnits == 0)
-    			mDist = ""+(dist/1000)+" km";
-    		else
-    			mDist = ""+dist+" m";
-    	}
+    		mWidth2 = (int) mWidth / 2;
+        }
 
         canvas.drawRect(margin+0, 0, margin+mWidth+2, 4, mPaint2);
         canvas.drawRect(margin+0, 0, margin+4, h+2, mPaint2);
         canvas.drawRect(margin+mWidth+2-4, 0, margin+mWidth+2, h+2, mPaint2);
+        canvas.drawRect(margin+mWidth2+2-4, 0, margin+mWidth2+2, h2+2, mPaint2);
 
         canvas.drawRect(margin+1, 1, margin+mWidth+1, 3, mPaint);
         canvas.drawRect(margin+1, 1, margin+3, h+1, mPaint);
         canvas.drawRect(margin+mWidth+1-2, 1, margin+mWidth+1, h+1, mPaint);
+        canvas.drawRect(margin+mWidth2+1-2, 1, margin+mWidth2+1, h2+1, mPaint);
 
         canvas.drawText(mDist, margin+7-1, 2+mPaint3.getTextSize()-1, mPaint4);
         canvas.drawText(mDist, margin+7+1, 2+mPaint3.getTextSize()+1, mPaint4);
@@ -97,7 +93,7 @@ public class ScaleBarDrawable extends Drawable {
 
     @Override
     public int getIntrinsicWidth() {
-    	return 200;
+    	return 300;
     }
 
     @Override
