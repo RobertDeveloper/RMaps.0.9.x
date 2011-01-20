@@ -551,24 +551,6 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 
 		c.drawRGB(255, 255, 255);
 
-		/*
-		 * Get the center MapTile which is above this.mLatitudeE6 and
-		 * this.mLongitudeE6 .
-		 */
-//		final GeoPoint gpLT = this.getProjection().fromPixels(0, 0);
-//		final GeoPoint gpRT = this.getProjection().fromPixels(viewWidth, 0);
-//		final GeoPoint gpLB = this.getProjection().fromPixels(0, viewHeight);
-//		final GeoPoint gpRB = this.getProjection().fromPixels(viewWidth, viewHeight);
-//
-//		final int[] MapTileLT = Util.getMapTileFromCoordinates(gpLT.getLatitudeE6(),
-//				gpLT.getLongitudeE6(), zoomLevel, null, this.mRendererInfo.PROJECTION);
-//		final int[] MapTileRT = Util.getMapTileFromCoordinates(gpRT.getLatitudeE6(),
-//				gpRT.getLongitudeE6(), zoomLevel, null, this.mRendererInfo.PROJECTION);
-//		final int[] MapTileLB = Util.getMapTileFromCoordinates(gpLB.getLatitudeE6(),
-//				gpLB.getLongitudeE6(), zoomLevel, null, this.mRendererInfo.PROJECTION);
-//		final int[] MapTileRB = Util.getMapTileFromCoordinates(gpRB.getLatitudeE6(),
-//				gpRB.getLongitudeE6(), zoomLevel, null, this.mRendererInfo.PROJECTION);
-
 		final int[] centerMapTileCoords = Util.getMapTileFromCoordinates(this.mLatitudeE6,
 				this.mLongitudeE6, zoomLevel, null, this.mRendererInfo.PROJECTION);
 
@@ -577,51 +559,37 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 		 * the center MapTile. So in the end we can determine which MapTiles we
 		 * additionally need next to the centerMapTile.
 		 */
+		final Point upperLeftCornerOfCenterMapTileNotScale = getUpperLeftCornerOfCenterMapTileInScreen(
+				centerMapTileCoords, tileSizePxNotScale, null);
+
+		final int centerMapTileScreenLeftNotScale = upperLeftCornerOfCenterMapTileNotScale.x;
+		final int centerMapTileScreenTopNotScale = upperLeftCornerOfCenterMapTileNotScale.y;
+		final int centerMapTileScreenRightNotScale = centerMapTileScreenLeftNotScale + tileSizePxNotScale;
+		final int centerMapTileScreenBottomNotScale = centerMapTileScreenTopNotScale + tileSizePxNotScale;
+
 		final Point upperLeftCornerOfCenterMapTile = getUpperLeftCornerOfCenterMapTileInScreen(
 				centerMapTileCoords, tileSizePx, null);
-
 		final int centerMapTileScreenLeft = upperLeftCornerOfCenterMapTile.x;
 		final int centerMapTileScreenTop = upperLeftCornerOfCenterMapTile.y;
-
-		final int centerMapTileScreenRight = centerMapTileScreenLeft + tileSizePx;
-		final int centerMapTileScreenBottom = centerMapTileScreenTop + tileSizePx;
 
 		/*
 		 * Calculate the amount of tiles needed for each side around the center
 		 * one.
 		 */
 		// TODO Нужен адекватный алгоритм для отбора необходимых тайлов, попадающих в экран при повороте карты
-		int additionalTilesNeededToLeftOfCenter = (int) Math
-				.ceil((float) centerMapTileScreenLeft / tileSizePxNotScale); // i.e.
-																		// "30 / 256"
-																		// = 1;
-		int additionalTilesNeededToRightOfCenter = (int) Math
-				.ceil((float) (viewWidth - centerMapTileScreenRight) / tileSizePxNotScale);
-		int additionalTilesNeededToTopOfCenter = (int) Math
-				.ceil((float) centerMapTileScreenTop / tileSizePxNotScale); // i.e.
-																	// "30 / 256"
-																	// = 1;
-		int additionalTilesNeededToBottomOfCenter = (int) Math
-				.ceil((float) (viewHeight - centerMapTileScreenBottom) / tileSizePxNotScale);
+		final int iDelta = mBearing > 0 && mRendererInfo.YANDEX_TRAFFIC_ON == 0 ? 1 : 0;
+		final int additionalTilesNeededToLeftOfCenter = iDelta + (int) Math
+				.ceil((float) centerMapTileScreenLeftNotScale / tileSizePxNotScale); // i.e.
+		final int additionalTilesNeededToRightOfCenter = iDelta + (int) Math
+				.ceil((float) (viewWidth - centerMapTileScreenRightNotScale) / tileSizePxNotScale);
+		final int additionalTilesNeededToTopOfCenter = iDelta + (int) Math
+				.ceil((float) centerMapTileScreenTopNotScale / tileSizePxNotScale); // i.e.
+		final int additionalTilesNeededToBottomOfCenter = iDelta + (int) Math
+				.ceil((float) (viewHeight - centerMapTileScreenBottomNotScale) / tileSizePxNotScale);
 
 		final int mapTileUpperBound = mRendererInfo.getTileUpperBound(zoomLevel);
 		final int[] mapTileCoords = new int[] { centerMapTileCoords[MAPTILE_LATITUDE_INDEX],
 				centerMapTileCoords[MAPTILE_LONGITUDE_INDEX] };
-
-
-		if(mBearing > 0 && mRendererInfo.YANDEX_TRAFFIC_ON == 0)
-		{
-//			additionalTilesNeededToLeftOfCenter = centerMapTileCoords[0]-Math.min(MapTileRB[0], Math.min(MapTileLB[0], Math.min(MapTileLT[0], MapTileRT[0])));
-//			additionalTilesNeededToRightOfCenter = -centerMapTileCoords[0]+Math.max(MapTileRB[0], Math.max(MapTileLB[0], Math.max(MapTileLT[0], MapTileRT[0])));
-//			additionalTilesNeededToTopOfCenter = centerMapTileCoords[1]-Math.min(MapTileRB[1], Math.min(MapTileLB[1], Math.min(MapTileLT[1], MapTileRT[1])));
-//			additionalTilesNeededToBottomOfCenter = -centerMapTileCoords[1]+Math.max(MapTileRB[1], Math.max(MapTileLB[1], Math.max(MapTileLT[1], MapTileRT[1])));
-//			Ut.dd(""+additionalTilesNeededToLeftOfCenter+"-"+additionalTilesNeededToRightOfCenter+" "
-//					+additionalTilesNeededToTopOfCenter+"-"+additionalTilesNeededToBottomOfCenter);
-			additionalTilesNeededToLeftOfCenter += 1;
-			additionalTilesNeededToRightOfCenter += 1;
-			additionalTilesNeededToTopOfCenter += 1;
-			additionalTilesNeededToBottomOfCenter += 1;
-		}
 
 		/* Draw all the MapTiles (from the upper left to the lower right). */
 		for (int y = -additionalTilesNeededToTopOfCenter; y <= additionalTilesNeededToBottomOfCenter; y++) {
