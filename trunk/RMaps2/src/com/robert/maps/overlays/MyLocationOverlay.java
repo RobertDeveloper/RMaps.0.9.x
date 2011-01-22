@@ -36,12 +36,13 @@ public class MyLocationOverlay extends OpenStreetMapViewOverlay {
 
 	protected final Paint mPaint = new Paint();
 
-	protected final Bitmap PERSON_ICON;
+	protected Bitmap PERSON_ICON2 = null;
 	private Drawable mArrow;
 	//private Drawable mStop;
 	/** Coordinates the feet of the person are located. */
 	protected final android.graphics.Point PERSON_HOTSPOT = new android.graphics.Point(24,39);
 
+	private Context mCtx;
 	protected GeoPoint mLocation;
 	private float mAccuracy;
 	private int mPrefAccuracy;
@@ -56,7 +57,7 @@ public class MyLocationOverlay extends OpenStreetMapViewOverlay {
 	// ===========================================================
 
 	public MyLocationOverlay(final Context ctx){
-		this.PERSON_ICON = BitmapFactory.decodeResource(ctx.getResources(), R.drawable.person);
+		mCtx = ctx;
 		this.mArrow = ctx.getResources().getDrawable(R.drawable.arrow);
 		//this.mStop = ctx.getResources().getDrawable(R.drawable.arrow_stop);
 
@@ -77,6 +78,17 @@ public class MyLocationOverlay extends OpenStreetMapViewOverlay {
 	// ===========================================================
 	// Getter & Setter
 	// ===========================================================
+
+	private boolean getPersonIcon(){
+		if(PERSON_ICON2 == null)
+			try {
+				this.PERSON_ICON2 = BitmapFactory.decodeResource(mCtx.getResources(), R.drawable.person);
+			} catch (Exception e) {
+				PERSON_ICON2 = null;
+			}
+
+		return PERSON_ICON2 == null ? false : true;
+	}
 
 	public void setLocation(final Location loc){
 		this.mLocation = TypeConverter.locationToGeoPoint(loc);
@@ -118,8 +130,9 @@ public class MyLocationOverlay extends OpenStreetMapViewOverlay {
 			c.save();
 			if (mSpeed == 0) {
 				c.rotate(osmv.getBearing(), screenCoords.x, screenCoords.y);
-				c.drawBitmap(PERSON_ICON, screenCoords.x - PERSON_HOTSPOT.x, screenCoords.y - PERSON_HOTSPOT.y,
-						this.mPaint);
+				if(getPersonIcon())
+					c.drawBitmap(PERSON_ICON2, screenCoords.x - PERSON_HOTSPOT.x, screenCoords.y - PERSON_HOTSPOT.y,
+							this.mPaint);
 //				mStop.setBounds(screenCoords.x - mArrow.getMinimumWidth() / 2, screenCoords.y
 //						- mArrow.getMinimumHeight() / 2 - 3, screenCoords.x + mArrow.getMinimumWidth() / 2, screenCoords.y
 //						+ mArrow.getMinimumHeight() / 2 - 3);
