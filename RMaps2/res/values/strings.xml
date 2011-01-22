@@ -101,6 +101,11 @@ How to and FAQ you can find on http://robertdeveloper.blogspot.com/\n
     <string name="whats_new_dialog_text">
 The source site of VFR, IFR High, IFR Low charts is unavailable now. Read here about it. http://blog.runwayfinder.com/\n
 \n
+v.0.8.6\n
++ New maps: VFR (avcharts.com), MyTopo, OSM MTB Mapa Česká republika\n
++ Error report (please, send me message about force close)\n
+- Bug fix: Mutlitouch, Scale bar, more\n
+\n
 v.0.8.5\n
 + Scale bar, Units property\n
 \n
@@ -229,6 +234,6 @@ v.0.7.0\n
 	<string name="message_cantstarttrackwriter">Can\'t start TrackWriter because can\'t write track to </string>
 	<string name="message_error">Error: </string>
 	<string name="error_title">Error report</string>
-	<string name="error_text">After the last start the software problem has forced RMaps to be closed unexpectedly. Please, send the error report to the author of the program.</string>
+	<string name="error_text">After the last start the software problem has forced RMaps to be closed unexpectedly. Please, send the error report to the author of the program. Click Generate report, you can read the message before it is sent.</string>
 	<string name="error_send">Generate report</string>
 </resources>

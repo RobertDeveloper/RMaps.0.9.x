@@ -84,6 +84,11 @@ All rights reserved\n
 Как сделать офф-лайн карту и прочее можно почитать здесь http://robertdeveloper.blogspot.com/\n
 </string>
     <string name="whats_new_dialog_text">
+v.0.8.6\n
++ Новые карты: VFR (avcharts.com), MyTopo, OSM MTB Mapa Česká republika\n
++ Отчет об ошибках (пожалуйста, шлите мне сообшение, если программа аварийно закрылась)\n
+- Bug fix: Мультитач, Линейка масштаба и др.\n
+\n
 v.0.8.5\n
 + Линейка масштаба, настройки единиц измерения\n
 \n
@@ -243,6 +248,6 @@ v.0.5.2\n
 	<string name="menu_exporttogpx">Экспорт в GPX файл</string>
 	<string name="message_cantstarttrackwriter">Не могу запустить TrackWriter потому что невозможно писать трек в папку</string>
 	<string name="error_title">Ошибка</string>
-	<string name="error_text">Во время последнего запуска RMaps была аварийно завершена. Пожалуйста, пошлите отчет об ошибке автору программы.</string>
+	<string name="error_text">Во время последнего запуска RMaps была аварийно завершена. Пожалуйста, пошлите отчет об ошибке автору программы. Нажмите Создать отчет, вы сможете прочитать сообщение до того, как оно будет отправлено.</string>
 	<string name="error_send">Создать отчет</string>
 </resources>
