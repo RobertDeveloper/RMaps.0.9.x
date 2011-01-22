@@ -4,6 +4,7 @@
 <item android:id="@+id/user_moved_map"></item>
 <item android:id="@+id/set_title"></item>
 <item android:id="@+id/whatsnew"></item>
+<item android:id="@+id/error"></item>
 <item android:id="@+id/add_yandex_bookmark"></item>
 <item android:id="@+id/settings_activity_closed"></item>
 

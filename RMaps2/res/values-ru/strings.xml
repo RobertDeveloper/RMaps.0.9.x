@@ -242,4 +242,7 @@ v.0.5.2\n
 	<string name="message_nogpsstatus">Приложение GPS Status не найдено. Пожалуйста, установите его из Маркета!</string>
 	<string name="menu_exporttogpx">Экспорт в GPX файл</string>
 	<string name="message_cantstarttrackwriter">Не могу запустить TrackWriter потому что невозможно писать трек в папку</string>
+	<string name="error_title">Ошибка</string>
+	<string name="error_text">Во время последнего запуска RMaps была аварийно завершена. Пожалуйста, пошлите отчет об ошибке автору программы.</string>
+	<string name="error_send">Создать отчет</string>
 </resources>

@@ -228,4 +228,7 @@ v.0.7.0\n
 	<string name="message_trackexported">The track is exported to </string>
 	<string name="message_cantstarttrackwriter">Can\'t start TrackWriter because can\'t write track to </string>
 	<string name="message_error">Error: </string>
+	<string name="error_title">Error report</string>
+	<string name="error_text">After the last start the software problem has forced RMaps to be closed unexpectedly. Please, send the error report to the author of the program.</string>
+	<string name="error_send">Generate report</string>
 </resources>

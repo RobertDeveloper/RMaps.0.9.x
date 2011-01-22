@@ -9,6 +9,7 @@ import org.andnav.osm.util.constants.OpenStreetMapConstants;
 import org.andnav.osm.views.util.constants.OpenStreetMapViewConstants;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.Canvas;
@@ -174,6 +175,16 @@ public class Ut implements OpenStreetMapConstants, OpenStreetMapViewConstants {
 		public int getHeight() {
 			return mMaxHeight;
 		}
+	}
+
+	public static Intent SendMail(String subject, String text) {
+		final String[] email = {"robertk506@gmail.com"};
+		Intent sendIntent = new Intent(Intent.ACTION_SEND);
+		sendIntent.putExtra(Intent.EXTRA_TEXT, text);
+		sendIntent.putExtra(Intent.EXTRA_SUBJECT, subject);
+		sendIntent.putExtra(Intent.EXTRA_EMAIL, email);
+		sendIntent.setType("message/rfc822");
+		return Intent.createChooser(sendIntent, "Error report to the author");
 	}
 
 }

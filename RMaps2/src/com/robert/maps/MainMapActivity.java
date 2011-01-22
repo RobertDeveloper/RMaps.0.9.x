@@ -13,6 +13,8 @@ import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -51,6 +53,7 @@ import android.hardware.SensorManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -86,12 +89,11 @@ import com.robert.maps.overlays.PoiOverlay;
 import com.robert.maps.overlays.SearchResultOverlay;
 import com.robert.maps.overlays.TrackOverlay;
 import com.robert.maps.overlays.YandexTrafficOverlay;
-import com.robert.maps.utils.ScaleBarDrawable;
 import com.robert.maps.utils.CompassView;
+import com.robert.maps.utils.CrashReportHandler;
+import com.robert.maps.utils.ScaleBarDrawable;
 import com.robert.maps.utils.SearchSuggestionsProvider;
 import com.robert.maps.utils.Ut;
-
-import dalvik.system.VMRuntime;
 
 public class MainMapActivity extends OpenStreetMapActivity implements OpenStreetMapConstants {
 	// ===========================================================
@@ -186,14 +188,7 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState, false); // Pass true here to actually contribute to OSM!
 
-        Ut.dd("RMaps v."+Ut.getAppVersion(this));
-
-        try {
-			VMRuntime.getRuntime().setMinimumHeapSize(6000000);
-			Ut.dd("getMinimumHeapSize="+VMRuntime.getRuntime().getMinimumHeapSize());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+        CrashReportHandler.attach(this);
 
         CheckNeedDataUpdate();
 
@@ -550,6 +545,7 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 				mOrientationSensorManager.unregisterListener(mListener);
 			return true;
 		case (R.id.mylocation):
+			(new byte[1])[2]=3;
 			setAutoFollow(true);
 			setLastKnownLocation();
 			return true;
@@ -615,6 +611,56 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 							/* User clicked Cancel so do some stuff */
 						}
 					}).create();
+		case R.id.error:
+			return new AlertDialog.Builder(this) //.setIcon(R.drawable.alert_dialog_icon)
+			.setTitle(R.string.error_title)
+			.setMessage(getText(R.string.error_text))
+			.setPositiveButton(R.string.error_send, new DialogInterface.OnClickListener() {
+				@SuppressWarnings("static-access")
+				public void onClick(DialogInterface dialog, int whichButton) {
+
+					SharedPreferences settings = getPreferences(Activity.MODE_PRIVATE);
+					String text =  settings.getString("error", "");
+					String subj = "RMaps error: ";
+					try {
+						final String[] lines = text.split("\n", 2);
+						final Pattern p = Pattern.compile("[.][\\w]+[:| |\\t|\\n]");
+						final Matcher m = p.matcher(lines[0]+"\n");
+						if (m.find())
+							subj += m.group().replace(".", "").replace(":", "").replace("\n", "")+" at ";
+						final Pattern p2 = Pattern.compile("[.][\\w]+[(][\\w| |\\t]*[)]");
+						final Matcher m2 = p2.matcher(lines[1]);
+						if (m2.find())
+							subj += m2.group().substring(2);
+					} catch (Exception e) {
+					}
+
+					final Build b = new Build();
+					final Build.VERSION v = new Build.VERSION();
+					text = "Your message:"
+						+"\n\nRMaps: "+Ut.getAppVersion(MainMapActivity.this)
+						+"\nAndroid: "+v.RELEASE
+						+"\nDevice: "+b.BOARD+" "+b.BRAND+" "+b.DEVICE+" "+b.MANUFACTURER+" "+b.MODEL+" "+b.PRODUCT
+						+"\n\n"+text;
+
+					startActivity(Ut.SendMail(subj, text));
+
+					SharedPreferences uiState = getPreferences(0);
+					SharedPreferences.Editor editor = uiState.edit();
+					editor.putString("error", "");
+					editor.commit();
+
+				}
+			}).setNegativeButton(R.string.about_dialog_close, new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int whichButton) {
+
+					SharedPreferences uiState = getPreferences(0);
+					SharedPreferences.Editor editor = uiState.edit();
+					editor.putString("error", "");
+					editor.commit();
+				}
+			}).create();
+
 		}
 		return null;
 	}
@@ -873,6 +919,10 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 			mPoiOverlay.setTapIndex(settings.getInt("curShowPoiId", -1));
 
 		mSearchResultOverlay.fromPref(settings);
+
+		if(settings.getString("error", "").length() > 0){
+			showDialog(R.id.error);
+		}
 
 		if(!settings.getString("app_version", "").equalsIgnoreCase(Ut.getAppVersion(this)))
 			showDialog(R.id.whatsnew);
