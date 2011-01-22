@@ -545,7 +545,6 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 				mOrientationSensorManager.unregisterListener(mListener);
 			return true;
 		case (R.id.mylocation):
-			(new byte[1])[2]=3;
 			setAutoFollow(true);
 			setLastKnownLocation();
 			return true;
