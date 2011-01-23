@@ -1055,13 +1055,16 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 			case OpenStreetMapTileFilesystemProvider.MAPTILEFSLOADER_SUCCESS_ID:
 				OpenStreetMapView.this.invalidate();
 				break;
+			case OpenStreetMapTileFilesystemProvider.ERROR_MESSAGE:
+				Message.obtain(mMainActivityCallbackHandler, OpenStreetMapTileFilesystemProvider.ERROR_MESSAGE, msg.obj).sendToTarget();
+				break;
 			case OpenStreetMapTileFilesystemProvider.INDEXIND_SUCCESS_ID:
 				if (mZoomLevel > mRendererInfo.ZOOM_MAXLEVEL)
 					mZoomLevel = mRendererInfo.ZOOM_MAXLEVEL;
 				if (mZoomLevel < mRendererInfo.ZOOM_MINLEVEL)
 					mZoomLevel = mRendererInfo.ZOOM_MINLEVEL;
 
-				Message.obtain(mMainActivityCallbackHandler, R.id.set_title).sendToTarget();;
+				Message.obtain(mMainActivityCallbackHandler, R.id.set_title).sendToTarget();
 
 				OpenStreetMapView.this.invalidate();
 				break;

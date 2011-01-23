@@ -5,17 +5,18 @@ import java.io.File;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 
 public class CashDatabase {
 	private SQLiteDatabase mDatabase;
 
-	public void setFile(final File aFile) {
+	public void setFile(final File aFile) throws SQLiteException {
 		if (mDatabase != null)
 			mDatabase.close();
 
 		mDatabase = new CashDatabaseHelper(null, aFile.getAbsolutePath()).getWritableDatabase();
-		Ut.dd("CashDatabase: Open SQLITEDB Database");
-		
+		Ut.d("CashDatabase: Open SQLITEDB Database");
+
 	}
 
 	protected class CashDatabaseHelper extends RSQLiteOpenHelper {
@@ -33,10 +34,12 @@ public class CashDatabase {
 
 	}
 
-	public void updateMinMaxZoom(){
-		Ut.dd("Update min max");
-		this.mDatabase.execSQL("DROP TABLE IF EXISTS info");
-		this.mDatabase.execSQL("CREATE TABLE IF NOT EXISTS info AS SELECT MIN(z) AS minzoom, MAX(z) AS maxzoom FROM tiles");
+	public void updateMinMaxZoom() throws SQLiteException {
+		if(mDatabase != null){
+			Ut.dd("Update min max");
+			this.mDatabase.execSQL("DROP TABLE IF EXISTS info");
+			this.mDatabase.execSQL("CREATE TABLE IF NOT EXISTS info AS SELECT MIN(z) AS minzoom, MAX(z) AS maxzoom FROM tiles");
+		};
 	}
 
 	public byte[] getTile(final int aX, final int aY, final int aZ) {
@@ -58,24 +61,28 @@ public class CashDatabase {
 
 	public int getMaxZoom() {
 		int ret = 99;
-		final Cursor c = this.mDatabase.rawQuery("SELECT 17-minzoom AS ret FROM info", null);
-		if (c != null) {
-			if (c.moveToFirst()) {
-				ret = c.getInt(c.getColumnIndexOrThrow("ret"));
+		if(mDatabase != null){
+			final Cursor c = this.mDatabase.rawQuery("SELECT 17-minzoom AS ret FROM info", null);
+			if (c != null) {
+				if (c.moveToFirst()) {
+					ret = c.getInt(c.getColumnIndexOrThrow("ret"));
+				}
+				c.close();
 			}
-			c.close();
-		}
+		};
 		return ret;
 	}
 
 	public int getMinZoom() {
 		int ret = 0;
-		final Cursor c = this.mDatabase.rawQuery("SELECT 17-maxzoom AS ret FROM info", null);
-		if (c != null) {
-			if (c.moveToFirst()) {
-				ret = c.getInt(c.getColumnIndexOrThrow("ret"));
+		if(mDatabase != null){
+			final Cursor c = this.mDatabase.rawQuery("SELECT 17-maxzoom AS ret FROM info", null);
+			if (c != null) {
+				if (c.moveToFirst()) {
+					ret = c.getInt(c.getColumnIndexOrThrow("ret"));
+				}
+				c.close();
 			}
-			c.close();
 		}
 		return ret;
 	}

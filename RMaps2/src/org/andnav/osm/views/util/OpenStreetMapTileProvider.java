@@ -104,12 +104,10 @@ public class OpenStreetMapTileProvider implements OpenStreetMapConstants, OpenSt
 				case OpenStreetMapTileFilesystemProvider.INDEXIND_SUCCESS_ID:
 					mRendererInfo.ZOOM_MAXLEVEL = mFSTileProvider.getZoomMaxInCashFile();
 					mRendererInfo.ZOOM_MINLEVEL = mFSTileProvider.getZoomMinInCashFile();
-
-					final Message successMessage = Message.obtain(mDownloadFinishedListenerHander, OpenStreetMapTileFilesystemProvider.INDEXIND_SUCCESS_ID);
-					successMessage.sendToTarget();
-
 					break;
 			}
+
+			Message.obtain(mDownloadFinishedListenerHander, msg.what, msg.obj).sendToTarget();
 		}
 	}
 
