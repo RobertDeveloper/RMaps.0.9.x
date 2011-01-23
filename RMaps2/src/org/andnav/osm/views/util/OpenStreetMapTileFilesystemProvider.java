@@ -505,23 +505,21 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 				// File exists, otherwise a FileNotFoundException would have been thrown
 				OpenStreetMapTileFilesystemProvider.this.mDatabase.incrementUse(formattedTileURLString);
 
-				final byte[] data = OpenStreetMapTileFilesystemProvider.this.mCashDatabase.getTile(x, y, z);
+				try {
+					final byte[] data = OpenStreetMapTileFilesystemProvider.this.mCashDatabase.getTile(x, y, z);
 
-				if(data != null){
-					Bitmap bmp;
-					try {
-						bmp = BitmapFactory.decodeByteArray(data, 0, data.length);
+					if(data != null){
+						final Bitmap bmp = BitmapFactory.decodeByteArray(data, 0, data.length);
 						OpenStreetMapTileFilesystemProvider.this.mCache.putTile(aTileURLString, bmp);
-					} catch (OutOfMemoryError e) {
-						// TODO Попытка отловить OutOfMemory
-						e.printStackTrace();
 					}
-
-					final Message successMessage = Message.obtain(callback, MAPTILEFSLOADER_SUCCESS_ID);
-					successMessage.sendToTarget();
-
-					OpenStreetMapTileFilesystemProvider.this.mPending.remove(aTileURLString);
+				} catch (OutOfMemoryError e) {
+					e.printStackTrace();
 				}
+
+				final Message successMessage = Message.obtain(callback, MAPTILEFSLOADER_SUCCESS_ID);
+				successMessage.sendToTarget();
+
+				OpenStreetMapTileFilesystemProvider.this.mPending.remove(aTileURLString);
 			}
 		});
 
@@ -610,21 +608,20 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 						// File exists, otherwise a FileNotFoundException would have been thrown
 						OpenStreetMapTileFilesystemProvider.this.mDatabase.incrementUse(formattedTileURLString);
 
-						final ByteArrayOutputStream dataStream = new ByteArrayOutputStream();
-						out = new BufferedOutputStream(dataStream, StreamUtils.IO_BUFFER_SIZE);
-						StreamUtils.copy(in, out);
-						out.flush();
-
-						final byte[] data = dataStream.toByteArray();
-
-						//final BitmapFactory.Options options = new BitmapFactory.Options();
-						//options.inSampleSize = 2;
 						try {
+							final ByteArrayOutputStream dataStream = new ByteArrayOutputStream();
+							out = new BufferedOutputStream(dataStream, StreamUtils.IO_BUFFER_SIZE);
+							StreamUtils.copy(in, out);
+							out.flush();
+
+							final byte[] data = dataStream.toByteArray();
+
+							//final BitmapFactory.Options options = new BitmapFactory.Options();
+							//options.inSampleSize = 2;
 							final Bitmap bmp = BitmapFactory.decodeByteArray(data, 0, data.length); // , BITMAPLOADOPTIONS);
 
 							OpenStreetMapTileFilesystemProvider.this.mCache.putTile(aTileURLString, bmp);
 						} catch (OutOfMemoryError e) {
-							// TODO Попытка отловить OutOfMemory
 							e.printStackTrace();
 						}
 
