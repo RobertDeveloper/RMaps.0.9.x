@@ -47,8 +47,12 @@ public class GeoPoint implements MathConstants, GeoConstants{
 	}
 
 	public static GeoPoint from2DoubleString(final String lat, final String lon) {
-		return new GeoPoint((int) (Double.parseDouble(lat) * 1E6),
-				(int) (Double.parseDouble(lon) * 1E6));
+		try {
+			return new GeoPoint((int) (Double.parseDouble(lat) * 1E6),
+					(int) (Double.parseDouble(lon) * 1E6));
+		} catch (NumberFormatException e) {
+			return new GeoPoint(0,0);
+		}
 	}
 
 	public static GeoPoint fromIntString(final String s){
