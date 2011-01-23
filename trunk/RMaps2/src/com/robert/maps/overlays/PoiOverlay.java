@@ -16,7 +16,6 @@ import android.graphics.Canvas;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
-import android.os.Handler;
 import android.view.MotionEvent;
 
 import com.robert.maps.R;
@@ -33,7 +32,6 @@ public class PoiOverlay extends OpenStreetMapViewOverlay {
 	private int mTapIndex;
 	private GeoPoint mLastMapCenter;
 	private int mLastZoom;
-	private Handler mMapViewHandler;
 	private PoiListThread mThread;
 
 	public int getTapIndex() {

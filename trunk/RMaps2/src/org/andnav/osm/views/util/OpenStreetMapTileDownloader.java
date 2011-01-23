@@ -99,6 +99,11 @@ public class OpenStreetMapTileDownloader implements OpenStreetMapConstants, Open
 					 * Also remove it from the mPending?
 					 * Doing not blocks it for the whole existence of this TileDownloder.
 					 */
+				} catch (OutOfMemoryError e) {
+					final Message failMessage = Message.obtain(callback, MAPTILEDOWNLOADER_FAIL_ID);
+					failMessage.sendToTarget();
+					if(DEBUGMODE)
+						Log.e(DEBUGTAG, "Error Downloading MapTile. Exception: " + e.getClass().getSimpleName(), e);
 				} finally {
 					StreamUtils.closeStream(in);
 					StreamUtils.closeStream(out);
