@@ -27,6 +27,7 @@ import org.andnav.osm.util.constants.OpenStreetMapConstants;
 import org.andnav.osm.views.OpenStreetMapView;
 import org.andnav.osm.views.controller.OpenStreetMapViewController;
 import org.andnav.osm.views.util.OpenStreetMapRendererInfo;
+import org.andnav.osm.views.util.OpenStreetMapTileFilesystemProvider;
 import org.andnav.osm.views.util.StreamUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -994,6 +995,10 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 					break;
 				case R.id.add_yandex_bookmark:
 					showDialog(R.id.add_yandex_bookmark);
+					break;
+				case OpenStreetMapTileFilesystemProvider.ERROR_MESSAGE:
+					if(msg.obj != null)
+						Toast.makeText(MainMapActivity.this, msg.obj.toString(), Toast.LENGTH_LONG).show();
 					break;
 			}
 		}

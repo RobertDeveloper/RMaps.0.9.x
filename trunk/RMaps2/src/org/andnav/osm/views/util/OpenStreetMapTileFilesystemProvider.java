@@ -31,6 +31,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -59,6 +60,7 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 	public static final int MAPTILEFSLOADER_FAIL_ID = MAPTILEFSLOADER_SUCCESS_ID + 1;
 	public static final int INDEXIND_SUCCESS_ID = MAPTILEFSLOADER_SUCCESS_ID + 2;
 	public static final int INDEXIND_FAIL_ID = MAPTILEFSLOADER_SUCCESS_ID + 3;
+	public static final int ERROR_MESSAGE = MAPTILEFSLOADER_SUCCESS_ID + 4;
 
 	// public static final Options BITMAPLOADOPTIONS = new Options(){
 	// {
@@ -277,32 +279,37 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 	}
 
 	private void IndexSQLiteFile(final Handler callback) throws IOException {
-		mCashDatabase.setFile(mCashFile);
+		try {
+			mCashDatabase.setFile(mCashFile);
+		} catch (SQLiteException e) {
+			Toast.makeText(mCtx, "Error: "+e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+			return;
+		}
 
 		mDatabase.setCashTable("cahs_" + Ut.FileName2ID(mCashFile.getName()));
 
-		long fileLength = mCashFile.length();
-		long fileModified = mCashFile.lastModified();
-		if (mDatabase.NeedIndex(fileLength, fileModified, mBlockIndexing))
+		if (mDatabase.NeedIndex(mCashFile.length(), mCashFile.lastModified(), mBlockIndexing))
 		{
 			mStopIndexing = false;
 			ShowWaitDialog(mCtx.getString(R.string.message_updateminmax));
-			//Toast.makeText(mCtx, R.string.message_updateminmax, Toast.LENGTH_LONG).show();
 
 			this.mThreadPool.execute(new Runnable() {
 				public void run() {
-					long fileLength = mCashFile.length();
-					long fileModified = mCashFile.lastModified();
-					mCashDatabase.updateMinMaxZoom();
-					int minzoom = mCashDatabase.getMinZoom(), maxzoom = mCashDatabase.getMaxZoom();
-					Ut.dd("Update min max zoom data: minzoom="+minzoom+" maxzoom="+maxzoom);
+					try {
+						final long fileLength = mCashFile.length();
+						final long fileModified = mCashFile.lastModified();
+						mCashDatabase.updateMinMaxZoom();
+						final int minzoom = mCashDatabase.getMinZoom();
+						final int maxzoom = mCashDatabase.getMaxZoom();
 
-					mDatabase.CommitIndex(fileLength, fileModified, minzoom, maxzoom);
-					
+						mDatabase.CommitIndex(fileLength, fileModified, minzoom, maxzoom);
+					} catch (SQLiteException e) {
+						Message.obtain(callback, ERROR_MESSAGE, "Error: "+e.getLocalizedMessage()).sendToTarget();
+					}
+
 					mProgressDialog.dismiss();
 
-					final Message successMessage = Message.obtain(callback, INDEXIND_SUCCESS_ID);
-					successMessage.sendToTarget();
+					Message.obtain(callback, INDEXIND_SUCCESS_ID).sendToTarget();
 				}
 			});
 		}
