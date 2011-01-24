@@ -271,6 +271,8 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 					} catch (IOException e) {
 						e.printStackTrace();
 						mDatabase.ClearIndex();
+					} catch (Exception e) {
+					} catch (OutOfMemoryError e) {
 					} finally {
 					}
 				}
@@ -303,7 +305,7 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 						final int maxzoom = mCashDatabase.getMaxZoom();
 
 						mDatabase.CommitIndex(fileLength, fileModified, minzoom, maxzoom);
-					} catch (SQLiteException e) {
+					} catch (Exception e) {
 						Message.obtain(callback, ERROR_MESSAGE, "Error: "+e.getLocalizedMessage()).sendToTarget();
 					}
 
@@ -317,7 +319,11 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 	}
 
 	private void IndexMnmFile(final Handler callback) throws IOException {
-		mDatabase.setCashTable("cahs_" + Ut.FileName2ID(mCashFile.getName()));
+		try {
+			mDatabase.setCashTable("cahs_" + Ut.FileName2ID(mCashFile.getName()));
+		} catch (Exception e1) {
+			return;
+		}
 
 		long fileLength = mCashFile.length();
 		long fileModified = mCashFile.lastModified();
@@ -326,7 +332,12 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 			mStopIndexing = false;
 			ShowIndexingProgressDialog(fileLength);
 
-			mDatabase.CreateMnmIndex(fileLength, fileModified);
+			try {
+				mDatabase.CreateMnmIndex(fileLength, fileModified);
+			} catch (Exception e1) {
+				mProgressDialog.dismiss();
+				return;
+			}
 
 			this.mThreadPool.execute(new Runnable() {
 				public void run() {
@@ -354,7 +365,11 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 							offset += 17;
 
 							if (tileSize > 0) {
-								mDatabase.addMnmIndexRow(tileX, tileY, tileZ, offset, tileSize);
+								try {
+									mDatabase.addMnmIndexRow(tileX, tileY, tileZ, offset, tileSize);
+								} catch (Exception e) {
+									break;
+								}
 								//Log.e(DEBUGTAG, tileX + " " + tileY + " " + tileZ + " size=" + tileSize + " offset=" + offset);
 								in.skip(tileSize);
 								offset += tileSize;
@@ -381,10 +396,7 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 						} else
 							mDatabase.ClearIndex();
 
-					} catch (FileNotFoundException e) {
-						e.printStackTrace();
-						mDatabase.ClearIndex();
-					} catch (IOException e) {
+					} catch (Exception e) {
 						e.printStackTrace();
 						mDatabase.ClearIndex();
 					} finally {
@@ -475,9 +487,8 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 						final Message successMessage = Message.obtain(callback, MAPTILEFSLOADER_SUCCESS_ID);
 						successMessage.sendToTarget();
 					}
-				} catch (IOException e) {
-					final Message failMessage = Message.obtain(callback, MAPTILEFSLOADER_FAIL_ID);
-					failMessage.sendToTarget();
+				} catch (Exception e) {
+					Message.obtain(callback, MAPTILEFSLOADER_FAIL_ID).sendToTarget();
 					if (DEBUGMODE)
 						Log.e(DEBUGTAG, "Error Loading MapTile from FS. Exception: " + e.getClass().getSimpleName(), e);
 				} finally {
@@ -502,18 +513,20 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 
 		this.mThreadPool.execute(new Runnable() {
 			public void run() {
-				// File exists, otherwise a FileNotFoundException would have been thrown
-				OpenStreetMapTileFilesystemProvider.this.mDatabase.incrementUse(formattedTileURLString);
-
 				try {
+					// File exists, otherwise a FileNotFoundException would have been thrown
+					OpenStreetMapTileFilesystemProvider.this.mDatabase.incrementUse(formattedTileURLString);
+
 					final byte[] data = OpenStreetMapTileFilesystemProvider.this.mCashDatabase.getTile(x, y, z);
 
 					if(data != null){
 						final Bitmap bmp = BitmapFactory.decodeByteArray(data, 0, data.length);
 						OpenStreetMapTileFilesystemProvider.this.mCache.putTile(aTileURLString, bmp);
 					}
+				} catch (Exception e) {
+					Message.obtain(callback, MAPTILEFSLOADER_FAIL_ID).sendToTarget();
 				} catch (OutOfMemoryError e) {
-					e.printStackTrace();
+					Message.obtain(callback, MAPTILEFSLOADER_FAIL_ID).sendToTarget();
 				}
 
 				final Message successMessage = Message.obtain(callback, MAPTILEFSLOADER_SUCCESS_ID);
@@ -555,14 +568,8 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 						in.skip(Data.size % 512);
 
 						final byte[] data = dataStream.toByteArray();
-						Bitmap bmp = null;
-						try {
-							bmp = BitmapFactory.decodeByteArray(data, 0, data.length);
-							OpenStreetMapTileFilesystemProvider.this.mCache.putTile(aTileURLString, bmp);
-						} catch (OutOfMemoryError e) {
-							// TODO Попытка отловить OutOfMemory
-							e.printStackTrace();
-						}
+						Bitmap bmp = BitmapFactory.decodeByteArray(data, 0, data.length);
+						OpenStreetMapTileFilesystemProvider.this.mCache.putTile(aTileURLString, bmp);
 
 						final Message successMessage = Message.obtain(callback, MAPTILEFSLOADER_SUCCESS_ID);
 						successMessage.sendToTarget();
@@ -570,11 +577,10 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 
 					if (DEBUGMODE)
 						Log.d(DEBUGTAG, "Loaded: " + aTileURLString + " to MemCache.");
-				} catch (NumberFormatException e) {
-					e.printStackTrace();
-				} catch (IOException e) {
-					final Message failMessage = Message.obtain(callback, MAPTILEFSLOADER_FAIL_ID);
-					failMessage.sendToTarget();
+				} catch (OutOfMemoryError e) {
+					Message.obtain(callback, MAPTILEFSLOADER_FAIL_ID).sendToTarget();
+				} catch (Exception e) {
+					Message.obtain(callback, MAPTILEFSLOADER_FAIL_ID).sendToTarget();
 					if (DEBUGMODE)
 						Log.e(DEBUGTAG, "Error Loading MapTile from FS. Exception: " + e.getClass().getSimpleName(), e);
 				} finally {
@@ -608,36 +614,28 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 						// File exists, otherwise a FileNotFoundException would have been thrown
 						OpenStreetMapTileFilesystemProvider.this.mDatabase.incrementUse(formattedTileURLString);
 
-						try {
-							final ByteArrayOutputStream dataStream = new ByteArrayOutputStream();
-							out = new BufferedOutputStream(dataStream, StreamUtils.IO_BUFFER_SIZE);
-							StreamUtils.copy(in, out);
-							out.flush();
+						final ByteArrayOutputStream dataStream = new ByteArrayOutputStream();
+						out = new BufferedOutputStream(dataStream, StreamUtils.IO_BUFFER_SIZE);
+						StreamUtils.copy(in, out);
+						out.flush();
 
-							final byte[] data = dataStream.toByteArray();
+						final byte[] data = dataStream.toByteArray();
 
-							//final BitmapFactory.Options options = new BitmapFactory.Options();
-							//options.inSampleSize = 2;
-							final Bitmap bmp = BitmapFactory.decodeByteArray(data, 0, data.length); // , BITMAPLOADOPTIONS);
+						//final BitmapFactory.Options options = new BitmapFactory.Options();
+						//options.inSampleSize = 2;
+						final Bitmap bmp = BitmapFactory.decodeByteArray(data, 0, data.length); // , BITMAPLOADOPTIONS);
 
-							OpenStreetMapTileFilesystemProvider.this.mCache.putTile(aTileURLString, bmp);
-						} catch (OutOfMemoryError e) {
-							e.printStackTrace();
-						}
+						OpenStreetMapTileFilesystemProvider.this.mCache.putTile(aTileURLString, bmp);
 
 						final Message successMessage = Message.obtain(callback, MAPTILEFSLOADER_SUCCESS_ID);
 						successMessage.sendToTarget();
 
 						if (DEBUGMODE)
 							Log.d(DEBUGTAG, "Loaded: " + aTileURLString + " to MemCache.");
-					} catch (IOException e) {
-						final Message failMessage = Message.obtain(callback, MAPTILEFSLOADER_FAIL_ID);
-						failMessage.sendToTarget();
-						if (DEBUGMODE)
-							Log.e(DEBUGTAG, "Error Loading MapTile from FS. Exception: " + e.getClass().getSimpleName(), e);
+					} catch (OutOfMemoryError e) {
+						Message.obtain(callback, MAPTILEFSLOADER_FAIL_ID).sendToTarget();
 					} catch (Exception e) {
-						final Message failMessage = Message.obtain(callback, MAPTILEFSLOADER_FAIL_ID);
-						failMessage.sendToTarget();
+						Message.obtain(callback, MAPTILEFSLOADER_FAIL_ID).sendToTarget();
 						if (DEBUGMODE)
 							Log.e(DEBUGTAG, "Error Loading MapTile from FS. Exception: " + e.getClass().getSimpleName(), e);
 					} finally {

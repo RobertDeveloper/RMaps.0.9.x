@@ -158,6 +158,9 @@ public class ImportTrackActivity extends Activity {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 						mPoiManager.rollbackTransaction();
+					} catch (IllegalStateException e) {
+					} catch (OutOfMemoryError e) {
+						mPoiManager.rollbackTransaction();
 					}
 					Ut.dd("Pois commited");
 				}

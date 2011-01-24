@@ -114,8 +114,10 @@ public class TrackListActivity extends ListActivity {
 				};
 				int res = 0;
 				if(db != null){
-					res = mPoiManager.getGeoDatabase().saveTrackFromWriter(db);
-					//db.releaseReference();
+					try {
+						res = mPoiManager.getGeoDatabase().saveTrackFromWriter(db);
+					} catch (Exception e) {
+					}
 					db.close();
 				};
 
