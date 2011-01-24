@@ -380,8 +380,17 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 
 	@Override
 	protected void onDestroy() {
-		mOsmv.freeDatabases();
-		mPoiManager.FreeDatabases();
+		try {
+			mOsmv.freeDatabases();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		try {
+			mPoiManager.FreeDatabases();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		super.onDestroy();
 	}
 
