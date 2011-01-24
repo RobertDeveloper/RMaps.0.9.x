@@ -145,6 +145,9 @@ public class TrackWriterService extends Service implements OpenStreetMapConstant
 		if(mLocationListener != null)
 			getLocationManager().removeUpdates(mLocationListener);
 
+		if(db != null)
+			db.close();
+
         // Tell the user we stopped.
         //Toast.makeText(this, R.string.remote_service_stopped, Toast.LENGTH_SHORT).show();
 
