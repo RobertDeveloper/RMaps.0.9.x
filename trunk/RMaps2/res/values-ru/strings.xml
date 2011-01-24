@@ -84,6 +84,9 @@ All rights reserved\n
 Как сделать офф-лайн карту и прочее можно почитать здесь http://robertdeveloper.blogspot.com/\n
 </string>
     <string name="whats_new_dialog_text">
+v.0.8.6.1\n
+- Bug fix\n
+\n
 v.0.8.6\n
 + Новые карты: VFR (avcharts.com), MyTopo, OSM MTB Mapa Česká republika\n
 + Отчет об ошибках (пожалуйста, шлите мне сообшение, если программа аварийно закрылась)\n

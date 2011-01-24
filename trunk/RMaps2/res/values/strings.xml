@@ -101,6 +101,9 @@ How to and FAQ you can find on http://robertdeveloper.blogspot.com/\n
     <string name="whats_new_dialog_text">
 The source site of VFR, IFR High, IFR Low charts is unavailable now. Read here about it. http://blog.runwayfinder.com/\n
 \n
+v.0.8.6.1\n
+- Bug fix\n
+\n
 v.0.8.6\n
 + New maps: VFR (avcharts.com), MyTopo, OSM MTB Mapa Česká republika\n
 + Error report (please, send me message about force close)\n
@@ -110,7 +113,7 @@ v.0.8.5\n
 + Scale bar, Units property\n
 \n
 v.0.8.4.1\n
-+ Bug fix: Force close on Android 1.5-1.6\n
+- Bug fix: Force close on Android 1.5-1.6\n
 \n
 v.0.8.4\n
 -  Mutlitouch zooming\n
