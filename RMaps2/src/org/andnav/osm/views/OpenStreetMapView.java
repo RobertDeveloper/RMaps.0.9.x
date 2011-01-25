@@ -95,7 +95,7 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 		super(context);
 		this.mSimpleInvalidationHandler = new SimpleInvalidationHandler();
 		this.mRendererInfo = aRendererInfo;
-		this.mTileProvider = new OpenStreetMapTileProvider(context, mSimpleInvalidationHandler, aRendererInfo, 120);
+		this.mTileProvider = new OpenStreetMapTileProvider(context, mSimpleInvalidationHandler, aRendererInfo, CACHE_MAPTILECOUNT_DEFAULT);
 		this.mPaint.setAntiAlias(true);
 		this.mTouchScale = 1;
 
