@@ -160,6 +160,7 @@ public class ImportTrackActivity extends Activity {
 						mPoiManager.rollbackTransaction();
 					} catch (IllegalStateException e) {
 					} catch (OutOfMemoryError e) {
+						Ut.w("OutOfMemoryError");
 						mPoiManager.rollbackTransaction();
 					}
 					Ut.dd("Pois commited");

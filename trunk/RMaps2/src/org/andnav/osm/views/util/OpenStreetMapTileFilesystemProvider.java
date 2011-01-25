@@ -273,6 +273,7 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 						mDatabase.ClearIndex();
 					} catch (Exception e) {
 					} catch (OutOfMemoryError e) {
+						Ut.w("OutOfMemoryError");
 					} finally {
 					}
 				}
@@ -480,6 +481,7 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 
 							OpenStreetMapTileFilesystemProvider.this.mCache.putTile(aTileURLString, bmp);
 						} catch (OutOfMemoryError e) {
+							Ut.w("OutOfMemoryError");
 							// TODO Попытка отловить OutOfMemory
 							e.printStackTrace();
 						}
@@ -526,6 +528,7 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 				} catch (Exception e) {
 					Message.obtain(callback, MAPTILEFSLOADER_FAIL_ID).sendToTarget();
 				} catch (OutOfMemoryError e) {
+					Ut.w("OutOfMemoryError");
 					Message.obtain(callback, MAPTILEFSLOADER_FAIL_ID).sendToTarget();
 				}
 
@@ -578,6 +581,7 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 					if (DEBUGMODE)
 						Log.d(DEBUGTAG, "Loaded: " + aTileURLString + " to MemCache.");
 				} catch (OutOfMemoryError e) {
+					Ut.w("OutOfMemoryError");
 					Message.obtain(callback, MAPTILEFSLOADER_FAIL_ID).sendToTarget();
 				} catch (Exception e) {
 					Message.obtain(callback, MAPTILEFSLOADER_FAIL_ID).sendToTarget();
@@ -633,6 +637,7 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 						if (DEBUGMODE)
 							Log.d(DEBUGTAG, "Loaded: " + aTileURLString + " to MemCache.");
 					} catch (OutOfMemoryError e) {
+						Ut.w("OutOfMemoryError");
 						Message.obtain(callback, MAPTILEFSLOADER_FAIL_ID).sendToTarget();
 					} catch (Exception e) {
 						Message.obtain(callback, MAPTILEFSLOADER_FAIL_ID).sendToTarget();
@@ -934,10 +939,13 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 		}
 
 		public void incrementUse(final String aFormattedTileURLString) {
-			final Cursor c = this.mDatabase.rawQuery("UPDATE " + T_FSCACHE + " SET " + T_FSCACHE_USAGECOUNT + " = "
-					+ T_FSCACHE_USAGECOUNT + " + 1 , " + T_FSCACHE_TIMESTAMP + " = '" + getNowAsIso8601() + "' WHERE "
-					+ T_FSCACHE_NAME + " = '" + aFormattedTileURLString + "'", null);
-			c.close();
+			try {
+				final Cursor c = this.mDatabase.rawQuery("UPDATE " + T_FSCACHE + " SET " + T_FSCACHE_USAGECOUNT + " = "
+						+ T_FSCACHE_USAGECOUNT + " + 1 , " + T_FSCACHE_TIMESTAMP + " = '" + getNowAsIso8601() + "' WHERE "
+						+ T_FSCACHE_NAME + " = '" + aFormattedTileURLString + "'", null);
+				c.close();
+			} catch (Exception e) {
+			}
 		}
 
 		public int addTileOrIncrement(final String aFormattedTileURLString, final int aByteFilesize) {
