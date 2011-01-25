@@ -5,10 +5,12 @@ import java.util.HashMap;
 
 import org.andnav.osm.views.util.constants.OpenStreetMapViewConstants;
 
+import com.robert.maps.utils.Ut;
+
 import android.graphics.Bitmap;
 
 /**
- * 
+ *
  * @author Nicolas Gramlich
  *
  */
@@ -20,17 +22,17 @@ public class OpenStreetMapTileCache implements OpenStreetMapViewConstants{
 	// ===========================================================
 	// Fields
 	// ===========================================================
-	
+
 	protected HashMap<String, Bitmap> mCachedTiles;
 
 	// ===========================================================
 	// Constructors
 	// ===========================================================
-	
+
 	public OpenStreetMapTileCache(){
 		this(CACHE_MAPTILECOUNT_DEFAULT);
 	}
-	
+
 	/**
 	 * @param aMaximumCacheSize Maximum amount of MapTiles to be hold within.
 	 */
@@ -41,13 +43,14 @@ public class OpenStreetMapTileCache implements OpenStreetMapViewConstants{
 	// ===========================================================
 	// Getter & Setter
 	// ===========================================================
-	
+
 	public synchronized Bitmap getMapTile(final String aTileURLString) {
 		return this.mCachedTiles.get(aTileURLString);
 	}
 
 	public synchronized void putTile(final String aTileURLString, final Bitmap aTile) {
 		this.mCachedTiles.put(aTileURLString, aTile);
+		Ut.w("OpenStreetMapTileCache size = "+this.mCachedTiles.size());
 	}
 
 	// ===========================================================

@@ -41,6 +41,11 @@ public class Ut implements OpenStreetMapConstants, OpenStreetMapViewConstants {
 		if(DEBUGMODE)
 			Log.i(DEBUGTAG, str);
 	}
+	public static void w(String str){
+		if(DEBUGMODE)
+			Log.w(DEBUGTAG, str);
+	}
+
 	public static void d(String str){
 		if(DEBUGMODE)
 			Log.d(DEBUGTAG, str);

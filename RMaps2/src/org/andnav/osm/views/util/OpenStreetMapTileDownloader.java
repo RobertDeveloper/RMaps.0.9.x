@@ -14,6 +14,8 @@ import java.util.concurrent.Executors;
 import org.andnav.osm.util.constants.OpenStreetMapConstants;
 import org.andnav.osm.views.util.constants.OpenStreetMapViewConstants;
 
+import com.robert.maps.utils.Ut;
+
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
@@ -100,6 +102,7 @@ public class OpenStreetMapTileDownloader implements OpenStreetMapConstants, Open
 					 * Doing not blocks it for the whole existence of this TileDownloder.
 					 */
 				} catch (OutOfMemoryError e) {
+					Ut.w("OutOfMemoryError");
 					final Message failMessage = Message.obtain(callback, MAPTILEDOWNLOADER_FAIL_ID);
 					failMessage.sendToTarget();
 					if(DEBUGMODE)

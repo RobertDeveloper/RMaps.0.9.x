@@ -26,6 +26,7 @@ public class CompassView extends View {
 			try {
 				this.mCompass = mCtx.getResources().getDrawable(R.drawable.arrow_n);
 			} catch (OutOfMemoryError e) {
+				Ut.w("OutOfMemoryError");
 				e.printStackTrace();
 				return false;
 			}

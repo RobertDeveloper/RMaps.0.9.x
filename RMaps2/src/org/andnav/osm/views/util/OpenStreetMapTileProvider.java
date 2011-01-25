@@ -12,6 +12,7 @@ import android.os.Message;
 import android.util.Log;
 
 import com.robert.maps.R;
+import com.robert.maps.utils.Ut;
 
 /**
  *
@@ -45,6 +46,7 @@ public class OpenStreetMapTileProvider implements OpenStreetMapConstants, OpenSt
 		try {
 			this.mLoadingMapTile = BitmapFactory.decodeResource(ctx.getResources(), R.drawable.maptile_loading);
 		} catch (OutOfMemoryError e) {
+			Ut.w("OutOfMemoryError");
 			this.mLoadingMapTile = null;
 			e.printStackTrace();
 		}
