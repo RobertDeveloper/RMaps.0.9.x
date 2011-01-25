@@ -1,6 +1,7 @@
 // Created by plusminus on 17:58:57 - 25.09.2008
 package org.andnav.osm.views.util;
 
+import java.lang.ref.SoftReference;
 import java.util.HashMap;
 
 import org.andnav.osm.views.util.constants.OpenStreetMapViewConstants;
@@ -23,7 +24,7 @@ public class OpenStreetMapTileCache implements OpenStreetMapViewConstants{
 	// Fields
 	// ===========================================================
 
-	protected HashMap<String, Bitmap> mCachedTiles;
+	protected HashMap<String, SoftReference<Bitmap>> mCachedTiles;
 
 	// ===========================================================
 	// Constructors
@@ -45,11 +46,19 @@ public class OpenStreetMapTileCache implements OpenStreetMapViewConstants{
 	// ===========================================================
 
 	public synchronized Bitmap getMapTile(final String aTileURLString) {
-		return this.mCachedTiles.get(aTileURLString);
+		final SoftReference<Bitmap> ref = this.mCachedTiles.get(aTileURLString);
+		if(ref == null)
+			return null;
+		final Bitmap bmp = ref.get();
+		if(bmp == null){
+			Ut.w("EMPTY SoftReference");
+			this.mCachedTiles.remove(ref);
+		}
+		return bmp;
 	}
 
 	public synchronized void putTile(final String aTileURLString, final Bitmap aTile) {
-		this.mCachedTiles.put(aTileURLString, aTile);
+		this.mCachedTiles.put(aTileURLString, new SoftReference<Bitmap>(aTile));
 		Ut.w("OpenStreetMapTileCache size = "+this.mCachedTiles.size());
 	}
 

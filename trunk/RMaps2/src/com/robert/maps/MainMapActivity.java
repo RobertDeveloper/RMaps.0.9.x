@@ -29,6 +29,7 @@ import org.andnav.osm.views.controller.OpenStreetMapViewController;
 import org.andnav.osm.views.util.OpenStreetMapRendererInfo;
 import org.andnav.osm.views.util.OpenStreetMapTileFilesystemProvider;
 import org.andnav.osm.views.util.StreamUtils;
+import org.andnav.osm.views.util.constants.OpenStreetMapViewConstants;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.w3c.dom.Document;
@@ -189,7 +190,8 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState, false); // Pass true here to actually contribute to OSM!
 
-        CrashReportHandler.attach(this);
+        if(!OpenStreetMapViewConstants.DEBUGMODE)
+        	CrashReportHandler.attach(this);
 
         CheckNeedDataUpdate();
 
