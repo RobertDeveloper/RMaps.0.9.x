@@ -632,6 +632,8 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 			}
 		}
 
+		this.mTileProvider.CommitCash();
+
 		/* Draw all Overlays. */
 		for (OpenStreetMapViewOverlay osmvo : this.mOverlays)
 			osmvo.onManagedDraw(c, this);

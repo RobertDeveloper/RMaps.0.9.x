@@ -3,6 +3,7 @@ package org.andnav.osm.views.util;
 
 import java.lang.ref.SoftReference;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 import org.andnav.osm.views.util.constants.OpenStreetMapViewConstants;
 
@@ -25,6 +26,8 @@ public class OpenStreetMapTileCache implements OpenStreetMapViewConstants{
 	// ===========================================================
 
 	protected HashMap<String, SoftReference<Bitmap>> mCachedTiles;
+	protected LinkedHashMap<String, Bitmap> mHardCachedTiles;
+	protected LinkedHashMap<String, Bitmap> mHardCachedTiles2;
 
 	// ===========================================================
 	// Constructors
@@ -39,6 +42,8 @@ public class OpenStreetMapTileCache implements OpenStreetMapViewConstants{
 	 */
 	public OpenStreetMapTileCache(final int aMaximumCacheSize){
 		this.mCachedTiles = new LRUMapTileCache(aMaximumCacheSize);
+		this.mHardCachedTiles = new LinkedHashMap<String, Bitmap>(aMaximumCacheSize);
+		this.mHardCachedTiles2 = new LinkedHashMap<String, Bitmap>(aMaximumCacheSize);
 	}
 
 	// ===========================================================
@@ -46,6 +51,11 @@ public class OpenStreetMapTileCache implements OpenStreetMapViewConstants{
 	// ===========================================================
 
 	public synchronized Bitmap getMapTile(final String aTileURLString) {
+		final Bitmap bmpHard = this.mHardCachedTiles.get(aTileURLString);
+		if(bmpHard != null){
+			this.mHardCachedTiles2.put(aTileURLString, bmpHard);
+			return bmpHard;
+		}
 		final SoftReference<Bitmap> ref = this.mCachedTiles.get(aTileURLString);
 		if(ref == null)
 			return null;
@@ -54,12 +64,22 @@ public class OpenStreetMapTileCache implements OpenStreetMapViewConstants{
 			Ut.w("EMPTY SoftReference");
 			this.mCachedTiles.remove(ref);
 		}
+		this.mHardCachedTiles2.put(aTileURLString, bmp);
 		return bmp;
 	}
 
 	public synchronized void putTile(final String aTileURLString, final Bitmap aTile) {
 		this.mCachedTiles.put(aTileURLString, new SoftReference<Bitmap>(aTile));
+		this.mHardCachedTiles2.put(aTileURLString, aTile);
 		Ut.w("OpenStreetMapTileCache size = "+this.mCachedTiles.size());
+	}
+
+	public synchronized void Commit() {
+		final LinkedHashMap<String, Bitmap> tmp = this.mHardCachedTiles;
+		this.mHardCachedTiles = this.mHardCachedTiles2;
+		this.mHardCachedTiles2 = tmp;
+		this.mHardCachedTiles2.clear();
+		Ut.w("mHardCachedTiles size = "+this.mHardCachedTiles.size());
 	}
 
 	// ===========================================================
