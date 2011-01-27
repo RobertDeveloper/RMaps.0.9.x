@@ -195,4 +195,8 @@ public class OpenStreetMapTileProvider implements OpenStreetMapConstants, OpenSt
 	public void freeDatabases() {
 		mFSTileProvider.freeDatabases();
 	}
+
+	public void CommitCash() {
+		this.mTileCache.Commit();
+	}
 }
