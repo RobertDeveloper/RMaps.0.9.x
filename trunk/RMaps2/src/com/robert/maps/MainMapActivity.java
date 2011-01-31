@@ -7,7 +7,6 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
@@ -16,9 +15,8 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 
 import org.andnav.osm.OpenStreetMapActivity;
 import org.andnav.osm.util.GeoPoint;
@@ -32,11 +30,6 @@ import org.andnav.osm.views.util.StreamUtils;
 import org.andnav.osm.views.util.constants.OpenStreetMapViewConstants;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.w3c.dom.Document;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -85,6 +78,7 @@ import com.robert.maps.kml.PoiManager;
 import com.robert.maps.kml.PoiPoint;
 import com.robert.maps.kml.Track;
 import com.robert.maps.kml.TrackListActivity;
+import com.robert.maps.kml.XMLparser.PredefMapsParser;
 import com.robert.maps.overlays.CurrentTrackOverlay;
 import com.robert.maps.overlays.MyLocationOverlay;
 import com.robert.maps.overlays.PoiOverlay;
@@ -796,37 +790,17 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 					}
 				}
 		}
-		InputStream in = getResources().openRawResource(R.raw.predefmaps);
-		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-		DocumentBuilder db = null;
+
+		final SAXParserFactory fac = SAXParserFactory.newInstance();
+		SAXParser parser = null;
 		try {
-			db = dbf.newDocumentBuilder();
-		} catch (ParserConfigurationException e1) {
-			e1.printStackTrace();
-		}
-		Document doc = null;
-		try {
-			doc = db.parse(in);
-
-			NodeList nl = doc.getDocumentElement().getElementsByTagName("map");
-			for(int i = 0; i < nl.getLength(); i++){
-				NamedNodeMap nnm =nl.item(i).getAttributes();
-
-				Node nodeLayer = nnm.getNamedItem("layer");
-				boolean ItIsLayer = false;
-				if(nodeLayer != null)
-					ItIsLayer = nodeLayer.getNodeValue().equalsIgnoreCase("true");
-
-				if(pref.getBoolean("pref_predefmaps_"+nnm.getNamedItem("id").getNodeValue(), true) && !ItIsLayer){
-					MenuItem item = submenu.add(nnm.getNamedItem("name").getNodeValue());
-					item.setTitleCondensed(nnm.getNamedItem("id").getNodeValue());
-					Ut.d(nnm.getNamedItem("name").getNodeValue());
-				}
+			parser = fac.newSAXParser();
+			if(parser != null){
+				final InputStream in = getResources().openRawResource(R.raw.predefmaps);
+				parser.parse(in, new PredefMapsParser(submenu, pref));
 			}
-		} catch (SAXException e1) {
-			e1.printStackTrace();
-		} catch (IOException e1) {
-			e1.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 
 		return super.onPrepareOptionsMenu(menu);

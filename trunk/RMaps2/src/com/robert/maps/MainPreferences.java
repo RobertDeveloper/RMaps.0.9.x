@@ -4,18 +4,10 @@
 package com.robert.maps;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
@@ -27,11 +19,12 @@ import android.preference.PreferenceActivity;
 import android.preference.PreferenceGroup;
 import android.preference.PreferenceScreen;
 
+import com.robert.maps.kml.XMLparser.PredefMapsParser;
 import com.robert.maps.utils.Ut;
 
 public class MainPreferences extends PreferenceActivity implements OnSharedPreferenceChangeListener {
-	private static final String PREF_USERMAPS_ = "pref_usermaps_";
-	private static final String PREF_PREDEFMAPS_ = "pref_predefmaps_";
+	public static final String PREF_USERMAPS_ = "pref_usermaps_";
+	public static final String PREF_PREDEFMAPS_ = "pref_predefmaps_";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -42,40 +35,16 @@ public class MainPreferences extends PreferenceActivity implements OnSharedPrefe
 
 		PreferenceGroup prefMapsgroup = (PreferenceGroup) findPreference("pref_predefmaps_mapsgroup");
 
-		InputStream in = getResources().openRawResource(R.raw.predefmaps);
-		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-		DocumentBuilder db = null;
+		final SAXParserFactory fac = SAXParserFactory.newInstance();
+		SAXParser parser = null;
 		try {
-			db = dbf.newDocumentBuilder();
-		} catch (ParserConfigurationException e1) {
-			e1.printStackTrace();
-		}
-		Document doc = null;
-		try {
-			doc = db.parse(in);
-
-			NodeList nl = doc.getDocumentElement().getElementsByTagName("map");
-			for (int i = 0; i < nl.getLength(); i++) {
-				NamedNodeMap nnm = nl.item(i).getAttributes();
-
-				Node nodeLayer = nnm.getNamedItem("layer");
-				boolean ItIsLayer = false;
-				if (nodeLayer != null)
-					ItIsLayer = nodeLayer.getNodeValue().equalsIgnoreCase("true");
-
-				if (!ItIsLayer) {
-					CheckBoxPreference pref = new CheckBoxPreference(this);
-					pref.setKey(PREF_PREDEFMAPS_ + nnm.getNamedItem("id").getNodeValue());
-					pref.setTitle(nnm.getNamedItem("name").getNodeValue());
-					pref.setSummary(nnm.getNamedItem("descr").getNodeValue());
-					pref.setDefaultValue(true);
-					prefMapsgroup.addPreference(pref);
-				}
+			parser = fac.newSAXParser();
+			if(parser != null){
+				final InputStream in = getResources().openRawResource(R.raw.predefmaps);
+				parser.parse(in, new PredefMapsParser(prefMapsgroup, this));
 			}
-		} catch (SAXException e1) {
-			e1.printStackTrace();
-		} catch (IOException e1) {
-			e1.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 
 		LoadUserMaps();

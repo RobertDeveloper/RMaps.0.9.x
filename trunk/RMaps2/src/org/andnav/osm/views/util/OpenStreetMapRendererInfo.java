@@ -102,22 +102,18 @@ public class OpenStreetMapRendererInfo {
 			else
 				this.YANDEX_TRAFFIC_ON = 0;
 		} else {
-			SAXParserFactory fac = SAXParserFactory.newInstance();
+			final SAXParserFactory fac = SAXParserFactory.newInstance();
 			SAXParser parser = null;
 			try {
 				parser = fac.newSAXParser();
+				if(parser != null){
+					final InputStream in = mResources.openRawResource(R.raw.predefmaps);
+					parser.parse(in, new PredefMapsParser(this, aId));
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 
-			if(parser != null){
-				try {
-					InputStream in = mResources.openRawResource(R.raw.predefmaps);
-					parser.parse(in, new PredefMapsParser(this, aId));
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
 		}
 	}
 
