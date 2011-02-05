@@ -51,18 +51,19 @@ public class OpenStreetMapTileProvider implements OpenStreetMapConstants, OpenSt
 			e.printStackTrace();
 		}
 		this.mTileCache = new OpenStreetMapTileCache(iMapTileCacheSize);
-		this.mFSTileProvider = new OpenStreetMapTileFilesystemProvider(ctx, 4 * 1024 * 1024, this.mTileCache); // 4MB FSCache
+		this.mFSTileProvider = new OpenStreetMapTileFilesystemProvider(ctx, 4 * 1024 * 1024, this.mTileCache, aRendererInfo.TILE_SOURCE_TYPE == 0 ? aRendererInfo.ID : null); // 4MB FSCache
 		this.mTileDownloader = new OpenStreetMapTileDownloader(ctx, this.mFSTileProvider);
 		this.mDownloadFinishedListenerHander = aDownloadFinishedListener;
 		this.mRendererInfo = aRendererInfo;
 
 		switch(aRendererInfo.TILE_SOURCE_TYPE){
-		case 1: // AndNav ZIP file
-		case 2:
+		case 0:
+			this.mTileDownloader.setCacheDatabase(aRendererInfo.CacheDatabaseName());
+			break;
 		case 3:
 		case 4:
 		case 5:
-			mFSTileProvider.setCashFile(aRendererInfo.BASEURL, aRendererInfo.TILE_SOURCE_TYPE, aDownloadFinishedListener);
+			mFSTileProvider.setUserMapFile(aRendererInfo.BASEURL, aRendererInfo.TILE_SOURCE_TYPE, aDownloadFinishedListener);
 			aRendererInfo.ZOOM_MAXLEVEL = mFSTileProvider.getZoomMaxInCashFile();
 			aRendererInfo.ZOOM_MINLEVEL = mFSTileProvider.getZoomMinInCashFile();
 			break;
@@ -85,12 +86,15 @@ public class OpenStreetMapTileProvider implements OpenStreetMapConstants, OpenSt
 		boolean ret = true;
 		this.mRendererInfo = aRenderer;
 		switch(aRenderer.TILE_SOURCE_TYPE){
+		case 0:
+			this.mTileDownloader.setCacheDatabase(aRenderer.CacheDatabaseName());
+			break;
 		case 1:
 		case 2:
 		case 3:
 		case 4:
 		case 5:
-			ret = mFSTileProvider.setCashFile(aRenderer.BASEURL, aRenderer.TILE_SOURCE_TYPE, new SimpleInvalidationHandler());
+			ret = mFSTileProvider.setUserMapFile(aRenderer.BASEURL, aRenderer.TILE_SOURCE_TYPE, new SimpleInvalidationHandler());
 			aRenderer.ZOOM_MAXLEVEL = mFSTileProvider.getZoomMaxInCashFile();
 			aRenderer.ZOOM_MINLEVEL = mFSTileProvider.getZoomMinInCashFile();
 			break;
@@ -151,7 +155,7 @@ public class OpenStreetMapTileProvider implements OpenStreetMapConstants, OpenSt
 					Log.i(DEBUGTAG, "Requesting Maptile for download.");
 				ret = aLoadingMapTile;
 
-				this.mTileDownloader.requestMapTileAsync(aTileURLString, this.mLoadCallbackHandler);
+				this.mTileDownloader.requestMapTileAsync(aTileURLString, this.mLoadCallbackHandler, x, y, z);
 			}
 		}
 		return ret;

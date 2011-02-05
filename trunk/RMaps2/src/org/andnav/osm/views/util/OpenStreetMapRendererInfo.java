@@ -14,7 +14,6 @@ import javax.xml.parsers.SAXParserFactory;
 
 import org.andnav.osm.views.util.constants.OpenStreetMapViewConstants;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 
@@ -36,20 +35,18 @@ public class OpenStreetMapRendererInfo {
 	private static final int OpenSpaceUpperBoundArray[] = { 2, 5, 10, 25 , 50, 100, 200, 500, 1000, 2000, 4000};
 	private static final int OpenSpaceLayersArray[] = {2500, 1000, 500, 200, 100, 50, 25, 10, 5, 2, 1};
 
-	public String ID, BASEURL, NAME, IMAGE_FILENAMEENDING, GOOGLE_LANG_CODE;
+	public String ID, BASEURL, NAME, IMAGE_FILENAMEENDING, GOOGLE_LANG_CODE, CACHE;
 	public int ZOOM_MINLEVEL, ZOOM_MAXLEVEL,
 	URL_BUILDER_TYPE, // 0 - OSM, 1 - Google, 2 - Yandex, 3 - Yandex.Traffic, 4 - Google.Sattelite, 5 - openspace, 6 - microsoft, 8 - VFR Chart
-	TILE_SOURCE_TYPE, // 0 - internet, 1 - AndNav ZIP file, 2 - SASGIS ZIP file, 3 - MapNav file, 4 - TAR, 5 - sqlitedb
+	TILE_SOURCE_TYPE, // 0 - internet, 3 - MapNav file, 4 - TAR, 5 - sqlitedb
 	YANDEX_TRAFFIC_ON,
 	PROJECTION; // 1-меркатор на сфероид, 2- на эллипсоид, 3- OSGB 36 British national grid reference system
+	public boolean LAYER;
+	private boolean mOnlineMapCacheEnabled;
 
 	// ===========================================================
 	// Constructors
 	// ===========================================================
-
-	public void set(Context aCtx){
-
-	}
 
 	public OpenStreetMapRendererInfo(Resources aRes, String aId){
 		mResources = aRes;
@@ -67,11 +64,18 @@ public class OpenStreetMapRendererInfo {
 		this.PROJECTION = 1;
 		this.YANDEX_TRAFFIC_ON = 0;
 		this.GOOGLE_LANG_CODE = "";
+		this.LAYER = false;
+		this.CACHE = "";
 	}
 
 	public void LoadFromResources(String aId, SharedPreferences pref) {
 		if (aId.equalsIgnoreCase(""))
 			aId = "mapnik";
+
+		if(pref != null)
+			mOnlineMapCacheEnabled = pref.getBoolean("pref_onlinecache", true);
+		else
+			mOnlineMapCacheEnabled = false;
 
 		if(pref != null)
 			this.GOOGLE_LANG_CODE = pref.getString("pref_googlelanguagecode", "en");
@@ -115,6 +119,19 @@ public class OpenStreetMapRendererInfo {
 			}
 
 		}
+	}
+
+	public boolean CacheEnabled() {
+		return mOnlineMapCacheEnabled && !LAYER;
+	}
+
+	public String CacheDatabaseName() {
+		if(!CacheEnabled())
+			return "";
+		if(CACHE.trim().equalsIgnoreCase(""))
+			return ID;
+		else
+			return CACHE;
 	}
 
 	public String getQRTS(int x, int y, int zoomLevel){

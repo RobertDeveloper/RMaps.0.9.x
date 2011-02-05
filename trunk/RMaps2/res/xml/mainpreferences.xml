@@ -118,9 +118,8 @@
 			android:title="@string/pref_internalcache_title"
 			android:summary="@string/pref_internalcache_summary" />
 		<com.robert.maps.utils.IndexPreference
-			android:key="pref_index"
-			android:title="@string/pref_index_title"
-			android:summary="@string/pref_index_summary" />
+			android:summary="@string/pref_index_summary" android:key="pref_index" android:title="@string/pref_index_title"/>
+		<CheckBoxPreference android:key="pref_onlinecache" android:title="@string/pref_onlinecache" android:defaultValue="true" android:summary="@string/pref_onlinecache_summary"></CheckBoxPreference>
 	
 </PreferenceCategory>
 

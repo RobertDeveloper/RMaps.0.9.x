@@ -17,7 +17,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.zip.ZipFile;
 
 import org.andnav.osm.exceptions.EmptyCacheException;
 import org.andnav.osm.util.constants.OpenStreetMapConstants;
@@ -42,8 +41,8 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.robert.maps.R;
-import com.robert.maps.utils.CashDatabase;
 import com.robert.maps.utils.RSQLiteOpenHelper;
+import com.robert.maps.utils.SQLiteMapDatabase;
 import com.robert.maps.utils.Ut;
 
 /**
@@ -81,9 +80,8 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 
 	protected HashSet<String> mPending = new HashSet<String>();
 
-	protected ZipFile mAndNavZipFile;
 	protected File mCashFile;
-	protected CashDatabase mCashDatabase;
+	protected SQLiteMapDatabase mUserMapDatabase;
 
     private ProgressDialog mProgressDialog;
     private boolean mStopIndexing = false;
@@ -101,13 +99,13 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 	 *            to load fs-tiles to.
 	 */
 	public OpenStreetMapTileFilesystemProvider(final Context ctx, final int aMaxFSCacheByteSize,
-			final OpenStreetMapTileCache aCache) {
+			final OpenStreetMapTileCache aCache, final String aCacheDatabaseName) {
 		this.mCtx = ctx;
 		this.mMaxFSCacheByteSize = aMaxFSCacheByteSize;
 		this.mDatabase = new OpenStreetMapTileFilesystemProviderDataBase(ctx);
 		this.mCurrentFSCacheByteSize = this.mDatabase.getCurrentFSCacheByteSize();
 		this.mCache = aCache;
-		this.mCashDatabase = new CashDatabase();
+		this.mUserMapDatabase = new SQLiteMapDatabase();
 
 		if (DEBUGMODE)
 			Log.i(DEBUGTAG, "Currently used cache-size is: " + this.mCurrentFSCacheByteSize + " of "
@@ -129,11 +127,11 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 		return mDatabase.ZoomMaxInCashFile();
 	}
 
-	public CashDatabase getCashDatabase(){
-		return mCashDatabase;
+	public SQLiteMapDatabase getUserMapDatabase(){
+		return mUserMapDatabase;
 	}
 
-	public boolean setCashFile(final String aFileName, final int aTileSourceType, final Handler callback) {
+	public boolean setUserMapFile(final String aFileName, final int aTileSourceType, final Handler callback) {
 		mCashFile = new File(aFileName);
 		if (mCashFile.exists() == false) {
 			Ut.i("File " + aFileName + " not found");
@@ -141,20 +139,14 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 			return false;
 		}
 
+
+
 		switch (aTileSourceType ) {
 		case 5:
 			try {
 				IndexSQLiteFile(callback);
 			} catch (NumberFormatException e) {
 			} catch (IOException e) {
-			}
-			break;
-		case 1:
-		case 2:
-			try {
-				mAndNavZipFile = new ZipFile(mCashFile);
-			} catch (IOException e) {
-				Log.e(DEBUGTAG, "Error Loading AndNav ZIP file. Exception: " + e.getClass().getSimpleName(), e);
 			}
 			break;
 		case 3:
@@ -283,7 +275,7 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 
 	private void IndexSQLiteFile(final Handler callback) throws IOException {
 		try {
-			mCashDatabase.setFile(mCashFile);
+			mUserMapDatabase.setFile(mCashFile);
 		} catch (SQLiteException e) {
 			Toast.makeText(mCtx, "Error: "+e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
 			return;
@@ -301,9 +293,9 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 					try {
 						final long fileLength = mCashFile.length();
 						final long fileModified = mCashFile.lastModified();
-						mCashDatabase.updateMinMaxZoom();
-						final int minzoom = mCashDatabase.getMinZoom();
-						final int maxzoom = mCashDatabase.getMaxZoom();
+						mUserMapDatabase.updateMinMaxZoom();
+						final int minzoom = mUserMapDatabase.getMinZoom();
+						final int maxzoom = mUserMapDatabase.getMaxZoom();
 
 						mDatabase.CommitIndex(fileLength, fileModified, minzoom, maxzoom);
 					} catch (Exception e) {
@@ -519,7 +511,7 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 					// File exists, otherwise a FileNotFoundException would have been thrown
 					OpenStreetMapTileFilesystemProvider.this.mDatabase.incrementUse(formattedTileURLString);
 
-					final byte[] data = OpenStreetMapTileFilesystemProvider.this.mCashDatabase.getTile(x, y, z);
+					final byte[] data = OpenStreetMapTileFilesystemProvider.this.mUserMapDatabase.getTile(x, y, z);
 
 					if(data != null){
 						final Bitmap bmp = BitmapFactory.decodeByteArray(data, 0, data.length);
@@ -1120,7 +1112,7 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 
 	public void freeDatabases() {
 		mDatabase.freeDatabases();
-		mCashDatabase.freeDatabases();
+		mUserMapDatabase.freeDatabases();
 	}
 
 }

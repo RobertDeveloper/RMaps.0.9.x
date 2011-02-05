@@ -20,6 +20,7 @@ public class PredefMapsParser extends DefaultHandler {
 
 	private static final String MAP = "map";
 	private static final String LAYER = "layer";
+	private static final String CACHE = "cache";
 	private static final String TRUE = "true";
 	private static final String ID = "id";
 	private static final String NAME = "name";
@@ -81,6 +82,15 @@ public class PredefMapsParser extends DefaultHandler {
 					mRendererInfo.TILE_SOURCE_TYPE = Integer.parseInt(attributes.getValue(TILE_SOURCE_TYPE));
 					mRendererInfo.PROJECTION = Integer.parseInt(attributes.getValue(PROJECTION));
 					mRendererInfo.YANDEX_TRAFFIC_ON = Integer.parseInt(attributes.getValue(YANDEX_TRAFFIC_ON));
+
+					mRendererInfo.LAYER = false;
+					if(attributes.getIndex(LAYER)>-1)
+						mRendererInfo.LAYER = Boolean.parseBoolean(attributes.getValue(LAYER));
+
+					mRendererInfo.CACHE = "";
+					if(attributes.getIndex(CACHE)>-1)
+						mRendererInfo.CACHE = attributes.getValue(CACHE);
+
 				}
 			}
 			else if(mSubmenu != null) {
