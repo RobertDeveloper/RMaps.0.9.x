@@ -4,6 +4,7 @@ package org.andnav.osm.views.util;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
@@ -14,6 +15,7 @@ import java.util.concurrent.Executors;
 import org.andnav.osm.util.constants.OpenStreetMapConstants;
 import org.andnav.osm.views.util.constants.OpenStreetMapViewConstants;
 
+import com.robert.maps.utils.SQLiteMapDatabase;
 import com.robert.maps.utils.Ut;
 
 import android.content.Context;
@@ -42,10 +44,25 @@ public class OpenStreetMapTileDownloader implements OpenStreetMapConstants, Open
 	protected Context mCtx;
 	protected OpenStreetMapTileFilesystemProvider mMapTileFSProvider;
 	protected ExecutorService mThreadPool = Executors.newFixedThreadPool(5);
+	protected SQLiteMapDatabase mCacheDatabase;
 
 	// ===========================================================
 	// Constructors
 	// ===========================================================
+
+	public void setCacheDatabase(final String aCacheDatabaseName) {
+    	if(aCacheDatabaseName != null && aCacheDatabaseName != ""){
+    		try {
+				this.mCacheDatabase = new SQLiteMapDatabase();
+				final File folder = Ut.getRMapsFolder("cache", false);
+				this.mCacheDatabase.setFile(folder.getAbsolutePath()+"/"+aCacheDatabaseName+".sqlitedb");
+			} catch (Exception e) {
+				e.printStackTrace();
+				this.mCacheDatabase = null;
+			}
+    	} else
+    		this.mCacheDatabase = null;
+	}
 
 	public OpenStreetMapTileDownloader(final Context ctx, final OpenStreetMapTileFilesystemProvider aMapTileFSProvider){
 		this.mCtx = ctx;
@@ -65,7 +82,7 @@ public class OpenStreetMapTileDownloader implements OpenStreetMapConstants, Open
 	// ===========================================================
 
 	/** Sets the Child-ImageView of this to the URL passed. */
-	public void getRemoteImageAsync(final String aURLString, final Handler callback) {
+	public void getRemoteImageAsync(final String aURLString, final Handler callback, final int aX, final int aY, final int aZ) {
 		this.mThreadPool.execute(new Runnable(){
 			public void run() {
 				InputStream in = null;
@@ -75,15 +92,26 @@ public class OpenStreetMapTileDownloader implements OpenStreetMapConstants, Open
 					if(DEBUGMODE)
 						Log.i(DEBUGTAG, "Downloading Maptile from url: " + aURLString);
 
+					byte[] data = null;
 
-					in = new BufferedInputStream(new URL(aURLString).openStream(), StreamUtils.IO_BUFFER_SIZE);
+					if(OpenStreetMapTileDownloader.this.mCacheDatabase != null)
+						data = OpenStreetMapTileDownloader.this.mCacheDatabase.getTile(aX, aY, aZ);
 
-					final ByteArrayOutputStream dataStream = new ByteArrayOutputStream();
-					out = new BufferedOutputStream(dataStream, StreamUtils.IO_BUFFER_SIZE);
-					StreamUtils.copy(in, out);
-					out.flush();
+					if(data == null) {
+						Ut.w("FROM INTERNET "+aURLString);
+						in = new BufferedInputStream(new URL(aURLString).openStream(), StreamUtils.IO_BUFFER_SIZE);
 
-					final byte[] data = dataStream.toByteArray();
+						final ByteArrayOutputStream dataStream = new ByteArrayOutputStream();
+						out = new BufferedOutputStream(dataStream, StreamUtils.IO_BUFFER_SIZE);
+						StreamUtils.copy(in, out);
+						out.flush();
+
+						data = dataStream.toByteArray();
+
+						if(OpenStreetMapTileDownloader.this.mCacheDatabase != null)
+							OpenStreetMapTileDownloader.this.mCacheDatabase.putTile(aX, aY, aZ, data);
+					} else
+						Ut.w("FROM CACHE "+aURLString);
 
 					OpenStreetMapTileDownloader.this.mMapTileFSProvider.saveFile(aURLString, data);
 					if(DEBUGMODE)
@@ -115,12 +143,12 @@ public class OpenStreetMapTileDownloader implements OpenStreetMapConstants, Open
 		});
 	}
 
-	public void requestMapTileAsync(final String aURLString, final Handler callback) {
+	public void requestMapTileAsync(final String aURLString, final Handler callback, final int aX, final int aY, final int aZ) {
 		if(this.mPending.contains(aURLString))
 			return;
 
 		this.mPending.add(aURLString);
-		getRemoteImageAsync(aURLString, callback);
+		getRemoteImageAsync(aURLString, callback, aX, aY, aZ);
 	}
 
 	// ===========================================================

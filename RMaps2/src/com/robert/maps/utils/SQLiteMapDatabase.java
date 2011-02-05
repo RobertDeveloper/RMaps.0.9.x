@@ -2,21 +2,28 @@ package com.robert.maps.utils;
 
 import java.io.File;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 
-public class CashDatabase {
+public class SQLiteMapDatabase {
+	private static final String SQL_CREATE_tiles = "CREATE TABLE IF NOT EXISTS tiles (x int, y int, z int, s int, image blob, PRIMARY KEY (x,y,z,s));";
+	private static final String SQL_CREATE_info = "CREATE TABLE IF NOT EXISTS info (maxzoom Int, minzoom Int);";
 	private SQLiteDatabase mDatabase;
 
-	public void setFile(final File aFile) throws SQLiteException {
+	public void setFile(final String aFileName) throws SQLiteException {
 		if (mDatabase != null)
 			mDatabase.close();
 
-		mDatabase = new CashDatabaseHelper(null, aFile.getAbsolutePath()).getWritableDatabase();
+		mDatabase = new CashDatabaseHelper(null, aFileName).getWritableDatabase();
 		Ut.d("CashDatabase: Open SQLITEDB Database");
 
+	}
+
+	public void setFile(final File aFile) throws SQLiteException {
+		setFile(aFile.getAbsolutePath());
 	}
 
 	protected class CashDatabaseHelper extends RSQLiteOpenHelper {
@@ -26,6 +33,8 @@ public class CashDatabase {
 
 		@Override
 		public void onCreate(SQLiteDatabase db) {
+			db.execSQL(SQL_CREATE_tiles);
+			db.execSQL(SQL_CREATE_info);
 		}
 
 		@Override
@@ -42,7 +51,19 @@ public class CashDatabase {
 		};
 	}
 
-	public byte[] getTile(final int aX, final int aY, final int aZ) {
+	public /*synchronized*/ void putTile(final int aX, final int aY, final int aZ, final byte[] aData) {
+		if (this.mDatabase != null) {
+			final ContentValues cv = new ContentValues();
+			cv.put("x", aX);
+			cv.put("y", aY);
+			cv.put("z", 17 - aZ);
+			cv.put("s", 0);
+			cv.put("image", aData);
+			this.mDatabase.insert("tiles", null, cv);
+		}
+	}
+
+	public /*synchronized*/ byte[] getTile(final int aX, final int aY, final int aZ) {
 		byte[] ret = null;
 
 		if (this.mDatabase != null) {

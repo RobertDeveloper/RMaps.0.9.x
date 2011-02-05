@@ -239,4 +239,6 @@ v.0.7.0\n
 	<string name="error_title">Error report</string>
 	<string name="error_text">After the last start the software problem has forced RMaps to be closed unexpectedly. Please, send the error report to the author of the program. Click Generate report, you can read the message before it is sent.</string>
 	<string name="error_send">Generate report</string>
+	<string name="pref_onlinecache">Online maps cache</string>
+	<string name="pref_onlinecache_summary">Store online maps tiles to sdcard</string>
 </resources>
