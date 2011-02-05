@@ -8,6 +8,9 @@ import org.andnav.osm.util.GeoPoint;
 import org.andnav.osm.util.constants.OpenStreetMapConstants;
 import org.andnav.osm.views.util.constants.OpenStreetMapViewConstants;
 
+import com.robert.maps.R;
+
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -17,6 +20,18 @@ import android.graphics.Paint;
 import android.util.Log;
 
 public class Ut implements OpenStreetMapConstants, OpenStreetMapViewConstants {
+
+	public static ProgressDialog ShowWaitDialog(final Context mCtx, final int ResourceId) {
+		final ProgressDialog dialog = new ProgressDialog(mCtx);
+		dialog.setMessage(mCtx.getString(ResourceId == 0 ? R.string.message_wait : ResourceId));
+		dialog.setIndeterminate(true);
+		dialog.setCancelable(false);
+
+		dialog.show();
+
+		return dialog;
+	}
+
 	public static String getAppVersion(Context ctx) {
 		PackageInfo pi;
 		String res = "";

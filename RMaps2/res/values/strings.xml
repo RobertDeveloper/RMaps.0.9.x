@@ -241,4 +241,5 @@ v.0.7.0\n
 	<string name="error_send">Generate report</string>
 	<string name="pref_onlinecache">Online maps cache</string>
 	<string name="pref_onlinecache_summary">Store online maps tiles to sdcard</string>
+	<string name="message_wait">Wait a moment, please....</string>
 </resources>
