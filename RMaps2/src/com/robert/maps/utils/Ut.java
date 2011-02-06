@@ -13,10 +13,12 @@ import com.robert.maps.R;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 public class Ut implements OpenStreetMapConstants, OpenStreetMapViewConstants {
@@ -70,17 +72,34 @@ public class Ut implements OpenStreetMapConstants, OpenStreetMapViewConstants {
 		return name.replace(".", "_").replace(" ", "_").replace("-", "_").trim();
 	}
 
-	public static File getRMapsFolder(String aName, boolean aShowAlertToast) {
-		File folder = new File("/sdcard/rmaps/" + aName);
-		if(!folder.exists()){
+	private static File getDir(final Context mCtx, final String aPref, final String aDefaultDirName, final String aFolderName) {
+		final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(mCtx);
+		final String dirName = pref.getString(aPref, aDefaultDirName)+"/"+aFolderName+"/";
+
+		final File dir = new File(dirName.replace("//", "/").replace("//", "/"));
+		if(!dir.exists()){
 			if (android.os.Environment.getExternalStorageState().equals(android.os.Environment.MEDIA_MOUNTED)){
-				folder.mkdirs();
-			}else if(aShowAlertToast){
-				//Toast.makeText(new Application(), "SD card is not available", Toast.LENGTH_LONG);
+				dir.mkdirs();
 			}
 		}
 
-		return folder;
+		return dir;
+	}
+
+	public static File getRMapsMainDir(final Context mCtx, final String aFolderName) {
+		return getDir(mCtx, "pref_dir_main", "/sdcard/rmaps/", aFolderName);
+	}
+
+	public static File getRMapsMapsDir(final Context mCtx) {
+		return getDir(mCtx, "pref_dir_maps", "/sdcard/rmaps/maps/", "");
+	}
+
+	public static File getRMapsImportDir(final Context mCtx) {
+		return getDir(mCtx, "pref_dir_import", "/sdcard/rmaps/import/", "");
+	}
+
+	public static File getRMapsExportDir(final Context mCtx) {
+		return getDir(mCtx, "pref_dir_export", "/sdcard/rmaps/export/", "");
 	}
 
 	public static String readString(final InputStream in, final int size) throws IOException{

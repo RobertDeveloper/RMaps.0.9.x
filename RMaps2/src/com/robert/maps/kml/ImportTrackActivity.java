@@ -49,7 +49,7 @@ public class ImportTrackActivity extends Activity {
 			mPoiManager = new PoiManager(this);
 
 		mFileName = (EditText) findViewById(R.id.FileName);
-		mFileName.setText(settings.getString("IMPORT_TRACK_FILENAME", Ut.getRMapsFolder("import", false).getAbsolutePath()));
+		mFileName.setText(settings.getString("IMPORT_TRACK_FILENAME", Ut.getRMapsImportDir(this).getAbsolutePath()));
 
 		((Button) findViewById(R.id.SelectFileBtn))
 		.setOnClickListener(new OnClickListener() {

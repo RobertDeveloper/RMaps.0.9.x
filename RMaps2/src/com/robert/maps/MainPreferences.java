@@ -15,16 +15,18 @@ import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.EditTextPreference;
 import android.preference.ListPreference;
+import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceGroup;
+import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
+import android.preference.Preference.OnPreferenceChangeListener;
 
+import com.robert.maps.constants.PrefConstants;
 import com.robert.maps.kml.XMLparser.PredefMapsParser;
 import com.robert.maps.utils.Ut;
 
-public class MainPreferences extends PreferenceActivity implements OnSharedPreferenceChangeListener {
-	public static final String PREF_USERMAPS_ = "pref_usermaps_";
-	public static final String PREF_PREDEFMAPS_ = "pref_predefmaps_";
+public class MainPreferences extends PreferenceActivity implements OnSharedPreferenceChangeListener, PrefConstants {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +35,7 @@ public class MainPreferences extends PreferenceActivity implements OnSharedPrefe
 		// Load the preferences from an XML resource
 		addPreferencesFromResource(R.xml.mainpreferences);
 
-		PreferenceGroup prefMapsgroup = (PreferenceGroup) findPreference("pref_predefmaps_mapsgroup");
+		final PreferenceGroup prefMapsgroup = (PreferenceGroup) findPreference("pref_predefmaps_mapsgroup");
 
 		final SAXParserFactory fac = SAXParserFactory.newInstance();
 		SAXParser parser = null;
@@ -47,16 +49,47 @@ public class MainPreferences extends PreferenceActivity implements OnSharedPrefe
 			e.printStackTrace();
 		}
 
-		LoadUserMaps();
+		final File folder = Ut.getRMapsMapsDir(this);
+		LoadUserMaps(folder);
+
+		final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+		final PreferenceScreen prefscr = (PreferenceScreen) findPreference("pref_main_usermaps");
+		prefscr.setSummary("Maps from "+pref.getString("pref_dir_maps", "/sdcard/rmaps/maps/"));
+
+		final EditTextPreference prefmaps = (EditTextPreference) findPreference("pref_dir_maps");
+		final OnPreferenceChangeListener onPreferenceChangeListener = new OnPreferenceChangeListener(){
+
+			public boolean onPreferenceChange(Preference preference, Object newValue) {
+				final PreferenceScreen prefscr = (PreferenceScreen) findPreference("pref_main_usermaps");
+				prefscr.setSummary("Maps from "+newValue.toString());
+
+
+				final File dir = new File(newValue.toString().concat("/").replace("//", "/"));
+				if(!dir.exists()){
+					if (android.os.Environment.getExternalStorageState().equals(android.os.Environment.MEDIA_MOUNTED)){
+						dir.mkdirs();
+					}
+				}
+				if(dir.exists())
+					LoadUserMaps(dir);
+
+
+				return true;
+			}};
+
+		prefmaps.setOnPreferenceChangeListener(onPreferenceChangeListener);
+		findPreference("pref_dir_main").setSummary(pref.getString("pref_dir_main", "/sdcard/rmaps/"));
+		findPreference("pref_dir_maps").setSummary(pref.getString("pref_dir_maps", "/sdcard/rmaps/maps/"));
+		findPreference("pref_dir_import").setSummary(pref.getString("pref_dir_import", "/sdcard/rmaps/import/"));
+		findPreference("pref_dir_export").setSummary(pref.getString("pref_dir_export", "/sdcard/rmaps/export/"));
 	}
 
-	private void LoadUserMaps() {
+	private void LoadUserMaps(final File folder) {
 		// Cash file preferences
-		PreferenceGroup prefUserMapsgroup = (PreferenceGroup) findPreference("pref_usermaps_mapsgroup");
+		final PreferenceGroup prefUserMapsgroup = (PreferenceGroup) findPreference("pref_usermaps_mapsgroup");
 		prefUserMapsgroup.removeAll();
 
-		File folder = Ut.getRMapsFolder("maps", true);
-		File[] files = folder.listFiles();
+		final File[] files = folder.listFiles();
 		if (files != null)
 			for (int i = 0; i < files.length; i++) {
 				if (files[i].getName().toLowerCase().endsWith(
@@ -65,12 +98,12 @@ public class MainPreferences extends PreferenceActivity implements OnSharedPrefe
 								getString(R.string.tar))
 						|| files[i].getName().toLowerCase().endsWith(
 								getString(R.string.sqlitedb))) {
-					String name = Ut.FileName2ID(files[i].getName());
+					final String name = Ut.FileName2ID(files[i].getName());
 
-					PreferenceScreen prefscr = getPreferenceManager().createPreferenceScreen(this);
+					final PreferenceScreen prefscr = getPreferenceManager().createPreferenceScreen(this);
 					prefscr.setKey(PREF_USERMAPS_ + name);
 					{
-						CheckBoxPreference pref = new CheckBoxPreference(this);
+						final CheckBoxPreference pref = new CheckBoxPreference(this);
 						pref.setKey(PREF_USERMAPS_ + name + "_enabled");
 						pref.setTitle(getString(R.string.pref_usermap_enabled));
 						pref.setSummary(getString(R.string.pref_usermap_enabled_summary));
@@ -78,7 +111,7 @@ public class MainPreferences extends PreferenceActivity implements OnSharedPrefe
 						prefscr.addPreference(pref);
 					}
 					{
-						EditTextPreference pref = new EditTextPreference(this);
+						final EditTextPreference pref = new EditTextPreference(this);
 						pref.setKey(PREF_USERMAPS_ + name + "_name");
 						pref.setTitle(getString(R.string.pref_usermap_name));
 						pref.setSummary(files[i].getName());
@@ -86,7 +119,7 @@ public class MainPreferences extends PreferenceActivity implements OnSharedPrefe
 						prefscr.addPreference(pref);
 					}
 					{
-						EditTextPreference pref = new EditTextPreference(this);
+						final EditTextPreference pref = new EditTextPreference(this);
 						pref.setKey(PREF_USERMAPS_ + name + "_baseurl");
 						pref.setTitle(getString(R.string.pref_usermap_baseurl));
 						pref.setSummary(files[i].getAbsolutePath());
@@ -95,7 +128,7 @@ public class MainPreferences extends PreferenceActivity implements OnSharedPrefe
 						prefscr.addPreference(pref);
 					}
 					{
-						ListPreference pref = new ListPreference(this);
+						final ListPreference pref = new ListPreference(this);
 						pref.setKey(PREF_USERMAPS_ + name + "_projection");
 						pref.setTitle(getString(R.string.pref_usermap_projection));
 						pref.setEntries(R.array.projection_title);
@@ -105,7 +138,7 @@ public class MainPreferences extends PreferenceActivity implements OnSharedPrefe
 						pref.setSummary(pref.getEntry());
 					}
 					{
-						CheckBoxPreference pref = new CheckBoxPreference(this);
+						final CheckBoxPreference pref = new CheckBoxPreference(this);
 						pref.setKey(PREF_USERMAPS_ + name + "_traffic");
 						pref.setTitle(getString(R.string.pref_usermap_traffic));
 						pref.setSummary(getString(R.string.pref_usermap_traffic_summary));
@@ -141,7 +174,10 @@ public class MainPreferences extends PreferenceActivity implements OnSharedPrefe
 	    }
 
 	public void onSharedPreferenceChanged(SharedPreferences aPref, String aKey) {
-		if (aKey.length() > 14)
+		if(aKey.substring(0, 9).equalsIgnoreCase("pref_dir_")) {
+			findPreference(aKey).setSummary(aPref.getString(aKey, ""));
+		}
+		else if (aKey.length() > 14)
 			if (aKey.substring(0, 14).equalsIgnoreCase(PREF_USERMAPS_)) {
 				if (aKey.endsWith("name")) {
 					findPreference(aKey).setSummary(aPref.getString(aKey, ""));

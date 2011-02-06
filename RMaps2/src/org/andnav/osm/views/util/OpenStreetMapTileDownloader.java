@@ -54,7 +54,7 @@ public class OpenStreetMapTileDownloader implements OpenStreetMapConstants, Open
     	if(aCacheDatabaseName != null && aCacheDatabaseName != ""){
     		try {
 				this.mCacheDatabase = new SQLiteMapDatabase();
-				final File folder = Ut.getRMapsFolder("cache", false);
+				final File folder = Ut.getRMapsMainDir(mCtx, "cache");
 				this.mCacheDatabase.setFile(folder.getAbsolutePath()+"/"+aCacheDatabaseName+".sqlitedb");
 			} catch (Exception e) {
 				e.printStackTrace();

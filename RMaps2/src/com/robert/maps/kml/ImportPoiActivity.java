@@ -53,7 +53,7 @@ public class ImportPoiActivity extends Activity {
 			mPoiManager = new PoiManager(this);
 
 		mFileName = (EditText) findViewById(R.id.FileName);
-		mFileName.setText(settings.getString("IMPORT_POI_FILENAME", Ut.getRMapsFolder("import", false).getAbsolutePath()));
+		mFileName.setText(settings.getString("IMPORT_POI_FILENAME", Ut.getRMapsImportDir(this).getAbsolutePath()));
 
 		mSpinner = (Spinner) findViewById(R.id.spinnerCategory);
 		Cursor c = mPoiManager.getGeoDatabase().getPoiCategoryListCursor();

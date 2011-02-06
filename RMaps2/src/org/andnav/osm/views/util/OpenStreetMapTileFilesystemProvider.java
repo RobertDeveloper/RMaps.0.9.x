@@ -1102,7 +1102,7 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 	}
 
 	public SQLiteDatabase getIndexDatabase() {
-		File folder = Ut.getRMapsFolder("data", false);
+		File folder = Ut.getRMapsMainDir(mCtx, "data");
 		if(!folder.exists()) // no sdcard // TODO ѕроверить как это работает без карты? если вытащить карту во врем€ работы программы?
 			return null;
 
