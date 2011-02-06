@@ -28,7 +28,7 @@ public class IndexPreference extends Preference {
 		super(context, attrs);
 		mCtx = context;
 		setWidgetLayoutResource(R.layout.preference_widget_btn_clear);
-		final File folder = Ut.getRMapsFolder("data", false);
+		final File folder = Ut.getRMapsMainDir(mCtx, "data");
 		mDbFile = new File(folder.getAbsolutePath()+"/index.db");
 		setSummary(String.format(mCtx.getString(R.string.pref_index_summary), (int) mDbFile
 				.length() / 1024));

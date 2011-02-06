@@ -104,7 +104,7 @@ public class TrackListActivity extends ListActivity {
 		this.mThreadPool.execute(new Runnable() {
 			public void run() {
 				SQLiteDatabase db = null;
-				File folder = Ut.getRMapsFolder("data", false);
+				File folder = Ut.getRMapsMainDir(TrackListActivity.this, "data");
 				if(folder.canRead()){
 					try {
 						db = new DatabaseHelper(TrackListActivity.this, folder.getAbsolutePath() + "/writedtrack.db").getWritableDatabase();
@@ -237,7 +237,7 @@ public class TrackListActivity extends ListActivity {
 				}
 				coordinates.setText(builder.toString().trim());
 
-				File folder = Ut.getRMapsFolder("export", false);
+				File folder = Ut.getRMapsExportDir(TrackListActivity.this);
 				String filename = folder.getAbsolutePath() + "/track" + trackid + ".kml";
 				File file = new File(filename);
 				FileOutputStream out;
@@ -293,7 +293,7 @@ public class TrackListActivity extends ListActivity {
 					trkpt.createChild("time").setText(formatter.format(tp.date));
 				}
 
-				File folder = Ut.getRMapsFolder("export", false);
+				File folder = Ut.getRMapsExportDir(TrackListActivity.this);
 				String filename = folder.getAbsolutePath() + "/track" + trackid + ".gpx";
 				File file = new File(filename);
 				FileOutputStream out;

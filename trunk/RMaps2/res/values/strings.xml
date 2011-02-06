@@ -242,4 +242,10 @@ v.0.7.0\n
 	<string name="pref_onlinecache">Online maps cache</string>
 	<string name="pref_onlinecache_summary">Store online maps tiles to sdcard</string>
 	<string name="message_wait">Wait a moment, please....</string>
+	<string name="pref_dir">Directories</string>
+	<string name="pref_dir_main">Main RMaps directory</string>
+	<string name="pref_dir_maps">User maps directory</string>
+	<string name="pref_dir_import">Import files directory</string>
+	<string name="pref_dir_export">Export files directory</string>
+	<string name="pref_dir_summary">Where RMaps stores your files</string>
 </resources>

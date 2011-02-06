@@ -162,7 +162,7 @@ public class GeoDatabase implements PoiConstants{
 	}
 
 	protected SQLiteDatabase getDatabase() {
-		File folder = Ut.getRMapsFolder("data", false);
+		File folder = Ut.getRMapsMainDir(mCtx, "data");
 		if(!folder.exists()) // no sdcard
 			return null;
 

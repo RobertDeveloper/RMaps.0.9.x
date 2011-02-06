@@ -416,21 +416,7 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 
 		if(versionDataUpdate < 3){
 			Ut.dd("Upgrade app data to v.3");
-/*			try {
-				File folder = Ut.getRMapsFolder("data", false);
-				if(folder.exists()) {
-					File fileData2 = new File("/sdcard/rmaps/data/index.db");
-
-					if(fileData2.exists()){
-						SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase("/sdcard/rmaps/data/index.db", null);
-						db.execSQL("DELETE FROM ListCashTables WHERE name LIKE ('%sqlitedb')");
-						db.close();
-					}
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-*/		}
+		}
 
 		SharedPreferences uiState = getPreferences(0);
 		SharedPreferences.Editor editor = uiState.edit();
@@ -771,7 +757,7 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 		submenu.clear();
 		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
 
-		File folder = Ut.getRMapsFolder("maps", true);
+		File folder = Ut.getRMapsMapsDir(this);
 		if (folder.exists()) {
 			File[] files = folder.listFiles();
 			if (files != null)

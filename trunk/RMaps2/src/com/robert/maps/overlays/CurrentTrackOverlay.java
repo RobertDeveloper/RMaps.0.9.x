@@ -87,7 +87,7 @@ public class CurrentTrackOverlay extends OpenStreetMapViewOverlay {
 			else
 				mTrack.getPoints().clear();
 
-			final File folder = Ut.getRMapsFolder("data", false);
+			final File folder = Ut.getRMapsMainDir(mContext, "data");
 			if(folder.canRead()){
 				SQLiteDatabase db = null;
 				try {

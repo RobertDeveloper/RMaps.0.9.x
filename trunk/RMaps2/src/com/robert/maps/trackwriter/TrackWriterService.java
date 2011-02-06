@@ -78,7 +78,7 @@ public class TrackWriterService extends Service implements OpenStreetMapConstant
 	public void onCreate() {
 		super.onCreate();
 
-		final File folder = Ut.getRMapsFolder("data", false);
+		final File folder = Ut.getRMapsMainDir(this, "data");
 		if(folder.canRead()){
 			try {
 				db = new DatabaseHelper(this, folder.getAbsolutePath() + "/writedtrack.db").getWritableDatabase();
