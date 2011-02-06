@@ -53,8 +53,10 @@ public class OpenStreetMapTileCache implements OpenStreetMapViewConstants{
 	public synchronized Bitmap getMapTile(final String aTileURLString) {
 		final Bitmap bmpHard = this.mHardCachedTiles.get(aTileURLString);
 		if(bmpHard != null){
-			this.mHardCachedTiles2.put(aTileURLString, bmpHard);
-			return bmpHard;
+			if(!bmpHard.isRecycled()) {
+				this.mHardCachedTiles2.put(aTileURLString, bmpHard);
+				return bmpHard;
+			}
 		}
 		final SoftReference<Bitmap> ref = this.mCachedTiles.get(aTileURLString);
 		if(ref == null)
@@ -62,6 +64,8 @@ public class OpenStreetMapTileCache implements OpenStreetMapViewConstants{
 		final Bitmap bmp = ref.get();
 		if(bmp == null){
 			Ut.w("EMPTY SoftReference");
+			this.mCachedTiles.remove(ref);
+		} else if(bmp.isRecycled()){
 			this.mCachedTiles.remove(ref);
 		}
 		this.mHardCachedTiles2.put(aTileURLString, bmp);
