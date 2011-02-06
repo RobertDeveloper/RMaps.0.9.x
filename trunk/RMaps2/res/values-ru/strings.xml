@@ -84,6 +84,10 @@ All rights reserved\n
 Как сделать офф-лайн карту и прочее можно почитать здесь http://robertdeveloper.blogspot.com/\n
 </string>
     <string name="whats_new_dialog_text">
+v.0.8.7\n
++ Настройка папок данных и оффлайн карт\n
++ Теперь RMaps сохраняет тайлы онлайн карт на sd карте в sqlite формате\n
+\n
 v.0.8.6.1\n
 - Bug fix\n
 \n
@@ -253,4 +257,13 @@ v.0.5.2\n
 	<string name="error_title">Ошибка</string>
 	<string name="error_text">Во время последнего запуска RMaps была аварийно завершена. Пожалуйста, пошлите отчет об ошибке автору программы. Нажмите Создать отчет, вы сможете прочитать сообщение до того, как оно будет отправлено.</string>
 	<string name="error_send">Создать отчет</string>
+	<string name="pref_onlinecache">Кэш онлайн карт</string>
+	<string name="pref_onlinecache_summary">Сохранять тайлы онлайн карт на sd карте</string>
+	<string name="message_wait">Подождите минутку, пожалуйста...</string>
+	<string name="pref_dir">Папки</string>
+	<string name="pref_dir_main">Основная папка RMaps</string>
+	<string name="pref_dir_maps">Папка oффлайн карт</string>
+	<string name="pref_dir_import">Папка импортируемых файлов</string>
+	<string name="pref_dir_export">Папка экспортируемых файлов</string>
+	<string name="pref_dir_summary">Папки где RMaps сохраняет свои файлы</string>
 </resources>

@@ -101,6 +101,10 @@ How to and FAQ you can find on http://robertdeveloper.blogspot.com/\n
     <string name="whats_new_dialog_text">
 The source site of VFR, IFR High, IFR Low charts is unavailable now. Read here about it. http://blog.runwayfinder.com/\n
 \n
+v.0.8.7\n
++ New preference Directory\n
++ Now RMaps stores tiles of online maps on sdcard in sqlite format\n
+\n
 v.0.8.6.1\n
 - Bug fix\n
 \n
@@ -241,7 +245,7 @@ v.0.7.0\n
 	<string name="error_send">Generate report</string>
 	<string name="pref_onlinecache">Online maps cache</string>
 	<string name="pref_onlinecache_summary">Store online maps tiles to sdcard</string>
-	<string name="message_wait">Wait a moment, please....</string>
+	<string name="message_wait">Wait a moment, please...</string>
 	<string name="pref_dir">Directories</string>
 	<string name="pref_dir_main">Main RMaps directory</string>
 	<string name="pref_dir_maps">User maps directory</string>
