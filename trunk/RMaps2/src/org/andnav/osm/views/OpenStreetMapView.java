@@ -615,7 +615,8 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 					final int tileLeft = this.mTouchMapOffsetX + centerMapTileScreenLeft + (x * tileSizePx);
 					final int tileTop = this.mTouchMapOffsetY + centerMapTileScreenTop + (y * tileSizePx);
 					final Rect r = new Rect(tileLeft, tileTop, tileLeft+tileSizePx, tileTop+tileSizePx);
-					c.drawBitmap(currentMapTile, null, r, this.mPaint);
+					if(!currentMapTile.isRecycled())
+						c.drawBitmap(currentMapTile, null, r, this.mPaint);
 
 					if (DEBUGMODE)
 					{

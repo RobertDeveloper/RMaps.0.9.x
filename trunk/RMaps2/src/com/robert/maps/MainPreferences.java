@@ -51,37 +51,6 @@ public class MainPreferences extends PreferenceActivity implements OnSharedPrefe
 
 		final File folder = Ut.getRMapsMapsDir(this);
 		LoadUserMaps(folder);
-
-		final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
-		final PreferenceScreen prefscr = (PreferenceScreen) findPreference("pref_main_usermaps");
-		prefscr.setSummary("Maps from "+pref.getString("pref_dir_maps", "/sdcard/rmaps/maps/"));
-
-		final EditTextPreference prefmaps = (EditTextPreference) findPreference("pref_dir_maps");
-		final OnPreferenceChangeListener onPreferenceChangeListener = new OnPreferenceChangeListener(){
-
-			public boolean onPreferenceChange(Preference preference, Object newValue) {
-				final PreferenceScreen prefscr = (PreferenceScreen) findPreference("pref_main_usermaps");
-				prefscr.setSummary("Maps from "+newValue.toString());
-
-
-				final File dir = new File(newValue.toString().concat("/").replace("//", "/"));
-				if(!dir.exists()){
-					if (android.os.Environment.getExternalStorageState().equals(android.os.Environment.MEDIA_MOUNTED)){
-						dir.mkdirs();
-					}
-				}
-				if(dir.exists())
-					LoadUserMaps(dir);
-
-
-				return true;
-			}};
-
-		prefmaps.setOnPreferenceChangeListener(onPreferenceChangeListener);
-		findPreference("pref_dir_main").setSummary(pref.getString("pref_dir_main", "/sdcard/rmaps/"));
-		findPreference("pref_dir_maps").setSummary(pref.getString("pref_dir_maps", "/sdcard/rmaps/maps/"));
-		findPreference("pref_dir_import").setSummary(pref.getString("pref_dir_import", "/sdcard/rmaps/import/"));
-		findPreference("pref_dir_export").setSummary(pref.getString("pref_dir_export", "/sdcard/rmaps/export/"));
 	}
 
 	private void LoadUserMaps(final File folder) {
@@ -174,25 +143,45 @@ public class MainPreferences extends PreferenceActivity implements OnSharedPrefe
 	    }
 
 	public void onSharedPreferenceChanged(SharedPreferences aPref, String aKey) {
-		if(aKey.substring(0, 9).equalsIgnoreCase("pref_dir_")) {
-			findPreference(aKey).setSummary(aPref.getString(aKey, ""));
+
+		if(aKey.equalsIgnoreCase("pref_dir_maps")){
+			findPreference("pref_main_usermaps").setSummary("Maps from "+aPref.getString("pref_dir_maps", "/sdcard/rmaps/maps/"));
+			findPreference(aKey).setSummary(aPref.getString("pref_dir_maps", "/sdcard/rmaps/maps/"));
+
+
+			final File dir = new File(aPref.getString("pref_dir_maps", "/sdcard/rmaps/maps/").concat("/").replace("//", "/"));
+			if(!dir.exists()){
+				if (android.os.Environment.getExternalStorageState().equals(android.os.Environment.MEDIA_MOUNTED)){
+					dir.mkdirs();
+				}
+			}
+			if(dir.exists())
+				LoadUserMaps(dir);
+		}
+		else if(aKey.substring(0, 9).equalsIgnoreCase("pref_dir_")) {
+			findPreference("pref_dir_main").setSummary(aPref.getString("pref_dir_main", "/sdcard/rmaps/"));
+			findPreference("pref_dir_import").setSummary(aPref.getString("pref_dir_import", "/sdcard/rmaps/import/"));
+			findPreference("pref_dir_export").setSummary(aPref.getString("pref_dir_export", "/sdcard/rmaps/export/"));
 		}
 		else if (aKey.length() > 14)
 			if (aKey.substring(0, 14).equalsIgnoreCase(PREF_USERMAPS_)) {
-				if (aKey.endsWith("name")) {
+				if (aKey.endsWith("name") && findPreference(aKey) != null) {
 					findPreference(aKey).setSummary(aPref.getString(aKey, ""));
 					findPreference(aKey.replace("_name", "")).setTitle(aPref.getString(aKey, ""));
 				} else if (aKey.endsWith("enabled")) {
-					if (aPref.getBoolean(aKey, false))
+					if (aPref.getBoolean(aKey, false) && findPreference(aKey.replace("_enabled", "")) != null)
 						findPreference(aKey.replace("_enabled", "")).setSummary(
 								"Enabled  " + aPref.getString(aKey.replace("_enabled", "_baseurl"), ""));
 					else
 						findPreference(aKey.replace("_enabled", "")).setSummary(
 								"Disabled  " + aPref.getString(aKey.replace("_enabled", "_baseurl"), ""));
-				} else if (aKey.endsWith("projection")) {
+					((PreferenceScreen)findPreference("pref_main_usermaps")). getDialog().onContentChanged();
+				} else if (aKey.endsWith("projection") && findPreference(aKey) != null) {
 					ListPreference pref = (ListPreference) findPreference(aKey);
 					findPreference(aKey).setSummary(pref.getEntry());
 				}
 			}
+		onContentChanged();
 	}
+
 }
