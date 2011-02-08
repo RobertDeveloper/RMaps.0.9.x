@@ -85,6 +85,8 @@ public class MyLocationOverlay extends OpenStreetMapViewOverlay {
 				this.PERSON_ICON2 = BitmapFactory.decodeResource(mCtx.getResources(), R.drawable.person);
 			} catch (Exception e) {
 				PERSON_ICON2 = null;
+			} catch (OutOfMemoryError e) {
+				PERSON_ICON2 = null;
 			}
 
 		return PERSON_ICON2 == null ? false : true;
