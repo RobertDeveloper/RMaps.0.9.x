@@ -101,6 +101,9 @@ How to and FAQ you can find on http://robertdeveloper.blogspot.com/\n
     <string name="whats_new_dialog_text">
 The source site of VFR, IFR High, IFR Low charts is unavailable now. Read here about it. http://blog.runwayfinder.com/\n
 \n
+v.0.8.7.2\n
+- Bug fix\n
+\n
 v.0.8.7\n
 + New preference Directory\n
 + Now RMaps stores tiles of online maps on sdcard in sqlite format\n

@@ -84,6 +84,9 @@ All rights reserved\n
 Как сделать офф-лайн карту и прочее можно почитать здесь http://robertdeveloper.blogspot.com/\n
 </string>
     <string name="whats_new_dialog_text">
+v.0.8.7.2\n
+- Bug fix\n
+\n
 v.0.8.7\n
 + Настройка папок данных и оффлайн карт\n
 + Теперь RMaps сохраняет тайлы онлайн карт на sd карте в sqlite формате\n

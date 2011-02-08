@@ -15,12 +15,9 @@ import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.EditTextPreference;
 import android.preference.ListPreference;
-import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceGroup;
-import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
-import android.preference.Preference.OnPreferenceChangeListener;
 
 import com.robert.maps.constants.PrefConstants;
 import com.robert.maps.kml.XMLparser.PredefMapsParser;
@@ -168,14 +165,13 @@ public class MainPreferences extends PreferenceActivity implements OnSharedPrefe
 				if (aKey.endsWith("name") && findPreference(aKey) != null) {
 					findPreference(aKey).setSummary(aPref.getString(aKey, ""));
 					findPreference(aKey.replace("_name", "")).setTitle(aPref.getString(aKey, ""));
-				} else if (aKey.endsWith("enabled")) {
-					if (aPref.getBoolean(aKey, false) && findPreference(aKey.replace("_enabled", "")) != null)
+				} else if (aKey.endsWith("enabled") && findPreference(aKey.replace("_enabled", "")) != null) {
+					if (aPref.getBoolean(aKey, false))
 						findPreference(aKey.replace("_enabled", "")).setSummary(
 								"Enabled  " + aPref.getString(aKey.replace("_enabled", "_baseurl"), ""));
 					else
 						findPreference(aKey.replace("_enabled", "")).setSummary(
 								"Disabled  " + aPref.getString(aKey.replace("_enabled", "_baseurl"), ""));
-					((PreferenceScreen)findPreference("pref_main_usermaps")). getDialog().onContentChanged();
 				} else if (aKey.endsWith("projection") && findPreference(aKey) != null) {
 					ListPreference pref = (ListPreference) findPreference(aKey);
 					findPreference(aKey).setSummary(pref.getEntry());
