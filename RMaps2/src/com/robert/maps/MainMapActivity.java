@@ -182,7 +182,8 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 	/** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
-    	android.os.Debug.startMethodTracing("lsd");
+    	if(OpenStreetMapViewConstants.DEBUGMODE)
+    		android.os.Debug.startMethodTracing("lsd");
         super.onCreate(savedInstanceState, false); // Pass true here to actually contribute to OSM!
 
         if(!OpenStreetMapViewConstants.DEBUGMODE)
@@ -373,7 +374,8 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
         }else if(ACTION_SHOW_POINTS.equalsIgnoreCase(queryAction))
         	ActionShowPoints(queryIntent);
 
-        android.os.Debug.stopMethodTracing();
+        if(OpenStreetMapViewConstants.DEBUGMODE)
+        	android.os.Debug.stopMethodTracing();
     }
 
 	@Override
