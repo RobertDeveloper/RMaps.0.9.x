@@ -57,19 +57,19 @@ public class ScaleBarDrawable extends Drawable {
         	mZoomLevel = mOsmv.getZoomLevel();
         	mTouchScale = mOsmv.mTouchScale;
 
-			final int dist = SCALE[mUnits][Math.max(0, Math.min(19, mZoomLevel + (int)(mTouchScale > 1 ? Math.round(mTouchScale)-1 : -Math.round(1/mTouchScale)+1)))];
+			final int dist = SCALE[mUnits][Math.max(0, Math.min(19, mZoomLevel + 1 + (int)(mTouchScale > 1 ? Math.round(mTouchScale)-1 : -Math.round(1/mTouchScale)+1)))];
     		if(mUnits == 0){
-	    		mWidth = (int) ((double)dist*mTouchScale*256*(1<<mZoomLevel)/EQUATOR_M);
+	    		mWidth = (int) ((double)dist*mTouchScale*256*(1<<(mZoomLevel + 1))/EQUATOR_M);
 
 	    		if(dist > 999)
 	    			mDist = ""+(dist/1000)+" km";
 	    		else
 	    			mDist = ""+dist+" m";
     		} else if(mZoomLevel < 15){
-	    		mWidth = (int) ((double)dist*mTouchScale*256*(1<<mZoomLevel)/EQUATOR_ML);
+	    		mWidth = (int) ((double)dist*mTouchScale*256*2*(1<<(mZoomLevel + 1))/EQUATOR_ML);
 	    		mDist = ""+dist+" ml";
     		} else {
-	    		mWidth = (int) ((double)dist*mTouchScale*256*(1<<mZoomLevel)/EQUATOR_FT);
+	    		mWidth = (int) ((double)dist*mTouchScale*256*2*(1<<(mZoomLevel + 1))/EQUATOR_FT);
 	    		mDist = ""+dist+" ft";
     		}
 
