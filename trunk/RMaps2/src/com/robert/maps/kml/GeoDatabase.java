@@ -26,38 +26,38 @@ public class GeoDatabase implements PoiConstants{
 		mDatabase = getDatabase();
 	}
 
-	public void addPoi(String aName, String aDescr, double aLat, double aLon, double aAlt, int aCategoryId,
-			int aPointSourceId, int hidden, int iconid) {
+	public void addPoi(final String aName, final String aDescr, final double aLat, final double aLon, final double aAlt, final int aCategoryId,
+			final int aPointSourceId, final int hidden, final int iconid) {
 		if (isDatabaseReady()) {
 			final ContentValues cv = new ContentValues();
-			cv.put("name", aName);
-			cv.put("descr", aDescr);
-			cv.put("lat", aLat);
-			cv.put("lon", aLon);
-			cv.put("alt", aAlt);
-			cv.put("categoryid", aCategoryId);
-			cv.put("pointsourceid", aPointSourceId);
-			cv.put("hidden", hidden);
-			cv.put("iconid", iconid);
-			this.mDatabase.insert("points", null, cv);
+			cv.put(NAME, aName);
+			cv.put(DESCR, aDescr);
+			cv.put(LAT, aLat);
+			cv.put(LON, aLon);
+			cv.put(ALT, aAlt);
+			cv.put(CATEGORYID, aCategoryId);
+			cv.put(POINTSOURCEID, aPointSourceId);
+			cv.put(HIDDEN, hidden);
+			cv.put(ICONID, iconid);
+			this.mDatabase.insert(POINTS, null, cv);
 		}
 	}
 
-	public void updatePoi(int id, String aName, String aDescr, double aLat, double aLon, double aAlt, int aCategoryId,
-			int aPointSourceId, int hidden, int iconid) {
+	public void updatePoi(final int id, final String aName, final String aDescr, final double aLat, final double aLon, final double aAlt, final int aCategoryId,
+			final int aPointSourceId, final int hidden, final int iconid) {
 		if (isDatabaseReady()) {
 			final ContentValues cv = new ContentValues();
-			cv.put("name", aName);
-			cv.put("descr", aDescr);
-			cv.put("lat", aLat);
-			cv.put("lon", aLon);
-			cv.put("alt", aAlt);
-			cv.put("categoryid", aCategoryId);
-			cv.put("pointsourceid", aPointSourceId);
-			cv.put("hidden", hidden);
-			cv.put("iconid", iconid);
-			String[] args = {"" + id};
-			this.mDatabase.update("points", cv, "pointid = @1", args);
+			cv.put(NAME, aName);
+			cv.put(DESCR, aDescr);
+			cv.put(LAT, aLat);
+			cv.put(LON, aLon);
+			cv.put(ALT, aAlt);
+			cv.put(CATEGORYID, aCategoryId);
+			cv.put(POINTSOURCEID, aPointSourceId);
+			cv.put(HIDDEN, hidden);
+			cv.put(ICONID, iconid);
+			final String[] args = {Integer.toString(id)};
+			this.mDatabase.update(POINTS, cv, UPDATE_POINTS, args);
 		}
 	}
 
@@ -66,7 +66,6 @@ public class GeoDatabase implements PoiConstants{
 		if(mDatabase != null){
 			if(mDatabase.isOpen()){
 				mDatabase.close();
-				Ut.dd("finalize: Close database");
 				mDatabase = null;
 			}
 		}
@@ -76,22 +75,17 @@ public class GeoDatabase implements PoiConstants{
 	public Cursor getPoiListCursor() {
 		if (isDatabaseReady()) {
 			// не менять порядок полей
-			return mDatabase.rawQuery("SELECT lat, lon, name, descr, pointid, pointid _id, pointid ID FROM points ORDER BY lat, lon", null);
+			return mDatabase.rawQuery(STAT_GET_POI_LIST, null);
 		}
 
 		return null;
 	}
 
-	public Cursor getPoiListNotHiddenCursor(int zoom, double left, double right, double top, double bottom) {
+	public Cursor getPoiListNotHiddenCursor(final int zoom, final double left, final double right, final double top, final double bottom) {
 		if (isDatabaseReady()) {
+			final String[] args = {Integer.toString(zoom + 1),Double.toString(left),Double.toString(right),Double.toString(bottom),Double.toString(top)};
 			// не менять порядок полей
-			return mDatabase
-					.rawQuery(
-							"SELECT poi.lat, poi.lon, poi.name, poi.descr, poi.pointid, poi.pointid _id, poi.pointid ID, poi.categoryid, cat.iconid FROM points poi LEFT JOIN category cat ON cat.categoryid = poi.categoryid WHERE poi.hidden = 0 AND cat.hidden = 0 "
-							+"AND cat.minzoom <= " + (zoom + 1)
-							+ " AND poi.lon BETWEEN " + left + " AND " + right
-							+ " AND poi.lat BETWEEN " + bottom + " AND " + top
-							+ " ORDER BY lat, lon", null);
+			return mDatabase.rawQuery(STAT_PoiListNotHidden, args);
 		}
 
 		return null;
@@ -100,7 +94,7 @@ public class GeoDatabase implements PoiConstants{
 	public Cursor getPoiCategoryListCursor() {
 		if (isDatabaseReady()) {
 			// не менять порядок полей
-			return mDatabase.rawQuery("SELECT name, categoryid _id FROM category ORDER BY name", null);
+			return mDatabase.rawQuery(STAT_PoiCategoryList, null);
 		}
 
 		return null;
@@ -108,11 +102,9 @@ public class GeoDatabase implements PoiConstants{
 
 	public Cursor getPoi(final int id) {
 		if (isDatabaseReady()) {
+			final String[] args = {Integer.toString(id)};
 			// не менять порядок полей
-			return mDatabase
-					.rawQuery(
-							"SELECT lat, lon, name, descr, pointid, alt, hidden, categoryid, pointsourceid, iconid FROM points WHERE pointid = "
-									+ id, null);
+			return mDatabase.rawQuery(STAT_getPoi, args);
 		}
 
 		return null;
@@ -120,13 +112,15 @@ public class GeoDatabase implements PoiConstants{
 
 	public void deletePoi(final int id) {
 		if (isDatabaseReady()) {
-			mDatabase.execSQL("DELETE FROM points WHERE pointid = " + id);
+			final Double[] args = {new Double(id)};
+			mDatabase.execSQL(STAT_deletePoi, args);
 		}
 	}
 
 	public void deletePoiCategory(final int id) {
-		if (isDatabaseReady() && id != 0) { // predef category My POI never delete
-			mDatabase.execSQL("DELETE FROM category WHERE categoryid = " + id);
+		if (isDatabaseReady() && id != ZERO) { // predef category My POI never delete
+			final Double[] args = {new Double(id)};
+			mDatabase.execSQL(STAT_deletePoiCategory, args);
 		}
 	}
 
@@ -155,18 +149,17 @@ public class GeoDatabase implements PoiConstants{
 		if(mDatabase != null){
 			if(mDatabase.isOpen()){
 				mDatabase.close();
-				Ut.dd("Close database");
 				mDatabase = null;
 			}
 		}
 	}
 
 	protected SQLiteDatabase getDatabase() {
-		File folder = Ut.getRMapsMainDir(mCtx, "data");
+		File folder = Ut.getRMapsMainDir(mCtx, DATA);
 		if(!folder.exists()) // no sdcard
 			return null;
 
-		SQLiteDatabase db = new GeoDatabaseHelper(mCtx, folder.getAbsolutePath() + "/geodata.db").getWritableDatabase();
+		SQLiteDatabase db = new GeoDatabaseHelper(mCtx, folder.getAbsolutePath() + GEODATA_FILENAME).getWritableDatabase();
 
 		return db;
 	}
@@ -177,7 +170,7 @@ public class GeoDatabase implements PoiConstants{
 		}
 
 		@Override
-		public void onCreate(SQLiteDatabase db) {
+		public void onCreate(final SQLiteDatabase db) {
 			db.execSQL(PoiConstants.SQL_CREATE_points);
 			db.execSQL(PoiConstants.SQL_CREATE_pointsource);
 			db.execSQL(PoiConstants.SQL_CREATE_category);
@@ -187,9 +180,9 @@ public class GeoDatabase implements PoiConstants{
 		}
 
 		@Override
-		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-			Ut.dd("Upgrade data.db from ver." + oldVersion + " to ver."
-					+ newVersion);
+		public void onUpgrade(final SQLiteDatabase db, final int oldVersion, final int newVersion) {
+//			Ut.dd("Upgrade data.db from ver." + oldVersion + " to ver."
+//					+ newVersion);
 
 			if (oldVersion < 2) {
 				db.execSQL(PoiConstants.SQL_UPDATE_1_1);
@@ -222,40 +215,41 @@ public class GeoDatabase implements PoiConstants{
 
 	}
 
-	public Cursor getPoiCategory(int id) {
+	public Cursor getPoiCategory(final int id) {
 		if (isDatabaseReady()) {
 			// не менять порядок полей
-			return mDatabase.rawQuery("SELECT name, categoryid, hidden, iconid, minzoom FROM category WHERE categoryid = " + id, null);
+			final String[] args = {Integer.toString(id)};
+			return mDatabase.rawQuery(STAT_getPoiCategory, args);
 		}
 
 		return null;
 	}
 
-	public void addPoiCategory(String title, int hidden, int iconid) {
+	public void addPoiCategory(final String title, final int hidden, final int iconid) {
 		if (isDatabaseReady()) {
 			final ContentValues cv = new ContentValues();
-			cv.put("name", title);
-			cv.put("hidden", hidden);
-			cv.put("iconid", iconid);
-			this.mDatabase.insert("category", null, cv);
+			cv.put(NAME, title);
+			cv.put(HIDDEN, hidden);
+			cv.put(ICONID, iconid);
+			this.mDatabase.insert(CATEGORY, null, cv);
 		}
 	}
 
-	public void updatePoiCategory(int id, String title, int hidden, int iconid, int minzoom) {
+	public void updatePoiCategory(final int id, final String title, final int hidden, final int iconid, final int minzoom) {
 		if (isDatabaseReady()) {
 			final ContentValues cv = new ContentValues();
-			cv.put("name", title);
-			cv.put("hidden", hidden);
-			cv.put("iconid", iconid);
-			cv.put("minzoom", minzoom);
-			String[] args = {"" + id};
-			this.mDatabase.update("category", cv, "categoryid = @1", args);
+			cv.put(NAME, title);
+			cv.put(HIDDEN, hidden);
+			cv.put(ICONID, iconid);
+			cv.put(MINZOOM, minzoom);
+			final String[] args = {Integer.toString(id)};
+			this.mDatabase.update(CATEGORY, cv, UPDATE_CATEGORY, args);
 		}
 	}
 
 	public void DeleteAllPoi() {
 		if (isDatabaseReady()) {
-			mDatabase.execSQL("DELETE FROM points");
+			mDatabase.execSQL(STAT_DeleteAllPoi);
 		}
 	}
 
@@ -275,102 +269,101 @@ public class GeoDatabase implements PoiConstants{
 	public Cursor getTrackListCursor() {
 		if (isDatabaseReady()) {
 			// не менять порядок полей
-			return mDatabase.rawQuery("SELECT name, descr, trackid _id, CASE WHEN show=1 THEN "
-					+ R.drawable.btn_check_buttonless_on + " ELSE " + R.drawable.btn_check_buttonless_off
-					+ " END as image FROM tracks ORDER BY trackid DESC;", null);
+			return mDatabase.rawQuery(STAT_getTrackList, null);
 		}
 
 		return null;
 	}
 
-	public long addTrack(String name, String descr, int show) {
+	public long addTrack(final String name, final String descr, final int show) {
 		long newId = -1;
 
 		if (isDatabaseReady()) {
 			final ContentValues cv = new ContentValues();
-			cv.put("name", name);
-			cv.put("descr", descr);
-			cv.put("show", show);
-			newId = this.mDatabase.insert("tracks", null, cv);
+			cv.put(NAME, name);
+			cv.put(DESCR, descr);
+			cv.put(SHOW, show);
+			newId = this.mDatabase.insert(TRACKS, null, cv);
 		}
 
 		return newId;
 	}
 
-	public void updateTrack(int id, String name, String descr, int show) {
+	public void updateTrack(final int id, final String name, final String descr, final int show) {
 		if (isDatabaseReady()) {
 			final ContentValues cv = new ContentValues();
-			cv.put("name", name);
-			cv.put("descr", descr);
-			cv.put("show", show);
-			String[] args = {"" + id};
-			this.mDatabase.update("tracks", cv, "trackid = @1", args);
+			cv.put(NAME, name);
+			cv.put(DESCR, descr);
+			cv.put(SHOW, show);
+			final String[] args = {Integer.toString(id)};
+			this.mDatabase.update(TRACKS, cv, UPDATE_TRACKS, args);
 		}
 	}
 
-	public void addTrackPoint(long trackid, double lat, double lon, double alt, double speed, Date date) {
+	public void addTrackPoint(final long trackid, final double lat, final double lon, final double alt, final double speed, final Date date) {
 		if (isDatabaseReady()) {
 			final ContentValues cv = new ContentValues();
-			cv.put("trackid", trackid);
-			cv.put("lat", lat);
-			cv.put("lon", lon);
-			cv.put("alt", alt);
-			cv.put("speed", speed);
+			cv.put(TRACKID, trackid);
+			cv.put(LAT, lat);
+			cv.put(LON, lon);
+			cv.put(ALT, alt);
+			cv.put(SPEED, speed);
 			//cv.put("date", date.getTime());
-			this.mDatabase.insert("trackpoints", null, cv);
+			this.mDatabase.insert(TRACKPOINTS, null, cv);
 		}
 	}
 
 	public Cursor getTrackChecked() {
 		if (isDatabaseReady()) {
 			// не менять порядок полей
-			return mDatabase.rawQuery("SELECT name, descr, show, trackid FROM tracks WHERE show = 1 LIMIT 1",
-					null);
+			return mDatabase.rawQuery(STAT_getTrackChecked, null);
 		}
 
 		return null;
 	}
 
-	public Cursor getTrack(long trackid) {
+	public Cursor getTrack(final long id) {
 		if (isDatabaseReady()) {
+			final String[] args = {Long.toString(id)};
 			// не менять порядок полей
-			return mDatabase.rawQuery("SELECT name, descr, show FROM tracks WHERE trackid = " + trackid,
-					null);
+			return mDatabase.rawQuery(STAT_getTrack, args);
 		}
 
 		return null;
 	}
 
-	public Cursor getTrackPoints(long trackid) {
+	public Cursor getTrackPoints(final long id) {
 		if (isDatabaseReady()) {
+			final String[] args = {Long.toString(id)};
 			// не менять порядок полей
-			return mDatabase.rawQuery("SELECT lat, lon, alt, speed, date FROM trackpoints WHERE trackid = " + trackid + " ORDER BY id",
-					null);
+			return mDatabase.rawQuery(STAT_getTrackPoints, args);
 		}
 
 		return null;
 	}
 
-	public void setTrackChecked(int id){
+	public void setTrackChecked(final int id){
 		if (isDatabaseReady()) {
-			mDatabase.execSQL("UPDATE tracks SET show = 1 - show * 1 WHERE trackid = " + id);
-			mDatabase.execSQL("UPDATE tracks SET show = 0 WHERE trackid <> " + id);
+			final String[] args = {Long.toString(id)};
+			mDatabase.execSQL(STAT_setTrackChecked_1, args);
+			mDatabase.execSQL(STAT_setTrackChecked_2, args);
 		}
 	}
 
-	public void deleteTrack(int id) {
+	public void deleteTrack(final int id) {
 		if (isDatabaseReady()) {
 			beginTransaction();
-			mDatabase.execSQL("DELETE FROM trackpoints WHERE trackid = " + id);
-			mDatabase.execSQL("DELETE FROM tracks WHERE trackid = " + id);
+			final String[] args = {Long.toString(id)};
+			mDatabase.execSQL(STAT_deleteTrack_1, args);
+			mDatabase.execSQL(STAT_deleteTrack_2, args);
 			commitTransaction();
 		}
 	}
 
-	public int saveTrackFromWriter(SQLiteDatabase db){
+	public int saveTrackFromWriter(final SQLiteDatabase db){
 		int res = 0;
 		if (isDatabaseReady()) {
-			final Cursor c = db.rawQuery("SELECT lat, lon, alt, speed, date FROM trackpoints ORDER BY id;", null);
+			final Cursor c = db.rawQuery(STAT_saveTrackFromWriter, null);
 			if(c != null){
 				if(c.getCount() > 1){
 					beginTransaction();
@@ -379,24 +372,24 @@ public class GeoDatabase implements PoiConstants{
 					long newId = -1;
 
 					final ContentValues cv = new ContentValues();
-					cv.put("name", "Track");
-					cv.put("show", 0);
-					newId = mDatabase.insert("tracks", null, cv);
+					cv.put(NAME, TRACK);
+					cv.put(SHOW, 0);
+					newId = mDatabase.insert(TRACKS, null, cv);
 
-					cv.put("name", "Track "+newId);
-					final String[] args = {"" + newId};
-					mDatabase.update("tracks", cv, "trackid = @1", args);
+					cv.put(NAME, TRACK+ONE_SPACE+newId);
+					final String[] args = {Long.toString(newId)};
+					mDatabase.update(TRACKS, cv, UPDATE_TRACKS, args);
 
 					if (c.moveToFirst()) {
 						do {
 							cv.clear();
-							cv.put("trackid", newId);
-							cv.put("lat", c.getDouble(0));
-							cv.put("lon", c.getDouble(1));
-							cv.put("alt", c.getDouble(2));
-							cv.put("speed", c.getDouble(3));
-							cv.put("date", c.getInt(4));
-							mDatabase.insert("trackpoints", null, cv);
+							cv.put(TRACKID, newId);
+							cv.put(LAT, c.getDouble(0));
+							cv.put(LON, c.getDouble(1));
+							cv.put(ALT, c.getDouble(2));
+							cv.put(SPEED, c.getDouble(3));
+							cv.put(DATE, c.getInt(4));
+							mDatabase.insert(TRACKPOINTS, null, cv);
 						} while (c.moveToNext());
 					}
 
@@ -404,7 +397,7 @@ public class GeoDatabase implements PoiConstants{
 				}
 				c.close();
 
-				db.execSQL("DELETE FROM 'trackpoints';");
+				db.execSQL(STAT_CLEAR_TRACKPOINTS);
 			}
 
 		}
