@@ -81,49 +81,6 @@ All rights reserved\n
 \n
 您可以登入 http://robertdeveloper.blogspot.com/ 檢視作業指南和常見問題\n
 </string>
-<string name="whats_new_dialog_text">
-v.0.6.3\n
-+ 地圖指向前進方向. 啟用/禁用參數模式. 按兩下地圖返回基礎模式.\n
-+ 地圖指向北方. 啟用/禁用參數模式. 指南針可見時地圖轉向北方.\n
-+ 新增俄羅斯位置\n
-+ 更新Yandex.Map URL\n
-\n
-v.0.6.2\n
-- 修復長時間載入sqlite cash檔案的bug\n
-\n
-v.0.6.1\n
-+ 新增支援cash檔案到sqlite格式，由TrekBuddy Atlas Creator製作. 建立檔案變得輕而易舉. 現在不需要索引. 想獲取更多資訊請存取我的網站.\n
-+ 更新Google.Map URL\n
-+ 改變Google.Map的最大縮放級別從18到20\n
-\n
-v.0.6.0\n
-+ 搜尋的第一版本. 請測驗並回饋.\n
-- 錯誤修復\n
-\n
-v.0.5.5\n
-+ 地圖上的指南針\n
-+ 關於對話方塊\n
-+ 有何更新對話方塊
-
-v.0.5.4
-+ 啟用/禁用自動追蹤模式
-+ 縮放按鈕的頂/底部
-+ 按兩下地圖中心放大
-+ 長按縮放按鈕使用預定義縮放值
-
-v.0.5.3
-+ GPS未準備好時使用網路提供
-+ 在視窗標題列中顯示狀態(測試外觀)
-+ 快\慢更新當前位置
-+ 關閉自動索引(若重啟後仍有問題)
-
-v.0.5.2
-+ 更新Google.Map URL
-+ tar檔案中支援png圖片
-+ 監視 GPS 開啟舊檔/關閉
-+  GPS 關閉
-
-</string>
 
     <string name="about_dialog_whats_new">有何更新</string>
     <string name="about_dialog_close">關閉</string>
