@@ -218,7 +218,7 @@ public class OpenStreetMapRendererInfo {
 					char[] cy = sy.toCharArray();
 					String szoom = Integer.toHexString(zoomLevel);
 
-					String s = "http://i.wp.pl/m/tiles004/" + szoom + "/" + cx[4] + cy[4] + "/" + cx[3]
+					String s = this.BASEURL + szoom + "/" + cx[4] + cy[4] + "/" + cx[3]
 							+ cy[3] + "/" + cx[2] + cy[2] + "/" + cx[1] + cy[1] + "/" + cx[0] + cy[0]
 							+ "/z" + szoom + "x" + sx + "y" + sy + ".png";
 					return s;
