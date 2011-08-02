@@ -132,9 +132,13 @@ public class MyLocationOverlay extends OpenStreetMapViewOverlay {
 			c.save();
 			if (mSpeed == 0) {
 				c.rotate(osmv.getBearing(), screenCoords.x, screenCoords.y);
-				if(getPersonIcon())
-					c.drawBitmap(PERSON_ICON2, screenCoords.x - PERSON_HOTSPOT.x, screenCoords.y - PERSON_HOTSPOT.y,
-							this.mPaint);
+				if(getPersonIcon()){
+					//final Rect r = new Rect(screenCoords.x - PERSON_HOTSPOT.x, screenCoords.y - PERSON_HOTSPOT.y, screenCoords.x - PERSON_HOTSPOT.x + 48, screenCoords.y - PERSON_HOTSPOT.y + 48);
+					//c.drawBitmap(PERSON_ICON2, null, r, this.mPaint);
+					c.drawBitmap(PERSON_ICON2, screenCoords.x - PERSON_HOTSPOT.x * PERSON_ICON2.getDensity() / 160
+							, screenCoords.y - PERSON_HOTSPOT.y * PERSON_ICON2.getDensity() / 160
+							, this.mPaint);
+				};
 //				mStop.setBounds(screenCoords.x - mArrow.getMinimumWidth() / 2, screenCoords.y
 //						- mArrow.getMinimumHeight() / 2 - 3, screenCoords.x + mArrow.getMinimumWidth() / 2, screenCoords.y
 //						+ mArrow.getMinimumHeight() / 2 - 3);
