@@ -8,31 +8,37 @@ import org.andnav.osm.util.GeoPoint;
 import org.andnav.osm.views.OpenStreetMapView;
 import org.andnav.osm.views.OpenStreetMapView.OpenStreetMapViewProjection;
 import org.andnav.osm.views.overlay.OpenStreetMapViewOverlay;
+import org.andnav.osm.views.util.constants.OpenStreetMapViewConstants;
 
+import android.app.Activity;
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.util.DisplayMetrics;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.RelativeLayout.LayoutParams;
+import android.widget.TextView;
 
 import com.robert.maps.R;
 import com.robert.maps.kml.PoiManager;
 import com.robert.maps.kml.PoiPoint;
-import com.robert.maps.utils.NinePatch;
-import com.robert.maps.utils.NinePatchDrawable;
 import com.robert.maps.utils.Ut;
 
 public class PoiOverlay extends OpenStreetMapViewOverlay {
 	private Context mCtx;
 	private PoiManager mPoiManager;
-	private NinePatchDrawable mButton;
 	private int mTapIndex;
 	private GeoPoint mLastMapCenter;
 	private int mLastZoom;
 	private PoiListThread mThread;
+	private RelativeLayout mT;
+	private float mDensity;
 
 	public int getTapIndex() {
 		return mTapIndex;
@@ -56,9 +62,6 @@ public class PoiOverlay extends OpenStreetMapViewOverlay {
 		mCtx = ctx;
 		mPoiManager = poiManager;
 		mCanUpdateList = !hidepoi;
-		Bitmap mBubbleBitmap = BitmapFactory.decodeResource(ctx.getResources(), R.drawable.popup_button);
-		byte[] chunk = {8,8,31,28}; // left,top,right,bottom
-		this.mButton = new NinePatchDrawable(new NinePatch(mBubbleBitmap, chunk, ""));
 		mTapIndex = -1;
 
 		Drawable marker = ctx.getResources().getDrawable(R.drawable.poi);
@@ -67,7 +70,7 @@ public class PoiOverlay extends OpenStreetMapViewOverlay {
 
 		mBtnMap = new HashMap<Integer, Drawable>();
 		mBtnMap.put(new Integer(R.drawable.poi), marker);
-		this.mMarkerHotSpot = new Point(0, 45);
+		this.mMarkerHotSpot = new Point(0, mMarkerHeight);
 
         this.mOnItemTapListener = onItemTapListener;
 
@@ -75,6 +78,12 @@ public class PoiOverlay extends OpenStreetMapViewOverlay {
         mLastZoom = -1;
         mThread = new PoiListThread();
 
+		this.mT = (RelativeLayout) LayoutInflater.from(ctx).inflate(R.layout.poi_descr, null);
+		this.mT.setLayoutParams(new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+
+		DisplayMetrics metrics = new DisplayMetrics();
+		((Activity) ctx).getWindowManager().getDefaultDisplay().getMetrics(metrics);
+		mDensity = metrics.density;
 	}
 
 	public void setGpsStatusGeoPoint(final GeoPoint geopoint, final String title, final String descr) {
@@ -154,25 +163,25 @@ public class PoiOverlay extends OpenStreetMapViewOverlay {
 		final PoiPoint focusedItem = mItemList.get(index);
 
 		if (index == mTapIndex) {
-			int toUp = 8, toRight = 2; // int toUp = 25, toRight = 3;
-			int textToRight = 34, widthRightCut = 2, textPadding = 4, maxButtonWidth = 240;
-			int h0 = 40; // w0 = 40;// исходный размер
+			final ImageView pic = (ImageView) mT.findViewById(R.id.pic);
+			final TextView title = (TextView) mT.findViewById(R.id.poi_title);
+			final TextView descr = (TextView) mT.findViewById(R.id.descr);
+			final TextView coord = (TextView) mT.findViewById(R.id.coord);
+			
+			pic.setImageResource(focusedItem.IconId);
+			title.setText(focusedItem.Title);
+			descr.setText(focusedItem.Descr);
+			coord.setText(Ut.formatGeoPoint(focusedItem.GeoPoint));
 
-			Ut.TextWriter twTitle = new Ut.TextWriter(maxButtonWidth - textToRight, 14, focusedItem.Title);
-			Ut.TextWriter twDescr = new Ut.TextWriter(maxButtonWidth - textToRight, 12, focusedItem.Descr);
-			Ut.TextWriter twCoord = new Ut.TextWriter(maxButtonWidth - textToRight, 8, Ut.formatGeoPoint(focusedItem.GeoPoint));
-
-			final int buttonHegth = 10 + twTitle.getHeight() + twDescr.getHeight() + twCoord.getHeight() + 3*textPadding;
-			final int buttonWidth = Math.max(twCoord.getWidth(), Math.max(twTitle.getWidth(),twDescr.getWidth())) + textToRight + widthRightCut + 2 * textPadding;// конечный размер
-
-			mButton.setBounds(screenCoords.x + toRight, screenCoords.y - h0 - toUp, screenCoords.x + buttonWidth + toRight,
-					screenCoords.y -h0 + buttonHegth - toUp);
-			mButton.draw(c);
-
-			twTitle.Draw(c, screenCoords.x + toRight + textToRight + textPadding, screenCoords.y - h0 - toUp + textPadding - 1);
-			twDescr.Draw(c, screenCoords.x + toRight + textToRight + textPadding, twTitle.getHeight() + screenCoords.y - h0 - toUp + 2*textPadding - 1);
-			twCoord.Draw(c, screenCoords.x + toRight + textToRight + textPadding, twTitle.getHeight() + twDescr.getHeight() + screenCoords.y - h0 - toUp + 3*textPadding - 1);
-		}
+			mT.measure(0, 0);
+			mT.layout(0, 0, mT.getMeasuredWidth(), mT.getMeasuredHeight());
+			
+			c.save();
+			c.translate(screenCoords.x, screenCoords.y - pic.getMeasuredHeight() - pic.getTop());
+			mT.draw(c);
+			c.restore();
+			
+		} else {
 
 		final int left = screenCoords.x - this.mMarkerHotSpot.x;
 		final int right = left + this.mMarkerWidth;
@@ -196,15 +205,20 @@ public class PoiOverlay extends OpenStreetMapViewOverlay {
 
 		marker.draw(c);
 
-
-//		final int pxUp = 2;
-//		final int left2 = screenCoords.x + 5 - pxUp;
-//		final int right2 = left + 38 + pxUp;
-//		final int top2 = screenCoords.y - this.mMarkerHotSpot.y - pxUp;
-//		final int bottom2 = top + 33 + pxUp;
-//		Paint p = new Paint();
-//		c.drawLine(left2, top2, right2, bottom2, p);
-//		c.drawLine(right2, top2, left2, bottom2, p);
+		if(OpenStreetMapViewConstants.DEBUGMODE){
+			final int pxUp = 2;
+			final int left2 = (int)(screenCoords.x + mDensity*(5 - pxUp));
+			final int right2 = (int)(screenCoords.x + mDensity*(38 + pxUp));
+			final int top2 = (int)(screenCoords.y - this.mMarkerHotSpot.y - mDensity*(pxUp));
+			final int bottom2 = (int)(top2 + mDensity*(33 + pxUp));
+			Paint p = new Paint();
+			c.drawLine(left2, top2, right2, bottom2, p);
+			c.drawLine(right2, top2, left2, bottom2, p);
+			
+			c.drawLine(screenCoords.x - 5, screenCoords.y - 5, screenCoords.x + 5, screenCoords.y + 5, p);
+			c.drawLine(screenCoords.x - 5, screenCoords.y + 5, screenCoords.x + 5, screenCoords.y - 5, p);
+			}
+		}
 	}
 
 	public PoiPoint getPoiPoint(final int index){
@@ -218,15 +232,16 @@ public class PoiOverlay extends OpenStreetMapViewOverlay {
 			final Rect curMarkerBounds = new Rect();
 			final Point mCurScreenCoords = new Point();
 
+			 
 			for(int i = 0; i < this.mItemList.size(); i++){
 				final PoiPoint mItem = this.mItemList.get(i);
 				pj.toPixels(mItem.GeoPoint, mapView.getBearing(), mCurScreenCoords);
 
 				final int pxUp = 2;
-				final int left = mCurScreenCoords.x + 5 - pxUp;
-				final int right = left + 36 + pxUp;
-				final int top = mCurScreenCoords.y - this.mMarkerHotSpot.y - pxUp;
-				final int bottom = top + 33 + pxUp;
+				final int left = (int)(mCurScreenCoords.x + mDensity*(5 - pxUp));
+				final int right = (int)(mCurScreenCoords.x + mDensity*(38 + pxUp));
+				final int top = (int)(mCurScreenCoords.y - this.mMarkerHotSpot.y - mDensity*(pxUp));
+				final int bottom = (int)(top + mDensity*(33 + pxUp));
 
 				curMarkerBounds.set(left, top, right, bottom);
 				if(curMarkerBounds.contains(eventX, eventY))
