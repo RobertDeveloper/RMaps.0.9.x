@@ -84,6 +84,10 @@ All rights reserved\n
 Как сделать офф-лайн карту и прочее можно почитать здесь http://robertdeveloper.blogspot.com/\n
 </string>
     <string name="whats_new_dialog_text">
+v.0.8.8\n
++ Обновлены URL карт\n
+- Поправлен интерфейс для экранов с высоким разрешением\n
+\n
 v.0.8.7.3\n
 - Bug fix\n
 \n
