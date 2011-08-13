@@ -2,4 +2,5 @@
 <resources>
 <color name="track">#A565FE</color>
 <color name="currenttrack">#A565FE</color>
+<color name="poi_descr_text">#000000</color>
 </resources>

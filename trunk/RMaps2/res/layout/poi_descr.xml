@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical" android:layout_width="wrap_content"
+	android:layout_height="wrap_content">
+	<LinearLayout android:orientation="vertical"
+		android:layout_height="wrap_content" android:layout_width="wrap_content"
+		android:id="@+id/linearLayout1" android:layout_alignParentTop="true"
+		android:layout_alignParentLeft="true" android:background="@drawable/popup_button"
+		android:paddingLeft="40dp" android:layout_marginLeft="1dp"
+		android:layout_marginTop="1dp">
+		<TextView android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:id="@+id/poi_title"
+			android:textStyle="bold" android:textColor="@color/poi_descr_text" android:maxWidth="185dp" android:text="POI" android:maxLines="1" android:textSize="14dp"></TextView>
+		<TextView android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:id="@+id/descr"
+			android:textColor="@color/poi_descr_text" android:maxWidth="185dp" android:text="Descr" android:textSize="12dp"></TextView>
+		<TextView android:textAppearance="?android:attr/textAppearanceSmall"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:id="@+id/coord" android:textColor="@color/poi_descr_text" android:maxWidth="185dp" android:text="0, 0" android:textSize="9dp"></TextView>
+	</LinearLayout>
+	<ImageView android:src="@drawable/poi" android:layout_height="wrap_content"
+		android:layout_width="wrap_content" android:layout_alignParentTop="true"
+		android:layout_alignParentLeft="true" android:layout_marginTop="5dp"
+		android:id="@+id/pic"></ImageView>
+
+</RelativeLayout>

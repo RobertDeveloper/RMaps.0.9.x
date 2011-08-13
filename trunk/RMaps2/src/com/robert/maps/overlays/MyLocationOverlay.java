@@ -6,6 +6,7 @@ import org.andnav.osm.util.TypeConverter;
 import org.andnav.osm.views.OpenStreetMapView;
 import org.andnav.osm.views.OpenStreetMapView.OpenStreetMapViewProjection;
 import org.andnav.osm.views.overlay.OpenStreetMapViewOverlay;
+import org.andnav.osm.views.util.constants.OpenStreetMapViewConstants;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -121,6 +122,11 @@ public class MyLocationOverlay extends OpenStreetMapViewOverlay {
 			final OpenStreetMapViewProjection pj = osmv.getProjection();
 			final Point screenCoords = new Point();
 			pj.toPixels(this.mLocation, screenCoords);
+			
+			if(OpenStreetMapViewConstants.DEBUGMODE){
+				mAccuracy = 50;
+				mSpeed = 50;
+			}
 
 			if (mPrefAccuracy != 0
 					&& ((mAccuracy > 0 && mPrefAccuracy == 1) || (mPrefAccuracy > 1 && mAccuracy >= mPrefAccuracy))) {
