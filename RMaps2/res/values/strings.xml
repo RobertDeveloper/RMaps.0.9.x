@@ -101,6 +101,10 @@ How to and FAQ you can find on http://robertdeveloper.blogspot.com/\n
     <string name="whats_new_dialog_text">
 The source site of VFR, IFR High, IFR Low charts is unavailable now. Read here about it. http://blog.runwayfinder.com/\n
 \n
+v.0.8.8\n
++ Update maps URL\n
+- UI improvement for high res screens\n
+\n
 v.0.8.7.3\n
 - Bug fix\n
 \n
