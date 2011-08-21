@@ -6,7 +6,6 @@ import org.andnav.osm.util.TypeConverter;
 import org.andnav.osm.views.OpenStreetMapView;
 import org.andnav.osm.views.OpenStreetMapView.OpenStreetMapViewProjection;
 import org.andnav.osm.views.overlay.OpenStreetMapViewOverlay;
-import org.andnav.osm.views.util.constants.OpenStreetMapViewConstants;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -15,6 +14,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Point;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.preference.PreferenceManager;
@@ -122,11 +122,6 @@ public class MyLocationOverlay extends OpenStreetMapViewOverlay {
 			final OpenStreetMapViewProjection pj = osmv.getProjection();
 			final Point screenCoords = new Point();
 			pj.toPixels(this.mLocation, screenCoords);
-			
-			if(OpenStreetMapViewConstants.DEBUGMODE){
-				mAccuracy = 50;
-				mSpeed = 50;
-			}
 
 			if (mPrefAccuracy != 0
 					&& ((mAccuracy > 0 && mPrefAccuracy == 1) || (mPrefAccuracy > 1 && mAccuracy >= mPrefAccuracy))) {
@@ -139,11 +134,17 @@ public class MyLocationOverlay extends OpenStreetMapViewOverlay {
 			if (mSpeed == 0) {
 				c.rotate(osmv.getBearing(), screenCoords.x, screenCoords.y);
 				if(getPersonIcon()){
+					final Rect r = new Rect(screenCoords.x - (int)(PERSON_ICON2.getWidth()/2)
+							, screenCoords.y - (int)(PERSON_HOTSPOT.y * 48 / PERSON_ICON2.getHeight())
+							, screenCoords.x - (int)(PERSON_ICON2.getWidth()/2) + 48
+							, screenCoords.y - (int)(PERSON_HOTSPOT.y * 48 / PERSON_ICON2.getHeight()) + 48
+							);
+					c.drawBitmap(PERSON_ICON2, null, r, this.mPaint);
 					//final Rect r = new Rect(screenCoords.x - PERSON_HOTSPOT.x, screenCoords.y - PERSON_HOTSPOT.y, screenCoords.x - PERSON_HOTSPOT.x + 48, screenCoords.y - PERSON_HOTSPOT.y + 48);
 					//c.drawBitmap(PERSON_ICON2, null, r, this.mPaint);
-					c.drawBitmap(PERSON_ICON2, screenCoords.x - PERSON_HOTSPOT.x * PERSON_ICON2.getDensity() / 160
-							, screenCoords.y - PERSON_HOTSPOT.y * PERSON_ICON2.getDensity() / 160
-							, this.mPaint);
+//					c.drawBitmap(PERSON_ICON2, screenCoords.x - PERSON_HOTSPOT.x * PERSON_ICON2.getDensity() / 160
+//							, screenCoords.y - PERSON_HOTSPOT.y * PERSON_ICON2.getDensity() / 160
+//							, this.mPaint);
 				};
 //				mStop.setBounds(screenCoords.x - mArrow.getMinimumWidth() / 2, screenCoords.y
 //						- mArrow.getMinimumHeight() / 2 - 3, screenCoords.x + mArrow.getMinimumWidth() / 2, screenCoords.y
