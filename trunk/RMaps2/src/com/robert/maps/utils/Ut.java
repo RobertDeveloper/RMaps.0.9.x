@@ -22,6 +22,14 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 
 public class Ut implements OpenStreetMapConstants, OpenStreetMapViewConstants {
+	
+	public static boolean equalsIgnoreCase(String string, int start, int end, String string2){
+		try {
+			return string.substring(start, end).equalsIgnoreCase(string2);
+		} catch (Exception e) {
+			return false;
+		}
+	}
 
 	public static ProgressDialog ShowWaitDialog(final Context mCtx, final int ResourceId) {
 		final ProgressDialog dialog = new ProgressDialog(mCtx);
