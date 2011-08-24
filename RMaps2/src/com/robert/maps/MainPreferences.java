@@ -155,27 +155,25 @@ public class MainPreferences extends PreferenceActivity implements OnSharedPrefe
 			if(dir.exists())
 				LoadUserMaps(dir);
 		}
-		else if(aKey.substring(0, 9).equalsIgnoreCase("pref_dir_")) {
+		else if(Ut.equalsIgnoreCase(aKey, 0, 9, "pref_dir_")) {
 			findPreference("pref_dir_main").setSummary(aPref.getString("pref_dir_main", "/sdcard/rmaps/"));
 			findPreference("pref_dir_import").setSummary(aPref.getString("pref_dir_import", "/sdcard/rmaps/import/"));
 			findPreference("pref_dir_export").setSummary(aPref.getString("pref_dir_export", "/sdcard/rmaps/export/"));
 		}
-		else if (aKey.length() > 14)
-			if (aKey.substring(0, 14).equalsIgnoreCase(PREF_USERMAPS_)) {
-				if (aKey.endsWith("name") && findPreference(aKey) != null) {
-					findPreference(aKey).setSummary(aPref.getString(aKey, ""));
-					findPreference(aKey.replace("_name", "")).setTitle(aPref.getString(aKey, ""));
-				} else if (aKey.endsWith("enabled") && findPreference(aKey.replace("_enabled", "")) != null) {
-					if (aPref.getBoolean(aKey, false))
-						findPreference(aKey.replace("_enabled", "")).setSummary(
-								"Enabled  " + aPref.getString(aKey.replace("_enabled", "_baseurl"), ""));
-					else
-						findPreference(aKey.replace("_enabled", "")).setSummary(
-								"Disabled  " + aPref.getString(aKey.replace("_enabled", "_baseurl"), ""));
-				} else if (aKey.endsWith("projection") && findPreference(aKey) != null) {
-					ListPreference pref = (ListPreference) findPreference(aKey);
-					findPreference(aKey).setSummary(pref.getEntry());
-				}
+		else if (Ut.equalsIgnoreCase(aKey, 0, 14, PREF_USERMAPS_))
+			if (aKey.endsWith("name") && findPreference(aKey) != null) {
+				findPreference(aKey).setSummary(aPref.getString(aKey, ""));
+				findPreference(aKey.replace("_name", "")).setTitle(aPref.getString(aKey, ""));
+			} else if (aKey.endsWith("enabled") && findPreference(aKey.replace("_enabled", "")) != null) {
+				if (aPref.getBoolean(aKey, false))
+					findPreference(aKey.replace("_enabled", "")).setSummary(
+							"Enabled  " + aPref.getString(aKey.replace("_enabled", "_baseurl"), ""));
+				else
+					findPreference(aKey.replace("_enabled", "")).setSummary(
+							"Disabled  " + aPref.getString(aKey.replace("_enabled", "_baseurl"), ""));
+			} else if (aKey.endsWith("projection") && findPreference(aKey) != null) {
+				ListPreference pref = (ListPreference) findPreference(aKey);
+				findPreference(aKey).setSummary(pref.getEntry());
 			}
 		onContentChanged();
 	}

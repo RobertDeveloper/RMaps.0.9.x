@@ -123,6 +123,7 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 	private float mLastSpeed, mLastBearing;
 	private PoiManager mPoiManager;
 	private String ACTION_SHOW_POINTS = "com.robert.maps.action.SHOW_POINTS";
+	private int mMarkerIndex;
 
 	private final SensorEventListener mListener = new SensorEventListener() {
 		private int iOrientation = -1;
@@ -428,7 +429,6 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
-		int markerIndex = mPoiOverlay.getMarkerAtPoint(mOsmv.mTouchDownX, mOsmv.mTouchDownY, mOsmv);
 		switch(item.getItemId()){
 		case R.id.menu_addpoi:
 			GeoPoint point = this.mOsmv.getTouchDownPoint();
@@ -436,21 +436,21 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 					.putExtra("lat", point.getLatitude()).putExtra("lon", point.getLongitude()).putExtra("title", "POI"));
 			break;
 		case R.id.menu_editpoi:
-			startActivity((new Intent(this, PoiActivity.class)).putExtra("pointid", mPoiOverlay.getPoiPoint(markerIndex).getId()));
+			startActivity((new Intent(this, PoiActivity.class)).putExtra("pointid", mPoiOverlay.getPoiPoint(mMarkerIndex).getId()));
 			mOsmv.invalidate();
 			break;
 		case R.id.menu_deletepoi:
-			mPoiManager.deletePoi(mPoiOverlay.getPoiPoint(markerIndex).getId());
+			mPoiManager.deletePoi(mPoiOverlay.getPoiPoint(mMarkerIndex).getId());
 			mOsmv.invalidate();
 			break;
 		case R.id.menu_hide:
-			final PoiPoint poi = mPoiOverlay.getPoiPoint(markerIndex);
+			final PoiPoint poi = mPoiOverlay.getPoiPoint(mMarkerIndex);
 			poi.Hidden = true;
 			mPoiManager.updatePoi(poi);
 			mOsmv.invalidate();
 			break;
 		case R.id.menu_toradar:
-			final PoiPoint poi1 = mPoiOverlay.getPoiPoint(markerIndex);
+			final PoiPoint poi1 = mPoiOverlay.getPoiPoint(mMarkerIndex);
 			try {
 					Intent i = new Intent("com.google.android.radar.SHOW_RADAR");
 					i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
@@ -470,8 +470,8 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
 		if(mOsmv.canCreateContextMenu()){
-			int markerIndex = mPoiOverlay.getMarkerAtPoint(mOsmv.mTouchDownX, mOsmv.mTouchDownY, mOsmv);
-			if(markerIndex >= 0){
+			mMarkerIndex = mPoiOverlay.getMarkerAtPoint(mOsmv.mTouchDownX, mOsmv.mTouchDownY, mOsmv);
+			if(mMarkerIndex >= 0){
 				menu.add(0, R.id.menu_editpoi, 0, getText(R.string.menu_edit));
 				menu.add(0, R.id.menu_hide, 0, getText(R.string.menu_hide));
 				menu.add(0, R.id.menu_deletepoi, 0, getText(R.string.menu_delete));

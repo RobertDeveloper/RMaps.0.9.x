@@ -57,7 +57,7 @@
 <activity android:name=".kml.TrackActivity"></activity>
 </application>
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
-    <uses-sdk android:minSdkVersion="3" android:maxSdkVersion="3"/>
+    <uses-sdk android:minSdkVersion="3"/>
 	<supports-screens android:smallScreens="true"
                   android:normalScreens="true"
                   android:largeScreens="true"

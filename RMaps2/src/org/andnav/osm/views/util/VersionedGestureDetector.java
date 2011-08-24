@@ -64,22 +64,28 @@ public abstract class VersionedGestureDetector {
                break;
     		case MotionEvent.ACTION_POINTER_DOWN:
     		case MotionEvent.ACTION_POINTER_2_DOWN:
-             	mListener.onDown2(ev, ev.getX(ev.findPointerIndex(0)), ev.getY(ev.findPointerIndex(0)), ev.getX(ev.findPointerIndex(1)), ev.getY(ev.findPointerIndex(1)));
+             	try {
+					mListener.onDown2(ev, ev.getX(ev.findPointerIndex(0)), ev.getY(ev.findPointerIndex(0)), ev.getX(ev.findPointerIndex(1)), ev.getY(ev.findPointerIndex(1)));
+				} catch (Exception e) {
+				}
     			break;
     		case MotionEvent.ACTION_POINTER_UP:
     		case MotionEvent.ACTION_POINTER_2_UP:
     			mListener.onUp2(ev);
                 break;
             case MotionEvent.ACTION_MOVE:
-            	if(ev.getPointerCount()>1){
-            		final int index0 = ev.findPointerIndex(0);
-            		final int index1 = ev.findPointerIndex(1);
-            		if(index0 == -1 || index1 == -1)
-            			mListener.onMove(ev, 1, ev.getX(), ev.getY(), 0, 0);
-            		else
-            			mListener.onMove(ev, 2, ev.getX(ev.findPointerIndex(0)), ev.getY(ev.findPointerIndex(0)), ev.getX(ev.findPointerIndex(1)), ev.getY(ev.findPointerIndex(1)));
-            	} else
-            		mListener.onMove(ev, 1, ev.getX(), ev.getY(), 0, 0);
+            	try {
+					if(ev.getPointerCount()>1){
+						final int index0 = ev.findPointerIndex(0);
+						final int index1 = ev.findPointerIndex(1);
+						if(index0 == -1 || index1 == -1)
+							mListener.onMove(ev, 1, ev.getX(), ev.getY(), 0, 0);
+						else
+							mListener.onMove(ev, 2, ev.getX(ev.findPointerIndex(0)), ev.getY(ev.findPointerIndex(0)), ev.getX(ev.findPointerIndex(1)), ev.getY(ev.findPointerIndex(1)));
+					} else
+						mListener.onMove(ev, 1, ev.getX(), ev.getY(), 0, 0);
+				} catch (Exception e) {
+				}
                 break;
             }
 
