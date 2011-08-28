@@ -8,11 +8,11 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.AdapterView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -76,7 +76,12 @@ public class PoiListActivity extends ListActivity {
 
 		switch(item.getItemId()){
 		case R.id.menu_addpoi:
-			startActivity((new Intent(this, PoiActivity.class)));
+			final Intent PoiIntent = new Intent(this, PoiActivity.class); 
+	        Bundle extras = getIntent().getExtras();
+	        if(extras != null){
+	        	PoiIntent.putExtra("lat", extras.getDouble("lat")).putExtra("lon", extras.getDouble("lon")).putExtra("title", extras.getString("title"));
+	        }
+			startActivity(PoiIntent);
 			return true;
 		case R.id.menu_categorylist:
 			startActivity((new Intent(this, PoiCategoryListActivity.class)));

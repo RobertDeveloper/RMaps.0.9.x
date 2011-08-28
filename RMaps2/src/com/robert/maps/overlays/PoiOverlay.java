@@ -39,6 +39,7 @@ public class PoiOverlay extends OpenStreetMapViewOverlay {
 	private PoiListThread mThread;
 	private RelativeLayout mT;
 	private float mDensity;
+	private boolean mNeedUpdateList = false;
 
 	public int getTapIndex() {
 		return mTapIndex;
@@ -46,6 +47,10 @@ public class PoiOverlay extends OpenStreetMapViewOverlay {
 
 	public void setTapIndex(int mTapIndex) {
 		this.mTapIndex = mTapIndex;
+	}
+	
+	public void UpdateList() {
+		mNeedUpdateList = true;
 	}
 
 	protected OnItemTapListener<PoiPoint> mOnItemTapListener;
@@ -114,9 +119,10 @@ public class PoiOverlay extends OpenStreetMapViewOverlay {
 			else if(0.7 * deltaX < Math.abs(center.getLongitude() - mLastMapCenter.getLongitude()) || 0.7 * deltaY < Math.abs(center.getLatitude() - mLastMapCenter.getLatitude()))
 				looseCenter = true;
 
-			if(looseCenter){
+			if(looseCenter || mNeedUpdateList){
 				mLastMapCenter = center;
 				mLastZoom = mapView.getZoomLevel();
+				mNeedUpdateList = false;
 
 				mThread.setParams(1.5*deltaX, 1.5*deltaY);
 				mThread.run();

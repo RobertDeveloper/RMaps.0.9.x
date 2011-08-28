@@ -432,21 +432,23 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 		switch(item.getItemId()){
 		case R.id.menu_addpoi:
 			GeoPoint point = this.mOsmv.getTouchDownPoint();
-			startActivity((new Intent(this, PoiActivity.class))
-					.putExtra("lat", point.getLatitude()).putExtra("lon", point.getLongitude()).putExtra("title", "POI"));
+			startActivityForResult((new Intent(this, PoiActivity.class))
+					.putExtra("lat", point.getLatitude()).putExtra("lon", point.getLongitude()).putExtra("title", "POI"), R.id.menu_addpoi);
 			break;
 		case R.id.menu_editpoi:
-			startActivity((new Intent(this, PoiActivity.class)).putExtra("pointid", mPoiOverlay.getPoiPoint(mMarkerIndex).getId()));
+			startActivityForResult((new Intent(this, PoiActivity.class)).putExtra("pointid", mPoiOverlay.getPoiPoint(mMarkerIndex).getId()), R.id.menu_editpoi);
 			mOsmv.invalidate();
 			break;
 		case R.id.menu_deletepoi:
 			mPoiManager.deletePoi(mPoiOverlay.getPoiPoint(mMarkerIndex).getId());
+			mPoiOverlay.UpdateList();
 			mOsmv.invalidate();
 			break;
 		case R.id.menu_hide:
 			final PoiPoint poi = mPoiOverlay.getPoiPoint(mMarkerIndex);
 			poi.Hidden = true;
 			mPoiManager.updatePoi(poi);
+			mPoiOverlay.UpdateList();
 			mOsmv.invalidate();
 			break;
 		case R.id.menu_toradar:
@@ -515,7 +517,8 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 			}
 			return true;
 		case (R.id.poilist):
-			startActivityForResult(new Intent(this, PoiListActivity.class), R.id.poilist);
+			final GeoPoint point = mOsmv.getMapCenter();
+			startActivityForResult((new Intent(this, PoiListActivity.class)).putExtra("lat", point.getLatitude()).putExtra("lon", point.getLongitude()).putExtra("title", "POI"), R.id.poilist);
 			return true;
 		case (R.id.tracks):
 			startActivityForResult(new Intent(this, TrackListActivity.class), R.id.tracks);
@@ -919,13 +922,22 @@ public class MainMapActivity extends OpenStreetMapActivity implements OpenStreet
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		switch(requestCode){
+		case R.id.menu_addpoi:
+		case R.id.menu_editpoi:
+			mPoiOverlay.UpdateList();
+			mOsmv.invalidate();
+			break;
 		case R.id.poilist:
 			if(resultCode == RESULT_OK){
 				PoiPoint point = mPoiManager.getPoiPoint(data.getIntExtra("pointid", PoiPoint.EMPTY_ID()));
 				if(point != null){
 					setAutoFollow(false);
+					mPoiOverlay.UpdateList();
 					mOsmv.setMapCenter(point.GeoPoint);
 				}
+			} else {
+				mPoiOverlay.UpdateList();
+				mOsmv.invalidate();
 			}
 			break;
 		case R.id.tracks:

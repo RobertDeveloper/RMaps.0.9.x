@@ -84,6 +84,10 @@ All rights reserved\n
 Как сделать офф-лайн карту и прочее можно почитать здесь http://robertdeveloper.blogspot.com/\n
 </string>
     <string name="whats_new_dialog_text">
+v.0.8.9\n
++ Перекрестие в центре карты\n
++ Добавлена карта maps.refuges.info\n
+\n
 v.0.8.8\n
 + Обновлены URL карт\n
 - Поправлен интерфейс для экранов с высоким разрешением\n
@@ -273,4 +277,6 @@ v.0.5.2\n
 	<string name="pref_dir_import">Папка импортируемых файлов</string>
 	<string name="pref_dir_export">Папка экспортируемых файлов</string>
 	<string name="pref_dir_summary">Папки где RMaps сохраняет свои файлы</string>
+	<string name="pref_crosshair">Перекрестие в центре</string>
+	<string name="pref_crosshair_summary">Показать перекрестие в центре карты</string>
 </resources>
