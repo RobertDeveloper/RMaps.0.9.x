@@ -47,8 +47,10 @@ public class SQLiteMapDatabase {
 		if(mDatabase != null){
 			Ut.dd("Update min max");
 			this.mDatabase.execSQL("DROP TABLE IF EXISTS info");
-			this.mDatabase.execSQL("CREATE TABLE IF NOT EXISTS info AS SELECT MIN(z) AS minzoom, MAX(z) AS maxzoom FROM tiles");
-		};
+			this.mDatabase.execSQL("CREATE TABLE info As SELECT 0 As minzoom, 0 As maxzoom;");
+			this.mDatabase.execSQL("UPDATE info SET minzoom = (SELECT DISTINCT z FROM tiles ORDER BY z ASC LIMIT 1);");
+			this.mDatabase.execSQL("UPDATE info SET maxzoom = (SELECT DISTINCT z FROM tiles ORDER BY z DESC LIMIT 1);");
+		}
 	}
 
 	public /*synchronized*/ void putTile(final int aX, final int aY, final int aZ, final byte[] aData) {
