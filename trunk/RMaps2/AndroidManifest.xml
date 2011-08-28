@@ -2,7 +2,7 @@
 <manifest android:sharedUserId="@string/app_user_id"
     android:sharedUserLabel="@string/app_user_label"
     package="com.robert.maps" xmlns:android="http://schemas.android.com/apk/res/android" android:installLocation="auto"
-    android:versionName="0.8.8.1" android:versionCode="99">
+    android:versionName="0.8.9" android:versionCode="100">
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <uses-permission android:name="android.permission.INTERNET"/>
@@ -61,5 +61,5 @@
 	<supports-screens android:smallScreens="true"
                   android:normalScreens="true"
                   android:largeScreens="true"
-                  android:anyDensity="true" />
+                  android:anyDensity="true" android:resizeable="true"/>
 </manifest>

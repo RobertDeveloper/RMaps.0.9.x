@@ -6,6 +6,7 @@ import org.andnav.osm.util.TypeConverter;
 import org.andnav.osm.views.OpenStreetMapView;
 import org.andnav.osm.views.OpenStreetMapView.OpenStreetMapViewProjection;
 import org.andnav.osm.views.overlay.OpenStreetMapViewOverlay;
+import org.andnav.osm.views.util.constants.OpenStreetMapViewConstants;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -38,7 +39,7 @@ public class MyLocationOverlay extends OpenStreetMapViewOverlay {
 	protected final Paint mPaint = new Paint();
 
 	protected Bitmap PERSON_ICON2 = null;
-	private Drawable mArrow;
+	private Drawable mArrow = null;
 	//private Drawable mStop;
 	/** Coordinates the feet of the person are located. */
 	protected final android.graphics.Point PERSON_HOTSPOT = new android.graphics.Point(24,39);
@@ -52,15 +53,16 @@ public class MyLocationOverlay extends OpenStreetMapViewOverlay {
 	private int METER_IN_PIXEL = 156412;
 	private Paint mPaintAccurasyFill;
 	private Paint mPaintAccurasyBorder;
+	private boolean mNeedCrosshair;
+	private final Paint mPaintCross = new Paint();
+	private final static int mCrossSize = 7;
 
 	// ===========================================================
 	// Constructors
 	// ===========================================================
 
 	public MyLocationOverlay(final Context ctx){
-		mCtx = ctx;
-		this.mArrow = ctx.getResources().getDrawable(R.drawable.arrow);
-		//this.mStop = ctx.getResources().getDrawable(R.drawable.arrow_stop);
+		mCtx = ctx.getApplicationContext();
 
 		mPaintAccurasyFill = new Paint();
 		mPaintAccurasyFill.setAntiAlias(true);
@@ -72,8 +74,11 @@ public class MyLocationOverlay extends OpenStreetMapViewOverlay {
 		mPaintAccurasyBorder.setStyle(Paint.Style.STROKE);
 		mPaintAccurasyBorder.setColor(0xFF90B8D8);
 
+		mPaintCross.setAntiAlias(true);
+
 		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(ctx);
 		mPrefAccuracy = Integer.parseInt(pref.getString("pref_accuracy", "1").replace("\"", ""));
+		mNeedCrosshair = pref.getBoolean("pref_crosshair", true);
 	}
 
 	// ===========================================================
@@ -91,6 +96,19 @@ public class MyLocationOverlay extends OpenStreetMapViewOverlay {
 			}
 
 		return PERSON_ICON2 == null ? false : true;
+	}
+
+	private boolean getArrowIcon(){
+		if(mArrow == null)
+			try {
+				this.mArrow = mCtx.getResources().getDrawable(R.drawable.arrow);
+			} catch (Exception e) {
+				mArrow = null;
+			} catch (OutOfMemoryError e) {
+				mArrow = null;
+			}
+
+		return mArrow == null ? false : true;
 	}
 
 	public void setLocation(final Location loc){
@@ -122,6 +140,11 @@ public class MyLocationOverlay extends OpenStreetMapViewOverlay {
 			final OpenStreetMapViewProjection pj = osmv.getProjection();
 			final Point screenCoords = new Point();
 			pj.toPixels(this.mLocation, screenCoords);
+			
+			if(OpenStreetMapViewConstants.DEBUGMODE){
+//				mSpeed = 10;
+				mAccuracy = 50;
+			}
 
 			if (mPrefAccuracy != 0
 					&& ((mAccuracy > 0 && mPrefAccuracy == 1) || (mPrefAccuracy > 1 && mAccuracy >= mPrefAccuracy))) {
@@ -135,9 +158,9 @@ public class MyLocationOverlay extends OpenStreetMapViewOverlay {
 				c.rotate(osmv.getBearing(), screenCoords.x, screenCoords.y);
 				if(getPersonIcon()){
 					final Rect r = new Rect(screenCoords.x - (int)(PERSON_ICON2.getWidth()/2)
-							, screenCoords.y - (int)(PERSON_HOTSPOT.y * 48 / PERSON_ICON2.getHeight())
-							, screenCoords.x - (int)(PERSON_ICON2.getWidth()/2) + 48
-							, screenCoords.y - (int)(PERSON_HOTSPOT.y * 48 / PERSON_ICON2.getHeight()) + 48
+							, screenCoords.y - (int)(PERSON_HOTSPOT.y * PERSON_ICON2.getHeight() / 48)
+							, screenCoords.x - (int)(PERSON_ICON2.getWidth()/2) + PERSON_ICON2.getWidth()
+							, screenCoords.y - (int)(PERSON_HOTSPOT.y * PERSON_ICON2.getHeight() / 48) + PERSON_ICON2.getHeight()
 							);
 					c.drawBitmap(PERSON_ICON2, null, r, this.mPaint);
 					//final Rect r = new Rect(screenCoords.x - PERSON_HOTSPOT.x, screenCoords.y - PERSON_HOTSPOT.y, screenCoords.x - PERSON_HOTSPOT.x + 48, screenCoords.y - PERSON_HOTSPOT.y + 48);
@@ -151,16 +174,25 @@ public class MyLocationOverlay extends OpenStreetMapViewOverlay {
 //						+ mArrow.getMinimumHeight() / 2 - 3);
 //				mStop.draw(c);
 			} else {
-				c.rotate(mBearing, screenCoords.x, screenCoords.y);
-				mArrow.setBounds(screenCoords.x - mArrow.getMinimumWidth() / 2, screenCoords.y
-						- mArrow.getMinimumHeight() / 2, screenCoords.x + mArrow.getMinimumWidth() / 2, screenCoords.y
-						+ mArrow.getMinimumHeight() / 2);
-				mArrow.draw(c);
+				if(getArrowIcon()){
+					c.rotate(mBearing, screenCoords.x, screenCoords.y);
+					mArrow.setBounds(screenCoords.x - mArrow.getMinimumWidth() / 2, screenCoords.y
+							- mArrow.getMinimumHeight() / 2, screenCoords.x + mArrow.getMinimumWidth() / 2, screenCoords.y
+							+ mArrow.getMinimumHeight() / 2);
+					mArrow.draw(c);
+				}
 			}
 			c.restore();
 
 //			c.drawText("Speed=" + mSpeed, ((float) screenCoords.x + 30), ((float) screenCoords.y + 30), paint);
 //			c.drawText("Accuracy=" + mAccuracy, ((float) screenCoords.x + 30), ((float) screenCoords.y + 45), paint);
+		}
+		
+		if(mNeedCrosshair){
+			final int x = osmv.getWidth() / 2;
+			final int y = osmv.getHeight() / 2;
+			c.drawLine(x - mCrossSize, y, x + mCrossSize, y, this.mPaintCross);
+			c.drawLine(x, y - mCrossSize, x, y + mCrossSize, this.mPaintCross);
 		}
 	}
 

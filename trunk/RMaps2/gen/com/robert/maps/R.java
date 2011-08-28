@@ -235,8 +235,10 @@ public final class R {
         public static final int no_traffic=0x7f08004e;
         public static final int pref_accuracy=0x7f080015;
         public static final int pref_accuracy_summary=0x7f080014;
-        public static final int pref_bottomzoomcontrol=0x7f08009a;
-        public static final int pref_bottomzoomcontrol_summary=0x7f080099;
+        public static final int pref_bottomzoomcontrol=0x7f08009c;
+        public static final int pref_bottomzoomcontrol_summary=0x7f08009b;
+        public static final int pref_crosshair=0x7f080099;
+        public static final int pref_crosshair_summary=0x7f08009a;
         public static final int pref_dir=0x7f080093;
         public static final int pref_dir_export=0x7f080097;
         public static final int pref_dir_import=0x7f080096;
