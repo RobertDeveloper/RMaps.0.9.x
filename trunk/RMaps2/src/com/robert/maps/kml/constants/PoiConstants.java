@@ -64,7 +64,7 @@ public interface PoiConstants {
 	public static final String SQL_CREATE_points = "CREATE TABLE 'points' (pointid INTEGER NOT NULL PRIMARY KEY UNIQUE,name VARCHAR,descr VARCHAR,lat FLOAT DEFAULT '0',lon FLOAT DEFAULT '0',alt FLOAT DEFAULT '0',hidden INTEGER DEFAULT '0',categoryid INTEGER,pointsourceid INTEGER,iconid INTEGER DEFAULT NULL);";
 	public static final String SQL_CREATE_category = "CREATE TABLE 'category' (categoryid INTEGER NOT NULL PRIMARY KEY UNIQUE, name VARCHAR, hidden INTEGER DEFAULT '0', iconid INTEGER DEFAULT NULL, minzoom INTEGER DEFAULT '14');";
 	public static final String SQL_CREATE_pointsource = "CREATE TABLE IF NOT EXISTS 'pointsource' (pointsourceid INTEGER NOT NULL PRIMARY KEY UNIQUE, name VARCHAR);";
-	public static final String SQL_CREATE_tracks = "CREATE TABLE IF NOT EXISTS 'tracks' (trackid INTEGER NOT NULL PRIMARY KEY UNIQUE, name VARCHAR, descr VARCHAR, date DATETIME, show INTEGER);";
+	public static final String SQL_CREATE_tracks = "CREATE TABLE IF NOT EXISTS 'tracks' (trackid INTEGER NOT NULL PRIMARY KEY UNIQUE, name VARCHAR, descr VARCHAR, date DATETIME, show INTEGER, cnt INTEGER, duration INTEGER, distance INTEGER, categoryid INTEGER, activity INTEGER);";
 	public static final String SQL_CREATE_trackpoints = "CREATE TABLE IF NOT EXISTS 'trackpoints' (trackid INTEGER NOT NULL, id INTEGER NOT NULL PRIMARY KEY UNIQUE, lat FLOAT, lon FLOAT, alt FLOAT, speed FLOAT, date DATETIME);";
 
 	public static final String SQL_ADD_category = "INSERT INTO 'category' (categoryid, name, hidden, iconid) VALUES (0, 'My POI', 0, "
@@ -88,4 +88,10 @@ public interface PoiConstants {
 	public static final String SQL_UPDATE_2_9 = "DROP TABLE 'category';";
 	public static final String SQL_UPDATE_2_11 = "INSERT INTO 'category' (categoryid, name, hidden, iconid) SELECT categoryid, name, hidden, iconid FROM 'category_46134313';";
 	public static final String SQL_UPDATE_2_12 = "DROP TABLE 'category_46134313';";
+
+	public static final String SQL_UPDATE_6_1 = "DROP TABLE IF EXISTS 'tracks_46134313'; ";
+	public static final String SQL_UPDATE_6_2 = "CREATE TABLE 'tracks_46134313' AS SELECT * FROM 'tracks'; ";
+	public static final String SQL_UPDATE_6_3 = "DROP TABLE IF EXISTS 'tracks'; ";
+	public static final String SQL_UPDATE_6_4 = "INSERT INTO 'tracks' (trackid, name, descr, date, show) SELECT trackid, name, descr, date, show FROM 'tracks_46134313';";
+	public static final String SQL_UPDATE_6_5 = "DROP TABLE 'tracks_46134313';";
 }

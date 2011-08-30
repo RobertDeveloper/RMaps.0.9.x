@@ -22,19 +22,18 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Paint.Style;
 import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.Rect;
-import android.graphics.Paint.Style;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.GestureDetector;
+import android.view.GestureDetector.OnDoubleTapListener;
+import android.view.GestureDetector.OnGestureListener;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.GestureDetector.OnDoubleTapListener;
-import android.view.GestureDetector.OnGestureListener;
 
 import com.robert.maps.R;
 import com.robert.maps.kml.Track.TrackPoint;
@@ -533,21 +532,18 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 
 	@Override
 	public void onDraw(final Canvas c) {
-		final long startMs = System.currentTimeMillis();
-
 		/*
 		 * Do some calculations and drag attributes to local variables to save
 		 * some performance.
 		 */
+		
 		final int zoomLevel = this.mZoomLevel;
-		final int viewWidth = this.getWidth();
-		final int viewHeight = this.getHeight();
 		final int tileSizePxNotScale = this.mRendererInfo.getTileSizePx(this.mZoomLevel);
 		final int tileSizePx = (int)(tileSizePxNotScale*mTouchScale);
 
 		c.save();
 		final float aRotateToAngle = 360 - mBearing;
-		c.rotate(aRotateToAngle, viewWidth/2, viewHeight/2);
+		c.rotate(aRotateToAngle, this.getWidth()/2, this.getHeight()/2);
 
 		c.drawRGB(255, 255, 255);
 
@@ -581,11 +577,11 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 		final int additionalTilesNeededToLeftOfCenter = iDelta + (int) Math
 				.ceil((float) centerMapTileScreenLeftNotScale / tileSizePxNotScale); // i.e.
 		final int additionalTilesNeededToRightOfCenter = iDelta + (int) Math
-				.ceil((float) (viewWidth - centerMapTileScreenRightNotScale) / tileSizePxNotScale);
+				.ceil((float) (this.getWidth() - centerMapTileScreenRightNotScale) / tileSizePxNotScale);
 		final int additionalTilesNeededToTopOfCenter = iDelta + (int) Math
 				.ceil((float) centerMapTileScreenTopNotScale / tileSizePxNotScale); // i.e.
 		final int additionalTilesNeededToBottomOfCenter = iDelta + (int) Math
-				.ceil((float) (viewHeight - centerMapTileScreenBottomNotScale) / tileSizePxNotScale);
+				.ceil((float) (this.getHeight() - centerMapTileScreenBottomNotScale) / tileSizePxNotScale);
 
 		final int mapTileUpperBound = mRendererInfo.getTileUpperBound(zoomLevel);
 		final int[] mapTileCoords = new int[] { centerMapTileCoords[MAPTILE_LATITUDE_INDEX],
@@ -641,7 +637,7 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 
 		this.mPaint.setStyle(Style.STROKE);
 		if (this.mMaxiMap != null) // If this is a MiniMap
-			c.drawRect(0, 0, viewWidth - 1, viewHeight - 1, this.mPaint);
+			c.drawRect(0, 0, this.getWidth() - 1, this.getHeight() - 1, this.mPaint);
 
 		c.restore();
 
@@ -651,9 +647,6 @@ public class OpenStreetMapView extends View implements OpenStreetMapConstants,
 //		c.drawLine(viewWidth/2-100, viewHeight/2-100, viewWidth/2+100, viewHeight/2+100, this.mPaint);
 //		c.drawLine(viewWidth/2+100, viewHeight/2-100, viewWidth/2-100, viewHeight/2+100, this.mPaint);
 
-		final long endMs = System.currentTimeMillis();
-		if (DEBUGMODE)
-			Log.i(DEBUGTAG, "Rendering overall: " + (endMs - startMs) + "ms");
 	}
 
 	// ===========================================================

@@ -1,0 +1,36 @@
+<LinearLayout android:id="@+id/LinearLayout01"
+	android:layout_width="fill_parent" android:layout_height="fill_parent"
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="horizontal">
+
+	<LinearLayout android:id="@+id/LinearLayout02"
+		android:layout_width="0dip" android:layout_weight="1"
+		android:layout_height="wrap_content" android:orientation="vertical">
+
+		<TextView android:id="@android:id/text1"
+			android:layout_width="fill_parent" android:layout_height="wrap_content"
+			android:layout_marginLeft="6dip" android:layout_marginTop="6dip"
+			android:textAppearance="?android:attr/textAppearanceLarge"
+			android:text="@string/btn_start" />
+
+		<TextView android:id="@android:id/text2"
+			android:layout_width="fill_parent" android:layout_height="wrap_content"
+			android:layout_marginLeft="6dip" android:layout_below="@android:id/text1"
+			android:layout_alignLeft="@android:id/text1" android:textAppearance="?android:attr/textAppearanceSmall"
+			android:text="@string/btn_stop" />
+		<LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:id="@+id/linearLayout1">
+			<TextView android:id="@+id/TextView11" android:layout_marginTop="6dip" android:layout_marginLeft="6dip" android:layout_height="wrap_content" android:layout_width="0dip" android:layout_weight="1" android:textAppearance="?android:attr/textAppearanceSmall" android:text="POINTS CNT"></TextView>
+			<TextView android:id="@+id/TextView12" android:layout_marginTop="6dip" android:layout_marginLeft="6dip" android:layout_height="wrap_content" android:layout_width="0dip" android:layout_weight="1" android:textAppearance="?android:attr/textAppearanceSmall" android:text="DISTANCE"></TextView>
+			<TextView android:id="@+id/TextView13" android:layout_marginTop="6dip" android:layout_marginLeft="6dip" android:layout_height="wrap_content" android:layout_width="0dip" android:layout_weight="1" android:textAppearance="?android:attr/textAppearanceSmall" android:text="DURATION"></TextView>
+		</LinearLayout>
+		<LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:id="@+id/linearLayout1">
+			<TextView android:id="@+id/TextView21" android:layout_marginTop="6dip" android:layout_marginLeft="6dip" android:layout_height="wrap_content" android:layout_width="0dip" android:layout_weight="1" android:textAppearance="?android:attr/textAppearanceLarge" android:text="1234"></TextView>
+			<TextView android:id="@+id/TextView22" android:layout_marginTop="6dip" android:layout_marginLeft="6dip" android:layout_height="wrap_content" android:layout_width="0dip" android:layout_weight="1" android:textAppearance="?android:attr/textAppearanceLarge" android:text="10.41"></TextView>
+			<TextView android:id="@+id/TextView23" android:layout_marginTop="6dip" android:layout_marginLeft="6dip" android:layout_height="wrap_content" android:layout_width="0dip" android:layout_weight="1" android:textAppearance="?android:attr/textAppearanceLarge" android:text="00:41:54"></TextView>
+		</LinearLayout>
+	</LinearLayout>
+	<ImageView android:id="@+id/ImageView01"
+		android:layout_width="wrap_content" android:layout_height="wrap_content"
+		android:layout_gravity="right" android:src="@drawable/btn_check_buttonless_on"
+		android:layout_marginRight="5dp" android:layout_marginTop="10dp" />
+</LinearLayout>
