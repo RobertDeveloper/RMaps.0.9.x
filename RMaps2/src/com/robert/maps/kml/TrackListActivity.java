@@ -139,7 +139,7 @@ public class TrackListActivity extends ListActivity {
 	        startManagingCursor(c);
 
 	        ListAdapter adapter = new SimpleCursorAdapter(this,
-	                R.layout.list_item
+	                R.layout.tracklist_item
 	                , c,
 	                        new String[] { "name", "descr", "image" },
 	                        new int[] { android.R.id.text1, android.R.id.text2, R.id.ImageView01 });
