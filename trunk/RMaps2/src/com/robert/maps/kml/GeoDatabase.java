@@ -166,7 +166,7 @@ public class GeoDatabase implements PoiConstants{
 
 	protected class GeoDatabaseHelper extends RSQLiteOpenHelper {
 		public GeoDatabaseHelper(final Context context, final String name) {
-			super(context, name, null, 7);
+			super(context, name, null, 10);
 		}
 
 		@Override
@@ -211,7 +211,7 @@ public class GeoDatabase implements PoiConstants{
 				db.execSQL(PoiConstants.SQL_CREATE_tracks);
 				db.execSQL(PoiConstants.SQL_CREATE_trackpoints);
 			}
-			if (oldVersion < 7) {
+			if (oldVersion < 10) {
 				db.execSQL(PoiConstants.SQL_UPDATE_6_1);
 				db.execSQL(PoiConstants.SQL_UPDATE_6_2);
 				db.execSQL(PoiConstants.SQL_UPDATE_6_3);
