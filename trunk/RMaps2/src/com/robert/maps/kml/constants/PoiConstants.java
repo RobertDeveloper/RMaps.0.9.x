@@ -48,9 +48,11 @@ public interface PoiConstants {
 	public static final String STAT_deletePoiCategory = "DELETE FROM category WHERE categoryid = @1";
 	public static final String STAT_getPoiCategory = "SELECT name, categoryid, hidden, iconid, minzoom FROM category WHERE categoryid = @1";
 	public static final String STAT_DeleteAllPoi = "DELETE FROM points";
-	public static final String STAT_getTrackList = "SELECT name, descr, trackid _id, CASE WHEN show=1 THEN "
+	public static final String STAT_getTrackList = "SELECT name, 'Cycling, 19/08/2011 14:26' As title2, descr, trackid _id, '3456' as cnt, '0:13:54' as duration, '0.21' as distance, activity, CASE WHEN show=1 THEN "
 		+ R.drawable.btn_check_buttonless_on + " ELSE " + R.drawable.btn_check_buttonless_off
 		+ " END as image FROM tracks ORDER BY trackid DESC;";
+	//(trackid INTEGER NOT NULL PRIMARY KEY UNIQUE, name VARCHAR, descr VARCHAR, date DATETIME
+	//, show INTEGER, cnt INTEGER, duration INTEGER, distance INTEGER, categoryid INTEGER, activity INTEGER);";
 	public static final String STAT_getTrackChecked = "SELECT name, descr, show, trackid FROM tracks WHERE show = 1 LIMIT 1";
 	public static final String STAT_getTrack = "SELECT name, descr, show FROM tracks WHERE trackid = @1";
 	public static final String STAT_getTrackPoints = "SELECT lat, lon, alt, speed, date FROM trackpoints WHERE trackid = @1 ORDER BY id";

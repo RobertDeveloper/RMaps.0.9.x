@@ -265,4 +265,8 @@ v.0.7.0\n
 	<string name="pref_dir_summary">Where RMaps stores your files</string>
 	<string name="pref_crosshair">Crosshair on centre</string>
 	<string name="pref_crosshair_summary">Show litle crosshair on centre of the map</string>
+	<string name="points_cnt">POINTS</string>
+	<string name="duration">DURATION</string>
+	<string name="distance">DISTANCE</string>
+	<string name="km">km</string>
 </resources>

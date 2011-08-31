@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="title1" type="id"></item>
+    <item name="title2" type="id"></item>
+    <item name="descr" type="id"></item>
+    <item name="pic" type="id"></item>
+    <item name="checkbox" type="id"></item>
+    <item name="data_header1" type="id"></item>
+    <item name="data_value1" type="id"></item>
+    <item name="data_unit1" type="id"></item>
+    <item name="data_header2" type="id"></item>
+    <item name="data_value2" type="id"></item>
+    <item name="data_unit2" type="id"></item>
+    <item name="data_header3" type="id"></item>
+    <item name="data_value3" type="id"></item>
+    <item name="data_unit3" type="id"></item>
+    
+</resources>

@@ -141,8 +141,8 @@ public class TrackListActivity extends ListActivity {
 	        ListAdapter adapter = new SimpleCursorAdapter(this,
 	                R.layout.tracklist_item
 	                , c,
-	                        new String[] { "name", "descr", "image" },
-	                        new int[] { android.R.id.text1, android.R.id.text2, R.id.ImageView01 });
+	                        new String[] { "name", "title2", "image", "cnt", "distance", "duration", "descr" },
+	                        new int[] { R.id.title1, R.id.title2, R.id.checkbox, R.id.data_value1, R.id.data_value2, R.id.data_value3, R.id.descr });
 	        setListAdapter(adapter);
 		};
 	}
