@@ -283,7 +283,8 @@ public class GeoDatabase implements PoiConstants{
 		return null;
 	}
 
-	public long addTrack(final String name, final String descr, final int show) {
+	public long addTrack(final String name, final String descr, final int show,
+			final int cnt, final double distance, final int duration) {
 		long newId = -1;
 
 		if (isDatabaseReady()) {
@@ -291,6 +292,9 @@ public class GeoDatabase implements PoiConstants{
 			cv.put(NAME, name);
 			cv.put(DESCR, descr);
 			cv.put(SHOW, show);
+			cv.put(CNT, cnt);
+			cv.put(DISTANCE, distance);
+			cv.put(DURATION, duration);
 			newId = this.mDatabase.insert(TRACKS, null, cv);
 		}
 
@@ -308,7 +312,9 @@ public class GeoDatabase implements PoiConstants{
 		}
 	}
 
-	public void addTrackPoint(final long trackid, final double lat, final double lon, final double alt, final double speed, final Date date) {
+	public void addTrackPoint(final long trackid, final double lat,
+			final double lon, final double alt, final double speed,
+			final Date date) {
 		if (isDatabaseReady()) {
 			final ContentValues cv = new ContentValues();
 			cv.put(TRACKID, trackid);
@@ -316,7 +322,7 @@ public class GeoDatabase implements PoiConstants{
 			cv.put(LON, lon);
 			cv.put(ALT, alt);
 			cv.put(SPEED, speed);
-			//cv.put("date", date.getTime());
+			// cv.put("date", date.getTime());
 			this.mDatabase.insert(TRACKPOINTS, null, cv);
 		}
 	}

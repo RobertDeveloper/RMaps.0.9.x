@@ -38,7 +38,7 @@
     		android:layout_gravity="right"
     		android:src="@drawable/btn_check_buttonless_on" android:layout_marginRight="10dp" android:id="@id/checkbox"/>
     </LinearLayout>
-    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:id="@+id/linearLayoutData" android:layout_marginTop="3dp">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:id="@+id/linearLayoutData" android:layout_marginTop="3dp" android:layout_marginBottom="2dp">
         <RelativeLayout android:layout_width="0dip" android:layout_height="wrap_content" android:layout_marginLeft="6dp" android:layout_weight="1">
             <TextView android:layout_width="wrap_content" android:textAppearance="@style/data_header" android:layout_height="wrap_content" android:includeFontPadding="false" android:id="@id/data_header1" android:text="@string/points_cnt"></TextView>
             <TextView android:layout_below="@+id/data_header1" android:id="@+id/data_value1" android:layout_width="wrap_content" android:textAppearance="@style/data_value" android:layout_height="wrap_content" android:includeFontPadding="false" android:text="452"></TextView>
@@ -55,12 +55,4 @@
             <TextView android:layout_toRightOf="@+id/data_value3" android:id="@+id/data_unit3" android:layout_alignBaseline="@+id/data_value3" android:layout_width="wrap_content" android:textAppearance="@style/data_unit" android:layout_height="wrap_content" android:includeFontPadding="false" android:paddingLeft="5.0px"></TextView>
         </RelativeLayout>
     </LinearLayout>
-		<TextView
-			android:layout_width="fill_parent"
-			android:layout_height="wrap_content"
-			android:layout_marginLeft="6dip"
-			android:layout_below="@android:id/text1"
-			android:layout_alignLeft="@android:id/text1"
-			android:text="@string/btn_stop"
-			android:textAppearance="@style/descr_gray" android:id="@id/descr" android:maxLines="3" android:layout_marginBottom="4dp"/>
 </LinearLayout>

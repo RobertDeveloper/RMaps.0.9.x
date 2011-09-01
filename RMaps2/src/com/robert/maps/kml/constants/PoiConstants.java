@@ -23,6 +23,9 @@ public interface PoiConstants {
 	public static final String TRACKID = "trackid";
 	public static final String SPEED = "speed";
 	public static final String DATE = "date";
+	public static final String CNT = "cnt";
+	public static final String DISTANCE = "distance";
+	public static final String DURATION = "duration";
 
 	public static final String POINTS = "points";
 	public static final String CATEGORY = "category";
@@ -48,7 +51,7 @@ public interface PoiConstants {
 	public static final String STAT_deletePoiCategory = "DELETE FROM category WHERE categoryid = @1";
 	public static final String STAT_getPoiCategory = "SELECT name, categoryid, hidden, iconid, minzoom FROM category WHERE categoryid = @1";
 	public static final String STAT_DeleteAllPoi = "DELETE FROM points";
-	public static final String STAT_getTrackList = "SELECT name, activity As title2, descr, trackid _id, cnt, duration, distance, CASE WHEN show=1 THEN "
+	public static final String STAT_getTrackList = "SELECT name, activity As title2, descr, trackid _id, cnt, duration, round(distance/1000,2) AS distance, CASE WHEN show=1 THEN "
 		+ R.drawable.btn_check_buttonless_on + " ELSE " + R.drawable.btn_check_buttonless_off
 		+ " END as image FROM tracks ORDER BY trackid DESC;";
 	//(trackid INTEGER NOT NULL PRIMARY KEY UNIQUE, name VARCHAR, descr VARCHAR, date DATETIME
