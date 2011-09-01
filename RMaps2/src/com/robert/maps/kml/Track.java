@@ -19,7 +19,7 @@ public class Track implements PoiConstants {
 	public boolean Show;
 	public int cnt;
 	public double distance;
-	public int duration;
+	public double duration;
 
 	private List<TrackPoint> trackpoints = null;
 
@@ -86,8 +86,8 @@ public class Track implements PoiConstants {
 	public void CalculateStat() {
 		cnt = trackpoints.size();
 		duration = 0;
-		//if (trackpoints.size() > 0)
-		//	duration = trackpoints.get(0).date - trackpoints.get(trackpoints.size() - 1).date;
+		if (trackpoints.size() > 0)
+			duration = (double) (trackpoints.get(trackpoints.size() - 1).date.getTime() - trackpoints.get(0).date.getTime());
 		TrackPoint lastpt = null;
 		distance = 0;
 		float[] results = {0};
@@ -101,7 +101,6 @@ public class Track implements PoiConstants {
 				} catch (Exception e) {
 				}
 			}
-			
 			lastpt = pt;
 		}
 	}

@@ -284,7 +284,7 @@ public class GeoDatabase implements PoiConstants{
 	}
 
 	public long addTrack(final String name, final String descr, final int show,
-			final int cnt, final double distance, final int duration) {
+			final int cnt, final double distance, final double duration) {
 		long newId = -1;
 
 		if (isDatabaseReady()) {
