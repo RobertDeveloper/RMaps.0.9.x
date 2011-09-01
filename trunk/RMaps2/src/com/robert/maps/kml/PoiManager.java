@@ -135,7 +135,7 @@ public class PoiManager implements PoiConstants {
 
 	public void updateTrack(Track track) {
 		if(track.getId() < 0){
-			long newId = mGeoDatabase.addTrack(track.Name, track.Descr, track.Show ? ONE : ZERO);
+			long newId = mGeoDatabase.addTrack(track.Name, track.Descr, track.Show ? ONE : ZERO, track.cnt, track.distance, track.duration);
 
 			for(TrackPoint trackpoint: track.getPoints()){
 				//Ut.dd("lat="+trackpoint.lat);

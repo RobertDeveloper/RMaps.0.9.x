@@ -55,6 +55,7 @@ public class GpxTrackParser extends DefaultHandler {
 	public void endElement(String uri, String localName, String name) throws SAXException {
 		if(localName.equalsIgnoreCase(TRK)){
 			if(mTrack.Name.equalsIgnoreCase("")) mTrack.Name = "Track";
+			mTrack.CalculateStat();
 			mPoiManager.updateTrack(mTrack);
 		}
 		else if(localName.equalsIgnoreCase(NAME))
