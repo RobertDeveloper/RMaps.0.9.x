@@ -119,6 +119,12 @@ public class TrackListActivity extends ListActivity {
 					} catch (Exception e) {
 					}
 					db.close();
+					
+					if(res > 0){
+						Track tr = mPoiManager.getTrack(res);
+						tr.CalculateStat();
+						mPoiManager.updateTrack(tr);
+					}
 				};
 
 				dlgWait.dismiss();
