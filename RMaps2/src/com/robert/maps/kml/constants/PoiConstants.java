@@ -56,8 +56,6 @@ public interface PoiConstants {
 			+ " ELSE "
 			+ R.drawable.btn_check_buttonless_off
 			+ " END as image FROM tracks ORDER BY trackid DESC;";
-	//(trackid INTEGER NOT NULL PRIMARY KEY UNIQUE, name VARCHAR, descr VARCHAR, date DATETIME
-	//, show INTEGER, cnt INTEGER, duration INTEGER, distance INTEGER, categoryid INTEGER, activity INTEGER);";
 	public static final String STAT_getTrackChecked = "SELECT name, descr, show, trackid, cnt, distance, duration FROM tracks WHERE show = 1 LIMIT 1";
 	public static final String STAT_getTrack = "SELECT name, descr, show, cnt, distance, duration FROM tracks WHERE trackid = @1";
 	public static final String STAT_getTrackPoints = "SELECT lat, lon, alt, speed, date FROM trackpoints WHERE trackid = @1 ORDER BY id";
