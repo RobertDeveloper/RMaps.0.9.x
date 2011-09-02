@@ -1,8 +1,5 @@
 package com.robert.maps.kml.XMLparser;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -15,7 +12,6 @@ public class GpxTrackParser extends DefaultHandler {
 	private StringBuilder builder;
 	private PoiManager mPoiManager;
 	private Track mTrack;
-	private final SimpleDateFormat format = new SimpleDateFormat(); 
 
 	private static final String TRK = "trk";
 	private static final String LAT = "lat";
@@ -72,17 +68,11 @@ public class GpxTrackParser extends DefaultHandler {
 			if(mTrack.Descr.equals(""))
 				mTrack.Descr = builder.toString().trim();
 		}
-		else if (localName.equalsIgnoreCase(ELE))
+		else if (localName.equalsIgnoreCase(ELE)){
 			mTrack.LastTrackPoint.alt = Double.parseDouble(builder.toString().trim());
+		}
 		else if (localName.equalsIgnoreCase(TIME)) {
-			Ut.dd(builder.toString().trim());
-			try {
-				mTrack.LastTrackPoint.date = format.parse(builder.toString().trim());
-				Ut.dd(mTrack.LastTrackPoint.date.toString());
-				Ut.dd(mTrack.LastTrackPoint.date.toGMTString());
-			} catch (ParseException e) {
-				Ut.dd("bad format!!!!");
-			}
+			mTrack.LastTrackPoint.date = Ut.ParseDate(builder.toString().trim());
 		}
 
 		super.endElement(uri, localName, name);

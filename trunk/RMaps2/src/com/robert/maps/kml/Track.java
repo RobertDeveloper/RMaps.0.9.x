@@ -17,9 +17,9 @@ public class Track implements PoiConstants {
 	public String Descr;
 	public TrackPoint LastTrackPoint;
 	public boolean Show;
-	public int cnt;
-	public double distance;
-	public double duration;
+	public int Cnt;
+	public double Distance;
+	public double Duration;
 
 	private List<TrackPoint> trackpoints = null;
 
@@ -63,14 +63,17 @@ public class Track implements PoiConstants {
 	}
 
 	public Track() {
-		this(EMPTY_ID, "", "", false);
+		this(EMPTY_ID, "", "", false, 0, 0, 0);
 	}
 
-	public Track(int id, String name, String descr, boolean show) {
+	public Track(int id, String name, String descr, boolean show, int cnt, double distance, double duration) {
 		Id = id;
 		Name = name;
 		Descr = descr;
 		Show = show;
+		Cnt = cnt;
+		Distance = distance;
+		Duration = duration;
 	}
 
 	public int getId() {
@@ -84,12 +87,12 @@ public class Track implements PoiConstants {
 	}
 	
 	public void CalculateStat() {
-		cnt = trackpoints.size();
-		duration = 0;
+		Cnt = trackpoints.size();
+		Duration = 0;
 		if (trackpoints.size() > 0)
-			duration = (double) (trackpoints.get(trackpoints.size() - 1).date.getTime() - trackpoints.get(0).date.getTime());
+			Duration = (double) ((trackpoints.get(trackpoints.size() - 1).date.getTime() - trackpoints.get(0).date.getTime())/1000);
 		TrackPoint lastpt = null;
-		distance = 0;
+		Distance = 0;
 		float[] results = {0};
 		
 		for(TrackPoint pt : trackpoints){
@@ -97,7 +100,7 @@ public class Track implements PoiConstants {
 				results[0] = 0;
 				try {
 					Location.distanceBetween(lastpt.lat, lastpt.lon, pt.lat, pt.lon, results);
-					distance += results[0];
+					Distance += results[0];
 				} catch (Exception e) {
 				}
 			}
