@@ -135,15 +135,17 @@ public class PoiManager implements PoiConstants {
 
 	public void updateTrack(Track track) {
 		if(track.getId() < 0){
-			long newId = mGeoDatabase.addTrack(track.Name, track.Descr, track.Show ? ONE : ZERO, track.cnt, track.distance, track.duration);
+			long newId = mGeoDatabase.addTrack(track.Name, track.Descr, track.Show ? ONE : ZERO, track.Cnt, track.Distance, track.Duration);
 
 			for(TrackPoint trackpoint: track.getPoints()){
 				//Ut.dd("lat="+trackpoint.lat);
 				mGeoDatabase.addTrackPoint(newId, trackpoint.lat, trackpoint.lon, trackpoint.alt, trackpoint.speed, trackpoint.date);
 			}
 		} else
-			mGeoDatabase.updateTrack(track.getId(), track.Name, track.Descr, track.Show ? ONE : ZERO);
+			mGeoDatabase.updateTrack(track.getId(), track.Name, track.Descr, track.Show ? ONE : ZERO, track.Cnt, track.Distance, track.Duration);
 	}
+	
+	
 
 	public boolean haveTrackChecked(){
 		boolean ret = false;
@@ -162,7 +164,7 @@ public class PoiManager implements PoiConstants {
 		Cursor c = mGeoDatabase.getTrackChecked();
 		if (c != null) {
 			if (c.moveToFirst())
-				track = new Track(c.getInt(3), c.getString(0), c.getString(1), c.getInt(2) == ONE ? true : false);
+				track = new Track(c.getInt(3), c.getString(0), c.getString(1), c.getInt(2) == ONE ? true : false, c.getInt(4), c.getDouble(5), c.getDouble(6));
 			else {
 				c.close();
 				return null;
@@ -176,6 +178,9 @@ public class PoiManager implements PoiConstants {
 						track.AddTrackPoint(); //track.trackpoints.size()
 						track.LastTrackPoint.lat = c.getDouble(0);
 						track.LastTrackPoint.lon = c.getDouble(1);
+						track.LastTrackPoint.alt = c.getDouble(2);
+						track.LastTrackPoint.speed = c.getDouble(3);
+						track.LastTrackPoint.date.setTime(c.getLong(4) * 1000); // System.currentTimeMillis()
 					} while (c.moveToNext());
 				}
 				c.close();
@@ -190,7 +195,7 @@ public class PoiManager implements PoiConstants {
 		Cursor c = mGeoDatabase.getTrack(id);
 		if (c != null) {
 			if (c.moveToFirst())
-				track = new Track(id, c.getString(0), c.getString(1), c.getInt(2) == ONE ? true : false);
+				track = new Track(id, c.getString(0), c.getString(1), c.getInt(2) == ONE ? true : false, c.getInt(3), c.getDouble(4), c.getDouble(5));
 			c.close();
 			c = null;
 

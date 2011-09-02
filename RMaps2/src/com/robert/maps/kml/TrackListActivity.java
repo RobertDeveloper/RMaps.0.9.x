@@ -135,6 +135,7 @@ public class TrackListActivity extends ListActivity {
 
 	private void FillData() {
 		Cursor c = mPoiManager.getGeoDatabase().getTrackListCursor();
+		
 		if(c != null){
 	        startManagingCursor(c);
 
@@ -192,6 +193,9 @@ public class TrackListActivity extends ListActivity {
 //
 		switch(item.getItemId()){
 		case R.id.menu_editpoi:
+			Track tr = mPoiManager.getTrack(id);
+			tr.CalculateStat();
+			mPoiManager.updateTrack(tr);
 			startActivity((new Intent(this, TrackActivity.class)).putExtra("id", id));
 			break;
 		case R.id.menu_gotopoi:

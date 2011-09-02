@@ -58,8 +58,8 @@ public interface PoiConstants {
 			+ " END as image FROM tracks ORDER BY trackid DESC;";
 	//(trackid INTEGER NOT NULL PRIMARY KEY UNIQUE, name VARCHAR, descr VARCHAR, date DATETIME
 	//, show INTEGER, cnt INTEGER, duration INTEGER, distance INTEGER, categoryid INTEGER, activity INTEGER);";
-	public static final String STAT_getTrackChecked = "SELECT name, descr, show, trackid FROM tracks WHERE show = 1 LIMIT 1";
-	public static final String STAT_getTrack = "SELECT name, descr, show FROM tracks WHERE trackid = @1";
+	public static final String STAT_getTrackChecked = "SELECT name, descr, show, trackid, cnt, distance, duration FROM tracks WHERE show = 1 LIMIT 1";
+	public static final String STAT_getTrack = "SELECT name, descr, show, cnt, distance, duration FROM tracks WHERE trackid = @1";
 	public static final String STAT_getTrackPoints = "SELECT lat, lon, alt, speed, date FROM trackpoints WHERE trackid = @1 ORDER BY id";
 	public static final String STAT_setTrackChecked_1 = "UPDATE tracks SET show = 1 - show * 1 WHERE trackid = @1";
 	public static final String STAT_setTrackChecked_2 = "UPDATE tracks SET show = 0 WHERE trackid <> @1";
@@ -99,7 +99,7 @@ public interface PoiConstants {
 	public static final String SQL_UPDATE_6_1 = "DROP TABLE IF EXISTS 'tracks_46134313'; ";
 	public static final String SQL_UPDATE_6_2 = "CREATE TABLE 'tracks_46134313' AS SELECT * FROM 'tracks'; ";
 	public static final String SQL_UPDATE_6_3 = "DROP TABLE IF EXISTS 'tracks'; ";
-	public static final String SQL_UPDATE_6_4 = "INSERT INTO 'tracks' (trackid, name, descr, date, show, cnt, duration, distance, categoryid, activity) SELECT trackid, name, descr, date, show, (SELECT COUNT(*) FROM trackpoints WHERE trackid = tracks_46134313.trackid), 0, 0, 0, 'Cycling' FROM 'tracks_46134313';";
+	public static final String SQL_UPDATE_6_4 = "INSERT INTO 'tracks' (trackid, name, descr, date, show, cnt, duration, distance, categoryid, activity) SELECT trackid, name, descr, date, show, (SELECT COUNT(*) FROM trackpoints WHERE trackid = tracks_46134313.trackid), null, null, null, 'Unknown' FROM 'tracks_46134313';";
 	public static final String SQL_UPDATE_6_5 = "DROP TABLE 'tracks_46134313';";
 	//(trackid INTEGER NOT NULL PRIMARY KEY UNIQUE, name VARCHAR, descr VARCHAR, date DATETIME
 	//, show INTEGER, cnt INTEGER, duration INTEGER, distance INTEGER, categoryid INTEGER, activity INTEGER);";

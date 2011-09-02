@@ -3,12 +3,14 @@ package com.robert.maps.utils;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
 
 import org.andnav.osm.util.GeoPoint;
 import org.andnav.osm.util.constants.OpenStreetMapConstants;
 import org.andnav.osm.views.util.constants.OpenStreetMapViewConstants;
-
-import com.robert.maps.R;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -21,7 +23,37 @@ import android.graphics.Paint;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+import com.robert.maps.R;
+
 public class Ut implements OpenStreetMapConstants, OpenStreetMapViewConstants {
+	
+	final static String[] formats = new String[] { 
+			"yyyy-MM-dd'T'HH:mm:ss.SSSZ",
+			"yyyy-MM-dd'T'HH:mm:ssZ",
+			"yyyy-MM-dd'T'HH:mmZ",
+			"yyyy-MM-dd'T'HH:mm:ss'Z'",
+			"yyyy-MM-dd HH:mm:ss.SSSZ",
+			"yyyy-MM-dd HH:mmZ", 
+			"yyyy-MM-dd HH:mm",
+			"yyyy-MM-dd", 
+			};
+
+	public static Date ParseDate(final String str){
+		SimpleDateFormat sdf = new SimpleDateFormat();
+		sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+		Date date = new Date(0);
+		for (String format : formats) {
+			sdf.applyPattern(format);
+
+			try {
+				date = sdf.parse(str);
+				break;
+			} catch (ParseException e) {
+			}
+		}
+
+		return date;
+	}
 	
 	public static boolean equalsIgnoreCase(String string, int start, int end, String string2){
 		try {

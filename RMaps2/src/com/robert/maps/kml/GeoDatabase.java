@@ -166,7 +166,7 @@ public class GeoDatabase implements PoiConstants{
 
 	protected class GeoDatabaseHelper extends RSQLiteOpenHelper {
 		public GeoDatabaseHelper(final Context context, final String name) {
-			super(context, name, null, 10);
+			super(context, name, null, 11);
 		}
 
 		@Override
@@ -211,7 +211,7 @@ public class GeoDatabase implements PoiConstants{
 				db.execSQL(PoiConstants.SQL_CREATE_tracks);
 				db.execSQL(PoiConstants.SQL_CREATE_trackpoints);
 			}
-			if (oldVersion < 10) {
+			if (oldVersion < 11) {
 				db.execSQL(PoiConstants.SQL_UPDATE_6_1);
 				db.execSQL(PoiConstants.SQL_UPDATE_6_2);
 				db.execSQL(PoiConstants.SQL_UPDATE_6_3);
@@ -301,12 +301,15 @@ public class GeoDatabase implements PoiConstants{
 		return newId;
 	}
 
-	public void updateTrack(final int id, final String name, final String descr, final int show) {
+	public void updateTrack(final int id, final String name, final String descr, final int show, final int cnt, final double distance, final double duration) {
 		if (isDatabaseReady()) {
 			final ContentValues cv = new ContentValues();
 			cv.put(NAME, name);
 			cv.put(DESCR, descr);
 			cv.put(SHOW, show);
+			cv.put(CNT, cnt);
+			cv.put(DISTANCE, distance);
+			cv.put(DURATION, duration);
 			final String[] args = {Integer.toString(id)};
 			this.mDatabase.update(TRACKS, cv, UPDATE_TRACKS, args);
 		}
@@ -322,7 +325,7 @@ public class GeoDatabase implements PoiConstants{
 			cv.put(LON, lon);
 			cv.put(ALT, alt);
 			cv.put(SPEED, speed);
-			// cv.put("date", date.getTime());
+			cv.put(DATE, date.getTime()/1000);
 			this.mDatabase.insert(TRACKPOINTS, null, cv);
 		}
 	}
