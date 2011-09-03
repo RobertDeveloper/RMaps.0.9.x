@@ -269,4 +269,5 @@ v.0.7.0\n
 	<string name="duration">DURATION</string>
 	<string name="distance">DISTANCE</string>
 	<string name="km">km</string>
+	<string name="ml">ml</string>
 </resources>

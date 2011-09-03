@@ -9,21 +9,25 @@ import java.text.SimpleDateFormat;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.preference.Preference;
+import android.preference.PreferenceManager;
 import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -32,6 +36,7 @@ import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Toast;
 
+import com.robert.maps.MainMapActivity;
 import com.robert.maps.R;
 import com.robert.maps.kml.Track.TrackPoint;
 import com.robert.maps.kml.XMLparser.SimpleXML;
@@ -42,14 +47,19 @@ public class TrackListActivity extends ListActivity {
 	private PoiManager mPoiManager;
 
 	private ProgressDialog dlgWait;
-	protected ExecutorService mThreadPool = Executors.newFixedThreadPool(2);
 	private SimpleInvalidationHandler mHandler;
+	private boolean mNeedTracksStatUpdate = false;
+    private ExecutorService mThreadExecutor = null;
+    private int mUnits = 0;
 
 	private class SimpleInvalidationHandler extends Handler {
 
 		@Override
 		public void handleMessage(final Message msg) {
 			switch (msg.what) {
+			case R.id.about:
+				FillData();
+				break;
 			case R.id.tracks:
 				if(msg.arg1 == 0)
 					Toast.makeText(TrackListActivity.this, R.string.trackwriter_nothing, Toast.LENGTH_LONG).show();
@@ -96,12 +106,26 @@ public class TrackListActivity extends ListActivity {
 				doSaveTrack();
 			}
 		});
+		
+		SharedPreferences settings = getPreferences(Activity.MODE_PRIVATE);
+		final int versionDataUpdate = settings.getInt("versionDataUpdate", 0);
+		final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+		mUnits = Integer.parseInt(pref.getString("pref_units", "0"));
+
+		if(versionDataUpdate < 4){
+			mNeedTracksStatUpdate = true;
+			SharedPreferences.Editor editor = settings.edit();
+			editor.putInt("versionDataUpdate", 4);
+			editor.commit();
+		}
 	}
 
 	private void doSaveTrack(){
 		showDialog(R.id.dialog_wait);
+		if(mThreadExecutor == null)
+			mThreadExecutor = Executors.newSingleThreadExecutor();
 
-		this.mThreadPool.execute(new Runnable() {
+		this.mThreadExecutor.execute(new Runnable() {
 			public void run() {
 				SQLiteDatabase db = null;
 				File folder = Ut.getRMapsMainDir(TrackListActivity.this, "data");
@@ -140,7 +164,17 @@ public class TrackListActivity extends ListActivity {
 	}
 
 	private void FillData() {
-		Cursor c = mPoiManager.getGeoDatabase().getTrackListCursor();
+		Cursor c = mPoiManager.getGeoDatabase().getTrackListCursor(mUnits == 0 ? getResources().getString(R.string.km) : getResources().getString(R.string.ml));
+		
+		if(mNeedTracksStatUpdate){
+			if(c != null){
+				if(c.moveToFirst()){
+					if(c.getInt(8) == -1){
+						UpdateTracksStat();
+					}
+				}
+			}
+		}
 		
 		if(c != null){
 	        startManagingCursor(c);
@@ -148,10 +182,37 @@ public class TrackListActivity extends ListActivity {
 	        ListAdapter adapter = new SimpleCursorAdapter(this,
 	                R.layout.tracklist_item
 	                , c,
-	                        new String[] { "name", "title2", "image", "cnt", "distance", "duration"/*, "descr"*/ },
-	                        new int[] { R.id.title1, R.id.title2, R.id.checkbox, R.id.data_value1, R.id.data_value2, R.id.data_value3 /*, R.id.descr*/ });
+	                        new String[] { "name", "title2", "image", "cnt", "distance" + mUnits, "duration", "units"/*, "descr"*/ },
+	                        new int[] { R.id.title1, R.id.title2, R.id.checkbox, R.id.data_value1, R.id.data_value2, R.id.data_value3, R.id.data_unit2 /*, R.id.descr*/ });
 	        setListAdapter(adapter);
 		};
+	}
+
+	private void UpdateTracksStat() {
+		if(mThreadExecutor == null)
+			mThreadExecutor = Executors.newSingleThreadExecutor();
+		dlgWait = Ut.ShowWaitDialog(this, 0);
+		mThreadExecutor.execute(new Runnable(){
+
+			public void run() {
+				Cursor c = mPoiManager.getGeoDatabase().getTrackListCursor("");
+				if(c != null){
+					if (c.moveToFirst()) {
+						Track tr = null;
+						do {
+							tr = mPoiManager.getTrack(c.getInt(3));
+							if(tr != null){
+								tr.CalculateStat();
+								mPoiManager.updateTrack(tr);
+							}
+						} while (c.moveToNext());
+					}
+					c.close();
+				}
+				
+				TrackListActivity.this.dlgWait.dismiss();
+				Message.obtain(mHandler, R.id.about, 0, 0).sendToTarget();
+			}});
 	}
 
 	@Override
@@ -226,8 +287,10 @@ public class TrackListActivity extends ListActivity {
 	private void DoExportTrackKML(int id) {
 		showDialog(R.id.dialog_wait);
 		final int trackid = id;
+		if(mThreadExecutor == null)
+			mThreadExecutor = Executors.newSingleThreadExecutor();
 
-		this.mThreadPool.execute(new Runnable() {
+		this.mThreadExecutor.execute(new Runnable() {
 			public void run() {
 				final Track track = mPoiManager.getTrack(trackid);
 
@@ -276,8 +339,10 @@ public class TrackListActivity extends ListActivity {
 	private void DoExportTrackGPX(int id) {
 		showDialog(R.id.dialog_wait);
 		final int trackid = id;
+		if(mThreadExecutor == null)
+			mThreadExecutor = Executors.newSingleThreadExecutor();
 
-		this.mThreadPool.execute(new Runnable() {
+		this.mThreadExecutor.execute(new Runnable() {
 			public void run() {
 				final Track track = mPoiManager.getTrack(trackid);
 

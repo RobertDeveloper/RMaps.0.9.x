@@ -245,6 +245,7 @@ public final class R {
         public static final int message_trackexported=0x7f09008a;
         public static final int message_updateminmax=0x7f09005e;
         public static final int message_wait=0x7f090092;
+        public static final int ml=0x7f09009f;
         public static final int mnm=0x7f09004b;
         public static final int no_inet_conn=0x7f090052;
         public static final int no_items=0x7f090053;
@@ -252,8 +253,8 @@ public final class R {
         public static final int points_cnt=0x7f09009b;
         public static final int pref_accuracy=0x7f090015;
         public static final int pref_accuracy_summary=0x7f090014;
-        public static final int pref_bottomzoomcontrol=0x7f0900a0;
-        public static final int pref_bottomzoomcontrol_summary=0x7f09009f;
+        public static final int pref_bottomzoomcontrol=0x7f0900a1;
+        public static final int pref_bottomzoomcontrol_summary=0x7f0900a0;
         public static final int pref_crosshair=0x7f090099;
         public static final int pref_crosshair_summary=0x7f09009a;
         public static final int pref_dir=0x7f090093;
