@@ -53,7 +53,7 @@ public interface PoiConstants {
 	public static final String STAT_deletePoiCategory = "DELETE FROM category WHERE categoryid = @1";
 	public static final String STAT_getPoiCategory = "SELECT name, categoryid, hidden, iconid, minzoom FROM category WHERE categoryid = @1";
 	public static final String STAT_DeleteAllPoi = "DELETE FROM points";
-	public static final String STAT_getTrackList = "SELECT name, activity || ', ' || DATETIME(date, 'unixepoch') As title2, descr, trackid _id, cnt, TIME('2011-01-01', duration || ' seconds') as duration, round(distance/1000, 2) AS distance0, CASE WHEN show=1 THEN "
+	public static final String STAT_getTrackList = "SELECT name, activity || ', ' || strftime('%%d/%%m/%%Y %%H:%%M:%%S', date, 'unixepoch', 'localtime') As title2, descr, trackid _id, cnt, TIME('2011-01-01', duration || ' seconds') as duration, round(distance/1000, 2) AS distance0, CASE WHEN show=1 THEN "
 			+ R.drawable.btn_check_buttonless_on
 			+ " ELSE "
 			+ R.drawable.btn_check_buttonless_off
