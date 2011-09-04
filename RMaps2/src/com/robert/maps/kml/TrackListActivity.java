@@ -117,6 +117,8 @@ public class TrackListActivity extends ListActivity {
 			editor.putInt("versionDataUpdate", 5);
 			editor.commit();
 		}
+		
+		//PoiConstants.DATE_FORMAT = Settings.System.getString(getContentResolver(), Settings.System.DATE_FORMAT);
 	}
 
 	private void doSaveTrack(){
