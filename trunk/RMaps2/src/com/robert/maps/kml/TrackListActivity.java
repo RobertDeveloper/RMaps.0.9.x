@@ -6,11 +6,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.text.SimpleDateFormat;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -20,7 +20,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.preference.Preference;
 import android.preference.PreferenceManager;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -36,10 +35,10 @@ import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Toast;
 
-import com.robert.maps.MainMapActivity;
 import com.robert.maps.R;
 import com.robert.maps.kml.Track.TrackPoint;
 import com.robert.maps.kml.XMLparser.SimpleXML;
+import com.robert.maps.kml.constants.PoiConstants;
 import com.robert.maps.trackwriter.DatabaseHelper;
 import com.robert.maps.utils.Ut;
 
@@ -112,16 +111,16 @@ public class TrackListActivity extends ListActivity {
 		final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
 		mUnits = Integer.parseInt(pref.getString("pref_units", "0"));
 
-		if(versionDataUpdate < 4){
+		if(versionDataUpdate < 5){
 			mNeedTracksStatUpdate = true;
 			SharedPreferences.Editor editor = settings.edit();
-			editor.putInt("versionDataUpdate", 4);
+			editor.putInt("versionDataUpdate", 5);
 			editor.commit();
 		}
 	}
 
 	private void doSaveTrack(){
-		showDialog(R.id.dialog_wait);
+		dlgWait = Ut.ShowWaitDialog(this, 0);
 		if(mThreadExecutor == null)
 			mThreadExecutor = Executors.newSingleThreadExecutor();
 
@@ -202,6 +201,12 @@ public class TrackListActivity extends ListActivity {
 						do {
 							tr = mPoiManager.getTrack(c.getInt(3));
 							if(tr != null){
+								tr.Category = 0;
+								tr.Activity = PoiConstants.UNKNOWN;
+								final List<Track.TrackPoint> tps = tr.getPoints();
+								if(tps.size() > 0){
+									tr.Date = tps.get(0).date;
+								}
 								tr.CalculateStat();
 								mPoiManager.updateTrack(tr);
 							}
@@ -285,7 +290,7 @@ public class TrackListActivity extends ListActivity {
 	}
 
 	private void DoExportTrackKML(int id) {
-		showDialog(R.id.dialog_wait);
+		dlgWait = Ut.ShowWaitDialog(this, 0);
 		final int trackid = id;
 		if(mThreadExecutor == null)
 			mThreadExecutor = Executors.newSingleThreadExecutor();
@@ -337,7 +342,7 @@ public class TrackListActivity extends ListActivity {
 	}
 
 	private void DoExportTrackGPX(int id) {
-		showDialog(R.id.dialog_wait);
+		dlgWait = Ut.ShowWaitDialog(this, 0);
 		final int trackid = id;
 		if(mThreadExecutor == null)
 			mThreadExecutor = Executors.newSingleThreadExecutor();
@@ -392,20 +397,6 @@ public class TrackListActivity extends ListActivity {
 		});
 
 
-	}
-
-	@Override
-	protected Dialog onCreateDialog(int id) {
-		switch (id) {
-		case R.id.dialog_wait: {
-			dlgWait = new ProgressDialog(this);
-			dlgWait.setMessage("Please wait...");
-			dlgWait.setIndeterminate(true);
-			dlgWait.setCancelable(false);
-			return dlgWait;
-		}
-		}
-		return super.onCreateDialog(id);
 	}
 
 	@Override

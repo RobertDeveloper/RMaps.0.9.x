@@ -20,6 +20,9 @@ public class Track implements PoiConstants {
 	public int Cnt;
 	public double Distance;
 	public double Duration;
+	public int Category;
+	public String Activity;
+	public Date Date;
 
 	private List<TrackPoint> trackpoints = null;
 
@@ -63,10 +66,10 @@ public class Track implements PoiConstants {
 	}
 
 	public Track() {
-		this(EMPTY_ID, "", "", false, 0, 0, 0);
+		this(EMPTY_ID, "", "", false, 0, 0, 0, 0, UNKNOWN, new Date(0));
 	}
 
-	public Track(int id, String name, String descr, boolean show, int cnt, double distance, double duration) {
+	public Track(final int id, final String name, final String descr, final boolean show, final int cnt, final double distance, final double duration, final int category, final String activity, final Date date) {
 		Id = id;
 		Name = name;
 		Descr = descr;
@@ -74,6 +77,7 @@ public class Track implements PoiConstants {
 		Cnt = cnt;
 		Distance = distance;
 		Duration = duration;
+		Date = date;
 	}
 
 	public int getId() {
