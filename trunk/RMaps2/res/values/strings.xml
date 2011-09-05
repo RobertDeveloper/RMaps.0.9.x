@@ -265,9 +265,18 @@ v.0.7.0\n
 	<string name="pref_dir_summary">Where RMaps stores your files</string>
 	<string name="pref_crosshair">Crosshair on centre</string>
 	<string name="pref_crosshair_summary">Show litle crosshair on centre of the map</string>
+
 	<string name="points_cnt">POINTS</string>
 	<string name="duration">DURATION</string>
 	<string name="distance">DISTANCE</string>
+	<string name="avg_speed">AVG SPEED</string>
+	<string name="avg_pace">AVG PACE</string>
+	<string name="max_speed">MAX SPEED</string>
+	<string name="moving_time">MOVING TIME</string>
+	<string name="avg_moving_speed">AVG MOVING SPEED</string>
+	<string name="min_elevation">MIN ELEVATION</string>
+	<string name="max_elevation">MAX ELEVATION</string>
+	<string name="menu_stat">Statistics</string>
 	<string name="km">km</string>
 	<string name="ml">ml</string>
 	<string name="activity">Activity</string>

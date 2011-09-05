@@ -20,4 +20,5 @@
 <item android:id="@+id/menu_toradar"></item>
 <item android:id="@+id/menu_exporttogpxpoi"></item>
 <item android:id="@+id/menu_exporttokmlpoi"></item>
+<item android:id="@+id/menu_stat"></item>
 </menu>

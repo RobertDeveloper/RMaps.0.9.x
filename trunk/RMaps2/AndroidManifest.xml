@@ -55,6 +55,7 @@
 </service>
 <activity android:name=".kml.ImportTrackActivity"></activity>
 <activity android:name=".kml.TrackActivity"></activity>
+<activity android:name=".kml.TrackStatActivity"></activity>
 </application>
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
     <uses-sdk android:minSdkVersion="3"/>
