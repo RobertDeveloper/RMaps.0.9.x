@@ -255,6 +255,7 @@ public class TrackListActivity extends ListActivity {
 			ContextMenuInfo menuInfo) {
 
 		menu.add(0, R.id.menu_gotopoi, 0, getText(R.string.menu_goto_track));
+		menu.add(0, R.id.menu_stat, 0, getText(R.string.menu_stat));
 		menu.add(0, R.id.menu_editpoi, 0, getText(R.string.menu_edit));
 		menu.add(0, R.id.menu_deletepoi, 0, getText(R.string.menu_delete));
 		menu.add(0, R.id.menu_exporttogpxpoi, 0, getText(R.string.menu_exporttogpx));
@@ -268,6 +269,9 @@ public class TrackListActivity extends ListActivity {
 		int id = (int) ((AdapterView.AdapterContextMenuInfo)item.getMenuInfo()).id;
 
 		switch(item.getItemId()){
+		case R.id.menu_stat:
+			startActivity((new Intent(this, TrackStatActivity.class)).putExtra("id", id));
+			break;
 		case R.id.menu_editpoi:
 			startActivity((new Intent(this, TrackActivity.class)).putExtra("id", id));
 			break;
