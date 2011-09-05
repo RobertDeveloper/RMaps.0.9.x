@@ -32,6 +32,8 @@
 			android:layout_width="fill_parent"
 			android:minLines="6"
 			android:id="@+id/Descr"></EditText>
+		<TextView android:textAppearance="?android:attr/textAppearance" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/activity" android:id="@+id/TextActivity"></TextView>
+		<Spinner android:layout_width="match_parent" android:layout_height="wrap_content" android:id="@+id/Activity" android:entries="@array/track_activity"></Spinner>
 
 		<TextView
 			android:text=""

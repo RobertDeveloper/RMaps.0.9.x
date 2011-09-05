@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import org.andnav.osm.views.util.constants.OpenStreetMapViewConstants;
+
 import android.app.Activity;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
@@ -238,6 +240,9 @@ public class TrackListActivity extends ListActivity {
 
 		switch(item.getItemId()){
 		case R.id.menu_importpoi:
+			if(OpenStreetMapViewConstants.DEBUGMODE){
+				UpdateTracksStat();
+			}
 			startActivity((new Intent(this, ImportTrackActivity.class)));
 			return true;
 		}
@@ -248,9 +253,7 @@ public class TrackListActivity extends ListActivity {
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v,
 			ContextMenuInfo menuInfo) {
-//		int pointid = (int) ((AdapterView.AdapterContextMenuInfo)menuInfo).id;
-//		PoiPoint poi = mPoiManager.getPoiPoint(pointid);
-//
+
 		menu.add(0, R.id.menu_gotopoi, 0, getText(R.string.menu_goto_track));
 		menu.add(0, R.id.menu_editpoi, 0, getText(R.string.menu_edit));
 		menu.add(0, R.id.menu_deletepoi, 0, getText(R.string.menu_delete));
@@ -263,13 +266,9 @@ public class TrackListActivity extends ListActivity {
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
 		int id = (int) ((AdapterView.AdapterContextMenuInfo)item.getMenuInfo()).id;
-//		PoiPoint poi = mPoiManager.getPoiPoint(pointid);
-//
+
 		switch(item.getItemId()){
 		case R.id.menu_editpoi:
-			Track tr = mPoiManager.getTrack(id);
-			tr.CalculateStat();
-			mPoiManager.updateTrack(tr);
 			startActivity((new Intent(this, TrackActivity.class)).putExtra("id", id));
 			break;
 		case R.id.menu_gotopoi:

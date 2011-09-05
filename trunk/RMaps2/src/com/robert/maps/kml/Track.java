@@ -77,6 +77,8 @@ public class Track implements PoiConstants {
 		Cnt = cnt;
 		Distance = distance;
 		Duration = duration;
+		Category = category;
+		Activity = activity;
 		Date = date;
 	}
 

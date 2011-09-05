@@ -26,248 +26,289 @@
 		<item>When accuracy &gt; 50 m</item>
 		<item>When accuracy &gt; 100</item>
 	</string-array>
-<string-array name="zoomlevel_pref_title">
-	<item>Not set</item>
-	<item>1</item>
-	<item>2</item>
-	<item>3</item>
-	<item>4</item>
-	<item>5</item>
-	<item>6</item>
-	<item>7</item>
-	<item>8</item>
-	<item>9</item>
-	<item>10</item>
-	<item>11</item>
-	<item>12</item>
-	<item>13</item>
-	<item>14</item>
-	<item>15</item>
-	<item>16</item>
-	<item>17</item>
-	<item>18</item>
-	<item>19</item>
-	<item>20</item>
-</string-array>
-<string-array name="zoomlevel_pref_value">
-	<item>0</item>
-	<item>1</item>
-	<item>2</item>
-	<item>3</item>
-	<item>4</item>
-	<item>5</item>
-	<item>6</item>
-	<item>7</item>
-	<item>8</item>
-	<item>9</item>
-	<item>10</item>
-	<item>11</item>
-	<item>12</item>
-	<item>13</item>
-	<item>14</item>
-	<item>15</item>
-	<item>16</item>
-	<item>17</item>
-	<item>18</item>
-	<item>19</item>
-	<item>20</item>
-</string-array>
-<string-array name="languages_codes">
-	<item>ar</item>
-	<item>eu</item>
-	<item>bg</item>
-	<item>bn</item>
-	<item>ca</item>
-	<item>cs</item>
-	<item>da</item>
-	<item>de</item>
-	<item>el</item>
-	<item>en</item>
-	<item>en-AU</item>
-	<item>en-GB</item>
-	<item>es</item>
-	<item>eu</item>
-	<item>fa</item>
-	<item>fi</item>
-	<item>fil</item>
-	<item>fr</item>
-	<item>gl</item>
-	<item>gu</item>
-	<item>hi</item>
-	<item>hr</item>
-	<item>hu</item>
-	<item>id</item>
-	<item>it</item>
-	<item>iw</item>
-	<item>ja</item>
-	<item>kn</item>
-	<item>ko</item>
-	<item>lt</item>
-	<item>lv</item>
-	<item>ml</item>
-	<item>mr</item>
-	<item>nl</item>
-	<item>nn</item>
-	<item>no</item>
-	<item>or</item>
-	<item>pl</item>
-	<item>pt</item>
-	<item>pt-BR</item>
-	<item>pt-PT</item>
-	<item>rm</item>
-	<item>ro</item>
-	<item>ru</item>
-	<item>sk</item>
-	<item>sl</item>
-	<item>sr</item>
-	<item>sv</item>
-	<item>tl</item>
-	<item>ta</item>
-	<item>te</item>
-	<item>th</item>
-	<item>tr</item>
-	<item>uk</item>
-	<item>vi</item>
-	<item>zh-CN</item>
-	<item>zh-TW</item>
-</string-array>
-<string-array name="languages_names">
-	<item>ARABIC</item>
-	<item>BASQUE</item>
-	<item>BULGARIAN</item>
-	<item>BENGALI</item>
-	<item>CATALAN</item>
-	<item>CZECH</item>
-	<item>DANISH</item>
-	<item>GERMAN</item>
-	<item>GREEK</item>
-	<item>ENGLISH</item>
-	<item>ENGLISH (AUSTRALIAN)</item>
-	<item>ENGLISH (GREAT BRITAIN)</item>
-	<item>SPANISH</item>
-	<item>BASQUE</item>
-	<item>FARSI</item>
-	<item>FINNISH</item>
-	<item>FILIPINO</item>
-	<item>FRENCH</item>
-	<item>GALICIAN</item>
-	<item>GUJARATI</item>
-	<item>HINDI</item>
-	<item>CROATIAN</item>
-	<item>HUNGARIAN</item>
-	<item>INDONESIAN</item>
-	<item>ITALIAN</item>
-	<item>HEBREW</item>
-	<item>JAPANESE</item>
-	<item>KANNADA</item>
-	<item>KOREAN</item>
-	<item>LITHUANIAN</item>
-	<item>LATVIAN</item>
-	<item>MALAYALAM</item>
-	<item>MARATHI</item>
-	<item>DUTCH</item>
-	<item>NORWEGIAN NYNORSK</item>
-	<item>NORWEGIAN</item>
-	<item>ORIYA</item>
-	<item>POLISH</item>
-	<item>PORTUGUESE</item>
-	<item>PORTUGUESE (BRAZIL)</item>
-	<item>PORTUGUESE (PORTUGAL)</item>
-	<item>ROMANSCH</item>
-	<item>ROMANIAN</item>
-	<item>RUSSIAN</item>
-	<item>SLOVAK</item>
-	<item>SLOVENIAN</item>
-	<item>SERBIAN</item>
-	<item>SWEDISH</item>
-	<item>TAGALOG</item>
-	<item>TAMIL</item>
-	<item>TELUGU</item>
-	<item>THAI</item>
-	<item>TURKISH</item>
-	<item>UKRAINIAN</item>
-	<item>VIETNAMESE</item>
-	<item>CHINESE (SIMPLIFIED)</item>
-	<item>CHINESE (TRADITIONAL)</item>
-</string-array>
-<string-array
-	name="screen_orientation_pref_title">
-	<item>Default</item>
-	<item>Force Landscape</item>
-	<item>Force Portrait</item>
-</string-array>
-<string-array
-	name="screen_orientation_pref_value">
-	<item>-1</item>
-	<item>0</item>
-	<item>1</item>
-</string-array>
-<string-array name="mintime_pref_title">
-	<item>1 s</item>
-	<item>2 s (recommended)</item>
-	<item>3 s</item>
-	<item>4 s</item>
-	<item>5 s</item>
-	<item>10 s</item>
-	<item>20 s</item>
-	<item>30 s</item>
-	<item>1 min</item>
-	<item>2 min</item>
-	<item>3 min</item>
-	<item>5 min</item>
-	<item>10 min</item>
-	<item>15 min</item>
-	<item>30 min</item>
-</string-array>
-<string-array name="mintime_pref_values">
-	<item>1000</item>
-	<item>2000</item>
-	<item>3000</item>
-	<item>4000</item>
-	<item>5000</item>
-	<item>10000</item>
-	<item>20000</item>
-	<item>30000</item>
-	<item>60000</item>
-	<item>120000</item>
-	<item>180000</item>
-	<item>300000</item>
-	<item>600000</item>
-	<item>900000</item>
-	<item>1800000</item>
-</string-array>
-<string-array name="mindistance_pref_title">
-	<item>5 m</item>
-	<item>10 m (recommended)</item>
-	<item>50 m</item>
-	<item>100 m</item>
-	<item>200 m</item>
-	<item>500 m</item>
-</string-array>
-<string-array name="mindistance_pref_values">
-	<item>5</item>
-	<item>10</item>
-	<item>50</item>
-	<item>100</item>
-	<item>200</item>
-	<item>500</item>
-</string-array>
-<string-array name="zoomctrl_pref_title">
-	<item>Bottom</item>
-	<item>Top</item>
-	<item>Hide</item>
-</string-array>
-<string-array name="zoomctrl_pref_values">
-	<item>1</item>
-	<item>2</item>
-	<item>0</item>
-</string-array>
-<string-array name="units_pref_title">
-	<item>km, m, km/h, m/s</item>
-	<item>ml, ft, mph</item>
-</string-array>
-<string-array name="units_pref_values">
-	<item>0</item>
-	<item>1</item>
-</string-array>
+	<string-array name="zoomlevel_pref_title">
+		<item>Not set</item>
+		<item>1</item>
+		<item>2</item>
+		<item>3</item>
+		<item>4</item>
+		<item>5</item>
+		<item>6</item>
+		<item>7</item>
+		<item>8</item>
+		<item>9</item>
+		<item>10</item>
+		<item>11</item>
+		<item>12</item>
+		<item>13</item>
+		<item>14</item>
+		<item>15</item>
+		<item>16</item>
+		<item>17</item>
+		<item>18</item>
+		<item>19</item>
+		<item>20</item>
+	</string-array>
+	<string-array name="zoomlevel_pref_value">
+		<item>0</item>
+		<item>1</item>
+		<item>2</item>
+		<item>3</item>
+		<item>4</item>
+		<item>5</item>
+		<item>6</item>
+		<item>7</item>
+		<item>8</item>
+		<item>9</item>
+		<item>10</item>
+		<item>11</item>
+		<item>12</item>
+		<item>13</item>
+		<item>14</item>
+		<item>15</item>
+		<item>16</item>
+		<item>17</item>
+		<item>18</item>
+		<item>19</item>
+		<item>20</item>
+	</string-array>
+	<string-array name="languages_codes">
+		<item>ar</item>
+		<item>eu</item>
+		<item>bg</item>
+		<item>bn</item>
+		<item>ca</item>
+		<item>cs</item>
+		<item>da</item>
+		<item>de</item>
+		<item>el</item>
+		<item>en</item>
+		<item>en-AU</item>
+		<item>en-GB</item>
+		<item>es</item>
+		<item>eu</item>
+		<item>fa</item>
+		<item>fi</item>
+		<item>fil</item>
+		<item>fr</item>
+		<item>gl</item>
+		<item>gu</item>
+		<item>hi</item>
+		<item>hr</item>
+		<item>hu</item>
+		<item>id</item>
+		<item>it</item>
+		<item>iw</item>
+		<item>ja</item>
+		<item>kn</item>
+		<item>ko</item>
+		<item>lt</item>
+		<item>lv</item>
+		<item>ml</item>
+		<item>mr</item>
+		<item>nl</item>
+		<item>nn</item>
+		<item>no</item>
+		<item>or</item>
+		<item>pl</item>
+		<item>pt</item>
+		<item>pt-BR</item>
+		<item>pt-PT</item>
+		<item>rm</item>
+		<item>ro</item>
+		<item>ru</item>
+		<item>sk</item>
+		<item>sl</item>
+		<item>sr</item>
+		<item>sv</item>
+		<item>tl</item>
+		<item>ta</item>
+		<item>te</item>
+		<item>th</item>
+		<item>tr</item>
+		<item>uk</item>
+		<item>vi</item>
+		<item>zh-CN</item>
+		<item>zh-TW</item>
+	</string-array>
+	<string-array name="languages_names">
+		<item>ARABIC</item>
+		<item>BASQUE</item>
+		<item>BULGARIAN</item>
+		<item>BENGALI</item>
+		<item>CATALAN</item>
+		<item>CZECH</item>
+		<item>DANISH</item>
+		<item>GERMAN</item>
+		<item>GREEK</item>
+		<item>ENGLISH</item>
+		<item>ENGLISH (AUSTRALIAN)</item>
+		<item>ENGLISH (GREAT BRITAIN)</item>
+		<item>SPANISH</item>
+		<item>BASQUE</item>
+		<item>FARSI</item>
+		<item>FINNISH</item>
+		<item>FILIPINO</item>
+		<item>FRENCH</item>
+		<item>GALICIAN</item>
+		<item>GUJARATI</item>
+		<item>HINDI</item>
+		<item>CROATIAN</item>
+		<item>HUNGARIAN</item>
+		<item>INDONESIAN</item>
+		<item>ITALIAN</item>
+		<item>HEBREW</item>
+		<item>JAPANESE</item>
+		<item>KANNADA</item>
+		<item>KOREAN</item>
+		<item>LITHUANIAN</item>
+		<item>LATVIAN</item>
+		<item>MALAYALAM</item>
+		<item>MARATHI</item>
+		<item>DUTCH</item>
+		<item>NORWEGIAN NYNORSK</item>
+		<item>NORWEGIAN</item>
+		<item>ORIYA</item>
+		<item>POLISH</item>
+		<item>PORTUGUESE</item>
+		<item>PORTUGUESE (BRAZIL)</item>
+		<item>PORTUGUESE (PORTUGAL)</item>
+		<item>ROMANSCH</item>
+		<item>ROMANIAN</item>
+		<item>RUSSIAN</item>
+		<item>SLOVAK</item>
+		<item>SLOVENIAN</item>
+		<item>SERBIAN</item>
+		<item>SWEDISH</item>
+		<item>TAGALOG</item>
+		<item>TAMIL</item>
+		<item>TELUGU</item>
+		<item>THAI</item>
+		<item>TURKISH</item>
+		<item>UKRAINIAN</item>
+		<item>VIETNAMESE</item>
+		<item>CHINESE (SIMPLIFIED)</item>
+		<item>CHINESE (TRADITIONAL)</item>
+	</string-array>
+	<string-array name="screen_orientation_pref_title">
+		<item>Default</item>
+		<item>Force Landscape</item>
+		<item>Force Portrait</item>
+	</string-array>
+	<string-array name="screen_orientation_pref_value">
+		<item>-1</item>
+		<item>0</item>
+		<item>1</item>
+	</string-array>
+	<string-array name="mintime_pref_title">
+		<item>1 s</item>
+		<item>2 s (recommended)</item>
+		<item>3 s</item>
+		<item>4 s</item>
+		<item>5 s</item>
+		<item>10 s</item>
+		<item>20 s</item>
+		<item>30 s</item>
+		<item>1 min</item>
+		<item>2 min</item>
+		<item>3 min</item>
+		<item>5 min</item>
+		<item>10 min</item>
+		<item>15 min</item>
+		<item>30 min</item>
+	</string-array>
+	<string-array name="mintime_pref_values">
+		<item>1000</item>
+		<item>2000</item>
+		<item>3000</item>
+		<item>4000</item>
+		<item>5000</item>
+		<item>10000</item>
+		<item>20000</item>
+		<item>30000</item>
+		<item>60000</item>
+		<item>120000</item>
+		<item>180000</item>
+		<item>300000</item>
+		<item>600000</item>
+		<item>900000</item>
+		<item>1800000</item>
+	</string-array>
+	<string-array name="mindistance_pref_title">
+		<item>5 m</item>
+		<item>10 m (recommended)</item>
+		<item>50 m</item>
+		<item>100 m</item>
+		<item>200 m</item>
+		<item>500 m</item>
+	</string-array>
+	<string-array name="mindistance_pref_values">
+		<item>5</item>
+		<item>10</item>
+		<item>50</item>
+		<item>100</item>
+		<item>200</item>
+		<item>500</item>
+	</string-array>
+	<string-array name="zoomctrl_pref_title">
+		<item>Bottom</item>
+		<item>Top</item>
+		<item>Hide</item>
+	</string-array>
+	<string-array name="zoomctrl_pref_values">
+		<item>1</item>
+		<item>2</item>
+		<item>0</item>
+	</string-array>
+	<string-array name="units_pref_title">
+		<item>km, m, km/h, m/s</item>
+		<item>ml, ft, mph</item>
+	</string-array>
+	<string-array name="units_pref_values">
+		<item>0</item>
+		<item>1</item>
+	</string-array>
+	<string-array name="track_activity">
+		<item>Running</item>
+		<item>Walking</item>
+		<item>Cycling</item>
+		<item>Mountain biking</item>
+		<item>Hiking</item>
+		<item>Skating</item>
+		<item>Roller skating</item>
+		<item>Skateboarding</item>
+		<item>Downhill skiing</item>
+		<item>Back country skiing</item>
+		<item>Skiing</item>
+		<item>Rowing</item>
+		<item>Golf</item>
+		<item>Indoor</item>
+		<item>Swimming</item>
+		<item>Horse back riding</item>
+		<item>Motorcycling</item>
+		<item>Trial biking</item>
+		<item>ATV</item>
+		<item>Car driving</item>
+		<item>Boating</item>
+		<item>Kayaking</item>
+		<item>Canoeing</item>
+		<item>Sailing</item>
+		<item>Flying</item>
+		<item>Train</item>
+		<item>Dog sledging</item>
+		<item>Rock climbing</item>
+		<item>Ice climbing</item>
+		<item>Canyoneering</item>
+		<item>Diving</item>
+		<item>Caving</item>
+		<item>Hang gliding</item>
+		<item>Ballooning</item>
+		<item>Snowboarding</item>
+		<item>Snowmobiling</item>
+		<item>Offroading</item>
+		<item>Kiteboarding</item>
+		<item>Surfing</item>
+		<item>Paragliding</item>
+		<item>Unknown</item>
+	</string-array>
 </resources>
