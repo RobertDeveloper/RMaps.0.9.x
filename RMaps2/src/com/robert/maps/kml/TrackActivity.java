@@ -7,12 +7,14 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.robert.maps.R;
 
 public class TrackActivity extends Activity {
 	EditText mName, mDescr;
+	Spinner mActivity;
 	private Track mTrack;
 	private PoiManager mPoiManager;
 
@@ -28,6 +30,7 @@ public class TrackActivity extends Activity {
 
 		mName = (EditText) findViewById(R.id.Name);
 		mDescr = (EditText) findViewById(R.id.Descr);
+		mActivity = (Spinner) findViewById(R.id.Activity);
 
         Bundle extras = getIntent().getExtras();
         if(extras == null) extras = new Bundle();
@@ -45,6 +48,13 @@ public class TrackActivity extends Activity {
 
         	mName.setText(mTrack.Name);
         	mDescr.setText(mTrack.Descr);
+        	String[] act = getResources().getStringArray(R.array.track_activity);
+        	for(int i = 0; i < act.length; i++){
+        		if(act[i].equalsIgnoreCase(mTrack.Activity)){
+        			mActivity.setSelection(i);
+        			break;
+        		}
+        	}
         }
 
 		((Button) findViewById(R.id.saveButton))
@@ -81,6 +91,7 @@ public class TrackActivity extends Activity {
 	private void doSaveAction() {
 		mTrack.Name = mName.getText().toString();
 		mTrack.Descr = mDescr.getText().toString();
+		mTrack.Activity = (String) mActivity.getSelectedItem();
 
 		mPoiManager.updateTrack(mTrack);
 		finish();
