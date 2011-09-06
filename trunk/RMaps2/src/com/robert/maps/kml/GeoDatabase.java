@@ -100,6 +100,15 @@ public class GeoDatabase implements PoiConstants{
 		return null;
 	}
 
+	public Cursor getActivityListCursor() {
+		if (isDatabaseReady()) {
+			// не менять порядок полей
+			return mDatabase.rawQuery(STAT_ActivityList, null);
+		}
+
+		return null;
+	}
+
 	public Cursor getPoi(final int id) {
 		if (isDatabaseReady()) {
 			final String[] args = {Integer.toString(id)};
@@ -166,7 +175,7 @@ public class GeoDatabase implements PoiConstants{
 
 	protected class GeoDatabaseHelper extends RSQLiteOpenHelper {
 		public GeoDatabaseHelper(final Context context, final String name) {
-			super(context, name, null, 14);
+			super(context, name, null, 18);
 		}
 
 		@Override
@@ -177,6 +186,7 @@ public class GeoDatabase implements PoiConstants{
 			db.execSQL(PoiConstants.SQL_ADD_category);
 			db.execSQL(PoiConstants.SQL_CREATE_tracks);
 			db.execSQL(PoiConstants.SQL_CREATE_trackpoints);
+			LoadActivityListFromResource(db);
 		}
 
 		@Override
@@ -211,13 +221,14 @@ public class GeoDatabase implements PoiConstants{
 				db.execSQL(PoiConstants.SQL_CREATE_tracks);
 				db.execSQL(PoiConstants.SQL_CREATE_trackpoints);
 			}
-			if (oldVersion < 14) {
+			if (oldVersion < 18) {
 				db.execSQL(PoiConstants.SQL_UPDATE_6_1);
 				db.execSQL(PoiConstants.SQL_UPDATE_6_2);
 				db.execSQL(PoiConstants.SQL_UPDATE_6_3);
 				db.execSQL(PoiConstants.SQL_CREATE_tracks);
 				db.execSQL(PoiConstants.SQL_UPDATE_6_4);
 				db.execSQL(PoiConstants.SQL_UPDATE_6_5);
+				LoadActivityListFromResource(db);
 			}
 		}
 
@@ -231,6 +242,15 @@ public class GeoDatabase implements PoiConstants{
 		}
 
 		return null;
+	}
+
+	public void LoadActivityListFromResource(final SQLiteDatabase db) {
+		db.execSQL(PoiConstants.SQL_CREATE_drop_activity);
+		db.execSQL(PoiConstants.SQL_CREATE_activity);
+    	String[] act = mCtx.getResources().getStringArray(R.array.track_activity);
+    	for(int i = 0; i < act.length; i++){
+    		db.execSQL(String.format(PoiConstants.SQL_CREATE_insert_activity, i, act[i]));
+    	}
 	}
 
 	public void addPoiCategory(final String title, final int hidden, final int iconid) {
@@ -284,7 +304,7 @@ public class GeoDatabase implements PoiConstants{
 	}
 
 	public long addTrack(final String name, final String descr, final int show, final int cnt, final double distance,
-			final double duration, final int category, final String activity, final Date date) {
+			final double duration, final int category, final int activity, final Date date) {
 		long newId = -1;
 
 		if (isDatabaseReady()) {
@@ -304,7 +324,7 @@ public class GeoDatabase implements PoiConstants{
 		return newId;
 	}
 
-	public void updateTrack(final int id, final String name, final String descr, final int show, final int cnt, final double distance, final double duration, final int category, final String activity, final Date date) {
+	public void updateTrack(final int id, final String name, final String descr, final int show, final int cnt, final double distance, final double duration, final int category, final int activity, final Date date) {
 		if (isDatabaseReady()) {
 			final ContentValues cv = new ContentValues();
 			cv.put(NAME, name);
@@ -397,7 +417,7 @@ public class GeoDatabase implements PoiConstants{
 					final ContentValues cv = new ContentValues();
 					cv.put(NAME, TRACK);
 					cv.put(SHOW, 0);
-					cv.put(ACTIVITY, UNKNOWN);
+					cv.put(ACTIVITY, 0);
 					cv.put(CATEGORYID, 0);
 					newId = mDatabase.insert(TRACKS, null, cv);
 					res = (int) newId;

@@ -1,12 +1,14 @@
 package com.robert.maps.kml;
 
 import android.app.Activity;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -31,6 +33,14 @@ public class TrackActivity extends Activity {
 		mName = (EditText) findViewById(R.id.Name);
 		mDescr = (EditText) findViewById(R.id.Descr);
 		mActivity = (Spinner) findViewById(R.id.Activity);
+		Cursor c = mPoiManager.getGeoDatabase().getActivityListCursor();
+        startManagingCursor(c);
+        SimpleCursorAdapter adapter = new SimpleCursorAdapter(this,
+                android.R.layout.simple_spinner_item, c, 
+                        new String[] { "name" }, 
+                        new int[] { android.R.id.text1 });
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mActivity.setAdapter(adapter);
 
         Bundle extras = getIntent().getExtras();
         if(extras == null) extras = new Bundle();
@@ -40,6 +50,7 @@ public class TrackActivity extends Activity {
         	mTrack = new Track();
 			mName.setText(extras.getString("name"));
 			mDescr.setText(extras.getString("descr"));
+			mActivity.setSelection(0);
         }else{
         	mTrack = mPoiManager.getTrack(id);
 
@@ -48,13 +59,7 @@ public class TrackActivity extends Activity {
 
         	mName.setText(mTrack.Name);
         	mDescr.setText(mTrack.Descr);
-        	String[] act = getResources().getStringArray(R.array.track_activity);
-        	for(int i = 0; i < act.length; i++){
-        		if(act[i].equalsIgnoreCase(mTrack.Activity)){
-        			mActivity.setSelection(i);
-        			break;
-        		}
-        	}
+			mActivity.setSelection(mTrack.Activity);
         }
 
 		((Button) findViewById(R.id.saveButton))
@@ -91,7 +96,7 @@ public class TrackActivity extends Activity {
 	private void doSaveAction() {
 		mTrack.Name = mName.getText().toString();
 		mTrack.Descr = mDescr.getText().toString();
-		mTrack.Activity = (String) mActivity.getSelectedItem();
+		mTrack.Activity = mActivity.getSelectedItemPosition();
 
 		mPoiManager.updateTrack(mTrack);
 		finish();

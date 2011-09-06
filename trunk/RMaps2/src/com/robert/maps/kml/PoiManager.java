@@ -164,7 +164,7 @@ public class PoiManager implements PoiConstants {
 		Cursor c = mGeoDatabase.getTrackChecked();
 		if (c != null) {
 			if (c.moveToFirst())
-				track = new Track(c.getInt(3), c.getString(0), c.getString(1), c.getInt(2) == ONE ? true : false, c.getInt(4), c.getDouble(5), c.getDouble(6), c.getInt(6), c.getString(7), new Date(c.getLong(8)*1000));
+				track = new Track(c.getInt(3), c.getString(0), c.getString(1), c.getInt(2) == ONE ? true : false, c.getInt(4), c.getDouble(5), c.getDouble(6), c.getInt(6), c.getInt(7), new Date(c.getLong(8)*1000));
 			else {
 				c.close();
 				return null;
@@ -195,7 +195,7 @@ public class PoiManager implements PoiConstants {
 		Cursor c = mGeoDatabase.getTrack(id);
 		if (c != null) {
 			if (c.moveToFirst())
-				track = new Track(id, c.getString(0), c.getString(1), c.getInt(2) == ONE ? true : false, c.getInt(3), c.getDouble(4), c.getDouble(5), c.getInt(6), c.getString(7), new Date(c.getLong(8)*1000));
+				track = new Track(id, c.getString(0), c.getString(1), c.getInt(2) == ONE ? true : false, c.getInt(3), c.getDouble(4), c.getDouble(5), c.getInt(6), c.getInt(7), new Date(c.getLong(8)*1000));
 			c.close();
 			c = null;
 

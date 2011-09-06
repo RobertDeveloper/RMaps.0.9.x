@@ -269,6 +269,7 @@
 		<item>1</item>
 	</string-array>
 	<string-array name="track_activity">
+		<item>Unknown</item>
 		<item>Running</item>
 		<item>Walking</item>
 		<item>Cycling</item>
@@ -309,6 +310,5 @@
 		<item>Kiteboarding</item>
 		<item>Surfing</item>
 		<item>Paragliding</item>
-		<item>Unknown</item>
 	</string-array>
 </resources>
