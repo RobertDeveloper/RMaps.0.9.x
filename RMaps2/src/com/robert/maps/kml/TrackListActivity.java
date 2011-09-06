@@ -40,7 +40,6 @@ import android.widget.Toast;
 import com.robert.maps.R;
 import com.robert.maps.kml.Track.TrackPoint;
 import com.robert.maps.kml.XMLparser.SimpleXML;
-import com.robert.maps.kml.constants.PoiConstants;
 import com.robert.maps.trackwriter.DatabaseHelper;
 import com.robert.maps.utils.Ut;
 
@@ -113,10 +112,10 @@ public class TrackListActivity extends ListActivity {
 		final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
 		mUnits = Integer.parseInt(pref.getString("pref_units", "0"));
 
-		if(versionDataUpdate < 5){
+		if(versionDataUpdate < 7){
 			mNeedTracksStatUpdate = true;
 			SharedPreferences.Editor editor = settings.edit();
-			editor.putInt("versionDataUpdate", 5);
+			editor.putInt("versionDataUpdate", 7);
 			editor.commit();
 		}
 		
@@ -206,7 +205,7 @@ public class TrackListActivity extends ListActivity {
 							tr = mPoiManager.getTrack(c.getInt(3));
 							if(tr != null){
 								tr.Category = 0;
-								tr.Activity = PoiConstants.UNKNOWN;
+								tr.Activity = 0;
 								final List<Track.TrackPoint> tps = tr.getPoints();
 								if(tps.size() > 0){
 									tr.Date = tps.get(0).date;
