@@ -113,4 +113,55 @@ public class Track implements PoiConstants {
 			lastpt = pt;
 		}
 	}
+	
+	public class Stat{
+		public Date Date1;
+		public Date Date2;
+		public double MaxSpeed;
+		public double AvgSpeed;
+		public double AvgPace;
+		public double MinEle;
+		public double MaxEle;
+		public int MoveTime;
+		public double AvgMoveSpeed;
+	};
+
+	public Stat CalculateStatFull() {
+		TrackPoint lastpt = null;
+		final Stat stat = new Stat();
+		
+		if(Duration > 0)
+			stat.AvgSpeed = (Distance / 1000) / (Duration/60/60);
+		if(Distance > 0)
+			stat.AvgPace = Duration / (Distance / 1000);
+		
+		for(TrackPoint pt : trackpoints){
+			if(lastpt == null){
+				stat.Date1 = pt.date;
+				stat.MaxSpeed = 0.0;
+				stat.MinEle = pt.alt;
+				stat.MaxEle = pt.alt;
+			} else {
+				if(pt.speed > stat.MaxSpeed)
+					stat.MaxSpeed = pt.speed;
+				if(pt.alt > stat.MaxEle)
+					stat.MaxEle = pt.alt;
+				if(pt.alt < stat.MinEle)
+					stat.MinEle = pt.alt;
+				if(lastpt.speed > 0.5)
+					stat.MoveTime += pt.date.getTime() - lastpt.date.getTime();
+				
+			}
+			lastpt = pt;
+		}
+		if (lastpt != null)
+			stat.Date2 = lastpt.date;
+		if(stat.MoveTime > 0){
+			stat.AvgMoveSpeed = (Distance / 1000) / (stat.MoveTime/1000/60.0/60.0);
+		}
+		
+		stat.MaxSpeed *= 3.6;
+		
+		return stat;
+	}
 }
