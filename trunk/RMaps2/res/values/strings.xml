@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <resources>
+	<string name="blank"> </string>
     <string name="pref_zoomctrl_summary">Position of buttons on the screen</string>
     <string name="pref_zoomctrl">Zoom buttons</string>
 	<string name="pref_screen_orientation">Screen Orientation</string>
@@ -278,6 +279,9 @@ v.0.7.0\n
 	<string name="max_elevation">MAX ELEVATION</string>
 	<string name="menu_stat">Statistics</string>
 	<string name="km">km</string>
+	<string name="kmh">km/h</string>
+	<string name="minkm">min/km</string>
+	<string name="m">m</string>
 	<string name="ml">ml</string>
 	<string name="activity">Activity</string>
 </resources>
