@@ -34,7 +34,7 @@
         <ListView android:id="@android:id/list"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:drawSelectorOnTop="false" android:divider="@drawable/divider"/>
+            android:drawSelectorOnTop="false" android:divider="@drawable/divider" android:background="@drawable/back"/>
 
         <!-- Here is the view to show if the list is empty -->
 
