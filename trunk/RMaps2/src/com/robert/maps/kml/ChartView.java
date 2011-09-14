@@ -1,18 +1,18 @@
 package com.robert.maps.kml;
 
-import com.robert.maps.utils.Ut;
-
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.DashPathEffect;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.graphics.Path;
-import android.os.Debug;
+import android.graphics.RectF;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
+
+import com.robert.maps.kml.Track.TrackPoint;
 
 public class ChartView extends View {
 
@@ -63,12 +63,38 @@ public class ChartView extends View {
 		clearPaint.setStyle(Style.FILL);
 		clearPaint.setColor(Color.WHITE);
 		clearPaint.setAntiAlias(false);
+		
+//		path = new Path();
+//		path.moveTo(0, 0);
+//		path.lineTo(100, 100);
+//		path.lineTo(100, 200);
+//		path.lineTo(200, 300);
+//		path.close();
+        
+		
 	    
 		updateDimensions();
 	}
 
 	public ChartView(Context context) {
 		super(context);
+	}
+	
+	public void setTrack(final Track tr){
+		path = new Path();
+		TrackPoint frstpt = null;
+		for(TrackPoint pt : tr.getPoints()){
+			if(frstpt == null){
+				path.moveTo(pt.date.getTime()/1000, (float) pt.speed);
+				frstpt = pt;
+			} else {
+				path.lineTo(pt.date.getTime()/1000, (float) pt.speed);
+			}
+		}
+
+		final Matrix m = new Matrix();
+		m.setTranslate(-frstpt.date.getTime()/1000, (float) -frstpt.speed);
+		path.transform(m);
 	}
 
 	@Override
@@ -79,10 +105,26 @@ public class ChartView extends View {
 
 		c.drawColor(Color.WHITE);
 		
-		c.drawLine(0, 0, 100, 100, borderPaint);
-
 		drawXAxis(c);
 		drawYAxis(c);
+		
+//		Path p = new Path();;
+//		Matrix m = new Matrix();
+//		m.setScale(0.5f, 0.5f);
+//		path.transform(m, p);
+//		
+//		c.drawPath(p, borderPaint);
+		
+		if(path != null){
+			RectF r = new RectF();
+			path.computeBounds(r, true);
+			final Matrix m = new Matrix();
+			m.setScale(effectiveWidth / r.width(), - effectiveHeight / r.height());
+			path.transform(m);
+			m.setTranslate(RIGHT_BORDER, effectiveHeight + BOTTOM_BORDER);
+			path.transform(m);
+			c.drawPath(path, borderPaint);
+		}
 
 		c.restore();
 	}
@@ -119,17 +161,19 @@ public class ChartView extends View {
 	}
 
 	private void updateEffectiveDimensions() {
-		effectiveWidth = Math.max(0, w - RIGHT_BORDER);
-		effectiveHeight = (int) Math.max(0, h - BOTTOM_BORDER);
-//		effectiveWidth = Math.max(0, w - leftBorder - RIGHT_BORDER);
+		effectiveWidth = Math.max(0, w - 2 * RIGHT_BORDER);
+		effectiveHeight = (int) Math.max(0, h - 2 * BOTTOM_BORDER);
+
+		
+		//		effectiveWidth = Math.max(0, w - leftBorder - RIGHT_BORDER);
 //		effectiveHeight = Math.max(0, h - topBorder - bottomBorder);
 	}
 
 	private void updateEffectiveDimensionsIfChanged(Canvas c) {
 		if (w != c.getWidth() || h != c.getHeight()) {
 			// Dimensions have changed (for example due to orientation change).
-			w = c.getWidth();
-			h = c.getHeight();
+			w = getWidth();
+			h = getHeight();
 			updateEffectiveDimensions();
 			//setUpPath();
 		}
@@ -137,9 +181,11 @@ public class ChartView extends View {
 
 	/** Draws the actual X axis line and its label. */
 	private void drawXAxis(Canvas canvas) {
-		float rightEdge = getX(maxX);
-		final int y = effectiveHeight + topBorder;
-		canvas.drawLine(leftBorder, y, rightEdge, y, borderPaint);
+		canvas.drawLine(RIGHT_BORDER, effectiveHeight + BOTTOM_BORDER, effectiveWidth + RIGHT_BORDER, effectiveHeight + BOTTOM_BORDER, borderPaint);
+		
+//		float rightEdge = getX(maxX);
+//		final int y = effectiveHeight + topBorder;
+		//canvas.drawLine(leftBorder, y, rightEdge, y, borderPaint);
 		// Context c = getContext();
 		// String s = mode == Mode.BY_DISTANCE
 		// ? (metricUnits ? c.getString(R.string.kilometer) :
@@ -151,14 +197,17 @@ public class ChartView extends View {
 
 	/** Draws the actual Y axis line and its label. */
 	private void drawYAxis(Canvas canvas) {
-		canvas.drawRect(0, 0, leftBorder - 1, effectiveHeight + topBorder
-				+ UNIT_BORDER + 1, clearPaint);
-		canvas.drawLine(leftBorder, UNIT_BORDER + topBorder, leftBorder,
-				effectiveHeight + topBorder, borderPaint);
-		for (int i = 1; i < MAX_INTERVALS; ++i) {
-			int y = i * effectiveHeight / MAX_INTERVALS + topBorder;
-			canvas.drawLine(leftBorder - 5, y, leftBorder, y, gridPaint);
-		}
+		canvas.drawLine(RIGHT_BORDER, BOTTOM_BORDER, RIGHT_BORDER,
+		effectiveHeight + BOTTOM_BORDER, borderPaint);
+		
+//		canvas.drawRect(0, 0, leftBorder - 1, effectiveHeight + topBorder
+//				+ UNIT_BORDER + 1, clearPaint);
+//		canvas.drawLine(leftBorder, UNIT_BORDER + topBorder, leftBorder,
+//				effectiveHeight + topBorder, borderPaint);
+//		for (int i = 1; i < MAX_INTERVALS; ++i) {
+//			int y = i * effectiveHeight / MAX_INTERVALS + topBorder;
+//			canvas.drawLine(leftBorder - 5, y, leftBorder, y, gridPaint);
+//		}
 
 	}
 }

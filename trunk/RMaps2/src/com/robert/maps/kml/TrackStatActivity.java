@@ -62,6 +62,8 @@ public class TrackStatActivity extends Activity {
         		((TextView)findViewById(R.id.moveavgspeed_unit)).setText(R.string.kmh);
         		((TextView)findViewById(R.id.minele_unit)).setText(R.string.m);
         		((TextView)findViewById(R.id.maxele_unit)).setText(R.string.m);
+        		
+        		((ChartView) findViewById(R.id.chart)).setTrack(tr);
         	}
         }
 	}
