@@ -32,6 +32,9 @@ public final class R {
     public static final class attr {
     }
     public static final class color {
+        public static final int chart_border=0x7f070003;
+        public static final int chart_graph_0=0x7f070004;
+        public static final int chart_graph_1=0x7f070005;
         public static final int currenttrack=0x7f070001;
         public static final int poi_descr_text=0x7f070002;
         public static final int track=0x7f070000;
