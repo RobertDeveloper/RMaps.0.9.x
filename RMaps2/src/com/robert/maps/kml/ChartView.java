@@ -1,6 +1,7 @@
 package com.robert.maps.kml;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.DashPathEffect;
@@ -9,9 +10,11 @@ import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.graphics.Path;
 import android.graphics.RectF;
+import android.location.Location;
 import android.util.AttributeSet;
 import android.view.View;
 
+import com.robert.maps.R;
 import com.robert.maps.kml.Track.TrackPoint;
 
 public class ChartView extends View {
@@ -27,13 +30,14 @@ public class ChartView extends View {
 	private int effectiveWidth = 0;
 	private int effectiveHeight = 0;
 
-	private Path path;
+	private Path[] path = {new Path(), new Path()};
 
 	private final Paint borderPaint = new Paint();
 	private final Paint labelPaint = new Paint();
 	private final Paint gridPaint = new Paint();
 	private final Paint gridBarPaint = new Paint();
 	private final Paint clearPaint = new Paint();
+	private final Paint[] graphPaint = {new Paint(), new Paint()};
 
 	private static final int TOP_BORDER = 15;
 	private static final float BOTTOM_BORDER = 40;
@@ -44,13 +48,14 @@ public class ChartView extends View {
 
 	public ChartView(Context context, AttributeSet attrs) {
 		super(context, attrs);
+		final Resources res = getResources();
 
 		labelPaint.setStyle(Style.STROKE);
 		labelPaint.setColor(Color.BLACK);
 		labelPaint.setAntiAlias(true);
 
 		borderPaint.setStyle(Style.STROKE);
-		borderPaint.setColor(Color.BLACK);
+		borderPaint.setColor(res.getColor(R.color.chart_border));
 		borderPaint.setAntiAlias(true);
 
 		gridPaint.setStyle(Style.STROKE);
@@ -63,6 +68,17 @@ public class ChartView extends View {
 		clearPaint.setStyle(Style.FILL);
 		clearPaint.setColor(Color.WHITE);
 		clearPaint.setAntiAlias(false);
+		
+		graphPaint[0].setColor(res.getColor(R.color.chart_graph_0));
+		graphPaint[0].setStyle(Style.STROKE);
+		graphPaint[0].setStrokeWidth(3);
+		graphPaint[0].setAntiAlias(true);
+		graphPaint[0].setAlpha(180);
+		graphPaint[0].setStrokeCap(Paint.Cap.ROUND);
+		graphPaint[0].setShadowLayer(10.0f, 0, 0, res.getColor(R.color.chart_graph_0));
+		graphPaint[1] = new Paint(graphPaint[0]);
+		graphPaint[1].setColor(res.getColor(R.color.chart_graph_1));
+		graphPaint[1].setShadowLayer(10.0f, 0, 0, res.getColor(R.color.chart_graph_1));
 		
 //		path = new Path();
 //		path.moveTo(0, 0);
@@ -81,20 +97,37 @@ public class ChartView extends View {
 	}
 	
 	public void setTrack(final Track tr){
-		path = new Path();
-		TrackPoint frstpt = null;
+		float[] results = {0};
+		float distance = 0.0f;
+		double minSpeed = Double.MAX_VALUE, minAlt = Double.MAX_VALUE;
+		
+		TrackPoint lastpt = null;
 		for(TrackPoint pt : tr.getPoints()){
-			if(frstpt == null){
-				path.moveTo(pt.date.getTime()/1000, (float) pt.speed);
-				frstpt = pt;
+			if(lastpt == null){
+				//path.moveTo(pt.date.getTime()/1000, (float) pt.speed);
+				path[0].moveTo(0, (float) pt.speed);
+				path[1].moveTo(0, (float) pt.alt);
 			} else {
-				path.lineTo(pt.date.getTime()/1000, (float) pt.speed);
+				Location.distanceBetween(lastpt.lat, lastpt.lon, pt.lat, pt.lon, results);
+				//path.lineTo(pt.date.getTime()/1000, (float) pt.speed);
+				distance += results[0];
+				path[0].lineTo(distance, (float) pt.speed);
+				path[1].lineTo(distance, (float) pt.alt);
 			}
+			if(minSpeed > pt.speed) minSpeed = pt.speed; 
+			if(minAlt > pt.alt) minAlt = pt.alt; 
+			lastpt = pt;
 		}
 
 		final Matrix m = new Matrix();
-		m.setTranslate(-frstpt.date.getTime()/1000, (float) -frstpt.speed);
-		path.transform(m);
+		m.setTranslate(0, (float) - minSpeed);
+		path[0].transform(m);
+		m.setScale(1, -1);
+		path[0].transform(m);
+		m.setTranslate(0, (float) - minAlt);
+		path[1].transform(m);
+		m.setScale(1, -1);
+		path[1].transform(m);
 	}
 
 	@Override
@@ -103,28 +136,29 @@ public class ChartView extends View {
 		
 		c.save();
 
-		c.drawColor(Color.WHITE);
-		
-		drawXAxis(c);
-		drawYAxis(c);
-		
-//		Path p = new Path();;
-//		Matrix m = new Matrix();
-//		m.setScale(0.5f, 0.5f);
-//		path.transform(m, p);
-//		
-//		c.drawPath(p, borderPaint);
+		//c.drawColor(Color.BLACK);
 		
 		if(path != null){
 			RectF r = new RectF();
-			path.computeBounds(r, true);
 			final Matrix m = new Matrix();
-			m.setScale(effectiveWidth / r.width(), - effectiveHeight / r.height());
-			path.transform(m);
+
+			path[0].computeBounds(r, true);
+			m.setScale(effectiveWidth / r.width(), /*-*/ effectiveHeight / r.height());
+			path[0].transform(m);
 			m.setTranslate(RIGHT_BORDER, effectiveHeight + BOTTOM_BORDER);
-			path.transform(m);
-			c.drawPath(path, borderPaint);
+			path[0].transform(m);
+			c.drawPath(path[0], graphPaint[0]);
+
+			path[1].computeBounds(r, true);
+			m.setScale(effectiveWidth / r.width(), /*-*/ effectiveHeight / r.height());
+			path[1].transform(m);
+			m.setTranslate(RIGHT_BORDER, effectiveHeight + BOTTOM_BORDER);
+			path[1].transform(m);
+			c.drawPath(path[1], graphPaint[1]);
 		}
+
+		drawXAxis(c);
+		drawYAxis(c);
 
 		c.restore();
 	}
