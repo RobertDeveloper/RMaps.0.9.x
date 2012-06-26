@@ -5,9 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.andnav.osm.util.GeoPoint;
-import org.andnav.osm.views.OpenStreetMapView;
-import org.andnav.osm.views.OpenStreetMapView.OpenStreetMapViewProjection;
-import org.andnav.osm.views.overlay.OpenStreetMapViewOverlay;
 import org.andnav.osm.views.util.constants.OpenStreetMapViewConstants;
 
 import android.app.Activity;
@@ -29,8 +26,10 @@ import com.robert.maps.R;
 import com.robert.maps.kml.PoiManager;
 import com.robert.maps.kml.PoiPoint;
 import com.robert.maps.utils.Ut;
+import com.robert.maps.view.TileView;
+import com.robert.maps.view.TileViewOverlay;
 
-public class PoiOverlay extends OpenStreetMapViewOverlay {
+public class PoiOverlay extends TileViewOverlay {
 	private Context mCtx;
 	private PoiManager mPoiManager;
 	private int mTapIndex;
@@ -40,6 +39,14 @@ public class PoiOverlay extends OpenStreetMapViewOverlay {
 	private RelativeLayout mT;
 	private float mDensity;
 	private boolean mNeedUpdateList = false;
+
+	protected OnItemTapListener<PoiPoint> mOnItemTapListener;
+	protected OnItemLongPressListener<PoiPoint> mOnItemLongPressListener;
+	protected List<PoiPoint> mItemList;
+	protected final Point mMarkerHotSpot;
+	protected final int mMarkerWidth, mMarkerHeight;
+	private boolean mCanUpdateList = true;
+	protected HashMap<Integer, Drawable> mBtnMap;
 
 	public int getTapIndex() {
 		return mTapIndex;
@@ -52,14 +59,6 @@ public class PoiOverlay extends OpenStreetMapViewOverlay {
 	public void UpdateList() {
 		mNeedUpdateList = true;
 	}
-
-	protected OnItemTapListener<PoiPoint> mOnItemTapListener;
-	protected OnItemLongPressListener<PoiPoint> mOnItemLongPressListener;
-	protected List<PoiPoint> mItemList;
-	protected final Point mMarkerHotSpot;
-	protected final int mMarkerWidth, mMarkerHeight;
-	private boolean mCanUpdateList = true;
-	protected HashMap<Integer, Drawable> mBtnMap;
 
 	public PoiOverlay(Context ctx, PoiManager poiManager,
 			OnItemTapListener<PoiPoint> onItemTapListener, boolean hidepoi)
@@ -103,8 +102,8 @@ public class PoiOverlay extends OpenStreetMapViewOverlay {
 	}
 
 	@Override
-	public void onDraw(Canvas c, OpenStreetMapView mapView) {
-		final OpenStreetMapViewProjection pj = mapView.getProjection();
+	public void onDraw(Canvas c, TileView mapView) {
+		final com.robert.maps.view.TileView.OpenStreetMapViewProjection pj = mapView.getProjection();
 		final Point curScreenCoords = new Point();
 
 		if (mCanUpdateList){
@@ -223,6 +222,7 @@ public class PoiOverlay extends OpenStreetMapViewOverlay {
 			
 			c.drawLine(screenCoords.x - 5, screenCoords.y - 5, screenCoords.x + 5, screenCoords.y + 5, p);
 			c.drawLine(screenCoords.x - 5, screenCoords.y + 5, screenCoords.x + 5, screenCoords.y - 5, p);
+			Ut.d("drawLine "+left2+"-"+right2+" "+top2+"-"+bottom2);
 			}
 		}
 	}
@@ -231,9 +231,9 @@ public class PoiOverlay extends OpenStreetMapViewOverlay {
 		return this.mItemList.get(index);
 	}
 
-	public int getMarkerAtPoint(final int eventX, final int eventY, OpenStreetMapView mapView){
+	public int getMarkerAtPoint(final int eventX, final int eventY, TileView mapView){
 		if(this.mItemList != null){
-			final OpenStreetMapViewProjection pj = mapView.getProjection();
+			final com.robert.maps.view.TileView.OpenStreetMapViewProjection pj = mapView.getProjection();
 
 			final Rect curMarkerBounds = new Rect();
 			final Point mCurScreenCoords = new Point();
@@ -248,6 +248,8 @@ public class PoiOverlay extends OpenStreetMapViewOverlay {
 				final int right = (int)(mCurScreenCoords.x + mDensity*(38 + pxUp));
 				final int top = (int)(mCurScreenCoords.y - this.mMarkerHotSpot.y - mDensity*(pxUp));
 				final int bottom = (int)(top + mDensity*(33 + pxUp));
+				Ut.d("event "+eventX+" "+eventY);
+				Ut.d("bounds "+left+"-"+right+" "+top+"-"+bottom);
 
 				curMarkerBounds.set(left, top, right, bottom);
 				if(curMarkerBounds.contains(eventX, eventY))
@@ -259,7 +261,7 @@ public class PoiOverlay extends OpenStreetMapViewOverlay {
 	}
 
 	@Override
-	public boolean onSingleTapUp(MotionEvent event, OpenStreetMapView mapView) {
+	public boolean onSingleTapUp(MotionEvent event, TileView mapView) {
 		final int index = getMarkerAtPoint((int)event.getX(), (int)event.getY(), mapView);
 		if (index >= 0)
 			if (onTap(index))
@@ -269,7 +271,7 @@ public class PoiOverlay extends OpenStreetMapViewOverlay {
 	}
 
 	@Override
-	public boolean onLongPress(MotionEvent event, OpenStreetMapView mapView) {
+	public boolean onLongPress(MotionEvent event, TileView mapView) {
 		final int index = getMarkerAtPoint((int)event.getX(), (int)event.getY(), mapView);
 		if (index >= 0)
 			if (onLongLongPress(index))
@@ -280,10 +282,6 @@ public class PoiOverlay extends OpenStreetMapViewOverlay {
 
 	private boolean onLongLongPress(int index) {
 		return false;
-//		if(this.mOnItemLongPressListener != null)
-//			return this.mOnItemLongPressListener.onItemLongPress(index, this.mItemList.get(index));
-//		else
-//			return false;
 	}
 
 	protected boolean onTap(int index) {
@@ -309,7 +307,7 @@ public class PoiOverlay extends OpenStreetMapViewOverlay {
 	}
 
 	@Override
-	protected void onDrawFinished(Canvas c, OpenStreetMapView osmv) {
+	protected void onDrawFinished(Canvas c, TileView osmv) {
 	}
 
 

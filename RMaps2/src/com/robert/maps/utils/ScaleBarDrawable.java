@@ -1,8 +1,6 @@
 package com.robert.maps.utils;
 
 
-import org.andnav.osm.views.OpenStreetMapView;
-
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.ColorFilter;
@@ -10,13 +8,15 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 
+import com.robert.maps.view.MapView;
+
 public class ScaleBarDrawable extends Drawable {
 
     private Paint mPaint = new Paint();
     private Paint mPaint2 = new Paint();
     private Paint mPaint3 = new Paint();
     private Paint mPaint4 = new Paint();
-    private OpenStreetMapView mOsmv;
+    private MapView mOsmv;
     private int mZoomLevel = -1;
     private double mTouchScale = 1;
     private String mDist = "";
@@ -30,7 +30,7 @@ public class ScaleBarDrawable extends Drawable {
     private static int EQUATOR_ML = 24902;
     private static int EQUATOR_FT = 131481877;
 
-    public ScaleBarDrawable(Context ctx, OpenStreetMapView osmv, int units) {
+    public ScaleBarDrawable(Context ctx, MapView osmv, int units) {
     	mOsmv = osmv;
     	mUnits = units;
 
@@ -53,9 +53,9 @@ public class ScaleBarDrawable extends Drawable {
     public void draw(Canvas canvas) {
 		final int h = 13, h2 = 6, margin = 7;
 
-        if(mZoomLevel != mOsmv.getZoomLevel() || mTouchScale != mOsmv.mTouchScale){
+        if(mZoomLevel != mOsmv.getZoomLevel() || mTouchScale != mOsmv.getTouchScale()){
         	mZoomLevel = mOsmv.getZoomLevel();
-        	mTouchScale = mOsmv.mTouchScale;
+        	mTouchScale = mOsmv.getTouchScale();
 
 			final int dist = SCALE[mUnits][Math.max(0, Math.min(19, mZoomLevel + 1 + (int)(mTouchScale > 1 ? Math.round(mTouchScale)-1 : -Math.round(1/mTouchScale)+1)))];
     		if(mUnits == 0){

@@ -112,7 +112,7 @@ public class SQLiteMapDatabase {
 
 	@Override
 	protected void finalize() throws Throwable {
-		Ut.dd("finalize: Close SQLITEDB Database database");
+		Ut.d("finalize: Close SQLITEDB Database database");
 		if(mDatabase != null)
 			mDatabase.close();
 		super.finalize();
@@ -123,7 +123,7 @@ public class SQLiteMapDatabase {
 			if(mDatabase.isOpen())
 			{
 				mDatabase.close();
-				Ut.dd("Close SQLITEDB Database");
+				Ut.d("Close SQLITEDB Database");
 			}
 	}
 

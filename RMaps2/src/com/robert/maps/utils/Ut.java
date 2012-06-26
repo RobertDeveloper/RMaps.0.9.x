@@ -20,6 +20,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
@@ -125,21 +126,30 @@ public class Ut implements OpenStreetMapConstants, OpenStreetMapViewConstants {
 
 		return dir;
 	}
+	
+	private static String EXTERNAL_SD = "/external_sd";
+	public static String getExternalStorageDirectory() {
+		final File dir = new File(Environment.getExternalStorageDirectory().getPath()+EXTERNAL_SD);
+		if(dir.exists())
+			return Environment.getExternalStorageDirectory().getPath()+EXTERNAL_SD;
+		else
+			return Environment.getExternalStorageDirectory().getPath();
+	}
 
 	public static File getRMapsMainDir(final Context mCtx, final String aFolderName) {
-		return getDir(mCtx, "pref_dir_main", "/sdcard/rmaps/", aFolderName);
+		return getDir(mCtx, "pref_dir_main", Ut.getExternalStorageDirectory()+"/rmaps/", aFolderName);
 	}
 
 	public static File getRMapsMapsDir(final Context mCtx) {
-		return getDir(mCtx, "pref_dir_maps", "/sdcard/rmaps/maps/", "");
+		return getDir(mCtx, "pref_dir_maps", Ut.getExternalStorageDirectory()+"/rmaps/maps/", "");
 	}
 
 	public static File getRMapsImportDir(final Context mCtx) {
-		return getDir(mCtx, "pref_dir_import", "/sdcard/rmaps/import/", "");
+		return getDir(mCtx, "pref_dir_import", Ut.getExternalStorageDirectory()+"/rmaps/import/", "");
 	}
 
 	public static File getRMapsExportDir(final Context mCtx) {
-		return getDir(mCtx, "pref_dir_export", "/sdcard/rmaps/export/", "");
+		return getDir(mCtx, "pref_dir_export", Ut.getExternalStorageDirectory()+"/rmaps/export/", "");
 	}
 
 	public static String readString(final InputStream in, final int size) throws IOException{

@@ -51,22 +51,24 @@ public class OpenStreetMapTileProvider implements OpenStreetMapConstants, OpenSt
 			e.printStackTrace();
 		}
 		this.mTileCache = new OpenStreetMapTileCache(iMapTileCacheSize);
-		this.mFSTileProvider = new OpenStreetMapTileFilesystemProvider(ctx, 4 * 1024 * 1024, this.mTileCache, aRendererInfo.TILE_SOURCE_TYPE == 0 ? aRendererInfo.ID : null); // 4MB FSCache
+		this.mFSTileProvider = new OpenStreetMapTileFilesystemProvider(ctx, 4 * 1024 * 1024, this.mTileCache, aRendererInfo == null ? null : aRendererInfo.TILE_SOURCE_TYPE == 0 ? aRendererInfo.ID : null); // 4MB FSCache
 		this.mTileDownloader = new OpenStreetMapTileDownloader(ctx, this.mFSTileProvider);
 		this.mDownloadFinishedListenerHander = aDownloadFinishedListener;
 		this.mRendererInfo = aRendererInfo;
 
-		switch(aRendererInfo.TILE_SOURCE_TYPE){
-		case 0:
-			this.mTileDownloader.setCacheDatabase(aRendererInfo.CacheDatabaseName());
-			break;
-		case 3:
-		case 4:
-		case 5:
-			mFSTileProvider.setUserMapFile(aRendererInfo.BASEURL, aRendererInfo.TILE_SOURCE_TYPE, aDownloadFinishedListener);
-			aRendererInfo.ZOOM_MAXLEVEL = mFSTileProvider.getZoomMaxInCashFile();
-			aRendererInfo.ZOOM_MINLEVEL = mFSTileProvider.getZoomMinInCashFile();
-			break;
+		if(aRendererInfo != null) {
+			switch(aRendererInfo.TILE_SOURCE_TYPE){
+			case 0:
+				this.mTileDownloader.setCacheDatabase(aRendererInfo.CacheDatabaseName());
+				break;
+			case 3:
+			case 4:
+			case 5:
+				mFSTileProvider.setUserMapFile(aRendererInfo.BASEURL, aRendererInfo.TILE_SOURCE_TYPE, aDownloadFinishedListener);
+				aRendererInfo.ZOOM_MAXLEVEL = mFSTileProvider.getZoomMaxInCashFile();
+				aRendererInfo.ZOOM_MINLEVEL = mFSTileProvider.getZoomMinInCashFile();
+				break;
+			}
 		}
 	}
 
@@ -127,6 +129,8 @@ public class OpenStreetMapTileProvider implements OpenStreetMapConstants, OpenSt
 
 	public Bitmap getMapTile(final String aTileURLString, final int aTypeCash, final Bitmap aLoadingMapTile, final int x, final int y, final int z){
 		//Log.d(DEBUGTAG, "getMapTile "+aTileURLString);
+		
+		//return aLoadingMapTile;
 
 		Bitmap ret = this.mTileCache.getMapTile(aTileURLString);
 		if(ret != null){
@@ -150,7 +154,7 @@ public class OpenStreetMapTileProvider implements OpenStreetMapConstants, OpenSt
 				if(DEBUGMODE)
 					Log.d(DEBUGTAG, "Error(" + e.getClass().getSimpleName() + ") loading MapTile from Filesystem: " + OpenStreetMapTileNameFormatter.format(aTileURLString));
 			}
-			if(ret == null){ /* FS did not contain the MapTile, we need to download it asynchronous. */
+			if(ret == null){  // FS did not contain the MapTile, we need to download it asynchronous. 
 				if(DEBUGMODE)
 					Log.i(DEBUGTAG, "Requesting Maptile for download.");
 				ret = aLoadingMapTile;
@@ -159,7 +163,7 @@ public class OpenStreetMapTileProvider implements OpenStreetMapConstants, OpenSt
 			}
 		}
 		return ret;
-	}
+}
 
 	// ===========================================================
 	// Inner and Anonymous Classes

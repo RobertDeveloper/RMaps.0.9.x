@@ -14,11 +14,14 @@ import javax.xml.parsers.SAXParserFactory;
 
 import org.andnav.osm.views.util.constants.OpenStreetMapViewConstants;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 
 import com.robert.maps.R;
 import com.robert.maps.kml.XMLparser.PredefMapsParser;
+import com.robert.maps.tileprovider.TileProviderBase;
+import com.robert.maps.utils.Ut;
 
 /**
  *
@@ -67,6 +70,10 @@ public class OpenStreetMapRendererInfo {
 		this.LAYER = false;
 		this.CACHE = "";
 	}
+	
+	public TileProviderBase getTileProvider(Context ctx) {
+		return null; //new TileProviderBase(ctx);
+	}
 
 	public void LoadFromResources(String aId, SharedPreferences pref) {
 		if (aId.equalsIgnoreCase(""))
@@ -112,7 +119,7 @@ public class OpenStreetMapRendererInfo {
 				parser = fac.newSAXParser();
 				if(parser != null){
 					final InputStream in = mResources.openRawResource(R.raw.predefmaps);
-					parser.parse(in, new PredefMapsParser(this, aId));
+					//parser.parse(in, new PredefMapsParser(this, aId));
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -211,6 +218,25 @@ public class OpenStreetMapRendererInfo {
 		switch(this.TILE_SOURCE_TYPE){
 		case 0: // 0 - internet
 			switch(this.URL_BUILDER_TYPE){
+				case 10:
+					final double g = 20037508.34;
+					final int tilecount = getTileUpperBound(zoomLevel);
+					final double delta = g * 2 / tilecount;
+					final int x = tileID[OpenStreetMapViewConstants.MAPTILE_LONGITUDE_INDEX];
+					final int y = tilecount - 1 - tileID[OpenStreetMapViewConstants.MAPTILE_LATITUDE_INDEX];
+					
+					
+					return new StringBuilder()
+					.append(this.BASEURL)
+					.append(String.format("%f", delta * x - g))
+					.append(",")
+					.append(String.format("%f", delta * y - g))
+					.append(",")
+					.append(String.format("%f", delta * (x + 1) - g))
+					.append(",")
+					.append(String.format("%f", delta * (y + 1) - g))
+					.append("&WIDTH=256&HEIGHT=256")
+					.toString();
 				case 7: // docelu.pl
 					String sy = String.format("%06x", tileID[OpenStreetMapViewConstants.MAPTILE_LATITUDE_INDEX]);
 					String sx = String.format("%06x", tileID[OpenStreetMapViewConstants.MAPTILE_LONGITUDE_INDEX]);

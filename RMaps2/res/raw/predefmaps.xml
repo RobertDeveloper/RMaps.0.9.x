@@ -10,6 +10,7 @@
 		7 - Docelu.pl
 		8 - VFR Chart
 		9 - http://www.avcharts.com/
+		10 - Soviet Military Maps
 	TILE_SOURCE_TYPE, //
 		0 - internet,
 		3 - MapNav file,
@@ -22,6 +23,8 @@
 	-->
 
 <root>
+	<map id="smm" name="Soviet Military Maps" descr="" baseurl="http://78.46.61.141/cgi-bin/tilecache-2.11/tilecache.py?LAYERS=topomapper_gmerc&amp;FORMAT=image%2Fjpeg&amp;SERVICE=WMS&amp;VERSION=1.1.1&amp;REQUEST=GetMap&amp;STYLES=&amp;SRS=EPSG%3A900913&amp;BBOX=" IMAGE_FILENAMEENDING="" ZOOM_MINLEVEL="0" ZOOM_MAXLEVEL="13" MAPTILE_SIZEPX="256" URL_BUILDER_TYPE="10" TILE_SOURCE_TYPE="0" PROJECTION="1" YANDEX_TRAFFIC_ON="0"></map>
+   
 	<map id="yandexmap" name="Yandex.Map" descr="http://maps.yandex.ru" baseurl="http://vec.maps.yandex.net/tiles?l=map&amp;v=2.20.0&amp;x=" IMAGE_FILENAMEENDING="" ZOOM_MINLEVEL="0" ZOOM_MAXLEVEL="17" MAPTILE_SIZEPX="256" URL_BUILDER_TYPE="2" TILE_SOURCE_TYPE="0" PROJECTION="2" YANDEX_TRAFFIC_ON="0"></map>
 	<map id="yandexmaptraffic" cache="yandexmap" name="Yandex.Traffic" descr="http://maps.yandex.ru" baseurl="http://vec.maps.yandex.net/tiles?l=map&amp;v=2.20.0&amp;x=" IMAGE_FILENAMEENDING="" ZOOM_MINLEVEL="0" ZOOM_MAXLEVEL="17" MAPTILE_SIZEPX="256" URL_BUILDER_TYPE="2" TILE_SOURCE_TYPE="0" PROJECTION="2" YANDEX_TRAFFIC_ON="1"></map>
 	<map id="yandexsat" name="Yandex.Sattelite" descr="http://maps.yandex.ru" baseurl="http://sat01.maps.yandex.net/tiles?l=sat&amp;v=1.26.0&amp;x=" IMAGE_FILENAMEENDING="" ZOOM_MINLEVEL="0" ZOOM_MAXLEVEL="19" MAPTILE_SIZEPX="256" URL_BUILDER_TYPE="2" TILE_SOURCE_TYPE="0" PROJECTION="2" YANDEX_TRAFFIC_ON="0"></map>

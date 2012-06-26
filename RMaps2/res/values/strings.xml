@@ -235,7 +235,8 @@ v.0.7.0\n
     <string name="remote_service_started">RMaps track writer</string>
     <string name="menu_goto_track">Go to Track</string>
 
-    <string name="btn_start">Start track record</string>
+    <string name="btn_start">Start record</string>
+    <string name="btn_pause">Pause</string>
     <string name="btn_stop">Stop</string>
     <string name="trackwriter_nothing">Nothing to save</string>
     <string name="trackwriter_saved">Track saved</string>

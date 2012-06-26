@@ -18,6 +18,7 @@ import com.robert.maps.kml.constants.PoiConstants;
 public class PoiManager implements PoiConstants {
 	protected final Context mCtx;
 	private GeoDatabase mGeoDatabase;
+	private boolean mStopProcessing;
 
 	public PoiManager(Context ctx) {
 		super();
@@ -31,6 +32,18 @@ public class PoiManager implements PoiConstants {
 
 	public void FreeDatabases(){
 		mGeoDatabase.FreeDatabases();
+	}
+	
+	public void StopProcessing() {
+		mStopProcessing = true;
+	}
+	
+	private boolean Stop() {
+		if(mStopProcessing) {
+			mStopProcessing = false;
+			return true;
+		}
+		return false;
 	}
 
 	public void addPoi(final String title, final String descr, GeoPoint point){
@@ -160,6 +173,7 @@ public class PoiManager implements PoiConstants {
 	}
 
 	public Track getTrackChecked(){
+		mStopProcessing = false;
 		Track track = null;
 		Cursor c = mGeoDatabase.getTrackChecked();
 		if (c != null) {
@@ -175,6 +189,10 @@ public class PoiManager implements PoiConstants {
 			if (c != null) {
 				if (c.moveToFirst()) {
 					do {
+						if(Stop()) {
+							track = null;
+							break;
+						}
 						track.AddTrackPoint(); //track.trackpoints.size()
 						track.LastTrackPoint.lat = c.getDouble(0);
 						track.LastTrackPoint.lon = c.getDouble(1);
