@@ -4,9 +4,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import org.andnav.osm.util.GeoPoint;
-import org.andnav.osm.views.OpenStreetMapView;
-import org.andnav.osm.views.OpenStreetMapView.OpenStreetMapViewProjection;
-import org.andnav.osm.views.overlay.OpenStreetMapViewOverlay;
 import org.andnav.osm.views.util.OpenStreetMapTileFilesystemProvider;
 
 import android.graphics.Canvas;
@@ -16,13 +13,15 @@ import android.graphics.Point;
 import android.os.Handler;
 import android.os.Message;
 
-import com.robert.maps.MainMapActivity;
+import com.robert.maps.MainActivity;
 import com.robert.maps.R;
 import com.robert.maps.kml.PoiManager;
 import com.robert.maps.kml.Track;
 import com.robert.maps.utils.Ut;
+import com.robert.maps.view.TileView;
+import com.robert.maps.view.TileViewOverlay;
 
-public class TrackOverlay extends OpenStreetMapViewOverlay {
+public class TrackOverlay extends TileViewOverlay {
 	private Paint mPaint;
 	private int mLastZoom;
 	private Path mPath;
@@ -32,9 +31,10 @@ public class TrackOverlay extends OpenStreetMapViewOverlay {
 	private PoiManager mPoiManager;
 	private TrackThread mThread;
 	private boolean mThreadRunned = false;
-	private OpenStreetMapView mOsmv;
+	private TileView mOsmv;
 	private Handler mMainMapActivityCallbackHandler;
 	private boolean mStopDraw = false;
+	private com.robert.maps.view.TileView.OpenStreetMapViewProjection mProjection;
 
 	protected ExecutorService mThreadExecutor = Executors.newSingleThreadExecutor();
 
@@ -49,6 +49,7 @@ public class TrackOverlay extends OpenStreetMapViewOverlay {
 			if(mTrack == null){
 				mTrack = mPoiManager.getTrackChecked();
 				if(mTrack == null){
+					Ut.d("Track is null. Stoped??");
 					mThreadRunned = false;
 					mStopDraw = true;
 					return;
@@ -56,8 +57,7 @@ public class TrackOverlay extends OpenStreetMapViewOverlay {
 				Ut.d("Track loaded");
 			}
 
-			final OpenStreetMapViewProjection pj = mOsmv.getProjection();
-			mPath = pj.toPixelsTrackPoints(mTrack.getPoints(), mBaseCoords, mBaseLocation);
+			mPath = mProjection.toPixelsTrackPoints(mTrack.getPoints(), mBaseCoords, mBaseLocation);
 
 			Ut.d("Track maped");
 
@@ -67,7 +67,8 @@ public class TrackOverlay extends OpenStreetMapViewOverlay {
 		}
 	}
 
-	public TrackOverlay(MainMapActivity mainMapActivity, PoiManager poiManager) {
+	public TrackOverlay(MainActivity mainActivity, PoiManager poiManager, Handler aHandler) {
+		mMainMapActivityCallbackHandler = aHandler;
 		mTrack = null;
 		mPoiManager = poiManager;
 		mBaseCoords = new Point();
@@ -81,7 +82,17 @@ public class TrackOverlay extends OpenStreetMapViewOverlay {
 		mPaint.setAntiAlias(true);
 		mPaint.setStrokeWidth(4);
 		mPaint.setStyle(Paint.Style.STROKE);
-		mPaint.setColor(mainMapActivity.getResources().getColor(R.color.track));
+		mPaint.setColor(mainActivity.getResources().getColor(R.color.track));
+	}
+
+	@Override
+	public void Free() {
+		if(mPoiManager != null)
+			mPoiManager.StopProcessing();
+		if(mProjection != null)
+			mProjection.StopProcessing();
+		mThreadExecutor.shutdown();
+		super.Free();
 	}
 
 	public void setStopDraw(boolean stopdraw){
@@ -89,16 +100,17 @@ public class TrackOverlay extends OpenStreetMapViewOverlay {
 	}
 
 	@Override
-	protected void onDraw(Canvas c, OpenStreetMapView osmv) {
+	protected void onDraw(Canvas c, TileView osmv) {
 		if(mStopDraw) return;
 
 		if (!mThreadRunned && (mTrack == null || mLastZoom != osmv.getZoomLevel())) {
 			mPath = null;
 			mLastZoom = osmv.getZoomLevel();
-			mMainMapActivityCallbackHandler = osmv.getHandler();
+			//mMainMapActivityCallbackHandler = osmv.getHandler();
 			mOsmv = osmv;
 			//mThread.run();
 			Ut.d("mThreadExecutor.execute "+mThread.isAlive());
+			mProjection = mOsmv.getProjection();
 			mThreadRunned = true;
 			mThreadExecutor.execute(mThread);
 			return;
@@ -107,8 +119,7 @@ public class TrackOverlay extends OpenStreetMapViewOverlay {
 		if(mPath == null)
 			return;
 
-		Ut.d("Draw track");
-		final OpenStreetMapViewProjection pj = osmv.getProjection();
+		final com.robert.maps.view.TileView.OpenStreetMapViewProjection pj = osmv.getProjection();
 		final Point screenCoords = new Point();
 
 		pj.toPixels(mBaseLocation, screenCoords);
@@ -125,7 +136,7 @@ public class TrackOverlay extends OpenStreetMapViewOverlay {
 	}
 
 	@Override
-	protected void onDrawFinished(Canvas c, OpenStreetMapView osmv) {
+	protected void onDrawFinished(Canvas c, TileView osmv) {
 	}
 
 	public void clearTrack(){

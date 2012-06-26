@@ -2,9 +2,6 @@ package com.robert.maps.overlays;
 
 import org.andnav.osm.util.GeoPoint;
 import org.andnav.osm.util.TypeConverter;
-import org.andnav.osm.views.OpenStreetMapView;
-import org.andnav.osm.views.OpenStreetMapView.OpenStreetMapViewProjection;
-import org.andnav.osm.views.overlay.OpenStreetMapViewOverlay;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -14,13 +11,16 @@ import android.graphics.Point;
 import android.location.Location;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
 import android.widget.TextView;
 
 import com.robert.maps.R;
+import com.robert.maps.view.TileView;
+import com.robert.maps.view.TileViewOverlay;
 
-public class SearchResultOverlay extends OpenStreetMapViewOverlay {
+public class SearchResultOverlay extends TileViewOverlay {
 
 	protected final Paint mPaint = new Paint();
 	protected GeoPoint mLocation;
@@ -49,13 +49,13 @@ public class SearchResultOverlay extends OpenStreetMapViewOverlay {
 	}
 
 	@Override
-	protected void onDraw(Canvas c, OpenStreetMapView osmv) {
+	protected void onDraw(Canvas c, TileView osmv) {
 		if(this.mLocation != null){
 			mT.setText(mDescr);
 			mT.measure(0, 0);
 			mT.layout(0, 0, mT.getMeasuredWidth(), mT.getMeasuredHeight());
 
-			final OpenStreetMapViewProjection pj = osmv.getProjection();
+			final com.robert.maps.view.TileView.OpenStreetMapViewProjection pj = osmv.getProjection();
 			final Point screenCoords = new Point();
 			pj.toPixels(this.mLocation, screenCoords);
 
@@ -69,7 +69,7 @@ public class SearchResultOverlay extends OpenStreetMapViewOverlay {
 
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event,
-			OpenStreetMapView mapView) {
+			TileView mapView) {
 		if (keyCode == KeyEvent.KEYCODE_BACK)
 			if (mLocation != null) {
 				mLocation = null;
@@ -81,7 +81,18 @@ public class SearchResultOverlay extends OpenStreetMapViewOverlay {
 	}
 
 	@Override
-	protected void onDrawFinished(Canvas c, OpenStreetMapView osmv) {
+	public boolean onSingleTapUp(MotionEvent e, TileView mapView) {
+		if (mLocation != null) {
+			mLocation = null;
+			mapView.invalidate();
+			return true;
+		}
+
+		return super.onSingleTapUp(e, mapView);
+	}
+
+	@Override
+	protected void onDrawFinished(Canvas c, TileView osmv) {
 		// Auto-generated method stub
 
 	}

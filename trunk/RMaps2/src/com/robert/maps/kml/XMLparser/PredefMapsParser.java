@@ -1,6 +1,5 @@
 package com.robert.maps.kml.XMLparser;
 
-import org.andnav.osm.views.util.OpenStreetMapRendererInfo;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -13,9 +12,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.robert.maps.MainPreferences;
+import com.robert.maps.tileprovider.TileSource;
 
 public class PredefMapsParser extends DefaultHandler {
-	private final OpenStreetMapRendererInfo mRendererInfo;
+	private final TileSource mRendererInfo;
 	private final String mMapId;
 
 	private static final String MAP = "map";
@@ -58,7 +58,7 @@ public class PredefMapsParser extends DefaultHandler {
 		mPrefMapsgroup = null;
 	}
 
-	public PredefMapsParser(final OpenStreetMapRendererInfo aRendererInfo, final String aMapId) {
+	public PredefMapsParser(final TileSource aRendererInfo, final String aMapId) {
 		super();
 		mSubmenu = null;
 		mRendererInfo = aRendererInfo;

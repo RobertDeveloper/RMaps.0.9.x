@@ -12,11 +12,13 @@ import javax.xml.parsers.SAXParserFactory;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
+import android.os.Environment;
 import android.preference.CheckBoxPreference;
 import android.preference.EditTextPreference;
 import android.preference.ListPreference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceGroup;
+import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 
 import com.robert.maps.constants.PrefConstants;
@@ -31,6 +33,13 @@ public class MainPreferences extends PreferenceActivity implements OnSharedPrefe
 
 		// Load the preferences from an XML resource
 		addPreferencesFromResource(R.xml.mainpreferences);
+		
+		final SharedPreferences aPref = PreferenceManager.getDefaultSharedPreferences(this);
+		findPreference("pref_dir_main").setSummary(aPref.getString("pref_dir_main", Ut.getExternalStorageDirectory()+"/rmaps/"));
+		findPreference("pref_dir_maps").setSummary(aPref.getString("pref_dir_maps", Ut.getExternalStorageDirectory()+"/rmaps/maps/"));
+		findPreference("pref_main_usermaps").setSummary("Maps from "+aPref.getString("pref_dir_maps", Ut.getExternalStorageDirectory()+"/rmaps/maps/"));
+		findPreference("pref_dir_import").setSummary(aPref.getString("pref_dir_import", Ut.getExternalStorageDirectory()+"/rmaps/import/"));
+		findPreference("pref_dir_export").setSummary(aPref.getString("pref_dir_export", Ut.getExternalStorageDirectory()+"/rmaps/export/"));
 
 		final PreferenceGroup prefMapsgroup = (PreferenceGroup) findPreference("pref_predefmaps_mapsgroup");
 
@@ -124,29 +133,29 @@ public class MainPreferences extends PreferenceActivity implements OnSharedPrefe
 	}
 
 	@Override
-	    protected void onResume() {
-	        super.onResume();
+    protected void onResume() {
+        super.onResume();
 
-	        // Set up a listener whenever a key changes
-	        getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
-	    }
+        // Set up a listener whenever a key changes
+        getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
+    }
 
-	    @Override
-	    protected void onPause() {
-	        super.onPause();
+    @Override
+    protected void onPause() {
+        super.onPause();
 
-	        // Unregister the listener whenever a key changes
-	        getPreferenceScreen().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
-	    }
+        // Unregister the listener whenever a key changes
+        getPreferenceScreen().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
+    }
 
 	public void onSharedPreferenceChanged(SharedPreferences aPref, String aKey) {
 
 		if(aKey.equalsIgnoreCase("pref_dir_maps")){
-			findPreference("pref_main_usermaps").setSummary("Maps from "+aPref.getString("pref_dir_maps", "/sdcard/rmaps/maps/"));
-			findPreference(aKey).setSummary(aPref.getString("pref_dir_maps", "/sdcard/rmaps/maps/"));
+			findPreference("pref_main_usermaps").setSummary("Maps from "+aPref.getString("pref_dir_maps", Ut.getExternalStorageDirectory()+"/rmaps/maps/"));
+			findPreference(aKey).setSummary(aPref.getString("pref_dir_maps", Ut.getExternalStorageDirectory()+"/rmaps/maps/"));
 
 
-			final File dir = new File(aPref.getString("pref_dir_maps", "/sdcard/rmaps/maps/").concat("/").replace("//", "/"));
+			final File dir = new File(aPref.getString("pref_dir_maps", Ut.getExternalStorageDirectory()+"/rmaps/maps/").concat("/").replace("//", "/"));
 			if(!dir.exists()){
 				if (android.os.Environment.getExternalStorageState().equals(android.os.Environment.MEDIA_MOUNTED)){
 					dir.mkdirs();
@@ -156,9 +165,9 @@ public class MainPreferences extends PreferenceActivity implements OnSharedPrefe
 				LoadUserMaps(dir);
 		}
 		else if(Ut.equalsIgnoreCase(aKey, 0, 9, "pref_dir_")) {
-			findPreference("pref_dir_main").setSummary(aPref.getString("pref_dir_main", "/sdcard/rmaps/"));
-			findPreference("pref_dir_import").setSummary(aPref.getString("pref_dir_import", "/sdcard/rmaps/import/"));
-			findPreference("pref_dir_export").setSummary(aPref.getString("pref_dir_export", "/sdcard/rmaps/export/"));
+			findPreference("pref_dir_main").setSummary(aPref.getString("pref_dir_main", Ut.getExternalStorageDirectory()+"/rmaps/"));
+			findPreference("pref_dir_import").setSummary(aPref.getString("pref_dir_import", Ut.getExternalStorageDirectory()+"/rmaps/import/"));
+			findPreference("pref_dir_export").setSummary(aPref.getString("pref_dir_export", Ut.getExternalStorageDirectory()+"/rmaps/export/"));
 		}
 		else if (Ut.equalsIgnoreCase(aKey, 0, 14, PREF_USERMAPS_))
 			if (aKey.endsWith("name") && findPreference(aKey) != null) {
@@ -175,7 +184,6 @@ public class MainPreferences extends PreferenceActivity implements OnSharedPrefe
 				ListPreference pref = (ListPreference) findPreference(aKey);
 				findPreference(aKey).setSummary(pref.getEntry());
 			}
-		onContentChanged();
 	}
 
 }

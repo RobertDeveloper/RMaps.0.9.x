@@ -5,9 +5,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import org.andnav.osm.util.GeoPoint;
-import org.andnav.osm.views.OpenStreetMapView;
-import org.andnav.osm.views.OpenStreetMapView.OpenStreetMapViewProjection;
-import org.andnav.osm.views.overlay.OpenStreetMapViewOverlay;
 import org.andnav.osm.views.util.OpenStreetMapTileFilesystemProvider;
 
 import android.content.ComponentName;
@@ -24,17 +21,18 @@ import android.os.IBinder;
 import android.os.Message;
 import android.os.RemoteException;
 
-import com.robert.maps.MainMapActivity;
+import com.robert.maps.MainActivity;
 import com.robert.maps.R;
 import com.robert.maps.kml.PoiManager;
 import com.robert.maps.kml.Track;
 import com.robert.maps.trackwriter.IRemoteService;
 import com.robert.maps.trackwriter.ITrackWriterCallback;
 import com.robert.maps.utils.Ut;
+import com.robert.maps.view.TileView;
+import com.robert.maps.view.TileViewOverlay;
 
-public class CurrentTrackOverlay extends OpenStreetMapViewOverlay {
+public class CurrentTrackOverlay extends TileViewOverlay {
 	private Paint mPaint;
-	private OpenStreetMapViewProjection mBasePj;
 	private int mLastZoom;
 	private Path mPath;
 	private Track mTrack;
@@ -42,16 +40,34 @@ public class CurrentTrackOverlay extends OpenStreetMapViewOverlay {
 	private GeoPoint mBaseLocation;
 	//private PoiManager mPoiManager;
 	private TrackThread mThread;
+	private com.robert.maps.view.TileView.OpenStreetMapViewProjection mBasePj;
 	private boolean mThreadRunned = false;
 	protected ExecutorService mThreadExecutor = Executors.newSingleThreadExecutor();
-	private OpenStreetMapView mOsmv;
+	private TileView mOsmv;
 //	private Handler mMainMapActivityCallbackHandler;
 	private Context mContext;
 
     IRemoteService mService = null;
     private boolean mIsBound;
+    private ServiceConnection mConnection;
 
-	public CurrentTrackOverlay(MainMapActivity mainMapActivity, PoiManager poiManager, OpenStreetMapView osmv) {
+	public CurrentTrackOverlay(MainActivity mainMapActivity, PoiManager poiManager) {
+		mConnection = new ServiceConnection() {
+	         public void onServiceConnected(ComponentName className,
+	                 IBinder service) {
+	             mService = IRemoteService.Stub.asInterface(service);
+
+	             try {
+	                 mService.registerCallback(mCallback);
+	             } catch (RemoteException e) {
+	             }
+	         }
+
+	         public void onServiceDisconnected(ComponentName className) {
+	             mService = null;
+	         }
+	     };
+		
 		mTrack = new Track();
 		mContext = mainMapActivity;
 		//mPoiManager = poiManager;
@@ -60,7 +76,7 @@ public class CurrentTrackOverlay extends OpenStreetMapViewOverlay {
 		mLastZoom = -1;
 		mBasePj = null;
 
-		mOsmv = osmv;
+		mOsmv = null;
 		mThread = new TrackThread();
 		mThread.setName("Current Track thread");
 
@@ -71,8 +87,15 @@ public class CurrentTrackOverlay extends OpenStreetMapViewOverlay {
 		mPaint.setStyle(Paint.Style.STROKE);
 		mPaint.setColor(mainMapActivity.getResources().getColor(R.color.currenttrack));
 
-		mContext.bindService(new Intent(IRemoteService.class.getName()), mConnection, 0 /*Context.BIND_AUTO_CREATE*/);
-		mIsBound = true;
+		mIsBound = false;
+	}
+
+	@Override
+	public void Free() {
+		if(mBasePj != null)
+			mBasePj.StopProcessing();
+		mThreadExecutor.shutdown();
+		super.Free();
 	}
 
 	private class TrackThread extends Thread {
@@ -113,7 +136,6 @@ public class CurrentTrackOverlay extends OpenStreetMapViewOverlay {
 				};
 			};
 
-			mBasePj = mOsmv.getProjection();
 			mPath = mBasePj.toPixelsTrackPoints(mTrack.getPoints(), mBaseCoords, mBaseLocation);
 
 			Ut.d("Track maped");
@@ -124,29 +146,16 @@ public class CurrentTrackOverlay extends OpenStreetMapViewOverlay {
 		}
 	}
 
-    private ServiceConnection mConnection = new ServiceConnection() {
-        public void onServiceConnected(ComponentName className,
-                IBinder service) {
-            mService = IRemoteService.Stub.asInterface(service);
-
-            try {
-                mService.registerCallback(mCallback);
-            } catch (RemoteException e) {
-            }
-        }
-
-        public void onServiceDisconnected(ComponentName className) {
-            mService = null;
-        }
-    };
 
 	@Override
-	protected void onDraw(Canvas c, OpenStreetMapView osmv) {
+	protected void onDraw(Canvas c, TileView osmv) {
 		if (!mThreadRunned && (mTrack == null || mLastZoom != osmv.getZoomLevel())) {
 			//mPath = null;
+			mOsmv = osmv;
 			mLastZoom = osmv.getZoomLevel();
 			//mMainMapActivityCallbackHandler = osmv.getHandler();
 			Ut.d("mThreadExecutor.execute "+mThread.isAlive());
+			mBasePj = mOsmv.getProjection();
 			mThreadRunned = true;
 			mThreadExecutor.execute(mThread);
 			return;
@@ -156,7 +165,7 @@ public class CurrentTrackOverlay extends OpenStreetMapViewOverlay {
 			return;
 
 		Ut.d("Draw track");
-		final OpenStreetMapViewProjection pj = osmv.getProjection();
+		final com.robert.maps.view.TileView.OpenStreetMapViewProjection pj = osmv.getProjection();
 		final Point screenCoords = new Point();
 
 		pj.toPixels(mBaseLocation, screenCoords);
@@ -173,13 +182,14 @@ public class CurrentTrackOverlay extends OpenStreetMapViewOverlay {
 	}
 
 	@Override
-	protected void onDrawFinished(Canvas c, OpenStreetMapView osmv) {
+	protected void onDrawFinished(Canvas c, TileView osmv) {
 		// TODO Auto-generated method stub
 
 	}
 
 	public void onResume(){
-
+		mContext.bindService(new Intent(IRemoteService.class.getName()), mConnection, 0 /*Context.BIND_AUTO_CREATE*/);
+		mIsBound = true;
 	}
 
 	public void onPause(){

@@ -99,6 +99,12 @@ public class TrackListActivity extends ListActivity {
 				startService(new Intent("com.robert.maps.trackwriter"));
 			}
 		});
+		((Button) findViewById(R.id.pauseButton))
+		.setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				stopService(new Intent("com.robert.maps.trackwriter"));
+			}
+		});
 		((Button) findViewById(R.id.stopButton))
 		.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {

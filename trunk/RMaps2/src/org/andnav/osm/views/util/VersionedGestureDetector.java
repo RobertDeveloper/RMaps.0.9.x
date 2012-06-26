@@ -23,7 +23,7 @@ public abstract class VersionedGestureDetector {
         return detector;
     }
 
-    public abstract boolean onTouchEvent(MotionEvent ev);
+    public abstract boolean onTouchEvent(MotionEvent event);
 
     public interface OnGestureListener {
         public void onDown(MotionEvent event);

@@ -1,11 +1,7 @@
-// Created by plusminus on 22:01:11 - 29.09.2008
 package com.robert.maps.overlays;
 
 import org.andnav.osm.util.GeoPoint;
 import org.andnav.osm.util.TypeConverter;
-import org.andnav.osm.views.OpenStreetMapView;
-import org.andnav.osm.views.OpenStreetMapView.OpenStreetMapViewProjection;
-import org.andnav.osm.views.overlay.OpenStreetMapViewOverlay;
 import org.andnav.osm.views.util.constants.OpenStreetMapViewConstants;
 
 import android.content.Context;
@@ -21,13 +17,16 @@ import android.location.Location;
 import android.preference.PreferenceManager;
 
 import com.robert.maps.R;
+import com.robert.maps.view.TileView;
+import com.robert.maps.view.TileView.OpenStreetMapViewProjection;
+import com.robert.maps.view.TileViewOverlay;
 
 /**
  *
  * @author Nicolas Gramlich
  *
  */
-public class MyLocationOverlay extends OpenStreetMapViewOverlay {
+public class MyLocationOverlay extends TileViewOverlay {
 	// ===========================================================
 	// Constants
 	// ===========================================================
@@ -56,6 +55,7 @@ public class MyLocationOverlay extends OpenStreetMapViewOverlay {
 	private boolean mNeedCrosshair;
 	private final Paint mPaintCross = new Paint();
 	private final static int mCrossSize = 7;
+	private Location mLoc;
 
 	// ===========================================================
 	// Constructors
@@ -110,12 +110,21 @@ public class MyLocationOverlay extends OpenStreetMapViewOverlay {
 
 		return mArrow == null ? false : true;
 	}
+	
+	public GeoPoint getLastGeoPoint() {
+		return mLocation;
+	}
+	
+	public Location getLastLocation() {
+		return mLoc;
+	}
 
 	public void setLocation(final Location loc){
 		this.mLocation = TypeConverter.locationToGeoPoint(loc);
 		this.mAccuracy = loc.getAccuracy();
 		this.mBearing = loc.getBearing();
 		this.mSpeed = loc.getSpeed();
+		mLoc = loc;
 	}
 
 	public void setLocation(final GeoPoint geopoint){
@@ -130,12 +139,12 @@ public class MyLocationOverlay extends OpenStreetMapViewOverlay {
 	// ===========================================================
 
 	@Override
-	protected void onDrawFinished(Canvas c, OpenStreetMapView osmv) {
+	protected void onDrawFinished(Canvas c, TileView osmv) {
 		return;
 	}
 
 	@Override
-	public void onDraw(final Canvas c, final OpenStreetMapView osmv) {
+	public void onDraw(final Canvas c, final TileView osmv) {
 		if(this.mLocation != null){
 			final OpenStreetMapViewProjection pj = osmv.getProjection();
 			final Point screenCoords = new Point();
@@ -196,11 +205,4 @@ public class MyLocationOverlay extends OpenStreetMapViewOverlay {
 		}
 	}
 
-	// ===========================================================
-	// Methods
-	// ===========================================================
-
-	// ===========================================================
-	// Inner and Anonymous Classes
-	// ===========================================================
 }

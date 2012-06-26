@@ -2,10 +2,10 @@
 <PreferenceScreen
 	xmlns:android="http://schemas.android.com/apk/res/android">
 	<PreferenceScreen android:title="@string/pref_dir" android:key="pref_dir" android:summary="@string/pref_dir_summary">
-		<EditTextPreference android:title="@string/pref_dir_main" android:key="pref_dir_main" android:dialogTitle="@string/pref_dir_main" android:defaultValue="/sdcard/rmaps"></EditTextPreference>
-		<EditTextPreference android:title="@string/pref_dir_maps" android:key="pref_dir_maps" android:dialogTitle="@string/pref_dir_maps" android:defaultValue="/sdcard/rmaps/maps"></EditTextPreference>
-		<EditTextPreference android:title="@string/pref_dir_import" android:key="pref_dir_import" android:dialogTitle="@string/pref_dir_import" android:defaultValue="/sdcard/rmaps/import"></EditTextPreference>
-		<EditTextPreference android:title="@string/pref_dir_export" android:key="pref_dir_export" android:dialogTitle="@string/pref_dir_export" android:defaultValue="/sdcard/rmaps/export"></EditTextPreference>
+		<EditTextPreference android:title="@string/pref_dir_main" android:key="pref_dir_main" android:dialogTitle="@string/pref_dir_main"></EditTextPreference>
+		<EditTextPreference android:title="@string/pref_dir_maps" android:key="pref_dir_maps" android:dialogTitle="@string/pref_dir_maps"></EditTextPreference>
+		<EditTextPreference android:title="@string/pref_dir_import" android:key="pref_dir_import" android:dialogTitle="@string/pref_dir_import"></EditTextPreference>
+		<EditTextPreference android:title="@string/pref_dir_export" android:key="pref_dir_export" android:dialogTitle="@string/pref_dir_export"></EditTextPreference>
 	</PreferenceScreen>
 	<PreferenceCategory
 		android:title="@string/prefcat_main_maps">

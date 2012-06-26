@@ -17,6 +17,7 @@ import android.graphics.Bitmap;
  *
  */
 public class OpenStreetMapTileCache implements OpenStreetMapViewConstants{
+	private int mSize;
 	// ===========================================================
 	// Constants
 	// ===========================================================
@@ -44,6 +45,7 @@ public class OpenStreetMapTileCache implements OpenStreetMapViewConstants{
 		this.mCachedTiles = new LRUMapTileCache(aMaximumCacheSize);
 		this.mHardCachedTiles = new LinkedHashMap<String, Bitmap>(aMaximumCacheSize);
 		this.mHardCachedTiles2 = new LinkedHashMap<String, Bitmap>(aMaximumCacheSize);
+		mSize = aMaximumCacheSize;
 	}
 
 	// ===========================================================
@@ -84,6 +86,21 @@ public class OpenStreetMapTileCache implements OpenStreetMapViewConstants{
 		this.mHardCachedTiles2 = tmp;
 		this.mHardCachedTiles2.clear();
 		Ut.w("mHardCachedTiles size = "+this.mHardCachedTiles.size());
+	}
+	
+	public synchronized void Resize(final int size) {
+		if(size > mSize){
+			Ut.d("Resize mCachedTiles to "+size);
+			mSize = size;
+			final HashMap<String, SoftReference<Bitmap>> cashe = new LRUMapTileCache(size);
+			cashe.putAll(mCachedTiles);
+			mCachedTiles.clear();
+			mCachedTiles = cashe;
+			mHardCachedTiles.clear();
+			mHardCachedTiles2.clear();
+			mHardCachedTiles = new LinkedHashMap<String, Bitmap>(size);
+			mHardCachedTiles2 = new LinkedHashMap<String, Bitmap>(size);
+		}
 	}
 
 	// ===========================================================

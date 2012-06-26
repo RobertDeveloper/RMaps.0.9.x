@@ -17,13 +17,20 @@
 			android:text="@string/btn_start" />
 
 		<Button
+			android:id="@+id/pauseButton"
+			android:layout_width="0dip"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:text="@string/btn_pause" />
+
+		<Button
 			android:id="@+id/stopButton"
 			android:layout_width="0dip"
 			android:layout_height="wrap_content"
 			android:layout_weight="1"
 			android:text="@string/btn_stop" />
 
-	</LinearLayout>
+			</LinearLayout>
     <FrameLayout
         android:layout_width="fill_parent"
         android:layout_height="0dip"
@@ -34,7 +41,7 @@
         <ListView android:id="@android:id/list"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:drawSelectorOnTop="false" android:divider="@drawable/divider" android:background="@drawable/back"/>
+            android:drawSelectorOnTop="false" android:divider="@drawable/r_divider" android:background="@drawable/r_back"/>
 
         <!-- Here is the view to show if the list is empty -->
 
