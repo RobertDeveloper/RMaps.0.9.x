@@ -99,8 +99,13 @@ public class TileSource {
 			}
 			mTileProvider = new TileProviderInet(ctx, gen);
 			break;
+		case 4:
+			mTileProvider = new TileProviderTAR(ctx, BASEURL, ID);
+			mTileProvider.updateMapParams(this);
+			break;
 		case 5:
-			mTileProvider = new TileProviderSQLITEDB(ctx, BASEURL);
+			mTileProvider = new TileProviderSQLITEDB(ctx, BASEURL, ID);
+			mTileProvider.updateMapParams(this);
 			break;
 		default:
 			mTileProvider = new TileProviderBase(ctx);
@@ -147,6 +152,10 @@ public class TileSource {
 	
 	public TileProviderBase getTileProvider() {
 		return mTileProvider;
+	}
+
+	public void postIndex() {
+		mTileProvider.updateMapParams(this);
 	}
 
 }
