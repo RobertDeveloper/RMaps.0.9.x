@@ -2,6 +2,8 @@ package com.robert.maps.utils;
 
 import java.io.File;
 
+import com.robert.maps.tileprovider.TileSource;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -41,6 +43,11 @@ public class SQLiteMapDatabase {
 		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 		}
 
+	}
+	
+	public void updateMapParams(TileSource tileSource) {
+		tileSource.ZOOM_MINLEVEL = getMinZoom();
+		tileSource.ZOOM_MAXLEVEL = getMaxZoom();
 	}
 
 	public void updateMinMaxZoom() throws SQLiteException {

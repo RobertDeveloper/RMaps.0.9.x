@@ -18,7 +18,7 @@ public class TileProviderBase {
 	protected TileURLGeneratorBase mTileURLGenerator;
 	protected HashSet<String> mPending = new HashSet<String>();
 	protected OpenStreetMapTileCache mTileCache;
-	private Handler mCallbackHandler;
+	protected Handler mCallbackHandler;
 
 	
 	public TileProviderBase(Context ctx) {
@@ -58,10 +58,24 @@ public class TileProviderBase {
 	}
 	
 	public void ResizeCashe(final int size) {
-		mTileCache.Resize(size);
+		if(mTileCache != null)
+			mTileCache.Resize(size);
 	}
 	
 	public void CommitCashe() {
-		mTileCache.Commit();
+		if(mTileCache != null)
+			mTileCache.Commit();
 	}
+
+	public void updateMapParams(TileSource tileSource) {
+	}
+	
+	public boolean needIndex(final String aCashTableName, final long aSizeFile, final long aLastModifiedFile, final boolean aBlockIndexing) {
+		return false;
+	}
+	
+	public void Index() {
+		
+	}
+
 }

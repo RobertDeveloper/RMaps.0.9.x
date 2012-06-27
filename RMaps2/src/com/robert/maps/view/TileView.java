@@ -58,6 +58,12 @@ public class TileView extends View {
 			case MessageHandlerConstants.MAPTILEFSLOADER_SUCCESS_ID:
 				invalidate();
 				break;
+			case MessageHandlerConstants.MAPTILEFSLOADER_INDEXIND_SUCCESS_ID:
+				mTileSource.postIndex();
+				setZoomLevel(getZoomLevel());
+				if(mMoveListener != null)
+					mMoveListener.onZoomDetected();
+				break;
 //			case OpenStreetMapTileFilesystemProvider.ERROR_MESSAGE:
 //				Message.obtain(mMainActivityCallbackHandler, OpenStreetMapTileFilesystemProvider.ERROR_MESSAGE, msg.obj)
 //						.sendToTarget();
