@@ -1,6 +1,9 @@
 package com.robert.maps.tileprovider;
 
 import java.io.File;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -36,6 +39,50 @@ public class TileProviderSQLITEDB extends TileProviderFileBase {
 			mProgressDialog = Ut.ShowWaitDialog(ctx, R.string.message_updateminmax);
 			new IndexTask().execute(file.length(), file.lastModified());
 		}
+		
+		this.mThreadPool.execute(new Runnable() {
+			public void run() {
+				XYZ xyz = null;
+				Collection<XYZ> col = null;
+				Iterator<XYZ> it = null;
+				byte[] data = null;
+				Bitmap bmp = null;
+				
+				while(!mThreadPool.isShutdown()) {
+					synchronized(mPending2) {
+						col = mPending2.values();
+						it = col.iterator();
+						if (it.hasNext()) 
+							xyz = it.next();
+						else
+							xyz = null;
+					}
+					
+					if(xyz == null) {
+						synchronized(mPending2) {
+							try {
+								SendMessageSuccess();
+								mPending2.wait();
+							} catch (InterruptedException e) {
+							}
+						}
+					}
+					else {
+						data = mUserMapDatabase.getTile(xyz.X, xyz.Y, xyz.Z);
+						
+						if (data != null) {
+							bmp = BitmapFactory.decodeByteArray(data, 0, data.length);
+							mTileCache.putTile(xyz.TILEURL, bmp);
+						}
+							
+						synchronized(mPending2) {
+							mPending2.remove(xyz.TILEURL);
+						}
+					}
+					
+				}
+			}
+		});
 	}
 	
 	public void updateMapParams(TileSource tileSource) {
@@ -79,6 +126,22 @@ public class TileProviderSQLITEDB extends TileProviderFileBase {
 		super.Free();
 	}
 
+	private HashMap<String, XYZ> mPending2 = new HashMap<String, XYZ>();
+	
+	private class XYZ {
+		public String TILEURL;
+		public int X;
+		public int Y;
+		public int Z;
+		
+		public XYZ(final String tileurl, final int x, final int y, final int z) {
+			TILEURL = tileurl;
+			X = x;
+			Y = y;
+			Z = z;
+		}
+	}
+	
 	public Bitmap getTile(final int x, final int y, final int z) {
 		final String tileurl = mTileURLGenerator.Get(x, y, z);
 		
@@ -86,35 +149,15 @@ public class TileProviderSQLITEDB extends TileProviderFileBase {
 		if(bmp != null)
 			return bmp;
 		
-		if (this.mPending.contains(tileurl))
-			return super.getTile(x, y, z);
+		synchronized(mPending2) {
+			if (this.mPending2.containsKey(tileurl))
+				return mLoadingMapTile;
+		}
 		
-		mPending.add(tileurl);
-		
-		this.mThreadPool.execute(new Runnable() {
-			public void run() {
-				try {
-					// File exists, otherwise a FileNotFoundException would have been thrown
-					//OpenStreetMapTileFilesystemProvider.this.mDatabase.incrementUse(formattedTileURLString);
-
-					final byte[] data = mUserMapDatabase.getTile(x, y, z);
-
-					if(data != null){
-						final Bitmap bmp = BitmapFactory.decodeByteArray(data, 0, data.length);
-						mTileCache.putTile(tileurl, bmp);
-						SendMessageSuccess();
-					}
-				} catch (OutOfMemoryError e) {
-					SendMessageFail();
-					System.gc();
-				} catch (Exception e) {
-					SendMessageFail();
-				}
-
-				mPending.remove(tileurl);
-			}
-		});
-		
+		synchronized(mPending2) {
+			mPending2.put(tileurl, new XYZ(tileurl, x, y, z));
+			mPending2.notify();
+		}
 		
 		return mLoadingMapTile;
 	}

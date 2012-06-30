@@ -115,7 +115,6 @@ public class TileProviderTAR extends TileProviderFileBase {
 		@Override
 		protected Boolean doInBackground(Long... params) {
 			try {
-				final long startMs = System.currentTimeMillis();
 				mStopIndexing = false;
 
 				long fileLength = mMapFile.length();

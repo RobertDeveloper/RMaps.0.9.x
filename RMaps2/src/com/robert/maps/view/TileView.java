@@ -30,6 +30,7 @@ import com.robert.maps.R;
 import com.robert.maps.kml.Track.TrackPoint;
 import com.robert.maps.tileprovider.MessageHandlerConstants;
 import com.robert.maps.tileprovider.TileSource;
+import com.robert.maps.utils.Ut;
 
 public class TileView extends View {
 	private static final int LATITUDE = 0;
@@ -282,6 +283,7 @@ public class TileView extends View {
 		}
 
 		c.restore();
+
 		super.onDraw(c);
 	}
 
