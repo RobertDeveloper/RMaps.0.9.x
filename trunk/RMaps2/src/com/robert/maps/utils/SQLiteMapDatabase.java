@@ -13,15 +13,55 @@ import android.database.sqlite.SQLiteException;
 public class SQLiteMapDatabase {
 	private static final String SQL_CREATE_tiles = "CREATE TABLE IF NOT EXISTS tiles (x int, y int, z int, s int, image blob, PRIMARY KEY (x,y,z,s));";
 	private static final String SQL_CREATE_info = "CREATE TABLE IF NOT EXISTS info (maxzoom Int, minzoom Int);";
-	private SQLiteDatabase mDatabase;
+	private static final String SQL_SELECT_MINZOOM = "SELECT 17-minzoom AS ret FROM info";
+	private static final String SQL_SELECT_MAXZOOM = "SELECT 17-maxzoom AS ret FROM info";
+	private static final String SQL_SELECT_IMAGE = "SELECT image as ret FROM tiles WHERE s = 0 AND x = ? AND y = ? AND z = ?";
+	private static final String RET = "ret";
+
+	private SQLiteDatabase[] mDatabase = new SQLiteDatabase[0];
+	private SQLiteDatabase mDatabaseWritable;
+	private int mCurrentIndex = 0;
 
 	public void setFile(final String aFileName) throws SQLiteException {
-		if (mDatabase != null)
-			mDatabase.close();
+		for(int i = 0; i < mDatabase.length; i++)
+			if (mDatabase[i] != null)
+				mDatabase[i].close();
 
-		mDatabase = new CashDatabaseHelper(null, aFileName).getWritableDatabase();
-		Ut.d("CashDatabase: Open SQLITEDB Database");
-
+		final File basefile = new File(aFileName);
+		final File folder = basefile.getParentFile();
+		if(folder != null) {
+			File[] files = folder.listFiles();
+			if(files != null) {
+				int j = 0;
+				// Подсчитаем количество подходящих файлов
+				for (int i = 0; i < files.length; i++) {
+					if(files[i].getName().startsWith(basefile.getName())) {
+						j = j + 1;
+					}
+				}
+				// Создаем массив определенного размера
+				mDatabase = new SQLiteDatabase[j];
+				// Заполняем массив 
+				j = 0; long minsize = 0;
+				for (int i = 0; i < files.length; i++) {
+					if(files[i].getName().startsWith(basefile.getName())) {
+						mDatabase[j] = new CashDatabaseHelper(null, files[i].getAbsolutePath()).getWritableDatabase();
+						if(mDatabaseWritable == null) {
+							mDatabaseWritable = mDatabase[j];
+							minsize = files[i].length();
+						} else {
+							if(files[i].length() < minsize) {
+								mDatabaseWritable = mDatabase[j];
+								minsize = files[i].length();
+							}
+						}
+						j = j + 1;
+					}
+				}
+				
+			}
+		}
+		
 	}
 
 	public void setFile(final File aFile) throws SQLiteException {
@@ -51,67 +91,88 @@ public class SQLiteMapDatabase {
 	}
 
 	public void updateMinMaxZoom() throws SQLiteException {
-		if(mDatabase != null){
-			Ut.dd("Update min max");
-			this.mDatabase.execSQL("DROP TABLE IF EXISTS info");
-			this.mDatabase.execSQL("CREATE TABLE info As SELECT 0 As minzoom, 0 As maxzoom;");
-			this.mDatabase.execSQL("UPDATE info SET minzoom = (SELECT DISTINCT z FROM tiles ORDER BY z ASC LIMIT 1);");
-			this.mDatabase.execSQL("UPDATE info SET maxzoom = (SELECT DISTINCT z FROM tiles ORDER BY z DESC LIMIT 1);");
-		}
+		for(int i = 0; i < mDatabase.length; i++)
+			if(mDatabase[i] != null){
+				Ut.dd("Update min max");
+				this.mDatabase[i].execSQL("DROP TABLE IF EXISTS info");
+				this.mDatabase[i].execSQL("CREATE TABLE info As SELECT 0 As minzoom, 0 As maxzoom;");
+				this.mDatabase[i].execSQL("UPDATE info SET minzoom = (SELECT DISTINCT z FROM tiles ORDER BY z ASC LIMIT 1);");
+				this.mDatabase[i].execSQL("UPDATE info SET maxzoom = (SELECT DISTINCT z FROM tiles ORDER BY z DESC LIMIT 1);");
+			}
 	}
 
 	public /*synchronized*/ void putTile(final int aX, final int aY, final int aZ, final byte[] aData) {
-		if (this.mDatabase != null) {
+		if (this.mDatabaseWritable != null) {
 			final ContentValues cv = new ContentValues();
 			cv.put("x", aX);
 			cv.put("y", aY);
 			cv.put("z", 17 - aZ);
 			cv.put("s", 0);
 			cv.put("image", aData);
-			this.mDatabase.insert("tiles", null, cv);
+			this.mDatabaseWritable.insert("tiles", null, cv);
 		}
 	}
 
 	public /*synchronized*/ byte[] getTile(final int aX, final int aY, final int aZ) {
 		byte[] ret = null;
 
-		if (this.mDatabase != null) {
-			final Cursor c = this.mDatabase.rawQuery("SELECT image FROM tiles WHERE s = 0 AND x = " + aX + " AND y = "
-					+ aY + " AND z = " + (17 - aZ), null);
-			if (c != null) {
-				if (c.moveToFirst()) {
-					ret = c.getBlob(c.getColumnIndexOrThrow("image"));
+		int j = 0;
+		for(int i = 0; i < mDatabase.length; i++) {
+			j = mCurrentIndex + i;
+			if(j >= mDatabase.length)
+				j = j - mDatabase.length;
+			
+			if (this.mDatabase[j] != null) {
+				final String[] args = {""+aX, ""+aY, ""+(17 - aZ)};
+				final Cursor c = this.mDatabase[j].rawQuery(SQL_SELECT_IMAGE, args);
+				if (c != null) {
+					if (c.moveToFirst()) {
+						ret = c.getBlob(c.getColumnIndexOrThrow(RET));
+						mCurrentIndex = j;
+						c.close();
+						break;
+					} else
+						c.close();
 				}
-				c.close();
 			}
+			
 		}
 
 		return ret;
 	}
 
 	public int getMaxZoom() {
-		int ret = 99;
-		if(mDatabase != null){
-			final Cursor c = this.mDatabase.rawQuery("SELECT 17-minzoom AS ret FROM info", null);
-			if (c != null) {
-				if (c.moveToFirst()) {
-					ret = c.getInt(c.getColumnIndexOrThrow("ret"));
+		int ret = 0;
+		for(int i = 0; i < mDatabase.length; i++) {
+			if(mDatabase[i] != null){
+				final Cursor c = this.mDatabase[i].rawQuery(SQL_SELECT_MINZOOM, null);
+				if (c != null) {
+					if (c.moveToFirst()) {
+						final int zoom = c.getInt(c.getColumnIndexOrThrow(RET));
+						if(zoom > ret)
+							ret = zoom;
+					}
+					c.close();
 				}
-				c.close();
-			}
+			};
 		};
 		return ret;
 	}
 
 	public int getMinZoom() {
-		int ret = 0;
-		if(mDatabase != null){
-			final Cursor c = this.mDatabase.rawQuery("SELECT 17-maxzoom AS ret FROM info", null);
-			if (c != null) {
-				if (c.moveToFirst()) {
-					ret = c.getInt(c.getColumnIndexOrThrow("ret"));
+		int ret = 99;
+		
+		for(int i = 0; i < mDatabase.length; i++) {
+			if(mDatabase[i] != null){
+				final Cursor c = this.mDatabase[i].rawQuery(SQL_SELECT_MAXZOOM, null);
+				if (c != null) {
+					if (c.moveToFirst()) {
+						final int zoom = c.getInt(c.getColumnIndexOrThrow(RET));
+						if(zoom < ret)
+							ret = zoom;
+					}
+					c.close();
 				}
-				c.close();
 			}
 		}
 		return ret;
@@ -119,20 +180,20 @@ public class SQLiteMapDatabase {
 
 	@Override
 	protected void finalize() throws Throwable {
-		Ut.d("finalize: Close SQLITEDB Database database");
-		if(mDatabase != null)
-			mDatabase.close();
+		for(int i = 0; i < mDatabase.length; i++) {
+			if(mDatabase[i] != null)
+				mDatabase[i].close();
+		}
 		super.finalize();
 	}
 
 	public void freeDatabases() {
-		if(mDatabase != null)
-			if(mDatabase.isOpen())
-			{
-				mDatabase.close();
-				Ut.d("Close SQLITEDB Database");
-			}
+		for (int i = 0; i < mDatabase.length; i++) {
+			if (mDatabase[i] != null)
+				if (mDatabase[i].isOpen()) {
+					mDatabase[i].close();
+				}
+		}
 	}
-
 
 }
