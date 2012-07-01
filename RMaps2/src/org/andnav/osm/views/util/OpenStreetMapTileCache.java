@@ -7,8 +7,6 @@ import java.util.LinkedHashMap;
 
 import org.andnav.osm.views.util.constants.OpenStreetMapViewConstants;
 
-import com.robert.maps.utils.Ut;
-
 import android.graphics.Bitmap;
 
 /**
@@ -65,7 +63,6 @@ public class OpenStreetMapTileCache implements OpenStreetMapViewConstants{
 			return null;
 		final Bitmap bmp = ref.get();
 		if(bmp == null){
-			Ut.w("EMPTY SoftReference");
 			this.mCachedTiles.remove(ref);
 		} else if(bmp.isRecycled()){
 			this.mCachedTiles.remove(ref);
@@ -77,7 +74,6 @@ public class OpenStreetMapTileCache implements OpenStreetMapViewConstants{
 	public synchronized void putTile(final String aTileURLString, final Bitmap aTile) {
 		this.mCachedTiles.put(aTileURLString, new SoftReference<Bitmap>(aTile));
 		this.mHardCachedTiles2.put(aTileURLString, aTile);
-		Ut.w("OpenStreetMapTileCache size = "+this.mCachedTiles.size());
 	}
 
 	public synchronized void Commit() {
@@ -85,12 +81,10 @@ public class OpenStreetMapTileCache implements OpenStreetMapViewConstants{
 		this.mHardCachedTiles = this.mHardCachedTiles2;
 		this.mHardCachedTiles2 = tmp;
 		this.mHardCachedTiles2.clear();
-		Ut.w("mHardCachedTiles size = "+this.mHardCachedTiles.size());
 	}
 	
 	public synchronized void Resize(final int size) {
 		if(size > mSize){
-			Ut.d("Resize mCachedTiles to "+size);
 			mSize = size;
 			final HashMap<String, SoftReference<Bitmap>> cashe = new LRUMapTileCache(size);
 			cashe.putAll(mCachedTiles);

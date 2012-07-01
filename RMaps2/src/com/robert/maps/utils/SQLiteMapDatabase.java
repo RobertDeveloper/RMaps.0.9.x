@@ -7,6 +7,7 @@ import com.robert.maps.tileprovider.TileSource;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 
@@ -17,35 +18,50 @@ public class SQLiteMapDatabase {
 	private static final String SQL_SELECT_MAXZOOM = "SELECT 17-maxzoom AS ret FROM info";
 	private static final String SQL_SELECT_IMAGE = "SELECT image as ret FROM tiles WHERE s = 0 AND x = ? AND y = ? AND z = ?";
 	private static final String RET = "ret";
+	private static final long MAX_DATABASE_SIZE = 2 * 1024 * 1024 * 1024;
 
 	private SQLiteDatabase[] mDatabase = new SQLiteDatabase[0];
 	private SQLiteDatabase mDatabaseWritable;
 	private int mCurrentIndex = 0;
+	private File mBaseFile = null;
+	private int mBaseFileIndex = 0;
 
-	public void setFile(final String aFileName) throws SQLiteException {
+	private void initDatabaseFiles(final String aFileName, final boolean aCreateNewDatabaseFile) {
 		for(int i = 0; i < mDatabase.length; i++)
 			if (mDatabase[i] != null)
 				mDatabase[i].close();
 
-		final File basefile = new File(aFileName);
-		final File folder = basefile.getParentFile();
+		mBaseFile = new File(aFileName);
+		final File folder = mBaseFile.getParentFile();
 		if(folder != null) {
 			File[] files = folder.listFiles();
 			if(files != null) {
 				int j = 0;
+				mBaseFileIndex = 0;
 				// Подсчитаем количество подходящих файлов
 				for (int i = 0; i < files.length; i++) {
-					if(files[i].getName().startsWith(basefile.getName())) {
+					if(files[i].getName().startsWith(mBaseFile.getName())) {
 						j = j + 1;
+						
+						try {
+							final int index = Integer.getInteger(files[i].getName().replace(mBaseFile.getName(), ""));
+							if(index > mBaseFileIndex)
+								mBaseFileIndex = index;
+						} catch (Exception e) {
+						}
 					}
 				}
+				// Если нужно создать еще один, то резервируем для него место
+				if(aCreateNewDatabaseFile)
+					j = j + 1;
 				// Создаем массив определенного размера
 				mDatabase = new SQLiteDatabase[j];
 				// Заполняем массив 
 				j = 0; long minsize = 0;
 				for (int i = 0; i < files.length; i++) {
-					if(files[i].getName().startsWith(basefile.getName())) {
+					if(files[i].getName().startsWith(mBaseFile.getName())) {
 						mDatabase[j] = new CashDatabaseHelper(null, files[i].getAbsolutePath()).getWritableDatabase();
+						mDatabase[j].setMaximumSize(MAX_DATABASE_SIZE);
 						if(mDatabaseWritable == null) {
 							mDatabaseWritable = mDatabase[j];
 							minsize = files[i].length();
@@ -58,10 +74,16 @@ public class SQLiteMapDatabase {
 						j = j + 1;
 					}
 				}
-				
+				if(aCreateNewDatabaseFile) {
+					mDatabase[j] = new CashDatabaseHelper(null, mBaseFile.getAbsolutePath() + (mBaseFileIndex + 1)).getWritableDatabase();
+					mDatabaseWritable = mDatabase[j];
+				}
 			}
 		}
-		
+	}
+	
+	public void setFile(final String aFileName) throws SQLiteException {
+		initDatabaseFiles(aFileName, false);
 	}
 
 	public void setFile(final File aFile) throws SQLiteException {
@@ -89,19 +111,23 @@ public class SQLiteMapDatabase {
 		tileSource.ZOOM_MINLEVEL = getMinZoom();
 		tileSource.ZOOM_MAXLEVEL = getMaxZoom();
 	}
+	
+	private static final String SQL_UPDZOOM_DROP = "DROP TABLE IF EXISTS info";
+	private static final String SQL_UPDZOOM_CREATE = "CREATE TABLE info As SELECT 0 As minzoom, 0 As maxzoom;";
+	private static final String SQL_UPDZOOM_UPDMIN = "UPDATE info SET minzoom = (SELECT DISTINCT z FROM tiles ORDER BY z ASC LIMIT 1);";
+	private static final String SQL_UPDZOOM_UPDMAX = "UPDATE info SET maxzoom = (SELECT DISTINCT z FROM tiles ORDER BY z DESC LIMIT 1);";
 
 	public void updateMinMaxZoom() throws SQLiteException {
 		for(int i = 0; i < mDatabase.length; i++)
 			if(mDatabase[i] != null){
-				Ut.dd("Update min max");
-				this.mDatabase[i].execSQL("DROP TABLE IF EXISTS info");
-				this.mDatabase[i].execSQL("CREATE TABLE info As SELECT 0 As minzoom, 0 As maxzoom;");
-				this.mDatabase[i].execSQL("UPDATE info SET minzoom = (SELECT DISTINCT z FROM tiles ORDER BY z ASC LIMIT 1);");
-				this.mDatabase[i].execSQL("UPDATE info SET maxzoom = (SELECT DISTINCT z FROM tiles ORDER BY z DESC LIMIT 1);");
+				this.mDatabase[i].execSQL(SQL_UPDZOOM_DROP);
+				this.mDatabase[i].execSQL(SQL_UPDZOOM_CREATE);
+				this.mDatabase[i].execSQL(SQL_UPDZOOM_UPDMIN);
+				this.mDatabase[i].execSQL(SQL_UPDZOOM_UPDMAX);
 			}
 	}
 
-	public /*synchronized*/ void putTile(final int aX, final int aY, final int aZ, final byte[] aData) {
+	public synchronized void putTile(final int aX, final int aY, final int aZ, final byte[] aData) {
 		if (this.mDatabaseWritable != null) {
 			final ContentValues cv = new ContentValues();
 			cv.put("x", aX);
@@ -109,9 +135,16 @@ public class SQLiteMapDatabase {
 			cv.put("z", 17 - aZ);
 			cv.put("s", 0);
 			cv.put("image", aData);
-			this.mDatabaseWritable.insert("tiles", null, cv);
+			try {
+				this.mDatabaseWritable.insertOrThrow(TILES, null, cv);
+			} catch (SQLException e) {
+				initDatabaseFiles(mBaseFile.getAbsolutePath(), true);
+			}
 		}
 	}
+	
+	private static final String SQL_DELTILE_WHERE = "s = 0 AND x = ? AND y = ? AND z = ?";
+	private static final String TILES = "tiles";
 
 	public /*synchronized*/ byte[] getTile(final int aX, final int aY, final int aZ) {
 		byte[] ret = null;
@@ -128,8 +161,15 @@ public class SQLiteMapDatabase {
 				if (c != null) {
 					if (c.moveToFirst()) {
 						ret = c.getBlob(c.getColumnIndexOrThrow(RET));
-						mCurrentIndex = j;
 						c.close();
+						
+						if(ret != null)
+							if(ret.length == 0) {
+								mDatabase[j].delete(TILES, SQL_DELTILE_WHERE, args);
+								ret = null;
+							}
+
+						mCurrentIndex = j;
 						break;
 					} else
 						c.close();
@@ -137,7 +177,7 @@ public class SQLiteMapDatabase {
 			}
 			
 		}
-
+		
 		return ret;
 	}
 
