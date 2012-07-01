@@ -96,6 +96,29 @@ public class TileSource {
 			case 0:
 				gen = new TileURLGeneratorOSM(BASEURL, IMAGE_FILENAMEENDING);
 				break;
+			case 1:
+				gen = new TileURLGeneratorGOOGLEMAP(BASEURL, GOOGLE_LANG_CODE);
+				break;
+			case 2:
+				gen = new TileURLGeneratorYANDEX(BASEURL, IMAGE_FILENAMEENDING);
+				break;
+			//case 3:
+			case 4:
+				gen = new TileURLGeneratorGOOGLESAT(BASEURL, GOOGLE_LANG_CODE);
+				break;
+			//case 5:
+			case 6:
+				gen = new TileURLGeneratorMS(BASEURL, IMAGE_FILENAMEENDING);
+				break;
+			case 7:
+				gen = new TileURLGeneratorDOCELUPL(BASEURL);
+				break;
+			case 8:
+				gen = new TileURLGeneratorVFR(BASEURL);
+				break;
+			case 9:
+				gen = new TileURLGeneratorAVC(BASEURL, IMAGE_FILENAMEENDING);
+				break;
 			}
 			mTileProvider = new TileProviderInet(ctx, gen, CacheDatabaseName());
 			break;
