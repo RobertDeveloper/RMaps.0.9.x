@@ -24,7 +24,7 @@ public class InternalCachePreference extends Preference {
     private Context mCtx;
     private File mDbFile;
     private OpenStreetMapTileFilesystemProvider mFSTileProvider;
-    private ExecutorService mThreadExecutor = Executors.newSingleThreadExecutor();
+    private ExecutorService mThreadExecutor = Executors.newSingleThreadExecutor(new SimpleThreadFactory("InternalCachePreference"));
     private ProgressDialog mProgressDialog;
     private SimpleInvalidationHandler mHandler;
 

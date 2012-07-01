@@ -3,6 +3,7 @@ package com.robert.maps.overlays;
 import java.io.File;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
 
 import org.andnav.osm.util.GeoPoint;
 import org.andnav.osm.views.util.OpenStreetMapTileFilesystemProvider;
@@ -27,6 +28,7 @@ import com.robert.maps.kml.PoiManager;
 import com.robert.maps.kml.Track;
 import com.robert.maps.trackwriter.IRemoteService;
 import com.robert.maps.trackwriter.ITrackWriterCallback;
+import com.robert.maps.utils.SimpleThreadFactory;
 import com.robert.maps.utils.Ut;
 import com.robert.maps.view.TileView;
 import com.robert.maps.view.TileViewOverlay;
@@ -42,7 +44,7 @@ public class CurrentTrackOverlay extends TileViewOverlay {
 	private TrackThread mThread;
 	private com.robert.maps.view.TileView.OpenStreetMapViewProjection mBasePj;
 	private boolean mThreadRunned = false;
-	protected ExecutorService mThreadExecutor = Executors.newSingleThreadExecutor();
+	protected ExecutorService mThreadExecutor = Executors.newSingleThreadExecutor(new SimpleThreadFactory("CurrentTrack"));
 	private TileView mOsmv;
 //	private Handler mMainMapActivityCallbackHandler;
 	private Context mContext;

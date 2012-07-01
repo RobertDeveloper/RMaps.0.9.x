@@ -29,6 +29,7 @@ import android.widget.Toast;
 import com.robert.maps.R;
 import com.robert.maps.kml.XMLparser.GpxTrackParser;
 import com.robert.maps.kml.XMLparser.KmlTrackParser;
+import com.robert.maps.utils.SimpleThreadFactory;
 import com.robert.maps.utils.Ut;
 
 public class ImportTrackActivity extends Activity {
@@ -36,7 +37,7 @@ public class ImportTrackActivity extends Activity {
 	private PoiManager mPoiManager;
 
 	private ProgressDialog dlgWait;
-	protected ExecutorService mThreadPool = Executors.newFixedThreadPool(2);
+	protected ExecutorService mThreadPool = Executors.newFixedThreadPool(2, new SimpleThreadFactory("ImportTrack"));
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

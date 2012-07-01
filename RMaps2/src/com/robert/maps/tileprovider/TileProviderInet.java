@@ -9,6 +9,7 @@ import java.io.OutputStream;
 import java.net.URL;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
 
 import org.andnav.osm.views.util.OpenStreetMapTileCache;
 import org.andnav.osm.views.util.StreamUtils;
@@ -18,11 +19,12 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
 import com.robert.maps.utils.SQLiteMapDatabase;
+import com.robert.maps.utils.SimpleThreadFactory;
 import com.robert.maps.utils.Ut;
 
 public class TileProviderInet extends TileProviderBase {
 	private SQLiteMapDatabase mCacheDatabase = null;
-	private ExecutorService mThreadPool = Executors.newFixedThreadPool(5);
+	private ExecutorService mThreadPool = Executors.newFixedThreadPool(5, new SimpleThreadFactory("TileProviderInet"));
 
 	public TileProviderInet(Context ctx, TileURLGeneratorBase gen, final String cacheDatabaseName) {
 		super(ctx);

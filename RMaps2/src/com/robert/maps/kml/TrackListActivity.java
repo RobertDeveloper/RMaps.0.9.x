@@ -41,6 +41,7 @@ import com.robert.maps.R;
 import com.robert.maps.kml.Track.TrackPoint;
 import com.robert.maps.kml.XMLparser.SimpleXML;
 import com.robert.maps.trackwriter.DatabaseHelper;
+import com.robert.maps.utils.SimpleThreadFactory;
 import com.robert.maps.utils.Ut;
 
 public class TrackListActivity extends ListActivity {
@@ -131,7 +132,7 @@ public class TrackListActivity extends ListActivity {
 	private void doSaveTrack(){
 		dlgWait = Ut.ShowWaitDialog(this, 0);
 		if(mThreadExecutor == null)
-			mThreadExecutor = Executors.newSingleThreadExecutor();
+			mThreadExecutor = Executors.newSingleThreadExecutor(new SimpleThreadFactory("doSaveTrack"));
 
 		this.mThreadExecutor.execute(new Runnable() {
 			public void run() {
@@ -198,7 +199,7 @@ public class TrackListActivity extends ListActivity {
 
 	private void UpdateTracksStat() {
 		if(mThreadExecutor == null)
-			mThreadExecutor = Executors.newSingleThreadExecutor();
+			mThreadExecutor = Executors.newSingleThreadExecutor(new SimpleThreadFactory("UpdateTracksStat"));
 		dlgWait = Ut.ShowWaitDialog(this, 0);
 		mThreadExecutor.execute(new Runnable(){
 
@@ -303,7 +304,7 @@ public class TrackListActivity extends ListActivity {
 		dlgWait = Ut.ShowWaitDialog(this, 0);
 		final int trackid = id;
 		if(mThreadExecutor == null)
-			mThreadExecutor = Executors.newSingleThreadExecutor();
+			mThreadExecutor = Executors.newSingleThreadExecutor(new SimpleThreadFactory("DoExportTrackKML"));
 
 		this.mThreadExecutor.execute(new Runnable() {
 			public void run() {
@@ -355,7 +356,7 @@ public class TrackListActivity extends ListActivity {
 		dlgWait = Ut.ShowWaitDialog(this, 0);
 		final int trackid = id;
 		if(mThreadExecutor == null)
-			mThreadExecutor = Executors.newSingleThreadExecutor();
+			mThreadExecutor = Executors.newSingleThreadExecutor(new SimpleThreadFactory("DoExportTrackGPX"));
 
 		this.mThreadExecutor.execute(new Runnable() {
 			public void run() {
