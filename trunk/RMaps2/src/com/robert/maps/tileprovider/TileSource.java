@@ -97,7 +97,7 @@ public class TileSource {
 				gen = new TileURLGeneratorOSM(BASEURL, IMAGE_FILENAMEENDING);
 				break;
 			}
-			mTileProvider = new TileProviderInet(ctx, gen);
+			mTileProvider = new TileProviderInet(ctx, gen, CacheDatabaseName());
 			break;
 		case 4:
 			mTileProvider = new TileProviderTAR(ctx, BASEURL, ID);
@@ -111,6 +111,19 @@ public class TileSource {
 			mTileProvider = new TileProviderBase(ctx);
 		}
 		
+	}
+
+	public boolean CacheEnabled() {
+		return mOnlineMapCacheEnabled && !LAYER;
+	}
+
+	public String CacheDatabaseName() {
+		if(!CacheEnabled())
+			return null;
+		if(CACHE.trim().equalsIgnoreCase(""))
+			return ID;
+		else
+			return CACHE;
 	}
 
 	public Bitmap getTile(final int x, final int y, final int z) {
