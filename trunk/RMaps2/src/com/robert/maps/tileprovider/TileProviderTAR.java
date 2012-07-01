@@ -24,10 +24,11 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Message;
 
+import com.robert.maps.utils.SimpleThreadFactory;
 import com.robert.maps.utils.Ut;
 
 public class TileProviderTAR extends TileProviderFileBase {
-	private ExecutorService mThreadPool = Executors.newSingleThreadExecutor();
+	private ExecutorService mThreadPool = Executors.newSingleThreadExecutor(new SimpleThreadFactory("TileProviderTAR"));
 	private File mMapFile;
 	private String mMapID;
 	private ProgressDialog mProgressDialog;

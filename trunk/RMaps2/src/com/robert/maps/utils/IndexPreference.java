@@ -20,7 +20,7 @@ public class IndexPreference extends Preference {
     private Button btnClear;
     private Context mCtx;
     private File mDbFile;
-    private ExecutorService mThreadExecutor = Executors.newSingleThreadExecutor();
+    private ExecutorService mThreadExecutor = Executors.newSingleThreadExecutor(new SimpleThreadFactory("IndexPreference"));
     private ProgressDialog mProgressDialog;
     private SimpleInvalidationHandler mHandler;
 

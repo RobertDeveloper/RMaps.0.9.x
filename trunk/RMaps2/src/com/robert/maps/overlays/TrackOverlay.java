@@ -17,6 +17,7 @@ import com.robert.maps.MainActivity;
 import com.robert.maps.R;
 import com.robert.maps.kml.PoiManager;
 import com.robert.maps.kml.Track;
+import com.robert.maps.utils.SimpleThreadFactory;
 import com.robert.maps.utils.Ut;
 import com.robert.maps.view.TileView;
 import com.robert.maps.view.TileViewOverlay;
@@ -36,7 +37,7 @@ public class TrackOverlay extends TileViewOverlay {
 	private boolean mStopDraw = false;
 	private com.robert.maps.view.TileView.OpenStreetMapViewProjection mProjection;
 
-	protected ExecutorService mThreadExecutor = Executors.newSingleThreadExecutor();
+	protected ExecutorService mThreadExecutor = Executors.newSingleThreadExecutor(new SimpleThreadFactory("TrackOverlay"));
 
 	private class TrackThread extends Thread {
 

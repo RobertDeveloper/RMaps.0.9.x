@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -32,6 +33,7 @@ import android.widget.Toast;
 import com.robert.maps.R;
 import com.robert.maps.kml.XMLparser.GpxPoiParser;
 import com.robert.maps.kml.XMLparser.KmlPoiParser;
+import com.robert.maps.utils.SimpleThreadFactory;
 import com.robert.maps.utils.Ut;
 
 public class ImportPoiActivity extends Activity {
@@ -40,7 +42,7 @@ public class ImportPoiActivity extends Activity {
 	private PoiManager mPoiManager;
 
 	private ProgressDialog dlgWait;
-	protected ExecutorService mThreadPool = Executors.newFixedThreadPool(2);
+	protected ExecutorService mThreadPool = Executors.newFixedThreadPool(2, new SimpleThreadFactory("ImportPoi"));
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

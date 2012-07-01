@@ -18,10 +18,11 @@ import android.os.Message;
 
 import com.robert.maps.R;
 import com.robert.maps.utils.SQLiteMapDatabase;
+import com.robert.maps.utils.SimpleThreadFactory;
 import com.robert.maps.utils.Ut;
 
 public class TileProviderSQLITEDB extends TileProviderFileBase {
-	private ExecutorService mThreadPool = Executors.newSingleThreadExecutor();
+	private ExecutorService mThreadPool = Executors.newSingleThreadExecutor(new SimpleThreadFactory("TileProviderSQLITEDB"));
 	private SQLiteMapDatabase mUserMapDatabase;
 	private String mMapID;
 	private ProgressDialog mProgressDialog;
@@ -120,9 +121,11 @@ public class TileProviderSQLITEDB extends TileProviderFileBase {
 
 	@Override
 	public void Free() {
-		Ut.d("TileProviderSQLITEDB Free");
 		mUserMapDatabase.freeDatabases();
 		mThreadPool.shutdown();
+		synchronized(mPending2) {
+			mPending2.notify();
+		}
 		super.Free();
 	}
 
