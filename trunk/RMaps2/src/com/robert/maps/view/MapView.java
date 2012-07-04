@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.content.res.TypedArray;
 import android.preference.PreferenceManager;
 import android.util.AttributeSet;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -194,16 +195,9 @@ public class MapView extends RelativeLayout {
 		return mTileView.getOverlays();
 	}
 
-	public int TouchDownX() {
-		return mTileView.mTouchDownX;
-	}
-	
-	public int TouchDownY() {
-		return mTileView.mTouchDownY;
-	}
-	
-	public GeoPoint getTouchDownPoint() {
-		return mTileView.getProjection().fromPixels(TouchDownX(), TouchDownY(), mTileView.getBearing());
+	@Override
+	protected ContextMenuInfo getContextMenuInfo() {
+		return mTileView.mPoiMenuInfo;
 	}
 
 	public void setBearing(float bearing) {

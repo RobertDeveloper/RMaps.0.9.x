@@ -7,7 +7,6 @@ import org.andnav.osm.util.BoundingBoxE6;
 import org.andnav.osm.util.GeoPoint;
 import org.andnav.osm.util.MyMath;
 import org.andnav.osm.views.util.Util;
-import org.andnav.osm.views.util.VersionedGestureDetector;
 import org.andnav.osm.views.util.constants.OpenStreetMapViewConstants;
 
 import android.content.Context;
@@ -19,14 +18,12 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.Handler;
 import android.os.Message;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.GestureDetector;
-import android.view.GestureDetector.OnDoubleTapListener;
-import android.view.GestureDetector.OnGestureListener;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 
-import com.robert.maps.R;
 import com.robert.maps.kml.Track.TrackPoint;
 import com.robert.maps.tileprovider.MessageHandlerConstants;
 import com.robert.maps.tileprovider.TileSource;
@@ -48,9 +45,77 @@ public class TileView extends View {
 	private TileMapHandler mTileMapHandler = new TileMapHandler();
 	protected final List<TileViewOverlay> mOverlays = new ArrayList<TileViewOverlay>();
 	
-	protected final GestureDetector mGestureDetector = new GestureDetector(new OpenStreetMapViewGestureDetectorListener());
-	private VersionedGestureDetector mDetector = VersionedGestureDetector.newInstance(new GestureCallback());
+	private GestureDetector mDetector = new GestureDetector(getContext(), new mListener());
 	
+	private class mListener extends GestureDetector.SimpleOnGestureListener {
+		@Override
+		public boolean onDown(MotionEvent e) {
+			return true;
+		}
+
+		@Override
+		public boolean onSingleTapConfirmed(MotionEvent e) {
+			for (TileViewOverlay osmvo : mOverlays)
+				if (osmvo.onSingleTapUp(e, TileView.this)) {
+					invalidate();
+					return true;
+				}
+			
+			invalidate();
+			return super.onSingleTapConfirmed(e);
+		}
+
+		@Override
+		public void onLongPress(MotionEvent e) {
+			for (TileViewOverlay osmvo : mOverlays) {
+				osmvo.onLongPress(e, TileView.this);
+			}
+			
+			showContextMenu();
+			super.onLongPress(e);
+		}
+
+		@Override
+		public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+			final float aRotateToAngle = 360 - mBearing;
+			final int viewWidth_2 = TileView.this.getWidth() / 2;
+			final int viewHeight_2 = TileView.this.getHeight() / 2;
+			final int TouchMapOffsetX = (int) (Math.sin(Math.toRadians(aRotateToAngle)) * (distanceY))
+					+ (int) (Math.cos(Math.toRadians(aRotateToAngle)) * (distanceX));
+			final int TouchMapOffsetY = (int) (Math.cos(Math.toRadians(aRotateToAngle)) * (distanceY))
+					- (int) (Math.sin(Math.toRadians(aRotateToAngle)) * (distanceX));
+			final GeoPoint newCenter = TileView.this.getProjection().fromPixels(viewWidth_2 + TouchMapOffsetX,
+					viewHeight_2 + TouchMapOffsetY);
+			TileView.this.setMapCenter(newCenter);
+			
+			// if(count > 1){
+			// final double DiagonalSize = Math.hypot((double)(x1 - x2),
+			// (double)(y1 - y2));
+			// mTouchScale = (DiagonalSize / mTouchDiagonalSize);
+			// }
+			if (mMoveListener != null)
+				mMoveListener.onMoveDetected();
+			
+			//invalidate();
+			
+			return super.onScroll(e1, e2, distanceX, distanceY);
+		}
+
+		@Override
+		public boolean onDoubleTap(MotionEvent e) {
+			if (mBearing != 0) {
+				mBearing = 0;
+			} else {
+				final GeoPoint newCenter = TileView.this.getProjection().fromPixels(e.getX(), e.getY());
+				setMapCenter(newCenter);
+
+				setZoomLevel(getZoomLevel() + 1);
+			}
+
+			return true;
+		}
+	}
+
 	private class TileMapHandler extends Handler {
 		
 		@Override
@@ -90,43 +155,38 @@ public class TileView extends View {
 		setFocusableInTouchMode(true);
 	}
 	
+	public PoiMenuInfo mPoiMenuInfo = new PoiMenuInfo(-1);
+	
+//	@Override
+//	protected ContextMenuInfo getContextMenuInfo() {
+//		return mPoiMenuInfo;
+//	}
+//	
+	public class PoiMenuInfo implements ContextMenuInfo {
+		public int MarkerIndex;
+		public GeoPoint EventGeoPoint;
+
+		public PoiMenuInfo(int markerIndex) {
+			super();
+			MarkerIndex = markerIndex;
+		}
+	}
+
 	@Override
 	public boolean onTouchEvent(final MotionEvent event) {
-		this.mGestureDetector.onTouchEvent(event);
-		this.mDetector.onTouchEvent(event);
-
-		return true;
-	}
-
-	public void onLongPress(MotionEvent e) {
-		for (TileViewOverlay osmvo : this.mOverlays)
-			if (osmvo.onLongPress(e, this)){
-				return;
+		boolean result = mDetector.onTouchEvent(event);
+		if (!result) {
+			if (event.getAction() == MotionEvent.ACTION_UP) {
+				//stopScrolling();
+				result = true;
 			}
-		showContextMenu();
-	}
-
-	public boolean onSingleTapUp(MotionEvent e) {
-		for (TileViewOverlay osmvo : this.mOverlays)
-			if (osmvo.onSingleTapUp(e, this))
-				return true;
-
-		return false;
-	}
-
-	public boolean onDoubleTap(MotionEvent e) {
-		if (mBearing != 0) {
-			mBearing = 0;
-			//Message.obtain(mMainActivityCallbackHandler, R.id.user_moved_map).sendToTarget();
-		} else {
-			final GeoPoint newCenter = this.getProjection().fromPixels(e.getX(), e.getY());
-			this.setMapCenter(newCenter);
-
-			setZoomLevel(getZoomLevel() + 1);
-			//Message.obtain(mMainActivityCallbackHandler, R.id.set_title).sendToTarget();
 		}
-
-		return true;
+		return result;
+		
+//		this.mGestureDetector.onTouchEvent(event);
+//		this.mDetector.onTouchEvent(event);
+//
+//		return true;
 	}
 
 	@Override
@@ -140,6 +200,7 @@ public class TileView extends View {
 
 	@Override
 	protected void onDraw(Canvas c) {
+		Ut.d("onDraw");
 		final Paint paint = new Paint();
 		paint.setAntiAlias(true);
 
@@ -239,10 +300,8 @@ public class TileView extends View {
 							mapTileCoords[LONGITUDE], mapTileCoords[LATITUDE],
 							mZoom);
 					if (currentMapTile != null) {
-						final int tileLeft = mTouchMapOffsetX
-								+ centerMapTileScreenLeft + (x * tileSizePx);
-						final int tileTop = mTouchMapOffsetY
-								+ centerMapTileScreenTop + (y * tileSizePx);
+						final int tileLeft = centerMapTileScreenLeft + (x * tileSizePx);
+						final int tileTop = centerMapTileScreenTop + (y * tileSizePx);
 						final Rect r = new Rect(tileLeft, tileTop, tileLeft
 								+ tileSizePx, tileTop + tileSizePx);
 						if (!currentMapTile.isRecycled())
@@ -400,8 +459,8 @@ public class TileView extends View {
 			/* Subtract the offset caused by touch. */
 			//Log.d(DEBUGTAG, "x = "+x+" mTouchMapOffsetX = "+mTouchMapOffsetX+"   ");
 
-			x -= mTouchMapOffsetX;
-			y -= mTouchMapOffsetY;
+			x -= 0;
+			y -= 0;
 
 			//int xx = centerMapTileCoords[0]*tileSizePx+(int)x-upperLeftCornerOfCenterMapTile.x;
 			//int asd = Util.x2lon(xx, zoomLevel, tileSizePx);
@@ -521,8 +580,8 @@ public class TileView extends View {
 					+ (int) (relativePositionInCenterMapTile[LATITUDE] * tileSizePx);
 
 			/* Add up the offset caused by touch. */
-			out.set(x + mTouchMapOffsetX, y
-					+ mTouchMapOffsetY);
+			out.set(x + 0, y
+					+ 0);
 			return out;
 		}
 
@@ -620,11 +679,9 @@ public class TileView extends View {
 
 				/* Add up the offset caused by touch. */
 				if (i == 0)
-					out.moveTo(x + mTouchMapOffsetX, y
-							+ mTouchMapOffsetY);
+					out.moveTo(x, y);
 				else
-					out.lineTo(x + mTouchMapOffsetX, y
-							+ mTouchMapOffsetY);
+					out.lineTo(x, y);
 			}
 
 			return out;
@@ -711,134 +768,8 @@ public class TileView extends View {
 		}
 	}
 
-	private class OpenStreetMapViewGestureDetectorListener implements OnGestureListener, OnDoubleTapListener {
-
-		// @Override
-		public boolean onDown(MotionEvent e) {
-			return false;
-		}
-
-		// @Override
-		public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-			// LATER Could be used for smoothly 'scroll-out' the map on a fast
-			// motion.
-			return false;
-		}
-
-		// @Override
-		public void onLongPress(MotionEvent e) {
-			TileView.this.onLongPress(e);
-		}
-
-		// @Override
-		public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-			return false;
-		}
-
-		// @Override
-		public void onShowPress(MotionEvent e) {
-		}
-
-		// @Override
-		public boolean onSingleTapUp(MotionEvent e) {
-			return TileView.this.onSingleTapUp(e);
-		}
-
-		public boolean onDoubleTap(MotionEvent e) {
-			return TileView.this.onDoubleTap(e);
-		}
-
-		public boolean onDoubleTapEvent(MotionEvent e) {
-			// Auto-generated method stub
-			return false;
-		}
-
-		public boolean onSingleTapConfirmed(MotionEvent e) {
-			// Auto-generated method stub
-			return false;
-		}
-
-	}
-
-	private boolean mActionMoveDetected;
-	private boolean mStopMoveDetecting;
-	public int mTouchDownX;
-	public int mTouchDownY;
-	public int mTouchMapOffsetX;
-	public int mTouchMapOffsetY;
-	private double mTouchDiagonalSize;
 	private IMoveListener mMoveListener;
 
-	private class GestureCallback implements VersionedGestureDetector.OnGestureListener {
-
-		public void onDown(MotionEvent event) {
-			mActionMoveDetected = false;
-			mStopMoveDetecting = false;
-			TileView.this.mTouchDownX = (int) event.getX();
-			TileView.this.mTouchDownY = (int) event.getY();
-			invalidate();
-		}
-
-		public void onMove(MotionEvent event, int count, float x1, float y1, float x2, float y2) {
-			if (Math.max(Math.abs(mTouchDownX - event.getX()), Math.abs(mTouchDownY - event.getY())) > 6 && !mStopMoveDetecting) {
-				mActionMoveDetected = true; // компенсируем дрожание рук
-				final float aRotateToAngle = 360 - mBearing;
-				TileView.this.mTouchMapOffsetX = (int) (Math.sin(Math.toRadians(aRotateToAngle)) * (event.getY() - TileView.this.mTouchDownY))
-						+ (int) (Math.cos(Math.toRadians(aRotateToAngle)) * (event.getX() - TileView.this.mTouchDownX));
-				TileView.this.mTouchMapOffsetY = (int) (Math.cos(Math.toRadians(aRotateToAngle)) * (event.getY() - TileView.this.mTouchDownY))
-						- (int) (Math.sin(Math.toRadians(aRotateToAngle)) * (event.getX() - TileView.this.mTouchDownX));
-
-				if(count > 1){
-					final double DiagonalSize = Math.hypot((double)(x1 - x2), (double)(y1 - y2));
-					mTouchScale = (DiagonalSize / mTouchDiagonalSize);
-				}
-				if(mMoveListener != null)
-					mMoveListener.onMoveDetected();
-				invalidate();
-
-				Message.obtain(mTileMapHandler, R.id.user_moved_map).sendToTarget();
-			}
-		}
-
-		public void onUp(MotionEvent event) {
-			mActionMoveDetected = false;
-			mStopMoveDetecting = true;
-			final int viewWidth_2 = TileView.this.getWidth() / 2;
-			final int viewHeight_2 = TileView.this.getHeight() / 2;
-			final GeoPoint newCenter = TileView.this.getProjection().fromPixels(viewWidth_2, viewHeight_2);
-			TileView.this.mTouchMapOffsetX = 0;
-			TileView.this.mTouchMapOffsetY = 0;
-			TileView.this.setMapCenter(newCenter); // Calls invalidate
-		}
-
-		public void onDown2(MotionEvent event, float x1, float y1, float x2, float y2) {
-			mTouchDiagonalSize = Math.hypot((double)(x1 - x2), (double)(y1 - y2));
-			mActionMoveDetected = true;
-		}
-
-		public void onUp2(MotionEvent event) {
-			if(mTouchScale > 1)
-				setZoomLevel(getZoomLevel()+(int)Math.round(mTouchScale)-1);
-			else
-				setZoomLevel(getZoomLevel()-(int)Math.round(1/mTouchScale)+1);
-			mTouchScale = 1;
-
-			mActionMoveDetected = false;
-			mStopMoveDetecting = true;
-			final GeoPoint newCenter2 = TileView.this.getProjection().fromPixels(TileView.this.getWidth() / 2, TileView.this.getHeight() / 2);
-			TileView.this.mTouchMapOffsetX = 0;
-			TileView.this.mTouchMapOffsetY = 0;
-			TileView.this.setMapCenter(newCenter2); // Calls invalidate
-			if(mMoveListener != null)
-				mMoveListener.onZoomDetected();
-
-			Message.obtain(mTileMapHandler, R.id.set_title).sendToTarget();
-		}
-
-	}
-
-
-	
 	// TODO След процедуры под вопросом о переделке
 	private Point getUpperLeftCornerOfCenterMapTileInScreen(final int[] centerMapTileCoords,
 			final int tileSizePx, final Point reuse) {

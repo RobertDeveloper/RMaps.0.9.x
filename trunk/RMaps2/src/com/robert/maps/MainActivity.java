@@ -80,6 +80,7 @@ import com.robert.maps.utils.SearchSuggestionsProvider;
 import com.robert.maps.utils.Ut;
 import com.robert.maps.view.IMoveListener;
 import com.robert.maps.view.MapView;
+import com.robert.maps.view.TileView;
 
 public class MainActivity extends Activity {
 	private static final String MAPNAME = "MapName";
@@ -583,9 +584,7 @@ public class MainActivity extends Activity {
 
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
-		Ut.d("onCreateContextMenu");
-		mMarkerIndex = mPoiOverlay.getMarkerAtPoint(mMap.TouchDownX(), mMap.TouchDownY(), mMap.getTileView());
-		if(mMarkerIndex >= 0){
+		if(menuInfo instanceof TileView.PoiMenuInfo && ((TileView.PoiMenuInfo) menuInfo).MarkerIndex >= 0) {
 			menu.add(0, R.id.menu_editpoi, 0, getText(R.string.menu_edit));
 			menu.add(0, R.id.menu_hide, 0, getText(R.string.menu_hide));
 			menu.add(0, R.id.menu_deletepoi, 0, getText(R.string.menu_delete));
@@ -601,7 +600,7 @@ public class MainActivity extends Activity {
 	public boolean onContextItemSelected(MenuItem item) {
 		switch(item.getItemId()){
 		case R.id.menu_addpoi:
-			GeoPoint point = this.mMap.getTouchDownPoint();
+			GeoPoint point = ((TileView.PoiMenuInfo)item.getMenuInfo()).EventGeoPoint;
 			startActivityForResult((new Intent(this, PoiActivity.class))
 					.putExtra("lat", point.getLatitude()).putExtra("lon", point.getLongitude()).putExtra("title", "POI"), R.id.menu_addpoi);
 			break;
