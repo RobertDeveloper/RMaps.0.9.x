@@ -22,6 +22,7 @@ import android.view.ContextMenu.ContextMenuInfo;
 import android.view.GestureDetector;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
 import android.view.View;
 
 import com.robert.maps.kml.Track.TrackPoint;
@@ -45,9 +46,31 @@ public class TileView extends View {
 	private TileMapHandler mTileMapHandler = new TileMapHandler();
 	protected final List<TileViewOverlay> mOverlays = new ArrayList<TileViewOverlay>();
 	
-	private GestureDetector mDetector = new GestureDetector(getContext(), new mListener());
+	private GestureDetector mDetector = new GestureDetector(getContext(), new TouchListener());
+	private ScaleGestureDetector mScaleDetector = new ScaleGestureDetector(getContext(), new ScaleListener());
 	
-	private class mListener extends GestureDetector.SimpleOnGestureListener {
+	private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
+
+		@Override
+		public boolean onScale(ScaleGestureDetector detector) {
+			mTouchScale = detector.getScaleFactor();
+			return super.onScale(detector);
+		}
+
+		@Override
+		public void onScaleEnd(ScaleGestureDetector detector) {
+			if(mTouchScale > 1)
+				setZoomLevel(getZoomLevel()+(int)Math.round(mTouchScale)-1);
+			else
+				setZoomLevel(getZoomLevel()-(int)Math.round(1/mTouchScale)+1);
+			mTouchScale = 1;
+
+			super.onScaleEnd(detector);
+		}
+		
+	}
+	
+	private class TouchListener extends GestureDetector.SimpleOnGestureListener {
 		@Override
 		public boolean onDown(MotionEvent e) {
 			return true;
@@ -174,6 +197,8 @@ public class TileView extends View {
 
 	@Override
 	public boolean onTouchEvent(final MotionEvent event) {
+		mScaleDetector.onTouchEvent(event);
+		
 		boolean result = mDetector.onTouchEvent(event);
 		if (!result) {
 			if (event.getAction() == MotionEvent.ACTION_UP) {
