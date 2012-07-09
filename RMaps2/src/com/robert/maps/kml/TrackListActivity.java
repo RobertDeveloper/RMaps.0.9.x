@@ -129,6 +129,14 @@ public class TrackListActivity extends ListActivity {
 		//PoiConstants.DATE_FORMAT = Settings.System.getString(getContentResolver(), Settings.System.DATE_FORMAT);
 	}
 
+	@Override
+	protected void onDestroy() {
+		if(mThreadExecutor != null)
+			mThreadExecutor.shutdown();
+		super.onDestroy();
+		mPoiManager.FreeDatabases();
+	}
+
 	private void doSaveTrack(){
 		dlgWait = Ut.ShowWaitDialog(this, 0);
 		if(mThreadExecutor == null)
@@ -176,6 +184,7 @@ public class TrackListActivity extends ListActivity {
 		Cursor c = mPoiManager.getGeoDatabase().getTrackListCursor(mUnits == 0 ? getResources().getString(R.string.km) : getResources().getString(R.string.ml));
 		
 		if(mNeedTracksStatUpdate){
+			mNeedTracksStatUpdate = false;
 			if(c != null){
 				if(c.moveToFirst()){
 					if(c.getInt(8) == -1){
@@ -246,9 +255,6 @@ public class TrackListActivity extends ListActivity {
 
 		switch(item.getItemId()){
 		case R.id.menu_importpoi:
-			if(OpenStreetMapViewConstants.DEBUGMODE){
-				UpdateTracksStat();
-			}
 			startActivity((new Intent(this, ImportTrackActivity.class)));
 			return true;
 		}

@@ -41,7 +41,7 @@ public class ImportPoiActivity extends Activity {
 	private PoiManager mPoiManager;
 
 	private ProgressDialog dlgWait;
-	protected ExecutorService mThreadPool = Executors.newFixedThreadPool(2, new SimpleThreadFactory("ImportPoi"));
+	protected ExecutorService mThreadPool = Executors.newSingleThreadExecutor(new SimpleThreadFactory("ImportPoi"));
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -215,8 +215,9 @@ public class ImportPoiActivity extends Activity {
 
 	@Override
 	protected void onDestroy() {
-		mPoiManager.FreeDatabases();
+		mThreadPool.shutdown();
 		super.onDestroy();
+		mPoiManager.FreeDatabases();
 	}
 
 	@Override

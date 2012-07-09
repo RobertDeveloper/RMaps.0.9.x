@@ -80,6 +80,12 @@ public class PoiCategoryActivity extends Activity implements PoiConstants {
 		});
 	}
 
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		mPoiManager.FreeDatabases();
+	}
+
 	protected void doSelectIcon() {
 		startActivityForResult(new Intent(this, PoiIconSetActivity.class), R.id.ImageIcon);
 	}
