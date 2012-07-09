@@ -27,14 +27,15 @@ public class PoiListActivity extends ListActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		setContentView(R.layout.poi_list);
         registerForContextMenu(getListView());
         mPoiManager = new PoiManager(this);
 	}
 
 	@Override
 	protected void onDestroy() {
-		super.onDestroy();
 		mPoiManager.FreeDatabases();
+		super.onDestroy();
 	}
 
 	@Override
@@ -48,9 +49,9 @@ public class PoiListActivity extends ListActivity {
         startManagingCursor(c);
 
         ListAdapter adapter = new SimpleCursorAdapter(this,
-                android.R.layout.simple_list_item_2, c,
-                        new String[] { "name", "descr" },
-                        new int[] { android.R.id.text1, android.R.id.text2 });
+                R.layout.poilist_item, c,
+                        new String[] { "name", "iconid", "poititle2", "descr" },
+                        new int[] { R.id.title1, R.id.pic, R.id.title2, R.id.descr});
         setListAdapter(adapter);
 	}
 
