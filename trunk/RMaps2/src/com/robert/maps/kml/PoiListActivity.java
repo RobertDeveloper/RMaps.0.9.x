@@ -28,19 +28,13 @@ public class PoiListActivity extends ListActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
         registerForContextMenu(getListView());
+        mPoiManager = new PoiManager(this);
 	}
 
 	@Override
-	protected void onStart() {
-		mPoiManager = new PoiManager(this);
-		super.onStart();
-	}
-
-	@Override
-	protected void onStop() {
+	protected void onDestroy() {
+		super.onDestroy();
 		mPoiManager.FreeDatabases();
-		mPoiManager = null;
-		super.onStop();
 	}
 
 	@Override

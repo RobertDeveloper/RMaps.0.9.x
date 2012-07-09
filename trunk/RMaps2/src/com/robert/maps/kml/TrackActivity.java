@@ -78,8 +78,8 @@ public class TrackActivity extends Activity {
 
 	@Override
 	protected void onDestroy() {
-		mPoiManager.FreeDatabases();
 		super.onDestroy();
+		mPoiManager.FreeDatabases();
 	}
 
 	@Override
