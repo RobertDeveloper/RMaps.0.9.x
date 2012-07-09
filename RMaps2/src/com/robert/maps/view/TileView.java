@@ -225,7 +225,6 @@ public class TileView extends View {
 
 	@Override
 	protected void onDraw(Canvas c) {
-		Ut.d("onDraw");
 		final Paint paint = new Paint();
 		paint.setAntiAlias(true);
 
