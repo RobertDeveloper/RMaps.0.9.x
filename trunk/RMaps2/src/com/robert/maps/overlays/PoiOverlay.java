@@ -222,7 +222,6 @@ public class PoiOverlay extends TileViewOverlay {
 			
 			c.drawLine(screenCoords.x - 5, screenCoords.y - 5, screenCoords.x + 5, screenCoords.y + 5, p);
 			c.drawLine(screenCoords.x - 5, screenCoords.y + 5, screenCoords.x + 5, screenCoords.y - 5, p);
-			Ut.d("drawLine "+left2+"-"+right2+" "+top2+"-"+bottom2);
 			}
 		}
 	}
