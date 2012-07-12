@@ -166,10 +166,15 @@ public class MyLocationOverlay extends TileViewOverlay {
 			if (mSpeed == 0) {
 				c.rotate(osmv.getBearing(), screenCoords.x, screenCoords.y);
 				if(getPersonIcon()){
+//					final Rect r = new Rect(screenCoords.x - (int)(PERSON_ICON2.getWidth()/2)
+//							, screenCoords.y - (int)(PERSON_HOTSPOT.y * PERSON_ICON2.getHeight() / 48)
+//							, screenCoords.x - (int)(PERSON_ICON2.getWidth()/2) + PERSON_ICON2.getWidth()
+//							, screenCoords.y - (int)(PERSON_HOTSPOT.y * PERSON_ICON2.getHeight() / 48) + PERSON_ICON2.getHeight()
+//							);
 					final Rect r = new Rect(screenCoords.x - (int)(PERSON_ICON2.getWidth()/2)
-							, screenCoords.y - (int)(PERSON_HOTSPOT.y * PERSON_ICON2.getHeight() / 48)
+							, screenCoords.y - (int)(PERSON_ICON2.getHeight() / 2)
 							, screenCoords.x - (int)(PERSON_ICON2.getWidth()/2) + PERSON_ICON2.getWidth()
-							, screenCoords.y - (int)(PERSON_HOTSPOT.y * PERSON_ICON2.getHeight() / 48) + PERSON_ICON2.getHeight()
+							, screenCoords.y - (int)(PERSON_ICON2.getHeight() / 2) + PERSON_ICON2.getHeight()
 							);
 					c.drawBitmap(PERSON_ICON2, null, r, this.mPaint);
 					//final Rect r = new Rect(screenCoords.x - PERSON_HOTSPOT.x, screenCoords.y - PERSON_HOTSPOT.y, screenCoords.x - PERSON_HOTSPOT.x + 48, screenCoords.y - PERSON_HOTSPOT.y + 48);

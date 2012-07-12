@@ -61,7 +61,7 @@ public class SearchResultOverlay extends TileViewOverlay {
 
 			c.save();
 			c.rotate(osmv.getBearing(), screenCoords.x, screenCoords.y);
-			c.translate(screenCoords.x - 12, screenCoords.y - mT.getMeasuredHeight() + 2);
+			c.translate(screenCoords.x - mT.getMeasuredWidth() / 2, screenCoords.y - mT.getMeasuredHeight() + 2);
 			mT.draw(c);
 			c.restore();
 		}
