@@ -2,7 +2,6 @@ package com.robert.maps.overlays;
 
 import org.andnav.osm.util.GeoPoint;
 import org.andnav.osm.util.TypeConverter;
-import org.andnav.osm.views.util.constants.OpenStreetMapViewConstants;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -11,8 +10,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Point;
-import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.preference.PreferenceManager;
 
@@ -38,10 +35,7 @@ public class MyLocationOverlay extends TileViewOverlay {
 	protected final Paint mPaint = new Paint();
 
 	protected Bitmap PERSON_ICON2 = null;
-	private Drawable mArrow = null;
-	//private Drawable mStop;
-	/** Coordinates the feet of the person are located. */
-	protected final android.graphics.Point PERSON_HOTSPOT = new android.graphics.Point(24,39);
+	private Bitmap mArrow = null;
 
 	private Context mCtx;
 	protected GeoPoint mLocation;
@@ -101,7 +95,7 @@ public class MyLocationOverlay extends TileViewOverlay {
 	private boolean getArrowIcon(){
 		if(mArrow == null)
 			try {
-				this.mArrow = mCtx.getResources().getDrawable(R.drawable.arrow);
+				this.mArrow = BitmapFactory.decodeResource(mCtx.getResources(), R.drawable.arrow);
 			} catch (Exception e) {
 				mArrow = null;
 			} catch (OutOfMemoryError e) {
@@ -150,12 +144,9 @@ public class MyLocationOverlay extends TileViewOverlay {
 			final Point screenCoords = new Point();
 			pj.toPixels(this.mLocation, screenCoords);
 			
-			if(OpenStreetMapViewConstants.DEBUGMODE){
-//				mSpeed = 10;
-				mAccuracy = 50;
-			}
 
 			if (mPrefAccuracy != 0
+					&& mSpeed <= 0.278
 					&& ((mAccuracy > 0 && mPrefAccuracy == 1) || (mPrefAccuracy > 1 && mAccuracy >= mPrefAccuracy))) {
 				int PixelRadius = (int) (osmv.mTouchScale * mAccuracy / ((float)METER_IN_PIXEL / (1 << osmv.getZoomLevel())));
 				c.drawCircle(screenCoords.x, screenCoords.y, PixelRadius, mPaintAccurasyFill);
@@ -163,43 +154,19 @@ public class MyLocationOverlay extends TileViewOverlay {
 			}
 
 			c.save();
-			if (mSpeed == 0) {
+			if (mSpeed <= 0.278) {
 				c.rotate(osmv.getBearing(), screenCoords.x, screenCoords.y);
 				if(getPersonIcon()){
-//					final Rect r = new Rect(screenCoords.x - (int)(PERSON_ICON2.getWidth()/2)
-//							, screenCoords.y - (int)(PERSON_HOTSPOT.y * PERSON_ICON2.getHeight() / 48)
-//							, screenCoords.x - (int)(PERSON_ICON2.getWidth()/2) + PERSON_ICON2.getWidth()
-//							, screenCoords.y - (int)(PERSON_HOTSPOT.y * PERSON_ICON2.getHeight() / 48) + PERSON_ICON2.getHeight()
-//							);
-					final Rect r = new Rect(screenCoords.x - (int)(PERSON_ICON2.getWidth()/2)
-							, screenCoords.y - (int)(PERSON_ICON2.getHeight() / 2)
-							, screenCoords.x - (int)(PERSON_ICON2.getWidth()/2) + PERSON_ICON2.getWidth()
-							, screenCoords.y - (int)(PERSON_ICON2.getHeight() / 2) + PERSON_ICON2.getHeight()
-							);
-					c.drawBitmap(PERSON_ICON2, null, r, this.mPaint);
-					//final Rect r = new Rect(screenCoords.x - PERSON_HOTSPOT.x, screenCoords.y - PERSON_HOTSPOT.y, screenCoords.x - PERSON_HOTSPOT.x + 48, screenCoords.y - PERSON_HOTSPOT.y + 48);
-					//c.drawBitmap(PERSON_ICON2, null, r, this.mPaint);
-//					c.drawBitmap(PERSON_ICON2, screenCoords.x - PERSON_HOTSPOT.x * PERSON_ICON2.getDensity() / 160
-//							, screenCoords.y - PERSON_HOTSPOT.y * PERSON_ICON2.getDensity() / 160
-//							, this.mPaint);
+					c.drawBitmap(PERSON_ICON2, screenCoords.x - (int)(PERSON_ICON2.getWidth()/2), screenCoords.y - (int)(PERSON_ICON2.getHeight() / 2), mPaint);
 				};
-//				mStop.setBounds(screenCoords.x - mArrow.getMinimumWidth() / 2, screenCoords.y
-//						- mArrow.getMinimumHeight() / 2 - 3, screenCoords.x + mArrow.getMinimumWidth() / 2, screenCoords.y
-//						+ mArrow.getMinimumHeight() / 2 - 3);
-//				mStop.draw(c);
 			} else {
 				if(getArrowIcon()){
 					c.rotate(mBearing, screenCoords.x, screenCoords.y);
-					mArrow.setBounds(screenCoords.x - mArrow.getMinimumWidth() / 2, screenCoords.y
-							- mArrow.getMinimumHeight() / 2, screenCoords.x + mArrow.getMinimumWidth() / 2, screenCoords.y
-							+ mArrow.getMinimumHeight() / 2);
-					mArrow.draw(c);
+					c.drawBitmap(mArrow, screenCoords.x - (int)(mArrow.getWidth()/2), screenCoords.y - (int)(mArrow.getHeight() / 2), mPaint);
 				}
 			}
 			c.restore();
 
-//			c.drawText("Speed=" + mSpeed, ((float) screenCoords.x + 30), ((float) screenCoords.y + 30), paint);
-//			c.drawText("Accuracy=" + mAccuracy, ((float) screenCoords.x + 30), ((float) screenCoords.y + 45), paint);
 		}
 		
 		if(mNeedCrosshair){
