@@ -51,8 +51,9 @@ public class SQLiteMapDatabase {
 						}
 					}
 				}
+				final int dbFilesCnt = j;
 				// ≈сли нужно создать еще один, то резервируем дл€ него место
-				if(aCreateNewDatabaseFile)
+				if(aCreateNewDatabaseFile || j == 0)
 					j = j + 1;
 				// —оздаем массив определенного размера
 				mDatabase = new SQLiteDatabase[j];
@@ -73,6 +74,10 @@ public class SQLiteMapDatabase {
 						}
 						j = j + 1;
 					}
+				}
+				if(dbFilesCnt == 0) {
+					mDatabase[0] = new CashDatabaseHelper(null, mBaseFile.getAbsolutePath()).getWritableDatabase();
+					mDatabaseWritable = mDatabase[0];
 				}
 				if(aCreateNewDatabaseFile) {
 					mDatabase[j] = new CashDatabaseHelper(null, mBaseFile.getAbsolutePath() + (mBaseFileIndex + 1)).getWritableDatabase();

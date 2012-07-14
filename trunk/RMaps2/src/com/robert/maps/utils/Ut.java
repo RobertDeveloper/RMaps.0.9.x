@@ -120,7 +120,8 @@ public class Ut implements OpenStreetMapConstants, OpenStreetMapViewConstants {
 		final File dir = new File(dirName.replace("//", "/").replace("//", "/"));
 		if(!dir.exists()){
 			if (android.os.Environment.getExternalStorageState().equals(android.os.Environment.MEDIA_MOUNTED)){
-				dir.mkdirs();
+				final boolean res = dir.mkdirs();
+				Ut.d("res mkdirs = "+res);
 			}
 		}
 
@@ -131,9 +132,9 @@ public class Ut implements OpenStreetMapConstants, OpenStreetMapViewConstants {
 	public static String getExternalStorageDirectory() {
 		final File dir = new File(Environment.getExternalStorageDirectory().getPath()+EXTERNAL_SD);
 		if(dir.exists())
-			return Environment.getExternalStorageDirectory().getPath()+EXTERNAL_SD;
+			return (Environment.getExternalStorageDirectory().getPath()+EXTERNAL_SD); //.replace("/mnt", "");
 		else
-			return Environment.getExternalStorageDirectory().getPath();
+			return Environment.getExternalStorageDirectory().getPath(); //.replace("/mnt", "");
 	}
 
 	public static File getRMapsMainDir(final Context mCtx, final String aFolderName) {
