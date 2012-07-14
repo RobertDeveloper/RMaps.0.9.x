@@ -119,6 +119,9 @@ public class TileSource {
 			case 9:
 				gen = new TileURLGeneratorAVC(BASEURL, IMAGE_FILENAMEENDING);
 				break;
+			case 10:
+				gen = new TileURLGeneratorSovMilMap(BASEURL);
+				break;
 			}
 			mTileProvider = new TileProviderInet(ctx, gen, CacheDatabaseName());
 			break;

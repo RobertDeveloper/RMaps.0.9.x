@@ -3,6 +3,7 @@ package com.robert.maps.tileprovider;
 public class TileURLGeneratorBase {
 	protected final String mName;
 	protected static final String DELIMITER = "_";
+	protected static final String COMMA = ",";
 	protected static final String SLASH = "/";
 	protected static final char[][] M_TSQR = {{'q','t'},{'r','s'}};
 

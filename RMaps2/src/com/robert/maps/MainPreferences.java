@@ -10,6 +10,7 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
 import android.os.Environment;
@@ -31,10 +32,21 @@ public class MainPreferences extends PreferenceActivity implements OnSharedPrefe
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		final SharedPreferences aPref = PreferenceManager.getDefaultSharedPreferences(this);
+		
+		final String sdf = aPref.getString("pref_dir_main", "NO");
+		if(sdf.equalsIgnoreCase("NO")) {
+			final Editor editor = aPref.edit();
+			editor.putString("pref_dir_main", Ut.getExternalStorageDirectory()+"/rmaps/");
+			editor.putString("pref_dir_maps", Ut.getExternalStorageDirectory()+"/rmaps/maps/");
+			editor.putString("pref_dir_import", Ut.getExternalStorageDirectory()+"/rmaps/import/");
+			editor.putString("pref_dir_export", Ut.getExternalStorageDirectory()+"/rmaps/export/");
+			editor.commit();
+		}
+		
 		// Load the preferences from an XML resource
 		addPreferencesFromResource(R.xml.mainpreferences);
 		
-		final SharedPreferences aPref = PreferenceManager.getDefaultSharedPreferences(this);
 		findPreference("pref_dir_main").setSummary(aPref.getString("pref_dir_main", Ut.getExternalStorageDirectory()+"/rmaps/"));
 		findPreference("pref_dir_maps").setSummary(aPref.getString("pref_dir_maps", Ut.getExternalStorageDirectory()+"/rmaps/maps/"));
 		findPreference("pref_main_usermaps").setSummary("Maps from "+aPref.getString("pref_dir_maps", Ut.getExternalStorageDirectory()+"/rmaps/maps/"));
