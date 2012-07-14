@@ -187,6 +187,10 @@ public class MapView extends RelativeLayout {
 		return mTileView.getZoomLevel();
 	}
 	
+	public double getZoomLevelScaled() {
+		return mTileView.getZoomLevelScaled();
+	}
+	
 	public GeoPoint getMapCenter() {
 		return mTileView.getMapCenter();
 	}

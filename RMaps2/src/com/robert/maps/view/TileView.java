@@ -46,7 +46,7 @@ public class TileView extends View {
 	private TileMapHandler mTileMapHandler = new TileMapHandler();
 	protected final List<TileViewOverlay> mOverlays = new ArrayList<TileViewOverlay>();
 	
-	private GestureDetector mDetector = new GestureDetector(getContext(), new TouchListener());
+	private GestureDetector mDetector = new GestureDetector(getContext(), new TouchListener(), null, false);
 	private ScaleGestureDetector mScaleDetector = new ScaleGestureDetector(getContext(), new ScaleListener());
 	
 	private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
@@ -54,17 +54,25 @@ public class TileView extends View {
 		@Override
 		public boolean onScale(ScaleGestureDetector detector) {
 			mTouchScale = detector.getScaleFactor();
+			if(mMoveListener != null)
+				mMoveListener.onZoomDetected();
+			
+			postInvalidate();
+			
 			return super.onScale(detector);
 		}
 
 		@Override
 		public void onScaleEnd(ScaleGestureDetector detector) {
+			int zoom = 0;
 			if(mTouchScale > 1)
-				setZoomLevel(getZoomLevel()+(int)Math.round(mTouchScale)-1);
+				zoom = getZoomLevel()+(int)Math.round(mTouchScale)-1;
 			else
-				setZoomLevel(getZoomLevel()-(int)Math.round(1/mTouchScale)+1);
+				zoom = getZoomLevel()-(int)Math.round(1/mTouchScale)+1;
+			
 			mTouchScale = 1;
-
+			setZoomLevel(zoom);
+			
 			super.onScaleEnd(detector);
 		}
 		
@@ -103,10 +111,10 @@ public class TileView extends View {
 			final float aRotateToAngle = 360 - mBearing;
 			final int viewWidth_2 = TileView.this.getWidth() / 2;
 			final int viewHeight_2 = TileView.this.getHeight() / 2;
-			final int TouchMapOffsetX = (int) (Math.sin(Math.toRadians(aRotateToAngle)) * (distanceY))
-					+ (int) (Math.cos(Math.toRadians(aRotateToAngle)) * (distanceX));
-			final int TouchMapOffsetY = (int) (Math.cos(Math.toRadians(aRotateToAngle)) * (distanceY))
-					- (int) (Math.sin(Math.toRadians(aRotateToAngle)) * (distanceX));
+			final int TouchMapOffsetX = (int) (Math.sin(Math.toRadians(aRotateToAngle)) * (distanceY / mTouchScale))
+					+ (int) (Math.cos(Math.toRadians(aRotateToAngle)) * (distanceX / mTouchScale));
+			final int TouchMapOffsetY = (int) (Math.cos(Math.toRadians(aRotateToAngle)) * (distanceY / mTouchScale))
+					- (int) (Math.sin(Math.toRadians(aRotateToAngle)) * (distanceX / mTouchScale));
 			final GeoPoint newCenter = TileView.this.getProjection().fromPixels(viewWidth_2 + TouchMapOffsetX,
 					viewHeight_2 + TouchMapOffsetY);
 			TileView.this.setMapCenter(newCenter);
@@ -414,11 +422,24 @@ public class TileView extends View {
 		return mZoom;
 	}
 	
+	public double getZoomLevelScaled() {
+		if(mTouchScale == 1)
+			return getZoomLevel();
+		else if(mTouchScale > 1)
+			return getZoomLevel()+Math.round(mTouchScale)-1;
+		else
+			return getZoomLevel()-Math.round(1/mTouchScale)+1;
+	}
+	
 	public void setZoomLevel(final int zoom) {
-		if(mTileSource == null)
-			return;
+		if(mTileSource == null) 
+			mZoom = zoom;
+		else
+			mZoom = Math.max(mTileSource.ZOOM_MINLEVEL, Math.min(mTileSource.ZOOM_MAXLEVEL, zoom));
 		
-		mZoom = Math.max(mTileSource.ZOOM_MINLEVEL, Math.min(mTileSource.ZOOM_MAXLEVEL, zoom));
+		if(mMoveListener != null)
+			mMoveListener.onZoomDetected();
+		
 		this.postInvalidate();
 	}
 	
