@@ -22,6 +22,7 @@ import org.andnav.osm.views.util.StreamUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -106,7 +107,9 @@ public class MainActivity extends Activity {
 
 	private int mMarkerIndex;
 	private boolean mAutoFollow = true;
-	private String mStatusListener = "";
+	private String mGpsStatusName = "";
+	private int mGpsStatusSatCnt = 0;
+	private int mGpsStatusState = 0;
 	private float mLastSpeed, mLastBearing;
 	private boolean mCompassEnabled;
 	private boolean mDrivingDirectionUp;
@@ -336,47 +339,61 @@ public class MainActivity extends Activity {
 	}
 
 	private void setLastKnownLocation() {
-		final LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-		final Location loc1 = lm.getLastKnownLocation(SampleLocationListener.GPS);
-		final Location loc2 = lm.getLastKnownLocation(SampleLocationListener.NETWORK);
-
-		boolean boolGpsEnabled = lm.isProviderEnabled(SampleLocationListener.GPS);
-		boolean boolNetworkEnabled = lm.isProviderEnabled(SampleLocationListener.NETWORK);
-		String str = "";
-		Location loc = null;
-
-		if(loc1 == null && loc2 != null)
-			loc = loc2;
-		else if (loc1 != null && loc2 == null)
-			loc = loc1;
-		else if (loc1 == null && loc2 == null)
-			loc = null;
-		else
-			loc = loc1.getTime() > loc2.getTime() ? loc1 : loc2;
-
-		if(boolGpsEnabled){}
-		else if(boolNetworkEnabled)
-			str = getString(R.string.message_gpsdisabled);
-		else if(loc == null)
-			str = getString(R.string.message_locationunavailable);
-		else
-			str = getString(R.string.message_lastknownlocation);
-
-		if(str.length() > 0)
-			Toast.makeText(this, str, Toast.LENGTH_LONG).show();
-		
-		if(loc != null)
-			mMap.getController().setCenter(mMyLocationOverlay.getLastGeoPoint());
+		final GeoPoint p = mMyLocationOverlay.getLastGeoPoint();
+		if(p != null)
+			mMap.getController().setCenter(p);
+		else {
+			final LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+			final Location loc1 = lm.getLastKnownLocation(SampleLocationListener.GPS);
+			final Location loc2 = lm.getLastKnownLocation(SampleLocationListener.NETWORK);
+	
+			boolean boolGpsEnabled = lm.isProviderEnabled(SampleLocationListener.GPS);
+			boolean boolNetworkEnabled = lm.isProviderEnabled(SampleLocationListener.NETWORK);
+			String str = "";
+			Location loc = null;
+	
+			if(loc1 == null && loc2 != null)
+				loc = loc2;
+			else if (loc1 != null && loc2 == null)
+				loc = loc1;
+			else if (loc1 == null && loc2 == null)
+				loc = null;
+			else
+				loc = loc1.getTime() > loc2.getTime() ? loc1 : loc2;
+	
+			if(boolGpsEnabled){}
+			else if(boolNetworkEnabled)
+				str = getString(R.string.message_gpsdisabled);
+			else if(loc == null)
+				str = getString(R.string.message_locationunavailable);
+			else
+				str = getString(R.string.message_lastknownlocation);
+	
+			if(str.length() > 0)
+				Toast.makeText(this, str, Toast.LENGTH_LONG).show();
+			
+			if(loc != null)
+				mMap.getController().setCenter(TypeConverter.locationToGeoPoint(loc));
+		}
 	}
 
 	private void setTitle(){
 		final TextView leftText = (TextView) findViewById(R.id.left_text);
 		if(leftText != null)
 			leftText.setText(mMap.getTileSource().NAME);
+		
+		final TextView gpsText = (TextView) findViewById(R.id.gps_text);
+		if(gpsText != null){
+			gpsText.setText(mGpsStatusName);
+		}
 
 		final TextView rightText = (TextView) findViewById(R.id.right_text);
 		if(rightText != null){
-			rightText.setText(mStatusListener + " " + (1 + mMap.getZoomLevel()));
+			final double zoom = mMap.getZoomLevelScaled();
+			if(zoom > mMap.getTileSource().ZOOM_MAXLEVEL)
+				rightText.setText(""+(mMap.getTileSource().ZOOM_MAXLEVEL+1)+"+");
+			else
+				rightText.setText(""+(1 + Math.round(zoom)));
 		}
 	}
 
@@ -705,7 +722,7 @@ public class MainActivity extends Activity {
 					text = "Your message:"
 						+"\n\nRMaps: "+Ut.getAppVersion(MainActivity.this)
 						+"\nAndroid: "+v.RELEASE
-						+"\nDevice: "+b.BOARD+" "+b.BRAND+" "+b.DEVICE+" "+b.MANUFACTURER+" "+b.MODEL+" "+b.PRODUCT
+						+"\nDevice: "+b.BOARD+" "+b.BRAND+" "+b.DEVICE+/*" "+b.MANUFACTURER+*/" "+b.MODEL+" "+b.PRODUCT
 						+"\n\n"+text;
 
 					startActivity(Ut.SendMail(subj, text));
@@ -814,7 +831,7 @@ public class MainActivity extends Activity {
 			}
 			
 			int cnt = loc.getExtras().getInt("satellites", Integer.MIN_VALUE);
-			mStatusListener = loc.getProvider() + " 2 " + (cnt >= 0 ? cnt : 0);
+			mGpsStatusName = loc.getProvider(); // + " 2 " + (cnt >= 0 ? cnt : 0);
 			setTitle();
 			
 			mLastSpeed = loc.getSpeed();
@@ -843,8 +860,10 @@ public class MainActivity extends Activity {
 
 		public void onStatusChanged(String provider, int status, Bundle extras) {
 			Ut.d("onStatusChanged "+provider);
-			int cnt = extras.getInt("satellites", Integer.MIN_VALUE);
-			mStatusListener = provider+ " " + status + " " + (cnt >= 0 ? cnt : 0);
+			mGpsStatusSatCnt = extras.getInt("satellites", Integer.MIN_VALUE);
+			mGpsStatusState = status;
+			mGpsStatusName = provider;
+			Ut.d(provider+" status: "+status+" cnt: "+extras.getInt("satellites", Integer.MIN_VALUE));
 			setTitle();
 		}
 		
@@ -887,11 +906,11 @@ public class MainActivity extends Activity {
 				Ut.d("NO Provider Enabled");
 			}
 			if(mNetListener != null)
-				mStatusListener = NETWORK;
+				mGpsStatusName = NETWORK;
 			else if(mLocationListener != null)
-				mStatusListener = GPS;
+				mGpsStatusName = GPS;
 			else
-				mStatusListener = OFF;
+				mGpsStatusName = OFF;
 		}
 	}
 	
