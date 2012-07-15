@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import org.andnav.osm.views.util.OpenStreetMapTileCache;
 import org.andnav.osm.views.util.OpenStreetMapTileFilesystemProvider;
 
 import android.app.ProgressDialog;
@@ -18,6 +17,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 
 import com.robert.maps.R;
+import com.robert.maps.tileprovider.MapTileMemCache;
 
 public class InternalCachePreference extends Preference {
     private Button btnClear;
@@ -34,7 +34,7 @@ public class InternalCachePreference extends Preference {
 		setWidgetLayoutResource(R.layout.preference_widget_btn_clear);
 
 		mCtx = context;
-		this.mFSTileProvider = new OpenStreetMapTileFilesystemProvider(context, 4 * 1024 * 1024, new OpenStreetMapTileCache(), null); // 4MB FSCache
+		this.mFSTileProvider = new OpenStreetMapTileFilesystemProvider(context, 4 * 1024 * 1024, new MapTileMemCache(), null); // 4MB FSCache
 		mDbFile = context.getDatabasePath("osmaptilefscache_db");
 
 		setSummary(String.format(mCtx.getString(R.string.pref_internalcache_summary), (int) (mDbFile

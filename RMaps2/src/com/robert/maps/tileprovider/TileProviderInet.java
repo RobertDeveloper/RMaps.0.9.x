@@ -9,9 +9,7 @@ import java.io.OutputStream;
 import java.net.URL;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadFactory;
 
-import org.andnav.osm.views.util.OpenStreetMapTileCache;
 import org.andnav.osm.views.util.StreamUtils;
 
 import android.content.Context;
@@ -29,7 +27,7 @@ public class TileProviderInet extends TileProviderBase {
 	public TileProviderInet(Context ctx, TileURLGeneratorBase gen, final String cacheDatabaseName) {
 		super(ctx);
 		mTileURLGenerator = gen;
-		mTileCache = new OpenStreetMapTileCache(20);
+		mTileCache = new MapTileMemCache();
 		if(cacheDatabaseName != null) {
 			mCacheDatabase = new SQLiteMapDatabase();
 			final File folder = Ut.getRMapsMainDir(ctx, "cache");

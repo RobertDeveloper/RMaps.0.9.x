@@ -41,6 +41,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.robert.maps.R;
+import com.robert.maps.tileprovider.MapTileMemCache;
 import com.robert.maps.utils.RSQLiteOpenHelper;
 import com.robert.maps.utils.SQLiteMapDatabase;
 import com.robert.maps.utils.Ut;
@@ -76,7 +77,7 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 	protected final int mMaxFSCacheByteSize;
 	protected int mCurrentFSCacheByteSize;
 	protected ExecutorService mThreadPool = Executors.newFixedThreadPool(2);
-	protected final OpenStreetMapTileCache mCache;
+	protected final MapTileMemCache mCache;
 
 	protected HashSet<String> mPending = new HashSet<String>();
 
@@ -99,7 +100,7 @@ public class OpenStreetMapTileFilesystemProvider implements OpenStreetMapConstan
 	 *            to load fs-tiles to.
 	 */
 	public OpenStreetMapTileFilesystemProvider(final Context ctx, final int aMaxFSCacheByteSize,
-			final OpenStreetMapTileCache aCache, final String aCacheDatabaseName) {
+			final MapTileMemCache aCache, final String aCacheDatabaseName) {
 		this.mCtx = ctx;
 		this.mMaxFSCacheByteSize = aMaxFSCacheByteSize;
 		this.mDatabase = new OpenStreetMapTileFilesystemProviderDataBase(ctx);
