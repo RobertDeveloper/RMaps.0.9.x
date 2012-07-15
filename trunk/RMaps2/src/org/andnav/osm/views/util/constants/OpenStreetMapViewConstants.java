@@ -13,7 +13,6 @@ public interface OpenStreetMapViewConstants {
 
 	public static final boolean DEBUGMODE = true;
 
-	public static final int CACHE_MAPTILECOUNT_DEFAULT = 30;
 
 	public static final int MAPTILE_LATITUDE_INDEX = 0;
 	public static final int MAPTILE_LONGITUDE_INDEX = 1;

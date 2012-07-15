@@ -7,7 +7,6 @@ import java.util.Iterator;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import org.andnav.osm.views.util.OpenStreetMapTileCache;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -30,7 +29,7 @@ public class TileProviderSQLITEDB extends TileProviderFileBase {
 	public TileProviderSQLITEDB(Context ctx, final String filename, final String mapid) {
 		super(ctx);
 		mTileURLGenerator = new TileURLGeneratorBase(filename);
-		mTileCache = new OpenStreetMapTileCache(20);
+		mTileCache = new MapTileMemCache();
 		mUserMapDatabase = new SQLiteMapDatabase();
 		mUserMapDatabase.setFile(filename);
 		mMapID = mapid;

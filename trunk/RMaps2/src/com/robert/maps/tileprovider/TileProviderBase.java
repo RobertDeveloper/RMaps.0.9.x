@@ -2,7 +2,6 @@ package com.robert.maps.tileprovider;
 
 import java.util.HashSet;
 
-import org.andnav.osm.views.util.OpenStreetMapTileCache;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -17,7 +16,7 @@ public class TileProviderBase {
 	protected Bitmap mLoadingMapTile;
 	protected TileURLGeneratorBase mTileURLGenerator;
 	protected HashSet<String> mPending = new HashSet<String>();
-	protected OpenStreetMapTileCache mTileCache;
+	protected MapTileMemCache mTileCache;
 	protected Handler mCallbackHandler;
 
 	

@@ -12,6 +12,7 @@ import android.os.Message;
 import android.util.Log;
 
 import com.robert.maps.R;
+import com.robert.maps.tileprovider.MapTileMemCache;
 import com.robert.maps.utils.Ut;
 
 /**
@@ -30,7 +31,7 @@ public class OpenStreetMapTileProvider implements OpenStreetMapConstants, OpenSt
 
 	protected Bitmap mLoadingMapTile;
 	protected Context mCtx;
-	protected OpenStreetMapTileCache mTileCache;
+	protected MapTileMemCache mTileCache;
 	public OpenStreetMapTileFilesystemProvider mFSTileProvider;
 	protected OpenStreetMapTileDownloader mTileDownloader;
 	private Handler mLoadCallbackHandler = new LoadCallbackHandler();
@@ -50,7 +51,7 @@ public class OpenStreetMapTileProvider implements OpenStreetMapConstants, OpenSt
 			this.mLoadingMapTile = null;
 			e.printStackTrace();
 		}
-		this.mTileCache = new OpenStreetMapTileCache(iMapTileCacheSize);
+		this.mTileCache = new MapTileMemCache(iMapTileCacheSize);
 		this.mFSTileProvider = new OpenStreetMapTileFilesystemProvider(ctx, 4 * 1024 * 1024, this.mTileCache, aRendererInfo == null ? null : aRendererInfo.TILE_SOURCE_TYPE == 0 ? aRendererInfo.ID : null); // 4MB FSCache
 		this.mTileDownloader = new OpenStreetMapTileDownloader(ctx, this.mFSTileProvider);
 		this.mDownloadFinishedListenerHander = aDownloadFinishedListener;
