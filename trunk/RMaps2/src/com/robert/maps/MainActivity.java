@@ -22,7 +22,6 @@ import org.andnav.osm.views.util.StreamUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -815,10 +814,9 @@ public class MainActivity extends Activity {
 	private SampleLocationListener mLocationListener, mNetListener;
 	
 	private class SampleLocationListener implements LocationListener {
-		public static final int NOT_SET = Integer.MIN_VALUE;
 		public static final String GPS = "gps";
 		public static final String NETWORK = "network";
-		public static final String OFF = "OFF";
+		public static final String OFF = "off";
 
 		public void onLocationChanged(Location loc) {
 			mMyLocationOverlay.setLocation(loc);
@@ -830,7 +828,7 @@ public class MainActivity extends Activity {
 				Ut.d("NETWORK provider removed");
 			}
 			
-			int cnt = loc.getExtras().getInt("satellites", Integer.MIN_VALUE);
+			//int cnt = loc.getExtras().getInt("satellites", Integer.MIN_VALUE);
 			mGpsStatusName = loc.getProvider(); // + " 2 " + (cnt >= 0 ? cnt : 0);
 			setTitle();
 			
@@ -888,12 +886,14 @@ public class MainActivity extends Activity {
 			if (getLocationManager().isProviderEnabled(GPS)) {
 				Ut.d("GPS Provider Enabled");
 				getLocationManager().requestLocationUpdates(GPS, minTime, minDistance, mLocationListener);
+				mGpsStatusName = GPS;
 				
 				try {
 					if (getLocationManager().isProviderEnabled(NETWORK)) {
 						Ut.d("NETWORK Provider Enabled");
 						mNetListener = new SampleLocationListener();
 						getLocationManager().requestLocationUpdates(NETWORK, minTime, minDistance, mNetListener);
+						mGpsStatusName = NETWORK;
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -902,15 +902,13 @@ public class MainActivity extends Activity {
 			} else if (getLocationManager().isProviderEnabled(NETWORK)) {
 				Ut.d("only NETWORK Provider Enabled");
 				getLocationManager().requestLocationUpdates(NETWORK, minTime, minDistance, mLocationListener);
+				mGpsStatusName = NETWORK;
 			} else {
 				Ut.d("NO Provider Enabled");
-			}
-			if(mNetListener != null)
-				mGpsStatusName = NETWORK;
-			else if(mLocationListener != null)
-				mGpsStatusName = GPS;
-			else
 				mGpsStatusName = OFF;
+			}
+			
+			setTitle();
 		}
 	}
 	
