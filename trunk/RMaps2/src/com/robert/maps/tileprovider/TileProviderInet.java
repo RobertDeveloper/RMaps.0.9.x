@@ -16,12 +16,13 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
+import com.robert.maps.utils.ICacheProvider;
 import com.robert.maps.utils.SQLiteMapDatabase;
 import com.robert.maps.utils.SimpleThreadFactory;
 import com.robert.maps.utils.Ut;
 
 public class TileProviderInet extends TileProviderBase {
-	private SQLiteMapDatabase mCacheDatabase = null;
+	private ICacheProvider mCacheProvider = null;
 	private ExecutorService mThreadPool = Executors.newFixedThreadPool(5, new SimpleThreadFactory("TileProviderInet"));
 
 	public TileProviderInet(Context ctx, TileURLGeneratorBase gen, final String cacheDatabaseName) {
@@ -29,17 +30,20 @@ public class TileProviderInet extends TileProviderBase {
 		mTileURLGenerator = gen;
 		mTileCache = new MapTileMemCache();
 		if(cacheDatabaseName != null) {
-			mCacheDatabase = new SQLiteMapDatabase();
+			final SQLiteMapDatabase cacheDatabase = new SQLiteMapDatabase();
 			final File folder = Ut.getRMapsMainDir(ctx, "cache");
-			mCacheDatabase.setFile(folder.getAbsolutePath()+"/"+cacheDatabaseName+".sqlitedb");
+			cacheDatabase.setFile(folder.getAbsolutePath()+"/"+cacheDatabaseName+".sqlitedb");
+			mCacheProvider = cacheDatabase;
+		} else {
+			mCacheProvider = new FSCacheProvider();
 		}
 	}
 
 	@Override
 	public void Free() {
 		mThreadPool.shutdown();
-		if(mCacheDatabase != null)
-			mCacheDatabase.freeDatabases();
+		if(mCacheProvider != null)
+			mCacheProvider.Free();
 		super.Free();
 	}
 
@@ -66,8 +70,8 @@ public class TileProviderInet extends TileProviderBase {
 
 					byte[] data = null;
 
-					if(mCacheDatabase != null)
-						data = mCacheDatabase.getTile(x, y, z);
+					if(mCacheProvider != null)
+						data = mCacheProvider.getTile(tileurl, x, y, z);
 
 					if(data == null) {
 						Ut.w("FROM INTERNET "+tileurl);
@@ -80,8 +84,8 @@ public class TileProviderInet extends TileProviderBase {
 
 						data = dataStream.toByteArray();
 
-						if(mCacheDatabase != null)
-							mCacheDatabase.putTile(x, y, z, data);
+						if(mCacheProvider != null)
+							mCacheProvider.putTile(tileurl, x, y, z, data);
 					}
 
 					if(data != null) {

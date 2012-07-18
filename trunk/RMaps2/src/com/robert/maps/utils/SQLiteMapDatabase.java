@@ -11,7 +11,7 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 
-public class SQLiteMapDatabase {
+public class SQLiteMapDatabase implements ICacheProvider {
 	private static final String SQL_CREATE_tiles = "CREATE TABLE IF NOT EXISTS tiles (x int, y int, z int, s int, image blob, PRIMARY KEY (x,y,z,s));";
 	private static final String SQL_CREATE_info = "CREATE TABLE IF NOT EXISTS info (maxzoom Int, minzoom Int);";
 	private static final String SQL_SELECT_MINZOOM = "SELECT 17-minzoom AS ret FROM info";
@@ -239,6 +239,18 @@ public class SQLiteMapDatabase {
 					mDatabase[i].close();
 				}
 		}
+	}
+
+	public byte[] getTile(String aURLstring, int aX, int aY, int aZ) {
+		return getTile(aX, aY, aZ);
+	}
+
+	public void putTile(String aURLstring, int aX, int aY, int aZ, byte[] aData) {
+		putTile(aX, aY, aZ, aData);
+	}
+
+	public void Free() {
+		freeDatabases();
 	}
 
 }
