@@ -1,16 +1,118 @@
 package com.robert.maps.tileprovider;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+import java.util.NoSuchElementException;
+
+import org.andnav.osm.views.util.StreamUtils;
+
 import com.robert.maps.utils.ICacheProvider;
+import com.robert.maps.utils.Ut;
 
 public class FSCacheProvider implements ICacheProvider {
+	public static final String TILE_PATH_EXTENSION = ".tile";
+	public static final long TILE_MAX_CACHE_SIZE_BYTES = 4L * 1024 * 1024;
+	public static final long TILE_TRIM_CACHE_SIZE_BYTES = 4L * 1024 * 1024;
+
+	public File mCachePath;
+	private long mUsedCacheSpace = 0L;
+
+	public FSCacheProvider(final File aCachePath) {
+		super();
+		this.mCachePath = aCachePath;
+
+		// do this in the background because it takes a long time
+		final Thread t = new Thread() {
+			@Override
+			public void run() {
+				mUsedCacheSpace = 0; // because it's static
+				calculateDirectorySize(aCachePath);
+				if (mUsedCacheSpace > TILE_MAX_CACHE_SIZE_BYTES) {
+					cutCurrentCache();
+				}
+				Ut.d("Finished init thread");
+			}
+		};
+		t.setPriority(Thread.MIN_PRIORITY);
+		t.start();
+}
 
 	public byte[] getTile(String aURLstring, int aX, int aY, int aZ) {
-		// TODO Auto-generated method stub
-		return null;
+		if(mCachePath == null)
+			return null;
+		
+		final File file = new File(mCachePath, Ut.formatToFileName(aURLstring) + TILE_PATH_EXTENSION);
+		if(!file.exists())
+			return null;
+		
+		OutputStream out = null;
+		InputStream in = null;
+		final ByteArrayOutputStream dataStream = new ByteArrayOutputStream();
+		try {
+			in = new BufferedInputStream(new FileInputStream(file), StreamUtils.IO_BUFFER_SIZE);
+			out = new BufferedOutputStream(dataStream, StreamUtils.IO_BUFFER_SIZE);
+			Ut.copy(in, out);
+			out.flush();
+		} catch (IOException e) {
+		}
+
+		final byte[] data = dataStream.toByteArray();
+		
+		return data;
 	}
 
 	public void putTile(String aURLstring, int aX, int aY, int aZ, byte[] aData) {
-		// TODO Auto-generated method stub
+		if(mCachePath == null)
+			return;
+		
+		final File file = new File(mCachePath, Ut.formatToFileName(aURLstring)
+				+ TILE_PATH_EXTENSION);
+
+		final File parent = file.getParentFile();
+		if (!parent.exists()) {
+			return;
+		}
+
+		BufferedOutputStream outputStream = null;
+		ByteArrayInputStream byteStream = null;
+		try {
+			byteStream = new ByteArrayInputStream(aData);
+			outputStream = new BufferedOutputStream(new FileOutputStream(file.getPath()),
+					Ut.IO_BUFFER_SIZE);
+			final long length = Ut.copy(byteStream, outputStream);
+
+			mUsedCacheSpace += length;
+			if (mUsedCacheSpace > TILE_MAX_CACHE_SIZE_BYTES) {
+				cutCurrentCache();
+			}
+		} catch (final IOException e) {
+			return;
+		} finally {
+			if (outputStream != null) {
+				try {
+					outputStream.close();
+				} catch (final IOException e) {
+				}
+			}
+			if (byteStream != null) {
+				try {
+					byteStream.close();
+				} catch (final IOException e) {
+				}
+			}
+		}
 		
 	}
 
@@ -18,5 +120,90 @@ public class FSCacheProvider implements ICacheProvider {
 		// TODO Auto-generated method stub
 		
 	}
+
+	private void cutCurrentCache() {
+
+		synchronized (mCachePath) {
+
+			if (mUsedCacheSpace > TILE_TRIM_CACHE_SIZE_BYTES) {
+
+				Ut.d("Trimming tile cache from " + mUsedCacheSpace + " to "
+						+ TILE_TRIM_CACHE_SIZE_BYTES);
+
+				final List<File> z = getDirectoryFileList(mCachePath);
+
+				final File[] files = z.toArray(new File[0]);
+				Arrays.sort(files, new Comparator<File>() {
+					public int compare(final File f1, final File f2) {
+						return Long.valueOf(f1.lastModified()).compareTo(f2.lastModified());
+					}
+				});
+
+				for (final File file : files) {
+					if (mUsedCacheSpace <= TILE_TRIM_CACHE_SIZE_BYTES) {
+						break;
+					}
+
+					final long length = file.length();
+					if (file.delete()) {
+						mUsedCacheSpace -= length;
+					}
+				}
+
+				Ut.d("Finished trimming tile cache");
+			}
+		}
+	}
+
+	private List<File> getDirectoryFileList(final File aDirectory) {
+		final List<File> files = new ArrayList<File>();
+
+		final File[] z = aDirectory.listFiles();
+		if (z != null) {
+			for (final File file : z) {
+				if (file.isFile()) {
+					files.add(file);
+				}
+				if (file.isDirectory()) {
+					files.addAll(getDirectoryFileList(file));
+				}
+			}
+		}
+
+		return files;
+	}
+
+	private void calculateDirectorySize(final File pDirectory) {
+		if(pDirectory == null)
+			return;
+		
+		final File[] z = pDirectory.listFiles();
+		if (z != null) {
+			for (final File file : z) {
+				if (file.isFile()) {
+					mUsedCacheSpace += file.length();
+				}
+				if (file.isDirectory() && !isSymbolicDirectoryLink(pDirectory, file)) {
+					calculateDirectorySize(file); // *** recurse ***
+				}
+			}
+		}
+	}
+
+	private boolean isSymbolicDirectoryLink(final File pParentDirectory, final File pDirectory) {
+		try {
+			final String canonicalParentPath1 = pParentDirectory.getCanonicalPath();
+			final String canonicalParentPath2 = pDirectory.getCanonicalFile().getParent();
+			return !canonicalParentPath1.equals(canonicalParentPath2);
+		} catch (final IOException e) {
+			return true;
+		} catch (final NoSuchElementException e) {
+			// See: http://code.google.com/p/android/issues/detail?id=4961
+			// See: http://code.google.com/p/android/issues/detail?id=5807
+			return true;
+		}
+
+	}
+
 	
 }
