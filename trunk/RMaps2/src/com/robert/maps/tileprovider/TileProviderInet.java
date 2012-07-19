@@ -35,7 +35,8 @@ public class TileProviderInet extends TileProviderBase {
 			cacheDatabase.setFile(folder.getAbsolutePath()+"/"+cacheDatabaseName+".sqlitedb");
 			mCacheProvider = cacheDatabase;
 		} else {
-			mCacheProvider = new FSCacheProvider();
+			final File folder = Ut.getRMapsMainDir(ctx, "cache/tiles");
+			mCacheProvider = new FSCacheProvider(folder);
 		}
 	}
 

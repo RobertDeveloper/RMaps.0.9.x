@@ -3,6 +3,7 @@ package com.robert.maps.utils;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -27,7 +28,27 @@ import android.util.Log;
 import com.robert.maps.R;
 
 public class Ut implements OpenStreetMapConstants, OpenStreetMapViewConstants {
+	public static final int IO_BUFFER_SIZE = 8 * 1024;
 	
+	public static long copy(final InputStream in, final OutputStream out) throws IOException {
+		long length = 0;
+		final byte[] b = new byte[IO_BUFFER_SIZE];
+		int read;
+		while ((read = in.read(b)) != -1) {
+			out.write(b, 0, read);
+			length += read;
+		}
+		return length;
+	}
+
+	public static String formatToFileName(final String aTileURLString) {
+		final String str = aTileURLString.substring(7).replace("/", "_");
+		if (str.length() > 255) {
+			return str.substring(str.length() - 255);
+		} else
+			return str;
+	}
+
 	final static String[] formats = new String[] { 
 			"yyyy-MM-dd'T'HH:mm:ss.SSSZ",
 			"yyyy-MM-dd'T'HH:mm:ssZ",
