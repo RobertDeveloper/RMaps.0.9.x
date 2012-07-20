@@ -64,7 +64,6 @@ public class YandexTrafficOverlay extends TileViewOverlay implements OpenStreetM
 		 */
 		final Point upperLeftCornerOfCenterMapTileNotScale = getUpperLeftCornerOfCenterMapTileInScreen(
 				centerMapTileCoords, tileSizePxNotScale, null);
-		Ut.d("Traffic: "+upperLeftCornerOfCenterMapTileNotScale.x+", "+upperLeftCornerOfCenterMapTileNotScale.y);
 
 		final int centerMapTileScreenLeftNotScale = upperLeftCornerOfCenterMapTileNotScale.x;
 		final int centerMapTileScreenTopNotScale = upperLeftCornerOfCenterMapTileNotScale.y;

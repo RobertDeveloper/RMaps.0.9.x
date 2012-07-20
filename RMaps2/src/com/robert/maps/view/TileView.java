@@ -37,6 +37,7 @@ public class TileView extends View {
 	private int mLatitudeE6 = 0, mLongitudeE6 = 0;
 	private int mZoom = 0;
 	private float mBearing = 0;
+	final Paint mPaint = new Paint();
 	
 	private boolean mStopProcessing;
 	
@@ -182,6 +183,8 @@ public class TileView extends View {
 	public TileView(Context context) {
 		super(context);
 
+		mPaint.setAntiAlias(true);
+
 		setFocusable(true);
 		setFocusableInTouchMode(true);
 	}
@@ -233,8 +236,6 @@ public class TileView extends View {
 
 	@Override
 	protected void onDraw(Canvas c) {
-		final Paint paint = new Paint();
-		paint.setAntiAlias(true);
 
 		c.save();
 
@@ -257,7 +258,6 @@ public class TileView extends View {
 			 */
 			final Point upperLeftCornerOfCenterMapTileNotScale = getUpperLeftCornerOfCenterMapTileInScreen(
 					centerMapTileCoords, tileSizePxNotScale, null);
-			Ut.d("Map: "+upperLeftCornerOfCenterMapTileNotScale.x+", "+upperLeftCornerOfCenterMapTileNotScale.y);
 
 			final int centerMapTileScreenLeftNotScale = upperLeftCornerOfCenterMapTileNotScale.x;
 			final int centerMapTileScreenTopNotScale = upperLeftCornerOfCenterMapTileNotScale.y;
@@ -337,17 +337,17 @@ public class TileView extends View {
 						final Rect r = new Rect(tileLeft, tileTop, tileLeft
 								+ tileSizePx, tileTop + tileSizePx);
 						if (!currentMapTile.isRecycled())
-							c.drawBitmap(currentMapTile, null, r, paint);
+							c.drawBitmap(currentMapTile, null, r, mPaint);
 
 						if (OpenStreetMapViewConstants.DEBUGMODE) {
 							c.drawLine(tileLeft, tileTop,
-									tileLeft + tileSizePx, tileTop, paint);
+									tileLeft + tileSizePx, tileTop, mPaint);
 							c.drawLine(tileLeft, tileTop, tileLeft, tileTop
-									+ tileSizePx, paint);
+									+ tileSizePx, mPaint);
 							c.drawText("y x = " + mapTileCoords[LATITUDE] + " "
 									+ mapTileCoords[LONGITUDE] + " zoom "
 									+ mZoom + " ", tileLeft + 5, tileTop + 15,
-									paint);
+									mPaint);
 						}
 
 					}

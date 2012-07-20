@@ -15,6 +15,7 @@ import org.andnav.osm.views.util.StreamUtils;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Handler;
 
 import com.robert.maps.utils.ICacheProvider;
 import com.robert.maps.utils.SQLiteMapDatabase;
@@ -42,6 +43,14 @@ public class TileProviderInet extends TileProviderBase {
 		} else {
 			final File folder = Ut.getRMapsCacheTilesDir(ctx);
 			mCacheProvider = new FSCacheProvider(folder);
+		}
+	}
+
+	@Override
+	public void setHandler(Handler mTileMapHandler) {
+		super.setHandler(mTileMapHandler);
+		if(mTileURLGenerator instanceof TileURLGeneratorYANDEXTRAFFIC) {
+			((TileURLGeneratorYANDEXTRAFFIC) mTileURLGenerator).setCallbackHandler(mTileMapHandler);
 		}
 	}
 
@@ -104,7 +113,6 @@ public class TileProviderInet extends TileProviderBase {
 				} catch (Exception e) {
 					SendMessageFail();
 				} catch (OutOfMemoryError e) {
-					Ut.w("OutOfMemoryError");
 					SendMessageFail();
 					System.gc();
 				} finally {
