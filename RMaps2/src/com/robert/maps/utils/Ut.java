@@ -28,6 +28,12 @@ import android.util.Log;
 import com.robert.maps.R;
 
 public class Ut implements OpenStreetMapConstants, OpenStreetMapViewConstants {
+	public static final int MAPTILEFSLOADER_SUCCESS_ID = 1000;
+	public static final int MAPTILEFSLOADER_FAIL_ID = MAPTILEFSLOADER_SUCCESS_ID + 1;
+	public static final int INDEXIND_SUCCESS_ID = MAPTILEFSLOADER_SUCCESS_ID + 2;
+	public static final int INDEXIND_FAIL_ID = MAPTILEFSLOADER_SUCCESS_ID + 3;
+	public static final int ERROR_MESSAGE = MAPTILEFSLOADER_SUCCESS_ID + 4;
+
 	public static final int IO_BUFFER_SIZE = 8 * 1024;
 	
 	public static long copy(final InputStream in, final OutputStream out) throws IOException {

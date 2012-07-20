@@ -3,10 +3,8 @@ package com.robert.maps.overlays;
 import java.io.File;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadFactory;
 
 import org.andnav.osm.util.GeoPoint;
-import org.andnav.osm.views.util.OpenStreetMapTileFilesystemProvider;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -142,7 +140,7 @@ public class CurrentTrackOverlay extends TileViewOverlay {
 
 			Ut.d("Track maped");
 
-			Message.obtain(mOsmv.getHandler(), OpenStreetMapTileFilesystemProvider.MAPTILEFSLOADER_SUCCESS_ID).sendToTarget();
+			Message.obtain(mOsmv.getHandler(), Ut.MAPTILEFSLOADER_SUCCESS_ID).sendToTarget();
 
 			mThreadRunned = false;
 		}
