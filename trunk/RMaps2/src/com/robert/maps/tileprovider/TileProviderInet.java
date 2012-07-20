@@ -25,6 +25,11 @@ public class TileProviderInet extends TileProviderBase {
 	private ICacheProvider mCacheProvider = null;
 	private ExecutorService mThreadPool = Executors.newFixedThreadPool(5, new SimpleThreadFactory("TileProviderInet"));
 
+	public TileProviderInet(Context ctx, TileURLGeneratorBase gen, final String cacheDatabaseName, final Bitmap aLoadingMapTile) {
+		this(ctx, gen, cacheDatabaseName);
+		mLoadingMapTile = aLoadingMapTile;
+	}
+	
 	public TileProviderInet(Context ctx, TileURLGeneratorBase gen, final String cacheDatabaseName) {
 		super(ctx);
 		mTileURLGenerator = gen;

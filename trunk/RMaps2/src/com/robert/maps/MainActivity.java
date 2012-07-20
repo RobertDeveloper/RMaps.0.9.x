@@ -73,6 +73,7 @@ import com.robert.maps.overlays.MyLocationOverlay;
 import com.robert.maps.overlays.PoiOverlay;
 import com.robert.maps.overlays.SearchResultOverlay;
 import com.robert.maps.overlays.TrackOverlay;
+import com.robert.maps.overlays.YandexTrafficOverlay;
 import com.robert.maps.tileprovider.TileSource;
 import com.robert.maps.utils.CompassView;
 import com.robert.maps.utils.SearchSuggestionsProvider;
@@ -80,6 +81,7 @@ import com.robert.maps.utils.Ut;
 import com.robert.maps.view.IMoveListener;
 import com.robert.maps.view.MapView;
 import com.robert.maps.view.TileView;
+import com.robert.maps.view.TileViewOverlay;
 
 public class MainActivity extends Activity {
 	private static final String MAPNAME = "MapName";
@@ -97,6 +99,7 @@ public class MainActivity extends Activity {
 	private PowerManager.WakeLock myWakeLock;
 	
 	// Overlays
+	private YandexTrafficOverlay mYandexTrafficOverlay = null;
 	private MyLocationOverlay mMyLocationOverlay;
 	private PoiOverlay mPoiOverlay;
 	private TrackOverlay mTrackOverlay;
@@ -140,7 +143,6 @@ public class MainActivity extends Activity {
 
 		this.mTrackOverlay = new TrackOverlay(this, mPoiManager, mCallbackHandler);
 		this.mCurrentTrackOverlay = new CurrentTrackOverlay(this, mPoiManager);
-		//this.mOsmv.getOverlays().add(this.mCurrentTrackOverlay);
 		this.mPoiOverlay = new PoiOverlay(this, mPoiManager, null, pref.getBoolean("pref_hidepoi", false));
 		mPoiOverlay.setTapIndex(uiState.getInt("curShowPoiId", -1));
         this.mMyLocationOverlay = new MyLocationOverlay(this);
@@ -305,9 +307,17 @@ public class MainActivity extends Activity {
 	
 	private void FillOverlays() {
 		this.mMap.getOverlays().clear();
-//		if(RendererInfo.YANDEX_TRAFFIC_ON == 1){
-//       		this.mOsmv.getOverlays().add(new YandexTrafficOverlay(this, this.mOsmv));
-//		}
+
+		if(mTileSource == null) {
+		} else if(mTileSource.YANDEX_TRAFFIC_ON == 1 && mYandexTrafficOverlay == null) {
+ 			mYandexTrafficOverlay = new YandexTrafficOverlay(this, mMap.getTileView());
+ 		} else if(mTileSource.YANDEX_TRAFFIC_ON != 1 && mYandexTrafficOverlay != null) {
+ 			mYandexTrafficOverlay.Free();
+ 			mYandexTrafficOverlay = null;
+ 		}
+		
+		if(mYandexTrafficOverlay != null)
+			this.mMap.getOverlays().add(mYandexTrafficOverlay);
         if(mTrackOverlay != null)
         	this.mMap.getOverlays().add(mTrackOverlay);
         if(mCurrentTrackOverlay != null)
@@ -403,6 +413,8 @@ public class MainActivity extends Activity {
 		mMap.setTileSource(mTileSource);
  		mMap.getController().setZoom(pref.getInt("ZoomLevel", 0));
  		setTitle();
+ 		
+ 		FillOverlays();
 	
 		if(mCompassEnabled)
 			mOrientationSensorManager.registerListener(mListener, mOrientationSensorManager
@@ -470,12 +482,10 @@ public class MainActivity extends Activity {
 
 	@Override
 	protected void onDestroy() {
-		if(mTrackOverlay != null)
-			mTrackOverlay.Free();
-		if(mCurrentTrackOverlay != null)
-			mCurrentTrackOverlay.Free();
-		if(mTileSource != null)
-			mTileSource.Free();
+		for (TileViewOverlay osmvo : mMap.getOverlays())
+			osmvo.Free();
+
+		mTileSource.Free();
 		mTileSource = null;
 		mMap.setMoveListener(null);
 		

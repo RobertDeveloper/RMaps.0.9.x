@@ -102,7 +102,9 @@ public class TileSource {
 			case 2:
 				gen = new TileURLGeneratorYANDEX(BASEURL, IMAGE_FILENAMEENDING);
 				break;
-			//case 3:
+			case 3:
+				gen = new TileURLGeneratorYANDEXTRAFFIC(BASEURL);
+				break;
 			case 4:
 				gen = new TileURLGeneratorGOOGLESAT(BASEURL, GOOGLE_LANG_CODE);
 				break;
@@ -123,7 +125,10 @@ public class TileSource {
 				gen = new TileURLGeneratorSovMilMap(BASEURL);
 				break;
 			}
-			mTileProvider = new TileProviderInet(ctx, gen, CacheDatabaseName());
+			if(LAYER)
+				mTileProvider = new TileProviderInet(ctx, gen, CacheDatabaseName(), null);
+			else
+				mTileProvider = new TileProviderInet(ctx, gen, CacheDatabaseName());
 			break;
 		case 4:
 			mTileProvider = new TileProviderTAR(ctx, BASEURL, ID);
