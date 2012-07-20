@@ -231,16 +231,18 @@ containing a value of this type.
         public static final int poi_list=0x7f030007;
         public static final int poicategory=0x7f030008;
         public static final int poicategory_list=0x7f030009;
-        public static final int poicategorylist_item=0x7f03000a;
-        public static final int poiiconset=0x7f03000b;
-        public static final int poilist_item=0x7f03000c;
-        public static final int preference_widget_btn_clear=0x7f03000d;
-        public static final int search_bubble=0x7f03000e;
-        public static final int searchresult=0x7f03000f;
-        public static final int track=0x7f030010;
-        public static final int track_list=0x7f030011;
-        public static final int track_stat=0x7f030012;
-        public static final int tracklist_item=0x7f030013;
+        public static final int poicategory_spinner=0x7f03000a;
+        public static final int poicategory_spinner_dropdown=0x7f03000b;
+        public static final int poicategorylist_item=0x7f03000c;
+        public static final int poiiconset=0x7f03000d;
+        public static final int poilist_item=0x7f03000e;
+        public static final int preference_widget_btn_clear=0x7f03000f;
+        public static final int search_bubble=0x7f030010;
+        public static final int searchresult=0x7f030011;
+        public static final int track=0x7f030012;
+        public static final int track_list=0x7f030013;
+        public static final int track_stat=0x7f030014;
+        public static final int tracklist_item=0x7f030015;
     }
     public static final class menu {
         public static final int id=0x7f0b0000;
