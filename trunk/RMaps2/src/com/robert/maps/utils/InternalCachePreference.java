@@ -4,8 +4,6 @@ import java.io.File;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import org.andnav.osm.views.util.OpenStreetMapTileFilesystemProvider;
-
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Handler;
@@ -17,30 +15,23 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 
 import com.robert.maps.R;
-import com.robert.maps.tileprovider.MapTileMemCache;
+import com.robert.maps.tileprovider.FSCacheProvider;
 
 public class InternalCachePreference extends Preference {
-    private Button btnClear;
-    private Context mCtx;
-    private File mDbFile;
-    private OpenStreetMapTileFilesystemProvider mFSTileProvider;
-    private ExecutorService mThreadExecutor = Executors.newSingleThreadExecutor(new SimpleThreadFactory("InternalCachePreference"));
-    private ProgressDialog mProgressDialog;
-    private SimpleInvalidationHandler mHandler;
+	private Button btnClear;
+	private ExecutorService mThreadExecutor = Executors.newSingleThreadExecutor(new SimpleThreadFactory("InternalCachePreference"));
+	private ProgressDialog mProgressDialog;
+	private SimpleInvalidationHandler mHandler;
+	private FSCacheProvider mFSCacheProvider;
 
 	public InternalCachePreference(Context context, AttributeSet attrs) {
 		super(context, attrs);
 
 		setWidgetLayoutResource(R.layout.preference_widget_btn_clear);
 
-		mCtx = context;
-		this.mFSTileProvider = new OpenStreetMapTileFilesystemProvider(context, 4 * 1024 * 1024, new MapTileMemCache(), null); // 4MB FSCache
-		mDbFile = context.getDatabasePath("osmaptilefscache_db");
-
-		setSummary(String.format(mCtx.getString(R.string.pref_internalcache_summary), (int) (mDbFile
-				.length() + mFSTileProvider.getCurrentFSCacheByteSize())/ 1024));
-
 		mHandler = new SimpleInvalidationHandler();
+		final File folder = Ut.getRMapsCacheTilesDir(context);
+		mFSCacheProvider = new FSCacheProvider(folder, mHandler);
 	}
 
 	@Override
@@ -49,17 +40,17 @@ public class InternalCachePreference extends Preference {
 
 		btnClear = (Button) view.findViewById(R.id.btnClear);
 		btnClear.setOnClickListener(new OnClickListener() {
-			// @Override
 			public void onClick(View v) {
-				mProgressDialog = Ut.ShowWaitDialog(mCtx, 0);
-				mThreadExecutor.execute(new Runnable(){
+				mProgressDialog = Ut.ShowWaitDialog(getContext());
+				mThreadExecutor.execute(new Runnable() {
 
 					public void run() {
-						InternalCachePreference.this.mFSTileProvider.clearCurrentFSCache();
+						mFSCacheProvider.clearCache();
 						Message.obtain(InternalCachePreference.this.mHandler).sendToTarget();
 						InternalCachePreference.this.mProgressDialog.dismiss();
 
-					}});
+					}
+				});
 
 			}
 		});
@@ -71,13 +62,8 @@ public class InternalCachePreference extends Preference {
 		@Override
 		public void handleMessage(final Message msg) {
 
-			InternalCachePreference.this
-			.setSummary(String
-					.format(
-							InternalCachePreference.this.mCtx
-									.getString(R.string.pref_internalcache_summary),
-							(int) (InternalCachePreference.this.mDbFile.length() + InternalCachePreference.this.mFSTileProvider
-									.getCurrentFSCacheByteSize()) / 1024));
+			InternalCachePreference.this.setSummary(String.format(InternalCachePreference.this.getContext().getString(R.string.pref_internalcache_summary),
+					(int) mFSCacheProvider.getUsedCacheSpace() / 1024));
 
 		}
 	}
