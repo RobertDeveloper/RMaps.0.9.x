@@ -85,6 +85,10 @@ public class Ut implements OpenStreetMapConstants, OpenStreetMapViewConstants {
 		}
 	}
 
+	public static ProgressDialog ShowWaitDialog(final Context mCtx) {
+		return ShowWaitDialog(mCtx, 0);
+	}
+
 	public static ProgressDialog ShowWaitDialog(final Context mCtx, final int ResourceId) {
 		final ProgressDialog dialog = new ProgressDialog(mCtx);
 		dialog.setMessage(mCtx.getString(ResourceId == 0 ? R.string.message_wait : ResourceId));
@@ -141,8 +145,7 @@ public class Ut implements OpenStreetMapConstants, OpenStreetMapViewConstants {
 		final File dir = new File(dirName.replace("//", "/").replace("//", "/"));
 		if(!dir.exists()){
 			if (android.os.Environment.getExternalStorageState().equals(android.os.Environment.MEDIA_MOUNTED)){
-				final boolean res = dir.mkdirs();
-				Ut.d("res mkdirs = "+res);
+				dir.mkdirs();
 			}
 		}
 
@@ -153,9 +156,9 @@ public class Ut implements OpenStreetMapConstants, OpenStreetMapViewConstants {
 	public static String getExternalStorageDirectory() {
 		final File dir = new File(Environment.getExternalStorageDirectory().getPath()+EXTERNAL_SD);
 		if(dir.exists())
-			return (Environment.getExternalStorageDirectory().getPath()+EXTERNAL_SD); //.replace("/mnt", "");
+			return (Environment.getExternalStorageDirectory().getPath()+EXTERNAL_SD);
 		else
-			return Environment.getExternalStorageDirectory().getPath(); //.replace("/mnt", "");
+			return Environment.getExternalStorageDirectory().getPath();
 	}
 
 	public static File getRMapsMainDir(final Context mCtx, final String aFolderName) {
@@ -163,15 +166,19 @@ public class Ut implements OpenStreetMapConstants, OpenStreetMapViewConstants {
 	}
 
 	public static File getRMapsMapsDir(final Context mCtx) {
-		return getDir(mCtx, "pref_dir_maps", Ut.getExternalStorageDirectory()+"/rmaps/maps/", "");
+		return getRMapsMainDir(mCtx, "maps");
 	}
 
 	public static File getRMapsImportDir(final Context mCtx) {
-		return getDir(mCtx, "pref_dir_import", Ut.getExternalStorageDirectory()+"/rmaps/import/", "");
+		return getRMapsMainDir(mCtx, "import");
 	}
 
 	public static File getRMapsExportDir(final Context mCtx) {
-		return getDir(mCtx, "pref_dir_export", Ut.getExternalStorageDirectory()+"/rmaps/export/", "");
+		return getRMapsMainDir(mCtx, "export");
+	}
+
+	public static File getRMapsCacheTilesDir(final Context mCtx) {
+		return getRMapsMainDir(mCtx, "cache/tiles");
 	}
 
 	public static String readString(final InputStream in, final int size) throws IOException{
