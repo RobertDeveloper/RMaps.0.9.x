@@ -40,13 +40,13 @@ public interface PoiConstants {
 	public static final String UPDATE_CATEGORY = "categoryid = @1";
 	public static final String UPDATE_TRACKS = "trackid = @1";
 
-	public static final String STAT_GET_POI_LIST = "SELECT lat, lon, points.name, descr, pointid, pointid _id, pointid ID, points.iconid, category.name || ', ' || lat || ' ' || lon poititle2 FROM points LEFT JOIN category ON category.categoryid = points.categoryid ORDER BY lat, lon";
+	public static final String STAT_GET_POI_LIST = "SELECT lat, lon, points.name, descr, pointid, pointid _id, pointid ID, category.iconid, category.name || ', ' || lat || ' ' || lon poititle2 FROM points LEFT JOIN category ON category.categoryid = points.categoryid ORDER BY lat, lon";
 	public static final String STAT_PoiListNotHidden = "SELECT poi.lat, poi.lon, poi.name, poi.descr, poi.pointid, poi.pointid _id, poi.pointid ID, poi.categoryid, cat.iconid FROM points poi LEFT JOIN category cat ON cat.categoryid = poi.categoryid WHERE poi.hidden = 0 AND cat.hidden = 0 "
 		+"AND cat.minzoom <= @1"
 		+ " AND poi.lon BETWEEN @2 AND @3"
 		+ " AND poi.lat BETWEEN @4 AND @5"
 		+ " ORDER BY lat, lon";
-	public static final String STAT_PoiCategoryList = "SELECT name, categoryid _id FROM category ORDER BY name";
+	public static final String STAT_PoiCategoryList = "SELECT name, iconid, categoryid _id FROM category ORDER BY name";
 	public static final String STAT_ActivityList = "SELECT name, activityid _id FROM activity ORDER BY activityid";
 	public static final String STAT_getPoi = "SELECT lat, lon, name, descr, pointid, alt, hidden, categoryid, pointsourceid, iconid FROM points WHERE pointid = @1";
 	public static final String STAT_deletePoi = "DELETE FROM points WHERE pointid = @1";

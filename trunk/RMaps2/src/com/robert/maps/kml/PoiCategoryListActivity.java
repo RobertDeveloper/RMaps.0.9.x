@@ -22,6 +22,7 @@ public class PoiCategoryListActivity extends ListActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		setContentView(R.layout.poicategory_list);
         registerForContextMenu(getListView());
         mPoiManager = new PoiManager(this);
 	}
@@ -43,9 +44,9 @@ public class PoiCategoryListActivity extends ListActivity {
         startManagingCursor(c);
 
         ListAdapter adapter = new SimpleCursorAdapter(this,
-                android.R.layout.simple_list_item_2, c, 
-                        new String[] { "name"}, 
-                        new int[] { android.R.id.text1 });
+                R.layout.poicategorylist_item, c, 
+                        new String[] { "name", "iconid"}, 
+                        new int[] { R.id.title1, R.id.pic });
         setListAdapter(adapter);
 	}
 
