@@ -108,7 +108,9 @@ public class TileSource {
 			case 4:
 				gen = new TileURLGeneratorGOOGLESAT(BASEURL, GOOGLE_LANG_CODE);
 				break;
-			//case 5:
+			case 5:
+				gen = new TileURLGeneratorOrdnanceSurveyMap(BASEURL, ZOOM_MINLEVEL);
+				break;
 			case 6:
 				gen = new TileURLGeneratorMS(BASEURL, IMAGE_FILENAMEENDING);
 				break;
