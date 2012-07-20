@@ -387,6 +387,7 @@ public class TileView extends View {
 			mTileSource.Free();
 		mTileSource = tilesource;
 		mTileSource.setHandler(mTileMapHandler);
+		setZoomLevel(getZoomLevel());
 		invalidate();
 	}
 	
