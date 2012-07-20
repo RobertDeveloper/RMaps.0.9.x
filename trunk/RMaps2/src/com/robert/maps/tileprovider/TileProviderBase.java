@@ -29,6 +29,8 @@ public class TileProviderBase {
 	public void Free() {
 		Ut.d("TileProviderBase Free");
 		mPending.clear();
+		if(mTileURLGenerator != null)
+			mTileURLGenerator.Free();
 		if(mLoadingMapTile != null)
 			mLoadingMapTile.recycle();
 		mCallbackHandler = null;

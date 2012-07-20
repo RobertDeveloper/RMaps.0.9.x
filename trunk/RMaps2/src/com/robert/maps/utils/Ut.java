@@ -48,7 +48,7 @@ public class Ut implements OpenStreetMapConstants, OpenStreetMapViewConstants {
 	}
 
 	public static String formatToFileName(final String aTileURLString) {
-		final String str = aTileURLString.substring(7).replace("/", "_");
+		final String str = aTileURLString.substring(7).replace("/", "_").replace("?", "_");
 		if (str.length() > 255) {
 			return str.substring(str.length() - 255);
 		} else

@@ -116,6 +116,8 @@ public class FSCacheProvider implements ICacheProvider {
 				cutCurrentCache();
 			}
 		} catch (final IOException e) {
+			e.printStackTrace();
+			
 			return;
 		} finally {
 			StreamUtils.closeStream(outputStream);

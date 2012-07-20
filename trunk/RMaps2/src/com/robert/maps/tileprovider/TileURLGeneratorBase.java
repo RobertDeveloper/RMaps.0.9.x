@@ -36,5 +36,9 @@ public class TileURLGeneratorBase {
 		}
 		return result;
 	}
+	
+	public void Free() {
+		
+	}
 
 }
