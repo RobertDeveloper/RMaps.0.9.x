@@ -1,10 +1,6 @@
 package com.robert.maps.overlays;
 
 import org.andnav.osm.util.constants.OpenStreetMapConstants;
-import org.andnav.osm.views.util.OpenStreetMapRendererInfo;
-import org.andnav.osm.views.util.OpenStreetMapTileDownloader;
-import org.andnav.osm.views.util.OpenStreetMapTileFilesystemProvider;
-import org.andnav.osm.views.util.OpenStreetMapTileProvider;
 import org.andnav.osm.views.util.constants.OpenStreetMapViewConstants;
 
 import android.app.Activity;
@@ -16,20 +12,21 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.DisplayMetrics;
 
+import com.robert.maps.utils.Ut;
 import com.robert.maps.view.TileView;
 import com.robert.maps.view.TileViewOverlay;
 
 public class YandexTrafficOverlay extends TileViewOverlay implements OpenStreetMapConstants,
 		OpenStreetMapViewConstants {
 	private TileView mMapView;
-	protected OpenStreetMapRendererInfo mRendererInfo;
-	protected final OpenStreetMapTileProvider mTileProvider;
+//	protected OpenStreetMapRendererInfo mRendererInfo;
+//	protected final OpenStreetMapTileProvider mTileProvider;
 	protected final Paint mPaint = new Paint();
 
 	public YandexTrafficOverlay(Context ctx, TileView mapView) {
 		mMapView = mapView;
-		mRendererInfo = new OpenStreetMapRendererInfo(ctx.getResources(), "yandextraffic");
-		mRendererInfo.LoadFromResources("yandextraffic", null);
+//		mRendererInfo = new OpenStreetMapRendererInfo(ctx.getResources(), "yandextraffic");
+//		mRendererInfo.LoadFromResources("yandextraffic", null);
 
 		DisplayMetrics metrics = new DisplayMetrics();
 		((Activity) ctx).getWindowManager().getDefaultDisplay().getMetrics(metrics);
@@ -37,8 +34,8 @@ public class YandexTrafficOverlay extends TileViewOverlay implements OpenStreetM
 		if (metrics.heightPixels > 480 || metrics.widthPixels > 480)
 			OpenStreetMapTileCacheSize = 20;
 
-		mTileProvider = new OpenStreetMapTileProvider(ctx, new SimpleInvalidationHandler(), mRendererInfo,
-				OpenStreetMapTileCacheSize);
+//		mTileProvider = new OpenStreetMapTileProvider(ctx, new SimpleInvalidationHandler(), mRendererInfo,
+//				OpenStreetMapTileCacheSize);
 	}
 
 	@Override
@@ -128,8 +125,8 @@ public class YandexTrafficOverlay extends TileViewOverlay implements OpenStreetM
 		@Override
 		public void handleMessage(final Message msg) {
 			switch (msg.what) {
-			case OpenStreetMapTileDownloader.MAPTILEDOWNLOADER_SUCCESS_ID:
-			case OpenStreetMapTileFilesystemProvider.MAPTILEFSLOADER_SUCCESS_ID:
+			//case OpenStreetMapTileDownloader.MAPTILEDOWNLOADER_SUCCESS_ID:
+			case Ut.MAPTILEFSLOADER_SUCCESS_ID:
 				mMapView.invalidate();
 				break;
 			}

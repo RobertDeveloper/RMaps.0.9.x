@@ -4,7 +4,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import org.andnav.osm.util.GeoPoint;
-import org.andnav.osm.views.util.OpenStreetMapTileFilesystemProvider;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -62,7 +61,7 @@ public class TrackOverlay extends TileViewOverlay {
 
 			Ut.d("Track maped");
 
-			Message.obtain(mMainMapActivityCallbackHandler, OpenStreetMapTileFilesystemProvider.MAPTILEFSLOADER_SUCCESS_ID).sendToTarget();
+			Message.obtain(mMainMapActivityCallbackHandler, Ut.MAPTILEFSLOADER_SUCCESS_ID).sendToTarget();
 
 			mThreadRunned = false;
 		}

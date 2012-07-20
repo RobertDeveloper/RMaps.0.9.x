@@ -17,7 +17,6 @@ import javax.xml.parsers.SAXParserFactory;
 
 import org.andnav.osm.util.GeoPoint;
 import org.andnav.osm.util.TypeConverter;
-import org.andnav.osm.views.util.OpenStreetMapTileFilesystemProvider;
 import org.andnav.osm.views.util.StreamUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -790,7 +789,7 @@ public class MainActivity extends Activity {
 		public void handleMessage(final Message msg) {
 			final int what = msg.what;
 			switch(what){
-				case OpenStreetMapTileFilesystemProvider.MAPTILEFSLOADER_SUCCESS_ID:
+				case Ut.MAPTILEFSLOADER_SUCCESS_ID:
 					mMap.postInvalidate();
 					break;
 				case R.id.user_moved_map:
@@ -802,7 +801,7 @@ public class MainActivity extends Activity {
 				case R.id.add_yandex_bookmark:
 					showDialog(R.id.add_yandex_bookmark);
 					break;
-				case OpenStreetMapTileFilesystemProvider.ERROR_MESSAGE:
+				case Ut.ERROR_MESSAGE:
 					if(msg.obj != null)
 						Toast.makeText(MainActivity.this, msg.obj.toString(), Toast.LENGTH_LONG).show();
 					break;
