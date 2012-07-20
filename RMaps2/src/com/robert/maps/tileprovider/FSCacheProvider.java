@@ -81,6 +81,9 @@ public class FSCacheProvider implements ICacheProvider {
 			Ut.copy(in, out);
 			out.flush();
 		} catch (IOException e) {
+		} finally {
+			StreamUtils.closeStream(in);
+			StreamUtils.closeStream(out);
 		}
 
 		final byte[] data = dataStream.toByteArray();
@@ -115,18 +118,8 @@ public class FSCacheProvider implements ICacheProvider {
 		} catch (final IOException e) {
 			return;
 		} finally {
-			if (outputStream != null) {
-				try {
-					outputStream.close();
-				} catch (final IOException e) {
-				}
-			}
-			if (byteStream != null) {
-				try {
-					byteStream.close();
-				} catch (final IOException e) {
-				}
-			}
+			StreamUtils.closeStream(outputStream);
+			StreamUtils.closeStream(byteStream);
 		}
 		
 	}

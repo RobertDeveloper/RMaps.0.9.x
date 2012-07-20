@@ -29,7 +29,8 @@ public class TileProviderBase {
 	public void Free() {
 		Ut.d("TileProviderBase Free");
 		mPending.clear();
-		mLoadingMapTile.recycle();
+		if(mLoadingMapTile != null)
+			mLoadingMapTile.recycle();
 		mCallbackHandler = null;
 	}
 

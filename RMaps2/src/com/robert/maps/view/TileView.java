@@ -257,6 +257,7 @@ public class TileView extends View {
 			 */
 			final Point upperLeftCornerOfCenterMapTileNotScale = getUpperLeftCornerOfCenterMapTileInScreen(
 					centerMapTileCoords, tileSizePxNotScale, null);
+			Ut.d("Map: "+upperLeftCornerOfCenterMapTileNotScale.x+", "+upperLeftCornerOfCenterMapTileNotScale.y);
 
 			final int centerMapTileScreenLeftNotScale = upperLeftCornerOfCenterMapTileNotScale.x;
 			final int centerMapTileScreenTopNotScale = upperLeftCornerOfCenterMapTileNotScale.y;
@@ -276,8 +277,7 @@ public class TileView extends View {
 			 */
 			// TODO Нужен адекватный алгоритм для отбора необходимых тайлов,
 			// попадающих в экран при повороте карты
-			final int iDelta = mBearing > 0
-					&& mTileSource.YANDEX_TRAFFIC_ON == 0 ? 1 : 0;
+			final int iDelta = 1; //mBearing > 0 && mTileSource.YANDEX_TRAFFIC_ON == 0 ? 1 : 0;
 			final int additionalTilesNeededToLeftOfCenter = iDelta
 					+ (int) Math.ceil((float) centerMapTileScreenLeftNotScale
 							/ tileSizePxNotScale); // i.e.
