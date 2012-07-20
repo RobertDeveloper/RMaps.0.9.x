@@ -18,6 +18,9 @@ import java.util.NoSuchElementException;
 
 import org.andnav.osm.views.util.StreamUtils;
 
+import android.os.Handler;
+import android.os.Message;
+
 import com.robert.maps.utils.ICacheProvider;
 import com.robert.maps.utils.Ut;
 
@@ -26,12 +29,18 @@ public class FSCacheProvider implements ICacheProvider {
 	public static final long TILE_MAX_CACHE_SIZE_BYTES = 4L * 1024 * 1024;
 	public static final long TILE_TRIM_CACHE_SIZE_BYTES = 4L * 1024 * 1024;
 
-	public File mCachePath;
+	private File mCachePath;
 	private long mUsedCacheSpace = 0L;
+	private Handler mHandler = null;
 
 	public FSCacheProvider(final File aCachePath) {
+		this(aCachePath, null);
+	}
+	
+	public FSCacheProvider(final File aCachePath, final Handler aHandler) {
 		super();
 		this.mCachePath = aCachePath;
+		this.mHandler = aHandler;
 
 		// do this in the background because it takes a long time
 		final Thread t = new Thread() {
@@ -43,11 +52,17 @@ public class FSCacheProvider implements ICacheProvider {
 					cutCurrentCache();
 				}
 				Ut.d("Finished init thread");
+				if(mHandler != null)
+					Message.obtain(mHandler).sendToTarget();
 			}
 		};
 		t.setPriority(Thread.MIN_PRIORITY);
 		t.start();
-}
+	}
+	
+	public long getUsedCacheSpace() {
+		return mUsedCacheSpace;
+	}
 
 	public byte[] getTile(String aURLstring, int aX, int aY, int aZ) {
 		if(mCachePath == null)
@@ -120,15 +135,23 @@ public class FSCacheProvider implements ICacheProvider {
 		// TODO Auto-generated method stub
 		
 	}
+	
+	public void clearCache() {
+		cutCurrentCacheToSize(0L);
+	}
 
 	private void cutCurrentCache() {
+		cutCurrentCacheToSize(TILE_TRIM_CACHE_SIZE_BYTES);
+	}
+
+	private void cutCurrentCacheToSize(final long aTrimSizeBytes) {
 
 		synchronized (mCachePath) {
 
-			if (mUsedCacheSpace > TILE_TRIM_CACHE_SIZE_BYTES) {
+			if (mUsedCacheSpace > aTrimSizeBytes) {
 
 				Ut.d("Trimming tile cache from " + mUsedCacheSpace + " to "
-						+ TILE_TRIM_CACHE_SIZE_BYTES);
+						+ aTrimSizeBytes);
 
 				final List<File> z = getDirectoryFileList(mCachePath);
 
@@ -140,7 +163,7 @@ public class FSCacheProvider implements ICacheProvider {
 				});
 
 				for (final File file : files) {
-					if (mUsedCacheSpace <= TILE_TRIM_CACHE_SIZE_BYTES) {
+					if (mUsedCacheSpace <= aTrimSizeBytes) {
 						break;
 					}
 
@@ -174,20 +197,24 @@ public class FSCacheProvider implements ICacheProvider {
 	}
 
 	private void calculateDirectorySize(final File pDirectory) {
+		Ut.i("calculateDirectorySize ");
 		if(pDirectory == null)
 			return;
+		Ut.i("calculateDirectorySize2 "+pDirectory.getAbsolutePath());
 		
 		final File[] z = pDirectory.listFiles();
 		if (z != null) {
 			for (final File file : z) {
 				if (file.isFile()) {
 					mUsedCacheSpace += file.length();
+					Ut.i(file.getName()+" "+file.length());
 				}
 				if (file.isDirectory() && !isSymbolicDirectoryLink(pDirectory, file)) {
 					calculateDirectorySize(file); // *** recurse ***
 				}
 			}
 		}
+		Ut.i("Total: "+mUsedCacheSpace);
 	}
 
 	private boolean isSymbolicDirectoryLink(final File pParentDirectory, final File pDirectory) {
