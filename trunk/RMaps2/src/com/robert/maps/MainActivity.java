@@ -61,6 +61,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.apps.analytics.GoogleAnalyticsTracker;
 import com.robert.maps.kml.PoiActivity;
 import com.robert.maps.kml.PoiListActivity;
 import com.robert.maps.kml.PoiManager;
@@ -116,9 +117,14 @@ public class MainActivity extends Activity {
 	private boolean mDrivingDirectionUp;
 	private boolean mNorthDirectionUp;
 	
+	private GoogleAnalyticsTracker mTracker;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		mTracker = GoogleAnalyticsTracker.getInstance();
+		mTracker.startNewSession("UA-10715419-3", this);
 
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(CreateContentView());
@@ -488,6 +494,7 @@ public class MainActivity extends Activity {
 		mTileSource.Free();
 		mTileSource = null;
 		mMap.setMoveListener(null);
+		mTracker.stopSession();
 		
 		super.onDestroy();
 	}
