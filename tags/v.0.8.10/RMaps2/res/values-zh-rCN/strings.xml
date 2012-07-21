@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pref_northdirectionup_summary">把地图指向北方</string>
+    <string name="pref_northdirectionup">北方</string>
+    <string name="pref_drivingdirectionup_summary">把地图指向前进方向</string>
+    <string name="pref_drivingdirectionup">前进方向</string>
+    <string name="pref_zoomminlevel_summary">长按减号按钮设置缩放级别</string>
+    <string name="pref_zoomminlevel">收藏最小缩放</string>
+    <string name="pref_zoommaxlevel_summary">长按加号按钮设置缩放级别</string>
+    <string name="pref_zoommaxlevel">收藏最大缩放</string>
+    <string name="pref_bottomzoomcontrol_summary">在底部显示缩放按钮</string>
+    <string name="pref_bottomzoomcontrol">底部缩放</string>
+    <string name="app_user_id"></string>
+    <string name="app_user_label">Robert.Developer</string>
+
+    <string name="prefcat_main_misc">Misc</string>
+    <string name="pref_accuracy_summary">显示蓝色指示盘如Google Map</string>
+    <string name="pref_accuracy">精度指标</string>
+    <string name="pref_keepscreenon_summaryoff">操作结束屏幕会自动关闭</string>
+    <string name="pref_keepscreenon_summary">观看地图时屏幕不会关闭</string>
+    <string name="pref_keepscreenon">保持屏幕打开</string>
+    <string name="pref_showtitle_summary">用地图名等隐藏窗口标题</string>
+    <string name="pref_showtitle">显示窗口标题</string>
+    <string name="pref_showstatusbar_summary">隐藏状态栏</string>
+    <string name="pref_showstatusbar">显示状态栏</string>
+    <string name="pref_turnoffautoreindex">关闭自动符号变更</string>
+    <string name="pref_turnoffautoreindex_summary">关闭地图文件大小和时间检查</string>
+    <string name="pref_gpsfastupdate">快速更新GPS数据</string>
+    <string name="pref_gpsfastupdate_summary">减慢更新节约电量</string>
+
+    <string name="pref_usermap_enabled">启用地图</string>
+    <string name="pref_usermap_enabled_summary">添加地图到地图列表</string>
+    <string name="pref_usermap_name">名字</string>
+    <string name="pref_usermap_baseurl">基础 URL</string>
+    <string name="pref_usermap_projection">计划</string>
+    <string name="pref_usermap_traffic">Yandex.Traffic</string>
+    <string name="pref_usermap_traffic_summary">用Yandex显示流量</string>
+
+    <string name="prefcat_main_look">外观和感觉</string>
+    <string name="prefcat_main_maps">地图</string>
+    <string name="prefcat_main_indexing">索引</string>
+
+	<string name="pref_main_maps">预定义地图</string>
+	<string name="pref_main_maps_summary">需要网络连接</string>
+	<string name="pref_main_usermaps">用户定义地图</string>
+	<string name="pref_main_usermaps_summary">地图来自 /sdcard/rmaps/maps</string>
+
+	<string name="prefcat_main_predefinedmaps"></string>
+	<string name="hello">Hello World, OpenStreetMapViewer</string>
+
+	<string name="app_name">RMaps</string>
+	<string name="app_name_itemizedoverlay">OSMViewer ItemizedOverlay</string>
+
+	<string name="unknown">未知</string>
+	<string name="menu_settings">设置</string>
+    <string name="menu_exit">退出</string>
+	<string name="menu_mylocation">我的位置</string>
+	<string name="menu_mapselector">地图</string>
+	<string name="menu_compass">罗盘</string>
+    <string name="menu_about">关于</string>
+    <string name="menu_search">搜索</string>
+
+	<string name="mnm">.mnm</string>
+	<string name="tar">.tar</string>
+	<string name="sqlitedb">.sqlitedb</string>
+
+	<string name="no_traffic">在此缩放下流量信息不可用</string>
+	<string name="auto_follow_enabled">自动追踪启用</string>
+	<string name="auto_follow_disabled">自动追踪禁用</string>
+
+	<string name="no_inet_conn">没有网络连接...</string>
+	<string name="no_items">没有匹配内容</string>
+
+    <string name="about_dialog_text">
+©2009 Robert.Developer\n
+Osmdroid  by Nicolas Gramlich\n
+App icon by Everaldo Coelho\n
+All rights reserved\n
+\n
+如有疑问请发送邮件到 robertk506@gmail.com\n
+\n
+您可以登录 http://robertdeveloper.blogspot.com/ 查看操作指南和常见问题\n
+</string>
+
+    <string name="about_dialog_whats_new">有何更新</string>
+    <string name="about_dialog_close">关闭</string>
+
+    <string name="search_label">地址:</string>
+    <string name="search_hint">如. Abbey Road, London</string>
+
+    <string name="message_gpsdisabled">GPS已禁用. 尝试使用无线网络定位当前位置...</string>
+    <string name="message_locationunavailable">GPS和网络被禁用. 您当前位置不可用...</string>
+    <string name="message_lastknownlocation">GPS和网络被禁用. 显示上次位置...</string>
+</resources>

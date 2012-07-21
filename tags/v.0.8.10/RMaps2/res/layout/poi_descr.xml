@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+    <LinearLayout
+        android:id="@+id/linearLayout1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="1dp"
+        android:layout_marginTop="1dp"
+        android:background="@drawable/popup_button"
+        android:orientation="vertical"
+        android:paddingLeft="43dp" >
+
+        <TextView
+            android:id="@+id/poi_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:maxWidth="185dp"
+            android:text="POI"
+            android:textColor="@color/poi_descr_text"
+            android:textSize="14dp"
+            android:textStyle="bold" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/descr"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLines="3"
+            android:maxWidth="185dp"
+            android:text="Descr"
+            android:textColor="@color/poi_descr_text"
+            android:textSize="12dp" >
+
+        </TextView>
+
+        <TextView
+            android:id="@+id/coord"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxWidth="185dp"
+            android:text="0, 0"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="@color/poi_descr_text"
+            android:textSize="9dp" >
+        </TextView>
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/pic"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="7dp"
+        android:src="@drawable/poi" >
+
+    </ImageView>
+    
+</RelativeLayout>

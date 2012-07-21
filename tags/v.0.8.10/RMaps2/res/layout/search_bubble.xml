@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Button xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bubble2"
+    android:maxWidth="160dp"
+    android:paddingLeft="5dp"
+    android:paddingRight="5dp"
+    android:text="RMaps"
+    android:textColor="@color/poi_descr_text"
+    android:textSize="12dp" >
+
+</Button>

@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<resources>
+    <string name="pref_hidepoi_summary">No mostrar iconos de PDI en el mapa</string>
+    <string name="pref_hidepoi">Ocultar PDI</string>
+    <string name="prefcat_main_poi">PDI</string>
+    <string name="pref_northdirectionup_summary">Gira el mapa en dirección Norte</string>
+    <string name="pref_northdirectionup">Dirección al Norte</string>
+    <string name="pref_drivingdirectionup_summary">Gira el mapa en dirección de conducción</string>
+    <string name="pref_drivingdirectionup">Dirección de conducción</string>
+    <string name="app_user_id"/>
+    <string name="app_user_label">Robert.Developer</string>
+    <string name="prefcat_main_misc">Varios</string>
+	<string name="pref_showstatusbar">Mostrar barra de estado</string>
+    <string name="pref_usermap_enabled">Mapa activado</string>
+    <string name="pref_usermap_enabled_summary">Añadir mapa a lista de mapas</string>
+    <string name="pref_usermap_name">Nombre</string>
+    <string name="prefcat_main_look">Aspecto</string>
+    <string name="prefcat_main_maps">Mapas</string>
+    <string name="prefcat_main_indexing">Indexando</string>
+    <string name="prefcat_main_predefinedmaps"/>
+    <string name="btn_clear_cache_title">Borrar caché</string>
+    <string name="pref_units">Unidades</string>
+    <string name="app_name">RMaps</string>
+    <string name="unknown">Desconocido</string>
+    <string name="menu_settings">Ajustes</string>
+    <string name="menu_exit">Salir</string>
+    <string name="menu_mylocation">Mi ubicación</string>
+    <string name="menu_mapselector">Mapas</string>
+    <string name="menu_compass">Brújula</string>
+    <string name="menu_about">Acerca</string>
+    <string name="menu_search">Buscar</string>
+    <string name="menu_gpsstatus">GPS Status</string>
+    <string name="menu_add">Añadir</string>
+    <string name="menu_addpoi">Añadir PDI</string>
+    <string name="menu_poilist">PDI</string>
+    <string name="menu_categorylist">Categoría</string>
+    <string name="menu_import">Importar</string>
+    <string name="menu_deleteall">Borrar todo</string>
+    <string name="mnm">.mnm</string>
+    <string name="tar">.tar</string>
+    <string name="sqlitedb">.sqlitedb</string>
+    <string name="auto_follow_enabled">Auto-Seguir Activado</string>
+    <string name="auto_follow_disabled">Auto-Seguir Desactivado</string>
+    <string name="no_inet_conn">No hay conexión a Internet...</string>
+    <string name="no_items">Su búsqueda no encontró elementos coincidentes</string>
+    <string name="about_dialog_text">
+©2009 Robert.Developer\n
+  Osmdroid by Nicolas Gramlich\n
+  App icon by Everaldo Coelho\n
+With the assistance of\n
+  Dmytro Sandu\n
+  Snake Joe\n
+  Christoffer Blindheim\n
+All rights reserved\n
+\n
+Questions, sentences mail to robertk506@gmail.com\n
+\n
+How to and FAQ you can find on http://robertdeveloper.blogspot.com/\n
+        </string>
+    <string name="whats_new_dialog_text">
+The source site of VFR, IFR High, IFR Low charts is unavailable now. Read here about it. http://blog.runwayfinder.com/\n
+\n
+v.0.8.7.3\n
+- Bug fix\n
+\n
+v.0.8.7\n
++ New preference Directory\n
++ Now RMaps stores tiles of online maps on sdcard in sqlite format\n
+\n
+v.0.8.6.1\n
+- Bug fix\n
+\n
+v.0.8.6\n
++ New maps: VFR (avcharts.com), MyTopo, OSM MTB Mapa Česká republika\n
++ Error report (please, send me message about force close)\n
+- Bug fix: Mutlitouch, Scale bar, more\n
+\n
+v.0.8.5\n
++ Scale bar, Units property\n
+\n
+v.0.8.4.1\n
+- Bug fix: Force close on Android 1.5-1.6\n
+\n
+v.0.8.4\n
+-  Mutlitouch zooming\n
++ Zoom buttons settings: top, bottom, hide\n
+\n
+v.0.8.3.2\n
++ Ready to install to SD card\n
++ Update maps URL\n
+- Bug fix: Force close on Stop trackwriter on Froyo\n
+- Bug fix: Wrong date time on tracks. New tracks will be OK\n
+\n
+v.0.8.3\n
++ Export track to GPX, KML file\n
+\n
+v.0.8.2\n
++ Drawing of a current written track\n
+\n
+v.0.8.1\n
++ Track writer\n
++ Integration with Radar programs\n
++ New maps for USA aviators: VFR Chart, IFR Low, IFR High\n
+\n
+v.0.8.0\n
++ Import tracks from KML, GPX files\n
+\n
+v.0.7.7.1\n
+- Bug fix: Import some poi files\n
++ Delete all poi confirm dialog\n
+\n
+v.0.7.7\n
++ Import POI from KML, GPX files\n
++ Optimisation of drawing of POI\n
++ Update Yandex.Map URL, Google.Map URL\n
+\n
+v.0.7.6\n
++ Add localisation of Google Maps. See Preference\n
++ Added new online maps (Topographic map of Norway, Sea map of Norway)\n
++ Add screen orientation preference\n
++ Update Yandex.Map URL, Google.Map URL\n
+\n
+v.0.7.5\n
++ POI category\n
++ The back button close the search result window\n
+- Bug fix: OS Map\n
+\n
+v.0.7.4\n
++ Added new online maps (Docelu.pl Poland, Freemap.sk Slovakia, Slovakia Hiking, Slovakia Hiking HillShade)\n
+Do you want to add new online map? Write to me.\n
+\n
+v.0.7.3\n
+- Bug fix: 100 value zoom in sqlitedb format maps\n
++ Added new online maps (Microsoft Maps, Maps China, Virtual Earth, Hybrid, OSM Hiking Germany, OSM Public Transport, Outdooractive.com, Cykloatlas CZ, UMP-pcPL Poland)\n
+\n
+v.0.7.0\n
++ Minimum POI functionality\n
++ Integration with GPS Status by Rudolf Hornig\n
++ Move index data of offline maps to sdcard\n
++ Added buttons for clearing internal cache and index database to preference\n
++ Update Yandex.Map URL, Google.Map URL\n
+- Bug fix: Wrong compass orientation on landscape mode\n
+\n
+        </string>
+    <string name="about_dialog_whats_new">Novedades</string>
+    <string name="about_dialog_close">Cerrar</string>
+    <string name="search_label">Dirección:</string>
+    <string name="search_hint">e.g. Abbey Road, London</string>
+    <string name="message_gpsdisabled">El GPS está desactivado. Intentando usar redes inalámbricas para determinar su ubicación...</string>
+    <string name="message_saved">Elemento guardado</string>
+    <string name="menu_done">Hecho</string>
+    <string name="menu_doNotSave">Deshacer</string>
+    <string name="menu_edit">Editar</string>
+    <string name="menu_delete">Borrar</string>
+    <string name="menu_hide">Ocultar</string>
+    <string name="menu_show">Mostrar</string>
+    <string name="PoiTitle">Título</string>
+    <string name="PoiIcon">Icono</string>
+    <string name="PoiCategoryTitle">Categoría</string>
+    <string name="PoiLat">Latitud</string>
+    <string name="PoiLon">Longitud</string>
+    <string name="PoiDescr">Descripción</string>
+    <string name="hidden">Oculto</string>
+    <string name="hiddencategory">Esconder PDI de esta categoría</string>
+    <string name="ya_dialog_title"/>
+    <string name="ya_dialog_message"/>
+    <string name="ya_dialog_button_caption"/>
+    <string name="menu_goto">Ir a PDI</string>
+
+
+    <string name="ToCategory">A categoría</string>
+    <string name="SelectFile">Seleccionar archivo</string>
+    <string name="Import">Importar</string>
+
+    <string name="warning_delete_all_poi">¿Desea borrar todos los PDI?</string>
+    <string name="menu_tracks">Tracks</string>
+    <string name="menu_goto_track">Ir a Track</string>
+
+    <string name="btn_start">Iniciar grabación de track</string>
+    <string name="btn_stop">Parar</string>
+    <string name="trackwriter_nothing">Nada que guardar</string>
+    <string name="trackwriter_saved">Track guardado</string>
+        <string name="menu_toradar">Al radar</string>
+        <string name="message_nogpsstatus">GPS Status no encontrado. ¡Por favor, instálelo!</string>
+        <string name="menu_exporttogpx">Exportar a GPX file</string>
+        <string name="menu_exporttokml">Exportar a KML file</string>
+        <string name="message_cantstarttrackwriter">TrackWriter no puede iniciarse porque no puede escribir en </string>
+        <string name="message_error">Error: </string>
+        <string name="error_title">Informe de error</string>
+        <string name="error_send">Generar informe</string>
+        <string name="message_wait">Espere un momento, por favor...</string>
+        <string name="pref_dir">Directorios</string>
+        <string name="pref_dir_main">Directorio principal RMaps</string>
+        <string name="pref_dir_maps">Directorio mapas de usuario</string>
+        <string name="pref_dir_import">Directorio de importaciones </string>
+        <string name="pref_dir_export">Directorio de exportaciones</string>
+</resources>
