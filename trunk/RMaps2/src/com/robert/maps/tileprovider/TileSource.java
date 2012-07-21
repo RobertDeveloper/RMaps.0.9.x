@@ -33,11 +33,15 @@ public class TileSource {
 	private static final String PROJECTION_ = "_projection";
 	private static final String TRAFFIC_ = "_traffic";
 	
+	public final static int PREDEF_ONLINE = 0;
+	public final static int USERMAP_OFFLINE = 1;
+	
 	public String ID, BASEURL, NAME, IMAGE_FILENAMEENDING, GOOGLE_LANG_CODE, CACHE;
 	public int MAPTILE_SIZEPX, ZOOM_MINLEVEL, ZOOM_MAXLEVEL,
 	URL_BUILDER_TYPE, // 0 - OSM, 1 - Google, 2 - Yandex, 3 - Yandex.Traffic, 4 - Google.Sattelite, 5 - openspace, 6 - microsoft, 8 - VFR Chart
 	TILE_SOURCE_TYPE, // 0 - internet, 3 - MapNav file, 4 - TAR, 5 - sqlitedb
 	YANDEX_TRAFFIC_ON,
+	MAP_TYPE,
 	PROJECTION; // 1-меркатор на сфероид, 2- на эллипсоид, 3- OSGB 36 British national grid reference system
 	public boolean LAYER, mOnlineMapCacheEnabled;
 
@@ -50,6 +54,7 @@ public class TileSource {
 		GOOGLE_LANG_CODE = pref.getString(PREF_GOOGLELANG, EN);
 
 		if (aId.contains(USERMAP_)) {
+			MAP_TYPE = USERMAP_OFFLINE;
 			String prefix = PREF_USERMAP_ + aId.substring(8);
 			this.ID = aId;
 			this.NAME = pref.getString(prefix + NAME_, aId);
@@ -75,6 +80,7 @@ public class TileSource {
 			else
 				this.YANDEX_TRAFFIC_ON = 0;
 		} else {
+			MAP_TYPE = PREDEF_ONLINE;
 			final SAXParserFactory fac = SAXParserFactory.newInstance();
 			SAXParser parser = null;
 			try {

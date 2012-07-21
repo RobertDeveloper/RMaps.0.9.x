@@ -46,6 +46,7 @@ import android.os.PowerManager;
 import android.preference.PreferenceManager;
 import android.provider.Browser;
 import android.provider.SearchRecentSuggestions;
+import android.util.DisplayMetrics;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
@@ -124,7 +125,7 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		
 		mTracker = GoogleAnalyticsTracker.getInstance();
-		mTracker.startNewSession("UA-10715419-3", this);
+		mTracker.startNewSession("UA-10715419-3", 20, this);
 
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(CreateContentView());
@@ -170,7 +171,21 @@ public class MainActivity extends Activity {
 			getWindow()
 					.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        final Intent queryIntent = getIntent();
+
+		if (!uiState.getString("app_version", "").equalsIgnoreCase(Ut.getAppVersion(this))) {
+			DisplayMetrics metrics = new DisplayMetrics();
+			getWindowManager().getDefaultDisplay().getMetrics(metrics);
+			
+			mTracker.setCustomVar(1, "Build", Ut.getAppVersion(this), 1);
+			mTracker.setCustomVar(2, "Ver", "Free", 1);
+			mTracker.setCustomVar(3, "DisplaySize", ""+metrics.widthPixels+"x"+metrics.heightPixels, 1);
+			mTracker.setCustomVar(4, "DisplayDensity", ""+(int)(160*metrics.density), 1);
+			mTracker.trackPageView("/InstallApp");
+			
+			showDialog(R.id.whatsnew);
+		}
+		
+		final Intent queryIntent = getIntent();
 		final String queryAction = queryIntent.getAction();
 
 		if (Intent.ACTION_SEARCH.equals(queryAction)) {
@@ -602,9 +617,15 @@ public class MainActivity extends Activity {
 			setLastKnownLocation();
 			return true;
 		default:
-			mTileSource = new TileSource(this, (String)item.getTitleCondensed());
+			final String mapid = (String)item.getTitleCondensed();
+			mTileSource = new TileSource(this, mapid);
 			mMap.setTileSource(mTileSource);
-
+			
+			if(mTileSource.MAP_TYPE == TileSource.PREDEF_ONLINE) {
+				mTracker.setCustomVar(1, "MAP", mapid);
+				mTracker.trackPageView("/maps");
+			}
+			
 			FillOverlays();
 
 	        setTitle();
