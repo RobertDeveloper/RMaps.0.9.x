@@ -22,13 +22,11 @@ import android.view.ContextMenu.ContextMenuInfo;
 import android.view.GestureDetector;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
-import android.view.ScaleGestureDetector;
 import android.view.View;
 
 import com.robert.maps.kml.Track.TrackPoint;
 import com.robert.maps.tileprovider.MessageHandlerConstants;
 import com.robert.maps.tileprovider.TileSource;
-import com.robert.maps.utils.Ut;
 
 public class TileView extends View {
 	private static final int LATITUDE = 0;
@@ -47,38 +45,38 @@ public class TileView extends View {
 	private TileMapHandler mTileMapHandler = new TileMapHandler();
 	protected final List<TileViewOverlay> mOverlays = new ArrayList<TileViewOverlay>();
 	
-	private GestureDetector mDetector = new GestureDetector(getContext(), new TouchListener(), null, false);
-	private ScaleGestureDetector mScaleDetector = new ScaleGestureDetector(getContext(), new ScaleListener());
-	
-	private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
-
-		@Override
-		public boolean onScale(ScaleGestureDetector detector) {
-			mTouchScale = detector.getScaleFactor();
-			if(mMoveListener != null)
-				mMoveListener.onZoomDetected();
-			
-			postInvalidate();
-			
-			return super.onScale(detector);
-		}
-
-		@Override
-		public void onScaleEnd(ScaleGestureDetector detector) {
-			int zoom = 0;
-			if(mTouchScale > 1)
-				zoom = getZoomLevel()+(int)Math.round(mTouchScale)-1;
-			else
-				zoom = getZoomLevel()-(int)Math.round(1/mTouchScale)+1;
-			
-			mTouchScale = 1;
-			setZoomLevel(zoom);
-			
-			super.onScaleEnd(detector);
-		}
-		
-	}
-	
+	private GestureDetector mDetector = new GestureDetector(getContext(), new TouchListener(), null/*, false*/);
+//	private ScaleGestureDetector mScaleDetector = new ScaleGestureDetector(getContext(), new ScaleListener());
+//	
+//	private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
+//
+//		@Override
+//		public boolean onScale(ScaleGestureDetector detector) {
+//			mTouchScale = detector.getScaleFactor();
+//			if(mMoveListener != null)
+//				mMoveListener.onZoomDetected();
+//			
+//			postInvalidate();
+//			
+//			return super.onScale(detector);
+//		}
+//
+//		@Override
+//		public void onScaleEnd(ScaleGestureDetector detector) {
+//			int zoom = 0;
+//			if(mTouchScale > 1)
+//				zoom = getZoomLevel()+(int)Math.round(mTouchScale)-1;
+//			else
+//				zoom = getZoomLevel()-(int)Math.round(1/mTouchScale)+1;
+//			
+//			mTouchScale = 1;
+//			setZoomLevel(zoom);
+//			
+//			super.onScaleEnd(detector);
+//		}
+//		
+//	}
+//	
 	private class TouchListener extends GestureDetector.SimpleOnGestureListener {
 		@Override
 		public boolean onDown(MotionEvent e) {
@@ -208,7 +206,7 @@ public class TileView extends View {
 
 	@Override
 	public boolean onTouchEvent(final MotionEvent event) {
-		mScaleDetector.onTouchEvent(event);
+//		mScaleDetector.onTouchEvent(event);
 		
 		boolean result = mDetector.onTouchEvent(event);
 		if (!result) {

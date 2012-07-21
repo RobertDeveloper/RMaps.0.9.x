@@ -4,7 +4,7 @@
     android:installLocation="auto"
     android:sharedUserId="@string/app_user_id"
     android:sharedUserLabel="@string/app_user_label"
-    android:versionCode="08101"
+    android:versionCode="03101"
     android:versionName="0.8.10" >
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -78,7 +78,7 @@
 
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
-    <uses-sdk android:minSdkVersion="8" android:targetSdkVersion="8"/>
+    <uses-sdk android:minSdkVersion="3" android:targetSdkVersion="7" android:maxSdkVersion="7"/>
 
     <supports-screens
         android:anyDensity="true"
