@@ -3,7 +3,8 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="vertical" >
-    <LinearLayout
+
+    <LinearLayout
         android:id="@+id/linearLayout1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -13,7 +14,7 @@
         android:layout_marginTop="1dp"
         android:background="@drawable/popup_button"
         android:orientation="vertical"
-        android:paddingLeft="43dp" >
+        android:paddingLeft="41dp" >
 
         <TextView
             android:id="@+id/poi_title"
