@@ -431,7 +431,8 @@
         android:layout_width="wrap_content"
         android:layout_height="200dp"
         android:layout_marginLeft="6dp"
-        android:layout_marginRight="6dp" >
+        android:layout_marginRight="6dp"
+        android:visibility="gone" >
     </com.robert.maps.kml.ChartView>
 
 </LinearLayout>
