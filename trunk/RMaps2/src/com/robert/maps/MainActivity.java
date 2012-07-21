@@ -18,6 +18,7 @@ import javax.xml.parsers.SAXParserFactory;
 import org.andnav.osm.util.GeoPoint;
 import org.andnav.osm.util.TypeConverter;
 import org.andnav.osm.views.util.StreamUtils;
+import org.andnav.osm.views.util.constants.OpenStreetMapViewConstants;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -78,6 +79,7 @@ import com.robert.maps.overlays.TrackOverlay;
 import com.robert.maps.overlays.YandexTrafficOverlay;
 import com.robert.maps.tileprovider.TileSource;
 import com.robert.maps.utils.CompassView;
+import com.robert.maps.utils.CrashReportHandler;
 import com.robert.maps.utils.SearchSuggestionsProvider;
 import com.robert.maps.utils.Ut;
 import com.robert.maps.view.IMoveListener;
@@ -124,6 +126,9 @@ public class MainActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
+        if(!OpenStreetMapViewConstants.DEBUGMODE)
+        	CrashReportHandler.attach(this);
+
 		mTracker = GoogleAnalyticsTracker.getInstance();
 		mTracker.startNewSession("UA-10715419-3", 20, this);
 
