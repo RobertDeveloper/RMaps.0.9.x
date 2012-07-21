@@ -192,24 +192,20 @@ public class FSCacheProvider implements ICacheProvider {
 	}
 
 	private void calculateDirectorySize(final File pDirectory) {
-		Ut.i("calculateDirectorySize ");
 		if(pDirectory == null)
 			return;
-		Ut.i("calculateDirectorySize2 "+pDirectory.getAbsolutePath());
 		
 		final File[] z = pDirectory.listFiles();
 		if (z != null) {
 			for (final File file : z) {
 				if (file.isFile()) {
 					mUsedCacheSpace += file.length();
-					Ut.i(file.getName()+" "+file.length());
 				}
 				if (file.isDirectory() && !isSymbolicDirectoryLink(pDirectory, file)) {
 					calculateDirectorySize(file); // *** recurse ***
 				}
 			}
 		}
-		Ut.i("Total: "+mUsedCacheSpace);
 	}
 
 	private boolean isSymbolicDirectoryLink(final File pParentDirectory, final File pDirectory) {
