@@ -19,6 +19,7 @@ public class SQLiteMapDatabase implements ICacheProvider {
 	private static final String SQL_SELECT_IMAGE = "SELECT image as ret FROM tiles WHERE s = 0 AND x = ? AND y = ? AND z = ?";
 	private static final String RET = "ret";
 	private static final long MAX_DATABASE_SIZE = 2 * 1024 * 1024 * 1024;
+	private static final String JOURNAL = "-journal";
 
 	private SQLiteDatabase[] mDatabase = new SQLiteDatabase[0];
 	private SQLiteDatabase mDatabaseWritable;
@@ -40,7 +41,7 @@ public class SQLiteMapDatabase implements ICacheProvider {
 				mBaseFileIndex = 0;
 				// Подсчитаем количество подходящих файлов
 				for (int i = 0; i < files.length; i++) {
-					if(files[i].getName().startsWith(mBaseFile.getName())) {
+					if(files[i].getName().startsWith(mBaseFile.getName()) && !files[i].getName().endsWith(JOURNAL)) {
 						j = j + 1;
 						
 						try {
@@ -60,7 +61,7 @@ public class SQLiteMapDatabase implements ICacheProvider {
 				// Заполняем массив 
 				j = 0; long minsize = 0;
 				for (int i = 0; i < files.length; i++) {
-					if(files[i].getName().startsWith(mBaseFile.getName())) {
+					if(files[i].getName().startsWith(mBaseFile.getName()) && !files[i].getName().endsWith(JOURNAL)) {
 						mDatabase[j] = new CashDatabaseHelper(null, files[i].getAbsolutePath()).getWritableDatabase();
 						mDatabase[j].setMaximumSize(MAX_DATABASE_SIZE);
 						if(mDatabaseWritable == null) {

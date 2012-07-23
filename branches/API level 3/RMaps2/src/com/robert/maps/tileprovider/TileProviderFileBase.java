@@ -2,15 +2,14 @@ package com.robert.maps.tileprovider;
 
 import java.io.File;
 
+import org.andnav.osm.views.util.constants.OpenStreetMapViewConstants;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
-import android.widget.Toast;
 
-import com.robert.maps.R;
 import com.robert.maps.utils.RSQLiteOpenHelper;
 import com.robert.maps.utils.Ut;
 
@@ -39,14 +38,33 @@ public class TileProviderFileBase extends TileProviderBase {
 			if (cur.getCount() > 0) {
 				Ut.d("In table ListCashTables " + cur.getCount() + " records");
 				cur.close();
+				
+				if(OpenStreetMapViewConstants.DEBUGMODE) {
+					Ut.d("ListCashTables:");
+					cur = this.mIndexDatabase.rawQuery("SELECT name, minzoom, maxzoom, size, lastmodified FROM ListCashTables", null);
+					if(cur != null) {
+						if(cur.moveToFirst()) {
+							do {
+								Ut.d(""+cur.getString(0)+" "
+										+cur.getInt(1)+" "
+										+cur.getInt(2)+" "
+										+cur.getLong(3)+" "
+										+cur.getLong(4)+" "
+										);
+							} while (cur.moveToNext());
+						}
+						cur.close();
+					}
+				}
 
+				Ut.d("Check for aCashTableName = " + aCashTableName);
 				cur = this.mIndexDatabase.rawQuery("SELECT size, lastmodified FROM ListCashTables WHERE name = '"
-						+ aCashTableName + "'", null);
+						+ aCashTableName + "' OR name = '" + aCashTableName.replace("usermap_", "cahs_") + "'", null);
 				if (cur.getCount() > 0) {
 					cur.moveToFirst();
-					Ut.d("Record " + aCashTableName + " size = "
-							+ cur.getLong(cur.getColumnIndexOrThrow("size")) + " AND lastmodified = "
-							+ cur.getLong(cur.getColumnIndexOrThrow("lastmodified")));
+					Ut.d("Record " + aCashTableName 
+							+ " size = " + cur.getLong(cur.getColumnIndexOrThrow("size")) 
+							+ " AND lastmodified = " + cur.getLong(cur.getColumnIndexOrThrow("lastmodified")));
 					Ut.d("File " + aCashTableName + " size = " + aSizeFile + " AND lastmodified = "
 							+ aLastModifiedFile);
 				} else
@@ -60,7 +78,7 @@ public class TileProviderFileBase extends TileProviderBase {
 			Ut.d("NO table ListCashTables in database");
 
 		Cursor c = null;
-		c = this.mIndexDatabase.rawQuery("SELECT * FROM ListCashTables WHERE name = '" + aCashTableName + "'", null);
+		c = this.mIndexDatabase.rawQuery("SELECT * FROM ListCashTables WHERE name = '" + aCashTableName + "' OR name = '" + aCashTableName.replace("usermap_", "cahs_") + "'", null);
 		boolean res = false;
 		if(c == null)
 			return true;
@@ -77,7 +95,7 @@ public class TileProviderFileBase extends TileProviderBase {
 	}
 
 	public void CommitIndex(final String aCashTableName, long aSizeFile, long aLastModifiedFile, int zoomMinInCashFile, int zoomMaxInCashFile) {
-		this.mIndexDatabase.delete("ListCashTables", "name = '" + aCashTableName + "'", null);
+		this.mIndexDatabase.delete("ListCashTables", "name = '" + aCashTableName + "' OR name = '" + aCashTableName.replace("usermap_", "cahs_") + "'", null);
 		final ContentValues cv = new ContentValues();
 		cv.put("name", aCashTableName);
 		cv.put("lastmodified", aLastModifiedFile);
@@ -91,7 +109,7 @@ public class TileProviderFileBase extends TileProviderBase {
 		int ret = 24;
 		try {
 			final Cursor c = this.mIndexDatabase.rawQuery("SELECT maxzoom FROM ListCashTables WHERE name = '"
-					+ mapid + "'", null);
+					+ mapid + "' OR name = '" + mapid.replace("usermap_", "cahs_") + "'", null);
 			if (c != null) {
 				if (c.moveToFirst()) {
 					ret = c.getInt(c.getColumnIndexOrThrow("maxzoom"));
@@ -108,7 +126,7 @@ public class TileProviderFileBase extends TileProviderBase {
 		int ret  = 0;
 		try {
 			final Cursor c = this.mIndexDatabase.rawQuery("SELECT minzoom FROM ListCashTables WHERE name = '"
-					+ mapid + "'", null);
+					+ mapid + "' OR name = '" + mapid.replace("usermap_", "cahs_") + "'", null);
 			if (c != null) {
 				if (c.moveToFirst()) {
 					ret = c.getInt(c.getColumnIndexOrThrow("minzoom"));
