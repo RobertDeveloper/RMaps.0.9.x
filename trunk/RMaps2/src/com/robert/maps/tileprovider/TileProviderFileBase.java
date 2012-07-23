@@ -59,7 +59,7 @@ public class TileProviderFileBase extends TileProviderBase {
 
 				Ut.d("Check for aCashTableName = " + aCashTableName);
 				cur = this.mIndexDatabase.rawQuery("SELECT size, lastmodified FROM ListCashTables WHERE name = '"
-						+ aCashTableName + "'", null);
+						+ aCashTableName + "' OR name = '" + aCashTableName.replace("usermap_", "cahs_") + "'", null);
 				if (cur.getCount() > 0) {
 					cur.moveToFirst();
 					Ut.d("Record " + aCashTableName 
@@ -78,7 +78,7 @@ public class TileProviderFileBase extends TileProviderBase {
 			Ut.d("NO table ListCashTables in database");
 
 		Cursor c = null;
-		c = this.mIndexDatabase.rawQuery("SELECT * FROM ListCashTables WHERE name = '" + aCashTableName + "'", null);
+		c = this.mIndexDatabase.rawQuery("SELECT * FROM ListCashTables WHERE name = '" + aCashTableName + "' OR name = '" + aCashTableName.replace("usermap_", "cahs_") + "'", null);
 		boolean res = false;
 		if(c == null)
 			return true;
@@ -95,7 +95,7 @@ public class TileProviderFileBase extends TileProviderBase {
 	}
 
 	public void CommitIndex(final String aCashTableName, long aSizeFile, long aLastModifiedFile, int zoomMinInCashFile, int zoomMaxInCashFile) {
-		this.mIndexDatabase.delete("ListCashTables", "name = '" + aCashTableName + "'", null);
+		this.mIndexDatabase.delete("ListCashTables", "name = '" + aCashTableName + "' OR name = '" + aCashTableName.replace("usermap_", "cahs_") + "'", null);
 		final ContentValues cv = new ContentValues();
 		cv.put("name", aCashTableName);
 		cv.put("lastmodified", aLastModifiedFile);
@@ -109,7 +109,7 @@ public class TileProviderFileBase extends TileProviderBase {
 		int ret = 24;
 		try {
 			final Cursor c = this.mIndexDatabase.rawQuery("SELECT maxzoom FROM ListCashTables WHERE name = '"
-					+ mapid + "'", null);
+					+ mapid + "' OR name = '" + mapid.replace("usermap_", "cahs_") + "'", null);
 			if (c != null) {
 				if (c.moveToFirst()) {
 					ret = c.getInt(c.getColumnIndexOrThrow("maxzoom"));
@@ -126,7 +126,7 @@ public class TileProviderFileBase extends TileProviderBase {
 		int ret  = 0;
 		try {
 			final Cursor c = this.mIndexDatabase.rawQuery("SELECT minzoom FROM ListCashTables WHERE name = '"
-					+ mapid + "'", null);
+					+ mapid + "' OR name = '" + mapid.replace("usermap_", "cahs_") + "'", null);
 			if (c != null) {
 				if (c.moveToFirst()) {
 					ret = c.getInt(c.getColumnIndexOrThrow("minzoom"));
