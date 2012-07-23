@@ -10,6 +10,7 @@ import java.util.concurrent.Executors;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.database.sqlite.SQLiteException;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -35,6 +36,10 @@ public class TileProviderSQLITEDB extends TileProviderFileBase {
 		mMapID = mapid;
 		
 		final File file = new File(filename);
+		Ut.d("TileProviderSQLITEDB: mapid = "+mapid);
+		Ut.d("TileProviderSQLITEDB: filename = "+filename);
+		Ut.d("TileProviderSQLITEDB: file.exists = "+file.exists());
+		Ut.d("TileProviderSQLITEDB: getRMapsMapsDir = "+Ut.getRMapsMapsDir(ctx));
 		if(needIndex(mapid, file.length(), file.lastModified(), false)) {
 			mProgressDialog = Ut.ShowWaitDialog(ctx, R.string.message_updateminmax);
 			new IndexTask().execute(file.length(), file.lastModified());
@@ -96,14 +101,21 @@ public class TileProviderSQLITEDB extends TileProviderFileBase {
 		protected Boolean doInBackground(Long... params) {
 			try {
 				final long fileLength = params[0];
+				Ut.d("IndexTask: fileLength = "+fileLength);
 				final long fileModified = params[1];
+				Ut.d("IndexTask: fileModified = "+fileModified);
 				mUserMapDatabase.updateMinMaxZoom();
+				Ut.d("IndexTask: mUserMapDatabase.updateMinMaxZoom = OK");
 				final int minzoom = mUserMapDatabase.getMinZoom();
+				Ut.d("IndexTask: minzoom = "+minzoom);
 				final int maxzoom = mUserMapDatabase.getMaxZoom();
-	
+				Ut.d("IndexTask: maxzoom = "+maxzoom);
+
 				CommitIndex(mMapID, fileLength, fileModified, minzoom, maxzoom);
-			} catch (Exception e) {
-				return false;
+				Ut.d("IndexTask: CommitIndex = OK");
+			} catch (SQLiteException e) {
+				Ut.dd("Error during update min max zoom");
+				e.printStackTrace();
 			}
 
 			return true;
