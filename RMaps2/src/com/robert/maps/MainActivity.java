@@ -177,6 +177,11 @@ public class MainActivity extends Activity {
 					.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
 
+		if(uiState.getString("error", "").length() > 0){
+			showDialog(R.id.error);
+		}
+
+		
 		if (!uiState.getString("app_version", "").equalsIgnoreCase(Ut.getAppVersion(this))) {
 			DisplayMetrics metrics = new DisplayMetrics();
 			getWindowManager().getDefaultDisplay().getMetrics(metrics);
