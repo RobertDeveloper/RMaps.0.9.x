@@ -163,22 +163,26 @@ public class SQLiteMapDatabase implements ICacheProvider {
 			
 			if (this.mDatabase[j] != null) {
 				final String[] args = {""+aX, ""+aY, ""+(17 - aZ)};
-				final Cursor c = this.mDatabase[j].rawQuery(SQL_SELECT_IMAGE, args);
-				if (c != null) {
-					if (c.moveToFirst()) {
-						ret = c.getBlob(c.getColumnIndexOrThrow(RET));
-						c.close();
-						
-						if(ret != null)
-							if(ret.length == 0) {
-								mDatabase[j].delete(TILES, SQL_DELTILE_WHERE, args);
-								ret = null;
-							}
+				try {
+					final Cursor c = this.mDatabase[j].rawQuery(SQL_SELECT_IMAGE, args);
+					if (c != null) {
+						if (c.moveToFirst()) {
+							ret = c.getBlob(c.getColumnIndexOrThrow(RET));
+							c.close();
+							
+							if(ret != null)
+								if(ret.length == 0) {
+									mDatabase[j].delete(TILES, SQL_DELTILE_WHERE, args);
+									ret = null;
+								}
 
-						mCurrentIndex = j;
-						break;
-					} else
-						c.close();
+							mCurrentIndex = j;
+							break;
+						} else
+							c.close();
+					}
+				} catch (IllegalArgumentException e) {
+					e.printStackTrace();
 				}
 			}
 			
