@@ -76,6 +76,9 @@ public class MainPreferences extends PreferenceActivity implements OnSharedPrefe
 		final PreferenceGroup prefUserMapsgroup = (PreferenceGroup) findPreference("pref_usermaps_mapsgroup");
 		prefUserMapsgroup.removeAll();
 
+		final SharedPreferences aPref = PreferenceManager.getDefaultSharedPreferences(this);
+		final Editor prefEditor = aPref.edit();
+		
 		final File[] files = folder.listFiles();
 		if (files != null)
 			for (int i = 0; i < files.length; i++) {
@@ -83,6 +86,8 @@ public class MainPreferences extends PreferenceActivity implements OnSharedPrefe
 						||*/ files[i].getName().toLowerCase().endsWith(getString(R.string.tar))
 						|| files[i].getName().toLowerCase().endsWith(getString(R.string.sqlitedb))) {
 					final String name = Ut.FileName2ID(files[i].getName());
+					
+					prefEditor.putString(PREF_USERMAPS_ + name + "_baseurl", files[i].getAbsolutePath());
 
 					final PreferenceScreen prefscr = getPreferenceManager().createPreferenceScreen(this);
 					prefscr.setKey(PREF_USERMAPS_ + name);
@@ -139,6 +144,8 @@ public class MainPreferences extends PreferenceActivity implements OnSharedPrefe
 					prefUserMapsgroup.addPreference(prefscr);
 				}
 			}
+		
+		prefEditor.commit();
 	}
 
 	@Override

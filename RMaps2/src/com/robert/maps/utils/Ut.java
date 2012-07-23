@@ -159,9 +159,11 @@ public class Ut implements OpenStreetMapConstants, OpenStreetMapViewConstants {
 	}
 	
 	private static String EXTERNAL_SD = "/external_sd";
+	private static String SIGNAL_FILE_NAME = "/RMapsOnSDCard";
+	
 	public static String getExternalStorageDirectory() {
-		final File dir = new File(Environment.getExternalStorageDirectory().getPath()+EXTERNAL_SD);
-		if(dir.exists())
+		final File signalFile = new File(Environment.getExternalStorageDirectory().getPath()+SIGNAL_FILE_NAME);
+		if(signalFile.exists())
 			return (Environment.getExternalStorageDirectory().getPath()+EXTERNAL_SD);
 		else
 			return Environment.getExternalStorageDirectory().getPath();
@@ -172,15 +174,15 @@ public class Ut implements OpenStreetMapConstants, OpenStreetMapViewConstants {
 	}
 
 	public static File getRMapsMapsDir(final Context mCtx) {
-		return getRMapsMainDir(mCtx, "maps");
+		return getDir(mCtx, "pref_dir_maps", getRMapsMainDir(mCtx, "maps").getAbsolutePath(), "");
 	}
 
 	public static File getRMapsImportDir(final Context mCtx) {
-		return getRMapsMainDir(mCtx, "import");
+		return getDir(mCtx, "pref_dir_import", getRMapsMainDir(mCtx, "import").getAbsolutePath(), "");
 	}
 
 	public static File getRMapsExportDir(final Context mCtx) {
-		return getRMapsMainDir(mCtx, "export");
+		return getDir(mCtx, "pref_dir_export", getRMapsMainDir(mCtx, "export").getAbsolutePath(), "");
 	}
 
 	public static File getRMapsCacheTilesDir(final Context mCtx) {
