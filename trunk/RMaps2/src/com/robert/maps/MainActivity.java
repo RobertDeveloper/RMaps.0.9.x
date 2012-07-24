@@ -441,6 +441,8 @@ public class MainActivity extends Activity {
 	protected void onResume() {
 		final SharedPreferences pref = getPreferences(Activity.MODE_PRIVATE);
 		
+		if(mTileSource != null)
+			mTileSource.Free();
 		mTileSource = new TileSource(this, pref.getString(MAPNAME, TileSource.MAPNIK));
 		mMap.setTileSource(mTileSource);
  		mMap.getController().setZoom(pref.getInt("ZoomLevel", 0));
@@ -629,6 +631,8 @@ public class MainActivity extends Activity {
 			return true;
 		default:
 			final String mapid = (String)item.getTitleCondensed();
+			if(mTileSource != null)
+				mTileSource.Free();
 			mTileSource = new TileSource(this, mapid);
 			mMap.setTileSource(mTileSource);
 			

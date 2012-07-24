@@ -181,7 +181,7 @@ public class SQLiteMapDatabase implements ICacheProvider {
 						} else
 							c.close();
 					}
-				} catch (IllegalArgumentException e) {
+				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
