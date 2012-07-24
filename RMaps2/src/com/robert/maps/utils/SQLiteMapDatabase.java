@@ -18,7 +18,7 @@ public class SQLiteMapDatabase implements ICacheProvider {
 	private static final String SQL_SELECT_MAXZOOM = "SELECT 17-maxzoom AS ret FROM info";
 	private static final String SQL_SELECT_IMAGE = "SELECT image as ret FROM tiles WHERE s = 0 AND x = ? AND y = ? AND z = ?";
 	private static final String RET = "ret";
-	private static final long MAX_DATABASE_SIZE = 2 * 1024 * 1024 * 1024;
+	private static final long MAX_DATABASE_SIZE = 1945 * 1024 * 1024; // 1.9GB
 	private static final String JOURNAL = "-journal";
 
 	private SQLiteDatabase[] mDatabase = new SQLiteDatabase[0];

@@ -26,6 +26,8 @@ import android.view.ScaleGestureDetector;
 import android.view.View;
 
 import com.robert.maps.kml.Track.TrackPoint;
+import com.robert.maps.reflection.VerGestureDetector;
+import com.robert.maps.reflection.VerScaleGestureDetector;
 import com.robert.maps.tileprovider.MessageHandlerConstants;
 import com.robert.maps.tileprovider.TileSource;
 import com.robert.maps.utils.Ut;
@@ -47,24 +49,20 @@ public class TileView extends View {
 	private TileMapHandler mTileMapHandler = new TileMapHandler();
 	protected final List<TileViewOverlay> mOverlays = new ArrayList<TileViewOverlay>();
 	
-	private GestureDetector mDetector = new GestureDetector(getContext(), new TouchListener(), null, false);
-	private ScaleGestureDetector mScaleDetector = new ScaleGestureDetector(getContext(), new ScaleListener());
+	private GestureDetector mDetector = VerGestureDetector.newInstance().getGestureDetector(getContext(), new TouchListener()); 
+	private VerScaleGestureDetector mScaleDetector = VerScaleGestureDetector.newInstance(getContext(), new ScaleListener());
 	
-	private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
+	private class ScaleListener implements VerScaleGestureDetector.OnGestureListener {
 
-		@Override
-		public boolean onScale(ScaleGestureDetector detector) {
-			mTouchScale = detector.getScaleFactor();
+		public void onScale(double aScaleFactor) {
+			mTouchScale = aScaleFactor;
 			if(mMoveListener != null)
 				mMoveListener.onZoomDetected();
 			
 			postInvalidate();
-			
-			return super.onScale(detector);
 		}
 
-		@Override
-		public void onScaleEnd(ScaleGestureDetector detector) {
+		public void onScaleEnd() {
 			int zoom = 0;
 			if(mTouchScale > 1)
 				zoom = getZoomLevel()+(int)Math.round(mTouchScale)-1;
@@ -73,8 +71,6 @@ public class TileView extends View {
 			
 			mTouchScale = 1;
 			setZoomLevel(zoom);
-			
-			super.onScaleEnd(detector);
 		}
 		
 	}
@@ -191,11 +187,6 @@ public class TileView extends View {
 	
 	public PoiMenuInfo mPoiMenuInfo = new PoiMenuInfo(-1);
 	
-//	@Override
-//	protected ContextMenuInfo getContextMenuInfo() {
-//		return mPoiMenuInfo;
-//	}
-//	
 	public class PoiMenuInfo implements ContextMenuInfo {
 		public int MarkerIndex;
 		public GeoPoint EventGeoPoint;
@@ -213,16 +204,10 @@ public class TileView extends View {
 		boolean result = mDetector.onTouchEvent(event);
 		if (!result) {
 			if (event.getAction() == MotionEvent.ACTION_UP) {
-				//stopScrolling();
 				result = true;
 			}
 		}
 		return result;
-		
-//		this.mGestureDetector.onTouchEvent(event);
-//		this.mDetector.onTouchEvent(event);
-//
-//		return true;
 	}
 
 	@Override
