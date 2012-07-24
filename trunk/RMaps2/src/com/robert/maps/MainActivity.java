@@ -218,7 +218,9 @@ public class MainActivity extends Activity {
         final String queryAction = intent.getAction();
         if (Intent.ACTION_SEARCH.equals(queryAction)) {
             doSearchQuery(intent);
-        }
+        } else if (ACTION_SHOW_POINTS.equalsIgnoreCase(queryAction))
+			ActionShowPoints(intent);
+
 	}
 
 	private void doSearchQuery(Intent queryIntent) {
@@ -1045,5 +1047,5 @@ public class MainActivity extends Activity {
 			mMap.getController().setCenter(point);
 		}
 	}
-
+	
 }

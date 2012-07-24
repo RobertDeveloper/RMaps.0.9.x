@@ -99,6 +99,7 @@ public class PoiOverlay extends TileViewOverlay {
 
 		mItemList.add(poi);
 		mCanUpdateList = false;
+		mTapIndex = 0;
 	}
 
 	@Override
