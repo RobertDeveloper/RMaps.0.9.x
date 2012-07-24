@@ -201,8 +201,25 @@ public class MainActivity extends Activity {
 
 		if (Intent.ACTION_SEARCH.equals(queryAction)) {
 			doSearchQuery(queryIntent);
-		} else if (ACTION_SHOW_POINTS.equalsIgnoreCase(queryAction))
+		} else if (ACTION_SHOW_POINTS.equalsIgnoreCase(queryAction)) {
 			ActionShowPoints(queryIntent);
+		} else if (Intent.ACTION_VIEW.equalsIgnoreCase(queryAction)) {
+			Uri uri = queryIntent.getData();
+			if(uri.getScheme().equalsIgnoreCase("geo")) {
+				final String latlon = uri.getEncodedSchemeSpecificPart().replace("?"+uri.getEncodedQuery(), "");
+				if(latlon.equals("0,0")) {
+					final String query = uri.getEncodedQuery().replace("q=", "");
+					queryIntent.putExtra(SearchManager.QUERY, query);
+					doSearchQuery(queryIntent);
+					
+				} else {
+					GeoPoint point = GeoPoint.fromDoubleString(latlon);
+					mPoiOverlay.setGpsStatusGeoPoint(point, "GEO", "");
+					setAutoFollow(false);
+					mMap.getController().setCenter(point);
+				}
+			}
+		}
 	}
 
 //	@Override
@@ -237,10 +254,12 @@ public class MainActivity extends Activity {
 		OutputStream out = null;
 
 		try {
+			final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
 			URL url = new URL(
 					"http://ajax.googleapis.com/ajax/services/search/local?v=1.0&sll="
 							+ this.mMap.getMapCenter().toDoubleString()
 							+ "&q=" + URLEncoder.encode(queryString, "UTF-8")
+							+ "&hl="+ pref.getString("pref_googlelanguagecode", "en")
 							+ "");
 			Ut.dd(url.toString());
 			in = new BufferedInputStream(url.openStream(), StreamUtils.IO_BUFFER_SIZE);
@@ -420,22 +439,25 @@ public class MainActivity extends Activity {
 	}
 
 	private void setTitle(){
-		final TextView leftText = (TextView) findViewById(R.id.left_text);
-		if(leftText != null)
-			leftText.setText(mMap.getTileSource().NAME);
-		
-		final TextView gpsText = (TextView) findViewById(R.id.gps_text);
-		if(gpsText != null){
-			gpsText.setText(mGpsStatusName);
-		}
+		try {
+			final TextView leftText = (TextView) findViewById(R.id.left_text);
+			if(leftText != null)
+				leftText.setText(mMap.getTileSource().NAME);
+			
+			final TextView gpsText = (TextView) findViewById(R.id.gps_text);
+			if(gpsText != null){
+				gpsText.setText(mGpsStatusName);
+			}
 
-		final TextView rightText = (TextView) findViewById(R.id.right_text);
-		if(rightText != null){
-			final double zoom = mMap.getZoomLevelScaled();
-			if(zoom > mMap.getTileSource().ZOOM_MAXLEVEL)
-				rightText.setText(""+(mMap.getTileSource().ZOOM_MAXLEVEL+1)+"+");
-			else
-				rightText.setText(""+(1 + Math.round(zoom)));
+			final TextView rightText = (TextView) findViewById(R.id.right_text);
+			if(rightText != null){
+				final double zoom = mMap.getZoomLevelScaled();
+				if(zoom > mMap.getTileSource().ZOOM_MAXLEVEL)
+					rightText.setText(""+(mMap.getTileSource().ZOOM_MAXLEVEL+1)+"+");
+				else
+					rightText.setText(""+(1 + Math.round(zoom)));
+			}
+		} catch (Exception e) {
 		}
 	}
 
@@ -1043,7 +1065,7 @@ public class MainActivity extends Activity {
 
 			GeoPoint point = GeoPoint.fromDoubleString(locns);
 			mPoiOverlay.setGpsStatusGeoPoint(point, title, descr);
-			//setAutoFollow(false);
+			setAutoFollow(false);
 			mMap.getController().setCenter(point);
 		}
 	}

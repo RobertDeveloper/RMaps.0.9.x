@@ -40,6 +40,12 @@
                 <action android:name="com.robert.maps.action.SHOW_POINTS"/>
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data android:scheme="geo"/>
+            </intent-filter>
         </activity>
         <activity android:name="MainPreferences" >
         </activity>
