@@ -26,14 +26,14 @@ import android.os.Message;
 import com.robert.maps.utils.SimpleThreadFactory;
 import com.robert.maps.utils.Ut;
 
-public class TileProviderTAR extends TileProviderFileBase {
+public class TileProviderMNM extends TileProviderFileBase {
 	private ExecutorService mThreadPool = Executors.newSingleThreadExecutor(new SimpleThreadFactory("TileProviderTAR"));
 	private File mMapFile;
 	private String mMapID;
 	private ProgressDialog mProgressDialog;
 	private boolean mStopIndexing;
 
-	public TileProviderTAR(Context ctx, final String filename, final String mapid) {
+	public TileProviderMNM(Context ctx, final String filename, final String mapid) {
 		super(ctx);
 		mTileURLGenerator = new TileURLGeneratorTAR(filename);
 		mTileCache = new MapTileMemCache();
@@ -59,21 +59,23 @@ public class TileProviderTAR extends TileProviderFileBase {
 			mProgressDialog.show();
 			mProgressDialog.setProgress(0);
 			
-			CreateTarIndex();
+			CreateIndex();
 			
 			new IndexTask().execute(mMapFile.length(), mMapFile.lastModified());
 		}
 	}
-	
-	private void CreateTarIndex() {
+
+	private void CreateIndex() {
 		this.mIndexDatabase.execSQL("DROP TABLE IF EXISTS '" + mMapID + "'");
-		this.mIndexDatabase.execSQL("CREATE TABLE IF NOT EXISTS '" + mMapID + "' (name VARCHAR(100), offset INTEGER NOT NULL, size INTEGER NOT NULL, PRIMARY KEY(name) );");
+		this.mIndexDatabase.execSQL("CREATE TABLE IF NOT EXISTS '" + mMapID + "' (x INTEGER NOT NULL, y INTEGER NOT NULL, z INTEGER NOT NULL, offset INTEGER NOT NULL, size INTEGER NOT NULL, PRIMARY KEY(x, y, z) );");
 		this.mIndexDatabase.delete("ListCashTables", "name = '" + mMapID + "'", null);
 	}
 
-	private void addTarIndexRow(String aName, int aOffset, int aSize) {
+	public void addMnmIndexRow(final int aX, final int aY, final int aZ, final long aOffset, final int aSize) {
 		final ContentValues cv = new ContentValues();
-		cv.put("name", aName);
+		cv.put("x", aX);
+		cv.put("y", aY);
+		cv.put("z", aZ);
 		cv.put("offset", aOffset);
 		cv.put("size", aSize);
 		this.mIndexDatabase.insert("'" + mMapID + "'", null, cv);
@@ -90,92 +92,59 @@ public class TileProviderTAR extends TileProviderFileBase {
 		this.mIndexDatabase.insert("ListCashTables", null, cv);
 	}
 
-	private boolean findTarIndex(final String aName, Param4ReadData aData) {
-		boolean ret  = false;
-		final Cursor c = this.mIndexDatabase.rawQuery("SELECT offset, size FROM '" + mMapID + "' WHERE name = '"
-				+ aName + ".jpg' OR name = '" + aName + ".png'", null);
-		if (c != null) {
-			if (c.moveToFirst()) {
-				aData.offset = c.getInt(c.getColumnIndexOrThrow("offset"));
-				aData.size = c.getInt(c.getColumnIndexOrThrow("size"));
-				ret = true;
-			}
-			c.close();
-		}
-		return ret;
-	}
-
-	public void updateMapParams(TileSource tileSource) {
-		tileSource.ZOOM_MINLEVEL = ZoomMinInCashFile(mMapID);
-		tileSource.ZOOM_MAXLEVEL = ZoomMaxInCashFile(mMapID);
-	}
-	
 	private class IndexTask extends AsyncTask<Long, Void, Boolean> {
 
 		@Override
 		protected Boolean doInBackground(Long... params) {
 			try {
 				mStopIndexing = false;
-
+				
 				long fileLength = mMapFile.length();
 				long fileModified = mMapFile.lastModified();
 				int minzoom = 24, maxzoom = 0;
-
 				InputStream in = null;
 				in = new BufferedInputStream(new FileInputStream(mMapFile), 8192);
-				String name; // 100 name of file
-//				int mode; // file mode
-//				int uid; // owner user ID
-//				int gid; // owner group ID
-				int tileSize; // 12 length of file in bytes
-//				int mtime; // 12 modify time of file
-//				int chksum; // checksum for header
-//				byte[] link = new byte[1]; // indicator for links
-//				String linkname; // 100 name of linked file
-				int offset = 0, skip = 0;
 
-				while (in.available() > 0) {
-					name = Ut.readString(in, 100).trim().replace('\\', '/');
+				byte b[] = new byte[5];
+				in.read(b);
+				int tilescount = Ut.readInt(in);
 
-//					mode = Integer.decode("0" + Util.readString(in, 8).trim());
-//					uid = Integer.decode("0" + Util.readString(in, 8).trim());
-//					gid = Integer.decode("0" + Util.readString(in, 8).trim());
-					in.skip(24);
-					tileSize = Integer.decode("0" + Ut.readString(in, 12).trim());
-//					mtime = Integer.decode("0" + Util.readString(in, 12).trim());
-//					in.read(link);
-//					linkname = Util.readString(in, 100);
-					in.skip(12 + 1 + 100);
-					in.skip(512 - 100 - 8 - 8 - 8 - 12 - 12 - 1 - 100);
-					offset += 512;
+				int tileX = 0, tileY = 0, tileZ = 0, tileSize = 0;
+				long offset = 9;
+				byte mapType[] = new byte[1];
+
+				for (int i = 0; i < tilescount; i++) {
+					tileX = Ut.readInt(in);
+					tileY = Ut.readInt(in);
+					tileZ = Ut.readInt(in) - 1;
+					in.read(mapType);
+					tileSize = Ut.readInt(in);
+					offset += 17;
 
 					if (tileSize > 0) {
-						addTarIndexRow(name, offset, tileSize);
-						Ut.d(name);
+						try {
+							addMnmIndexRow(tileX, tileY, tileZ, offset, tileSize);
+						} catch (Exception e) {
+							break;
+						}
+						in.skip(tileSize);
+						offset += tileSize;
 
-						if(tileSize % 512 == 0)
-							skip = tileSize;
-						else
-							skip = tileSize + 512 - tileSize % 512;
-
-						in.skip(skip);
-						offset += skip;
-
-						int zoom = Integer.parseInt(name.substring(0, 2)) - 1;
-						if (zoom > maxzoom)
-							maxzoom = zoom;
-						if (zoom < minzoom)
-							minzoom = zoom;
+						if (tileZ > maxzoom)
+							maxzoom = tileZ;
+						if (tileZ < minzoom)
+							minzoom = tileZ;
 					}
-
 
 					mProgressDialog.setProgress((int) (offset/1024));
 
 					if(mStopIndexing)
 						break;
 				}
-				
-				if (!mStopIndexing)
+
+				mProgressDialog.dismiss();
+
+				if(!mStopIndexing)
 					CommitIndex(fileLength, fileModified, minzoom, maxzoom);
 
 			} catch (Exception e) {
@@ -194,11 +163,12 @@ public class TileProviderTAR extends TileProviderFileBase {
 			if(mProgressDialog != null)
 				mProgressDialog.dismiss();
 		}
+		
 	}
-
+	
 	@Override
 	public void Free() {
-		Ut.d("TileProviderTAR Free");
+		Ut.d("TileProviderMNM Free");
 		mThreadPool.shutdown();
 		super.Free();
 	}
@@ -212,6 +182,26 @@ public class TileProviderTAR extends TileProviderFileBase {
 		}
 	}
 
+	public boolean findMnmIndex(final int aX, final int aY, final int aZ, Param4ReadData aData) {
+		boolean ret  = false;
+		final Cursor c = this.mIndexDatabase.rawQuery("SELECT offset, size FROM '" + mMapID + "' WHERE x = " + aX
+				+ " AND y = " + aY + " AND z = " + aZ, null);
+		if (c != null) {
+			if (c.moveToFirst()) {
+				aData.offset = c.getInt(c.getColumnIndexOrThrow("offset"));
+				aData.size = c.getInt(c.getColumnIndexOrThrow("size"));
+				ret = true;
+			}
+			c.close();
+		}
+		return ret;
+	}
+
+	public void updateMapParams(TileSource tileSource) {
+		tileSource.ZOOM_MINLEVEL = ZoomMinInCashFile(mMapID);
+		tileSource.ZOOM_MAXLEVEL = ZoomMaxInCashFile(mMapID);
+	}
+	
 	public Bitmap getTile(final int x, final int y, final int z) {
 		final String tileurl = mTileURLGenerator.Get(x, y, z);
 		FileInputStream stream;
@@ -236,10 +226,10 @@ public class TileProviderTAR extends TileProviderFileBase {
 				OutputStream out = null;
 				try {
 					Param4ReadData Data = new Param4ReadData(0, 0);
-					if(findTarIndex(tileurl, Data)) {
-						final ByteArrayOutputStream dataStream = new ByteArrayOutputStream();
+					final ByteArrayOutputStream dataStream = new ByteArrayOutputStream();
+					if(findMnmIndex(x, y, z, Data)) {
 						out = new BufferedOutputStream(dataStream, StreamUtils.IO_BUFFER_SIZE);
-
+	
 						byte[] tmp = new byte[Data.size];
 						in.skip(Data.offset);
 						int read = in.read(tmp);
@@ -247,12 +237,11 @@ public class TileProviderTAR extends TileProviderFileBase {
 							out.write(tmp, 0, read);
 						}
 						out.flush();
-						in.skip(Data.size % 512);
-
+	
 						final byte[] data = dataStream.toByteArray();
 						final Bitmap bmp = BitmapFactory.decodeByteArray(data, 0, data.length);
 						mTileCache.putTile(tileurl, bmp);
-
+	
 						SendMessageSuccess();
 					}
 
@@ -273,7 +262,5 @@ public class TileProviderTAR extends TileProviderFileBase {
 		
 		return mLoadingMapTile;
 	}
-
-
-
+	
 }
