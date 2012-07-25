@@ -31,6 +31,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteException;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -80,6 +81,7 @@ import com.robert.maps.overlays.YandexTrafficOverlay;
 import com.robert.maps.tileprovider.TileSource;
 import com.robert.maps.utils.CompassView;
 import com.robert.maps.utils.CrashReportHandler;
+import com.robert.maps.utils.RException;
 import com.robert.maps.utils.SearchSuggestionsProvider;
 import com.robert.maps.utils.Ut;
 import com.robert.maps.view.IMoveListener;
@@ -133,7 +135,7 @@ public class MainActivity extends Activity {
 		mTracker.startNewSession("UA-10715419-3", 20, this);
 
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		setContentView(CreateContentView());
+		CreateContentView();
 		
 		mPoiManager = new PoiManager(this);
 		mLocationListener = new SampleLocationListener();
@@ -304,28 +306,25 @@ public class MainActivity extends Activity {
 	}
 
 	private View CreateContentView() {
+		setContentView(R.layout.main);
+		
 		final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
-		final RelativeLayout rl = new RelativeLayout(this);
+		
+		final RelativeLayout rl = (RelativeLayout) findViewById(R.id.map_area);
 		final int sideBottom = Integer.parseInt(pref.getString("pref_zoomctrl", "1"));
 		final boolean showTitle = pref.getBoolean("pref_showtitle", true);
 		
-		if(showTitle) {
-			final View v = View.inflate(this, R.layout.main_title, null);
-	        final RelativeLayout.LayoutParams p = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-	        p.addRule(RelativeLayout.ALIGN_PARENT_TOP);
-			rl.addView(v);
-		}
+		if(!showTitle) 
+			findViewById(R.id.screen).setVisibility(View.GONE);
 		
 		mMap = new MapView(this, Integer.parseInt(pref.getString("pref_zoomctrl", "1")), pref.getBoolean("pref_showscalebar", true) ? 1 : 0);
 		mMap.setId(R.id.main);
 		final RelativeLayout.LayoutParams pMap = new RelativeLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
-		if(showTitle)
-			pMap.addRule(RelativeLayout.BELOW, R.id.screen);
         rl.addView(mMap, pMap);
 		
         mCompassView = new CompassView(this, sideBottom == 2 ? false : true);
         mCompassView.setVisibility(mCompassEnabled ? View.VISIBLE : View.INVISIBLE);
-        /* Create RelativeLayoutParams, that position in in the top right corner. */
+
         final RelativeLayout.LayoutParams compassParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         compassParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
         compassParams.addRule(!(sideBottom == 2 ? false : true) ? RelativeLayout.ALIGN_BOTTOM : RelativeLayout.ALIGN_TOP, R.id.main);
@@ -334,18 +333,16 @@ public class MainActivity extends Activity {
         ivAutoFollow = new ImageView(this);
         ivAutoFollow.setImageResource(R.drawable.autofollow);
         ivAutoFollow.setVisibility(ImageView.INVISIBLE);
-        /* Create RelativeLayoutParams, that position in in the top right corner. */
+
         final RelativeLayout.LayoutParams followParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         followParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         if(!(sideBottom == 2 ? false : true))
         	followParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
         else
         	followParams.addRule(RelativeLayout.ALIGN_TOP, R.id.main);
-        //followParams.addRule(!(sideBottom == 2 ? false : true) ? RelativeLayout.ALIGN_PARENT_BOTTOM : RelativeLayout.ALIGN_PARENT_TOP);
         rl.addView(ivAutoFollow, followParams);
 
         ivAutoFollow.setOnClickListener(new OnClickListener(){
-			// @Override
 			public void onClick(View v) {
 				setAutoFollow(true);
 				mSearchResultOverlay.Clear();
@@ -467,7 +464,11 @@ public class MainActivity extends Activity {
 		
 		if(mTileSource != null)
 			mTileSource.Free();
-		mTileSource = new TileSource(this, pref.getString(MAPNAME, TileSource.MAPNIK));
+		try {
+			mTileSource = new TileSource(this, pref.getString(MAPNAME, TileSource.MAPNIK));
+		} catch (RException e) {
+			addMessage(e);
+		}
 		mMap.setTileSource(mTileSource);
  		mMap.getController().setZoom(pref.getInt("ZoomLevel", 0));
  		setTitle();
@@ -657,7 +658,11 @@ public class MainActivity extends Activity {
 			final String mapid = (String)item.getTitleCondensed();
 			if(mTileSource != null)
 				mTileSource.Free();
-			mTileSource = new TileSource(this, mapid);
+			try {
+				mTileSource = new TileSource(this, mapid);
+			} catch (RException e) {
+				addMessage(e);
+			}
 			mMap.setTileSource(mTileSource);
 			
 			if(mTileSource.MAP_TYPE == TileSource.PREDEF_ONLINE) {
@@ -672,6 +677,11 @@ public class MainActivity extends Activity {
 			return true;
 		}
 
+	}
+
+	private void addMessage(RException e) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	@Override

@@ -17,6 +17,7 @@ import android.os.AsyncTask;
 import android.os.Message;
 
 import com.robert.maps.R;
+import com.robert.maps.utils.RException;
 import com.robert.maps.utils.SQLiteMapDatabase;
 import com.robert.maps.utils.SimpleThreadFactory;
 import com.robert.maps.utils.Ut;
@@ -27,7 +28,7 @@ public class TileProviderSQLITEDB extends TileProviderFileBase {
 	private String mMapID;
 	private ProgressDialog mProgressDialog;
 
-	public TileProviderSQLITEDB(Context ctx, final String filename, final String mapid) {
+	public TileProviderSQLITEDB(Context ctx, final String filename, final String mapid) throws SQLiteException, RException {
 		super(ctx);
 		mTileURLGenerator = new TileURLGeneratorBase(filename);
 		mTileCache = new MapTileMemCache();

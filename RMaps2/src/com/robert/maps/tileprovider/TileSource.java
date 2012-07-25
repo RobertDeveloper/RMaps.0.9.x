@@ -7,12 +7,14 @@ import javax.xml.parsers.SAXParserFactory;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteException;
 import android.graphics.Bitmap;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 
 import com.robert.maps.R;
 import com.robert.maps.kml.XMLparser.PredefMapsParser;
+import com.robert.maps.utils.RException;
 import com.robert.maps.utils.Ut;
 
 public class TileSource {
@@ -45,7 +47,7 @@ public class TileSource {
 	PROJECTION; // 1-меркатор на сфероид, 2- на эллипсоид, 3- OSGB 36 British national grid reference system
 	public boolean LAYER, mOnlineMapCacheEnabled;
 
-	public TileSource(Context ctx, String aId) {
+	public TileSource(Context ctx, String aId) throws SQLiteException, RException {
 		if (aId.equalsIgnoreCase(EMPTY))
 			aId = MAPNIK;
 
