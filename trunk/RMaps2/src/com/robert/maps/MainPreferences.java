@@ -82,8 +82,8 @@ public class MainPreferences extends PreferenceActivity implements OnSharedPrefe
 		final File[] files = folder.listFiles();
 		if (files != null)
 			for (int i = 0; i < files.length; i++) {
-				if (/*files[i].getName().toLowerCase().endsWith(getString(R.string.mnm))
-						||*/ files[i].getName().toLowerCase().endsWith(getString(R.string.tar))
+				if (files[i].getName().toLowerCase().endsWith(getString(R.string.mnm))
+						|| files[i].getName().toLowerCase().endsWith(getString(R.string.tar))
 						|| files[i].getName().toLowerCase().endsWith(getString(R.string.sqlitedb))) {
 					final String name = Ut.FileName2ID(files[i].getName());
 					

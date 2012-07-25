@@ -138,6 +138,10 @@ public class TileSource {
 			else
 				mTileProvider = new TileProviderInet(ctx, gen, CacheDatabaseName());
 			break;
+		case 3:
+			mTileProvider = new TileProviderMNM(ctx, BASEURL, ID);
+			mTileProvider.updateMapParams(this);
+			break;
 		case 4:
 			mTileProvider = new TileProviderTAR(ctx, BASEURL, ID);
 			mTileProvider.updateMapParams(this);
