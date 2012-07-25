@@ -13,11 +13,13 @@ import java.util.concurrent.Executors;
 import org.andnav.osm.views.util.StreamUtils;
 
 import android.content.Context;
+import android.database.sqlite.SQLiteException;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Handler;
 
 import com.robert.maps.utils.ICacheProvider;
+import com.robert.maps.utils.RException;
 import com.robert.maps.utils.SQLiteMapDatabase;
 import com.robert.maps.utils.SimpleThreadFactory;
 import com.robert.maps.utils.Ut;
@@ -26,12 +28,12 @@ public class TileProviderInet extends TileProviderBase {
 	private ICacheProvider mCacheProvider = null;
 	private ExecutorService mThreadPool = Executors.newFixedThreadPool(5, new SimpleThreadFactory("TileProviderInet"));
 
-	public TileProviderInet(Context ctx, TileURLGeneratorBase gen, final String cacheDatabaseName, final Bitmap aLoadingMapTile) {
+	public TileProviderInet(Context ctx, TileURLGeneratorBase gen, final String cacheDatabaseName, final Bitmap aLoadingMapTile) throws SQLiteException, RException {
 		this(ctx, gen, cacheDatabaseName);
 		mLoadingMapTile = aLoadingMapTile;
 	}
 	
-	public TileProviderInet(Context ctx, TileURLGeneratorBase gen, final String cacheDatabaseName) {
+	public TileProviderInet(Context ctx, TileURLGeneratorBase gen, final String cacheDatabaseName) throws SQLiteException, RException {
 		super(ctx);
 		mTileURLGenerator = gen;
 		mTileCache = new MapTileMemCache();

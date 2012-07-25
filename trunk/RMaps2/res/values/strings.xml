@@ -283,4 +283,6 @@ v.0.7.0\n
 	<string name="m">m</string>
 	<string name="ml">ml</string>
 	<string name="activity">Activity</string>
+
+	<string name="error_diskio">Can\'t open file %s Disk IO error</string>
 </resources>

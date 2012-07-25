@@ -2,14 +2,16 @@ package com.robert.maps.utils;
 
 import java.io.File;
 
-import com.robert.maps.tileprovider.TileSource;
-
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteDiskIOException;
 import android.database.sqlite.SQLiteException;
+
+import com.robert.maps.R;
+import com.robert.maps.tileprovider.TileSource;
 
 public class SQLiteMapDatabase implements ICacheProvider {
 	private static final String SQL_CREATE_tiles = "CREATE TABLE IF NOT EXISTS tiles (x int, y int, z int, s int, image blob, PRIMARY KEY (x,y,z,s));";
@@ -27,11 +29,13 @@ public class SQLiteMapDatabase implements ICacheProvider {
 	private File mBaseFile = null;
 	private int mBaseFileIndex = 0;
 
-	private void initDatabaseFiles(final String aFileName, final boolean aCreateNewDatabaseFile) {
+	private void initDatabaseFiles(final String aFileName, final boolean aCreateNewDatabaseFile) throws RException {
 		for(int i = 0; i < mDatabase.length; i++)
 			if (mDatabase[i] != null)
 				mDatabase[i].close();
-
+		
+		RException aException = null;
+		
 		mBaseFile = new File(aFileName);
 		final File folder = mBaseFile.getParentFile();
 		if(folder != null) {
@@ -62,7 +66,7 @@ public class SQLiteMapDatabase implements ICacheProvider {
 				j = 0; long minsize = 0;
 				for (int i = 0; i < files.length; i++) {
 					if(files[i].getName().startsWith(mBaseFile.getName()) && !files[i].getName().endsWith(JOURNAL)) {
-						try {
+						//try {
 							mDatabase[j] = new CashDatabaseHelper(null, files[i].getAbsolutePath()).getWritableDatabase();
 							mDatabase[j].setMaximumSize(MAX_DATABASE_SIZE);
 							if(mDatabaseWritable == null) {
@@ -75,9 +79,9 @@ public class SQLiteMapDatabase implements ICacheProvider {
 								}
 							}
 							j = j + 1;
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
+//						} catch (SQLiteDiskIOException e) {
+//							aException = new RException(R.string.error_diskio, files[i].getAbsolutePath());
+//						}
 					}
 				}
 				if(dbFilesCnt == 0) {
@@ -90,13 +94,16 @@ public class SQLiteMapDatabase implements ICacheProvider {
 				}
 			}
 		}
+		
+		if(aException != null)
+			throw aException;
 	}
 	
-	public void setFile(final String aFileName) throws SQLiteException {
+	public void setFile(final String aFileName) throws SQLiteException, RException {
 		initDatabaseFiles(aFileName, false);
 	}
 
-	public void setFile(final File aFile) throws SQLiteException {
+	public void setFile(final File aFile) throws SQLiteException, RException {
 		setFile(aFile.getAbsolutePath());
 	}
 
@@ -137,7 +144,7 @@ public class SQLiteMapDatabase implements ICacheProvider {
 			}
 	}
 
-	public synchronized void putTile(final int aX, final int aY, final int aZ, final byte[] aData) {
+	public synchronized void putTile(final int aX, final int aY, final int aZ, final byte[] aData) throws RException {
 		if (this.mDatabaseWritable != null) {
 			final ContentValues cv = new ContentValues();
 			cv.put("x", aX);
@@ -254,7 +261,7 @@ public class SQLiteMapDatabase implements ICacheProvider {
 		return getTile(aX, aY, aZ);
 	}
 
-	public void putTile(String aURLstring, int aX, int aY, int aZ, byte[] aData) {
+	public void putTile(String aURLstring, int aX, int aY, int aZ, byte[] aData) throws RException {
 		putTile(aX, aY, aZ, aData);
 	}
 

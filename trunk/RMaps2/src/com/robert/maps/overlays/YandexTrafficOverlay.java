@@ -31,7 +31,10 @@ public class YandexTrafficOverlay extends TileViewOverlay implements OpenStreetM
 
 	public YandexTrafficOverlay(Context ctx, TileView mapView) {
 		mMapView = mapView;
-		mTileSource = new TileSource(ctx, "yandextraffic");
+		try {
+			mTileSource = new TileSource(ctx, "yandextraffic");
+		} catch (Exception e) {
+		}
 		mTileSource.setHandler(mHandler);
 	}
 	
