@@ -62,18 +62,22 @@ public class SQLiteMapDatabase implements ICacheProvider {
 				j = 0; long minsize = 0;
 				for (int i = 0; i < files.length; i++) {
 					if(files[i].getName().startsWith(mBaseFile.getName()) && !files[i].getName().endsWith(JOURNAL)) {
-						mDatabase[j] = new CashDatabaseHelper(null, files[i].getAbsolutePath()).getWritableDatabase();
-						mDatabase[j].setMaximumSize(MAX_DATABASE_SIZE);
-						if(mDatabaseWritable == null) {
-							mDatabaseWritable = mDatabase[j];
-							minsize = files[i].length();
-						} else {
-							if(files[i].length() < minsize) {
+						try {
+							mDatabase[j] = new CashDatabaseHelper(null, files[i].getAbsolutePath()).getWritableDatabase();
+							mDatabase[j].setMaximumSize(MAX_DATABASE_SIZE);
+							if(mDatabaseWritable == null) {
 								mDatabaseWritable = mDatabase[j];
 								minsize = files[i].length();
+							} else {
+								if(files[i].length() < minsize) {
+									mDatabaseWritable = mDatabase[j];
+									minsize = files[i].length();
+								}
 							}
+							j = j + 1;
+						} catch (Exception e) {
+							e.printStackTrace();
 						}
-						j = j + 1;
 					}
 				}
 				if(dbFilesCnt == 0) {
