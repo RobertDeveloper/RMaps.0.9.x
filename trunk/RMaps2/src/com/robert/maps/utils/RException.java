@@ -21,4 +21,8 @@ public class RException extends Exception {
     public String getStringRes(Context context) {
     	return context.getResources().getString(mStringResID, getMessage());
     }
+    
+    public int getID() {
+    	return mStringResID;
+    }
 }

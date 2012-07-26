@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-<color name="track">#A565FE</color>
-<color name="currenttrack">#A565FE</color>
-<color name="poi_descr_text">#ffffff</color>
-<color name="chart_border">#424542</color>
-<color name="chart_graph_0">#ffff7200</color>
-<color name="chart_graph_1">#ffffffff</color>
+
+    <color name="track">#A565FE</color>
+    <color name="currenttrack">#A565FE</color>
+    <color name="poi_descr_text">#ffffff</color>
+    <color name="chart_border">#424542</color>
+    <color name="chart_graph_0">#ffff7200</color>
+    <color name="chart_graph_1">#ffffffff</color>
+
+    <color name="error_message_backgr">#ed1c24</color>
 </resources>

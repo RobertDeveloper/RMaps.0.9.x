@@ -31,7 +31,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.sqlite.SQLiteException;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -51,15 +50,18 @@ import android.provider.SearchRecentSuggestions;
 import android.util.DisplayMetrics;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -680,8 +682,31 @@ public class MainActivity extends Activity {
 	}
 
 	private void addMessage(RException e) {
-		// TODO Auto-generated method stub
 		
+		LinearLayout msgbox = (LinearLayout) findViewById(e.getID());
+		if(msgbox == null) {
+			msgbox = (LinearLayout) LayoutInflater.from(this).inflate(R.layout.error_message_box, (ViewGroup) findViewById(R.id.message_list));
+			msgbox.setId(e.getID());
+		}
+		msgbox.setVisibility(View.VISIBLE);
+		((TextView) msgbox.findViewById(R.id.descr)).setText(e.getStringRes(this));
+		msgbox.findViewById(R.id.message).setOnClickListener(new OnClickListener() {
+
+			public void onClick(View v) {
+				if (v.findViewById(R.id.descr).getVisibility() == View.GONE)
+					v.findViewById(R.id.descr).setVisibility(View.VISIBLE);
+				else
+					v.findViewById(R.id.descr).setVisibility(View.GONE);
+			}
+		});
+		msgbox.findViewById(R.id.btn).setTag(Integer.valueOf(e.getID()));
+		msgbox.findViewById(R.id.btn).setOnClickListener(new OnClickListener() {
+
+			public void onClick(View v) {
+				final int id = (Integer)v.getTag();
+				findViewById(id).setVisibility(View.GONE);
+			}
+		});
 	}
 
 	@Override
