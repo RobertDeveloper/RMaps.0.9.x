@@ -133,11 +133,11 @@ public class TileProviderSQLITEDB extends TileProviderFileBase {
 
 	@Override
 	public void Free() {
-		mUserMapDatabase.freeDatabases();
 		mThreadPool.shutdown();
 		synchronized(mPending2) {
 			mPending2.notify();
 		}
+		mUserMapDatabase.Free();
 		super.Free();
 	}
 

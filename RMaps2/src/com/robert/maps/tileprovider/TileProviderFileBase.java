@@ -25,11 +25,15 @@ public class TileProviderFileBase extends TileProviderBase {
 	
 	@Override
 	public void Free() {
-		mIndexDatabase.close();
+		if(mIndexDatabase != null)
+			mIndexDatabase.close();
 		super.Free();
 	}
 
 	public boolean needIndex(final String aCashTableName, final long aSizeFile, final long aLastModifiedFile, final boolean aBlockIndexing) {
+		if(this.mIndexDatabase == null)
+			return false;
+		
 		this.mIndexDatabase.execSQL("CREATE TABLE IF NOT EXISTS ListCashTables (name VARCHAR(100), lastmodified LONG NOT NULL, size LONG NOT NULL, minzoom INTEGER NOT NULL, maxzoom INTEGER NOT NULL, PRIMARY KEY(name) );");
 
 		Cursor cur = null;

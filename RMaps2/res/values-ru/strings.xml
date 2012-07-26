@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <resources>
-	<string name="pref_screen_orientation">Ориентация экрана</string>
+	<string name="error">Ошибка...</string>
+    <string name="pref_screen_orientation">Ориентация экрана</string>
 	<string name="pref_screen_orientation_summary">Зафиксировать или поворачивать в зависимости от ориентации</string>
     <string name="pref_googlelanguagecode_summary">Язык надписей на карте Google Map</string>
     <string name="pref_googlelanguagecode">Код локализации Google Map</string>

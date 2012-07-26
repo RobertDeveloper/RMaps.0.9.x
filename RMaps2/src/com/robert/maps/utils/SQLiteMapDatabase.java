@@ -7,10 +7,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteDiskIOException;
 import android.database.sqlite.SQLiteException;
 
-import com.robert.maps.R;
 import com.robert.maps.tileprovider.TileSource;
 
 public class SQLiteMapDatabase implements ICacheProvider {
@@ -99,11 +97,11 @@ public class SQLiteMapDatabase implements ICacheProvider {
 			throw aException;
 	}
 	
-	public void setFile(final String aFileName) throws SQLiteException, RException {
+	public synchronized void setFile(final String aFileName) throws SQLiteException, RException {
 		initDatabaseFiles(aFileName, false);
 	}
 
-	public void setFile(final File aFile) throws SQLiteException, RException {
+	public synchronized void setFile(final File aFile) throws SQLiteException, RException {
 		setFile(aFile.getAbsolutePath());
 	}
 
@@ -134,7 +132,7 @@ public class SQLiteMapDatabase implements ICacheProvider {
 	private static final String SQL_UPDZOOM_UPDMIN = "UPDATE info SET minzoom = (SELECT DISTINCT z FROM tiles ORDER BY z ASC LIMIT 1);";
 	private static final String SQL_UPDZOOM_UPDMAX = "UPDATE info SET maxzoom = (SELECT DISTINCT z FROM tiles ORDER BY z DESC LIMIT 1);";
 
-	public void updateMinMaxZoom() throws SQLiteException {
+	public synchronized void updateMinMaxZoom() throws SQLiteException {
 		for(int i = 0; i < mDatabase.length; i++)
 			if(mDatabase[i] != null){
 				this.mDatabase[i].execSQL(SQL_UPDZOOM_DROP);
@@ -163,7 +161,7 @@ public class SQLiteMapDatabase implements ICacheProvider {
 	private static final String SQL_DELTILE_WHERE = "s = 0 AND x = ? AND y = ? AND z = ?";
 	private static final String TILES = "tiles";
 
-	public /*synchronized*/ byte[] getTile(final int aX, final int aY, final int aZ) {
+	public synchronized byte[] getTile(final int aX, final int aY, final int aZ) {
 		byte[] ret = null;
 
 		int j = 0;
@@ -172,7 +170,7 @@ public class SQLiteMapDatabase implements ICacheProvider {
 			if(j >= mDatabase.length)
 				j = j - mDatabase.length;
 			
-			if (this.mDatabase[j] != null) {
+			if (this.mDatabase[j] != null && this.mDatabase[j].isOpen() && !this.mDatabase[j].isDbLockedByOtherThreads()) {
 				final String[] args = {""+aX, ""+aY, ""+(17 - aZ)};
 				try {
 					final Cursor c = this.mDatabase[j].rawQuery(SQL_SELECT_IMAGE, args);
@@ -248,7 +246,7 @@ public class SQLiteMapDatabase implements ICacheProvider {
 		super.finalize();
 	}
 
-	public void freeDatabases() {
+	public synchronized void freeDatabases() {
 		for (int i = 0; i < mDatabase.length; i++) {
 			if (mDatabase[i] != null)
 				if (mDatabase[i].isOpen()) {
@@ -257,15 +255,15 @@ public class SQLiteMapDatabase implements ICacheProvider {
 		}
 	}
 
-	public byte[] getTile(String aURLstring, int aX, int aY, int aZ) {
+	public synchronized byte[] getTile(String aURLstring, int aX, int aY, int aZ) {
 		return getTile(aX, aY, aZ);
 	}
 
-	public void putTile(String aURLstring, int aX, int aY, int aZ, byte[] aData) throws RException {
+	public synchronized void putTile(String aURLstring, int aX, int aY, int aZ, byte[] aData) throws RException {
 		putTile(aX, aY, aZ, aData);
 	}
 
-	public void Free() {
+	public synchronized void Free() {
 		freeDatabases();
 	}
 
