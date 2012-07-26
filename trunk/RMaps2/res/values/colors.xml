@@ -8,5 +8,5 @@
     <color name="chart_graph_0">#ffff7200</color>
     <color name="chart_graph_1">#ffffffff</color>
 
-    <color name="error_message_backgr">#ed1c24</color>
+    <color name="error_message_backgr">#FF3333</color>
 </resources>

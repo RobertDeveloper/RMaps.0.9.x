@@ -86,8 +86,9 @@ All rights reserved\n
 </string>
     <string name="whats_new_dialog_text">
 \n
-v.0.8.10.1\n
-- Bug fix\n
+v.0.8.10.2\n
++ Поддержка geo intents. Вы можете тапнуть по адресу в календаре и увидеть адрес на карте\n
+- Поправил поддерку MNM файлов и c:geo\n
 \n
 v.0.8.10\n
 + Обновление интерфейса\n

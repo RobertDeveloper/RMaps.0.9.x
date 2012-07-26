@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <resources>
-	<string name="error">ERROR...</string>
+	<string name="error">Error...</string>
 	<string name="blank"> </string>
 	<string name="pref_zoomctrl_summary">Position of buttons on the screen</string>
     <string name="pref_zoomctrl">Zoom buttons</string>
@@ -103,8 +103,9 @@ How to and FAQ you can find on http://robertdeveloper.blogspot.com/\n
     <string name="whats_new_dialog_text">
 The source site of VFR, IFR High, IFR Low charts is unavailable now. Read here about it. http://blog.runwayfinder.com/\n
 \n
-v.0.8.10.1\n
-- Bug fix\n
+v.0.8.10.2\n
++ Support geo intents. You can tap address in calendar app and show it in RMaps\n
+- Bugfix support MNM files and c:geo app\n
 \n
 v.0.8.10\n
 + UI updates\n
