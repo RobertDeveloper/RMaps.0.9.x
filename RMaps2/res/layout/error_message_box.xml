@@ -3,12 +3,12 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/error_message_backgr" >
-
+
     <LinearLayout
         android:id="@+id/message"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="2dp"
+        android:layout_margin="4dp"
         android:layout_weight="1"
         android:orientation="vertical" >
 
@@ -31,12 +31,12 @@
             android:textColor="@android:color/white"
             android:visibility="gone" />
     </LinearLayout>
-
+
     <ImageView
         android:id="@+id/btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:clickable="true"
-        android:src="@drawable/person" />
+        android:src="@drawable/r_close" />
 
 </LinearLayout>

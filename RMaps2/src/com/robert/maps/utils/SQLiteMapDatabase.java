@@ -7,8 +7,10 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteDiskIOException;
 import android.database.sqlite.SQLiteException;
 
+import com.robert.maps.R;
 import com.robert.maps.tileprovider.TileSource;
 
 public class SQLiteMapDatabase implements ICacheProvider {
@@ -60,11 +62,13 @@ public class SQLiteMapDatabase implements ICacheProvider {
 					j = j + 1;
 				// Создаем массив определенного размера
 				mDatabase = new SQLiteDatabase[j];
+				if(mBaseFile.length() > MAX_DATABASE_SIZE)
+					aException = new RException(R.string.error_diskio, mBaseFile.getAbsolutePath());
 				// Заполняем массив 
 				j = 0; long minsize = 0;
 				for (int i = 0; i < files.length; i++) {
 					if(files[i].getName().startsWith(mBaseFile.getName()) && !files[i].getName().endsWith(JOURNAL)) {
-						//try {
+						try {
 							mDatabase[j] = new CashDatabaseHelper(null, files[i].getAbsolutePath()).getWritableDatabase();
 							mDatabase[j].setMaximumSize(MAX_DATABASE_SIZE);
 							if(mDatabaseWritable == null) {
@@ -77,9 +81,9 @@ public class SQLiteMapDatabase implements ICacheProvider {
 								}
 							}
 							j = j + 1;
-//						} catch (SQLiteDiskIOException e) {
-//							aException = new RException(R.string.error_diskio, files[i].getAbsolutePath());
-//						}
+						} catch (SQLiteDiskIOException e) {
+							//aException = new RException(R.string.error_diskio, files[i].getAbsolutePath());
+						}
 					}
 				}
 				if(dbFilesCnt == 0) {
@@ -93,8 +97,8 @@ public class SQLiteMapDatabase implements ICacheProvider {
 			}
 		}
 		
-		if(aException != null)
-			throw aException;
+//		if(aException != null)
+//			throw aException;
 	}
 	
 	public synchronized void setFile(final String aFileName) throws SQLiteException, RException {
