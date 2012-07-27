@@ -77,8 +77,12 @@ public class TileProviderSQLITEDB extends TileProviderFileBase {
 						data = mUserMapDatabase.getTile(xyz.X, xyz.Y, xyz.Z);
 						
 						if (data != null) {
-							bmp = BitmapFactory.decodeByteArray(data, 0, data.length);
-							mTileCache.putTile(xyz.TILEURL, bmp);
+							try {
+								bmp = BitmapFactory.decodeByteArray(data, 0, data.length);
+								mTileCache.putTile(xyz.TILEURL, bmp);
+							} catch (Throwable e) {
+								e.printStackTrace();
+							}
 						}
 							
 						synchronized(mPending2) {
