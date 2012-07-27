@@ -489,7 +489,6 @@ public class TileView extends View {
 			}
 			
 			mTileSource.getTileProvider().ResizeCashe(tilecnt);
-			Ut.d("tilecnt: "+tilecnt);
 
 
 //			mPaint.setStyle(Paint.Style.STROKE);
