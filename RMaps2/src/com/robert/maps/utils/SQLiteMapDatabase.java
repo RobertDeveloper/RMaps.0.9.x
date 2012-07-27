@@ -62,8 +62,6 @@ public class SQLiteMapDatabase implements ICacheProvider {
 					j = j + 1;
 				// Создаем массив определенного размера
 				mDatabase = new SQLiteDatabase[j];
-				if(mBaseFile.length() > MAX_DATABASE_SIZE)
-					aException = new RException(R.string.error_diskio, mBaseFile.getAbsolutePath());
 				// Заполняем массив 
 				j = 0; long minsize = 0;
 				for (int i = 0; i < files.length; i++) {
@@ -81,7 +79,7 @@ public class SQLiteMapDatabase implements ICacheProvider {
 								}
 							}
 							j = j + 1;
-						} catch (SQLiteDiskIOException e) {
+						} catch (Throwable e) {
 							//aException = new RException(R.string.error_diskio, files[i].getAbsolutePath());
 						}
 					}
@@ -194,7 +192,7 @@ public class SQLiteMapDatabase implements ICacheProvider {
 						} else
 							c.close();
 					}
-				} catch (Exception e) {
+				} catch (Throwable e) {
 					e.printStackTrace();
 				}
 			}
