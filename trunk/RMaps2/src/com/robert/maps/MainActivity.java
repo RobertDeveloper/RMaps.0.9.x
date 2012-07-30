@@ -67,6 +67,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.apps.analytics.GoogleAnalyticsTracker;
+import com.robert.maps.downloader.AreaSelectorActivity;
 import com.robert.maps.kml.PoiActivity;
 import com.robert.maps.kml.PoiListActivity;
 import com.robert.maps.kml.PoiManager;
@@ -606,8 +607,12 @@ public class MainActivity extends Activity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		super.onOptionsItemSelected(item);
+		final GeoPoint point = mMap.getMapCenter();
 
 		switch (item.getItemId()) {
+		case (R.id.area_selector):
+			startActivity(new Intent(this, AreaSelectorActivity.class).putExtra(MAPNAME, mTileSource.ID).putExtra("Latitude", point.getLatitudeE6()).putExtra("Longitude", point.getLongitudeE6()).putExtra("ZoomLevel", mMap.getZoomLevel()));
+			return true;
 		case (R.id.gpsstatus):
 			try {
 				startActivity(new Intent("com.eclipsim.gpsstatus.VIEW"));
@@ -624,7 +629,6 @@ public class MainActivity extends Activity {
 			}
 			return true;
 		case (R.id.poilist):
-			final GeoPoint point = mMap.getMapCenter();
 			startActivityForResult((new Intent(this, PoiListActivity.class)).putExtra("lat", point.getLatitude()).putExtra("lon", point.getLongitude()).putExtra("title", "POI"), R.id.poilist);
 			return true;
 		case (R.id.tracks):

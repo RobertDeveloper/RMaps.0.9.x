@@ -64,6 +64,7 @@
     <string name="menu_search">Поиск</string>
     <string name="menu_addpoi">Добавить POI</string>
     <string name="menu_import">Импорт</string>
+    <string name="menu_area_selector">Загрузчик</string>
     <string name="no_traffic">При таком значении зума пробки недоступны</string>
     <string name="auto_follow_enabled">Авто следование за текущим положением включено</string>
     <string name="auto_follow_disabled">Авто следование за текущим положением выключено</string>
