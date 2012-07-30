@@ -20,6 +20,7 @@ public class AreaSelectorActivity extends Activity {
 	private static final String MAPNAMEAREASELECTOR = "MapNameAreaSelector";
 
 	private MapView mMap;
+	private AreaSelectorOverlay mAreaSelectorOverlay;
 	private TileSource mTileSource;
 	private MoveListener mMoveListener = new MoveListener();
 
@@ -37,6 +38,8 @@ public class AreaSelectorActivity extends Activity {
 		mMap.setMoveListener(mMoveListener);
 		mMap.displayZoomControls(Integer.parseInt(pref.getString("pref_zoomctrl", "1")));
 		mMap.getController().setCenter(new GeoPoint(uiState.getInt("Latitude", 0), uiState.getInt("Longitude", 0)));
+		mAreaSelectorOverlay = new AreaSelectorOverlay();
+		mMap.getOverlays().add(mAreaSelectorOverlay);
 		
 		Intent intent = getIntent();
 		if(intent != null) {
@@ -46,6 +49,8 @@ public class AreaSelectorActivity extends Activity {
 			editor.putInt("LongitudeAS", intent.getIntExtra("Longitude", 0));
 			editor.putInt("ZoomLevelAS", intent.getIntExtra("ZoomLevel", 0));
 			editor.commit();
+			
+			mAreaSelectorOverlay.Init(this, mMap.getTileView());
 		}
 	}
 	
