@@ -56,7 +56,7 @@ public class MapView extends RelativeLayout {
 	}
 
 	public MapView(Context context, AttributeSet attrs) {
-		super(context);
+		super(context, attrs);
 
 		TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.MapView);
 

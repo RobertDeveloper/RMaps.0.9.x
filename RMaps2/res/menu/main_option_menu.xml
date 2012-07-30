@@ -2,10 +2,14 @@
 <menu
 	xmlns:android="http://schemas.android.com/apk/res/android">
 	<item
+		android:id="@+id/area_selector"
+		android:title="@string/menu_area_selector"
+		android:icon="@android:drawable/ic_menu_info_details"></item>
+	<item
 		android:id="@+id/search"
 		android:title="@string/menu_search"
 		android:icon="@android:drawable/ic_menu_search"></item>
-	<item
+		<item
 		android:id="@+id/compass"
 		android:icon="@android:drawable/ic_menu_compass"
 		android:title="@string/menu_compass"></item>

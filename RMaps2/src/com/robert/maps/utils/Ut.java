@@ -313,4 +313,124 @@ public class Ut implements OpenStreetMapConstants, OpenStreetMapViewConstants {
 		return Intent.createChooser(sendIntent, "Error report to the author");
 	}
 
+
+	public static class Algorithm
+	{
+	 
+	    /**
+	     * @param args the command line arguments
+	     */
+	    private static int RIGHT = 2;
+	    private static int TOP = 8;
+	    private static int BOTTOM = 4;
+	    private static int LEFT = 1;
+	 
+	    private int x1, x2, y1, y2;
+	 
+	    public static int ComputeOutCode (int x, int y, int xmin, int ymin, int xmax, int ymax)
+	    {
+	        int code = 0;
+	        if (y > ymax)
+	            code |= TOP;
+	        else if (y < ymin)
+	            code |= BOTTOM;
+	        if (x > xmax)
+	            code |= RIGHT;
+	        else if (x < xmin)
+	            code |= LEFT;
+	        return code;
+	    }
+	 
+	    public static boolean cohenSutherland( int x1, int y1, int x2, int y2, int xmin, int ymin, int xmax, int ymax)
+	    {
+	        //Outcodes for P0, P1, and whatever point lies outside the clip rectangle
+	        int outcode0, outcode1, outcodeOut, hhh = 0;
+	        boolean accept = false, done = false;
+	 
+	        //compute outcodes
+	        outcode0 = ComputeOutCode (x1, y1, xmin, ymin, xmax, ymax);
+	        outcode1 = ComputeOutCode (x2, y2, xmin, ymin, xmax, ymax);
+	 
+	        //System.out.println( outcode0 + " " + outcode1 );
+	 
+	        do{
+	            if ((outcode0 | outcode1) == 0 )
+	            {
+	                accept = true;
+	                done = true;
+	            }
+	            else if ( (outcode0 & outcode1) > 0 )
+	            {
+	                done = true;
+	            }
+	 
+	            else
+	            {
+	                //failed both tests, so calculate the line segment to clip
+	                //from an outside point to an intersection with clip edge
+	                int x = 0, y = 0;
+	                //At least one endpoint is outside the clip rectangle; pick it.
+	                outcodeOut = outcode0 != 0 ? outcode0: outcode1;
+	                //Now find the intersection point;
+	                //use formulas y = y0 + slope * (x - x0), x = x0 + (1/slope)* (y - y0)
+	                if ( (outcodeOut & TOP) > 0 )
+	                {
+	                    x = x1 + (x2 - x1) * (ymax - y1)/(y2 - y1);
+	                    y = ymax;
+	                }
+	                else if ((outcodeOut & BOTTOM) > 0 )
+	                {
+	                    x = x1 + (x2 - x1) * (ymin - y1)/(y2 - y1);
+	                    y = ymin;
+	                }
+	                else if ((outcodeOut & RIGHT)> 0)
+	                {
+	                    y = y1 + (y2 - y1) * (xmax - x1)/(x2 - x1);
+	                    x = xmax;
+	                }
+	                else if ((outcodeOut & LEFT) > 0)
+	                {
+	                    y = y1 + (y2 - y1) * (xmin - x1)/(x2 - x1);
+	                    x = xmin;
+	                }
+	                //Now we move outside point to intersection point to clip
+	                //and get ready for next pass.
+	                if (outcodeOut == outcode0)
+	                {
+	                    x1 = x;
+	                    y1 = y;
+	                    outcode0 = ComputeOutCode (x1, y1, xmin, ymin, xmax, ymax);
+	                }
+	                else
+	                {
+	                    x2 = x;
+	                    y2 = y;
+	                    outcode1 = ComputeOutCode (x2, y2, xmin, ymin, xmax, ymax);
+	                }
+	            }
+	            hhh ++;
+	        }
+	        while (done  != true && hhh < 5000);
+	 
+//	        if(accept)
+//	        {
+//	            set( x1, y1, x2, y2);
+//	        }
+	        
+	        return accept;
+	    }
+	    
+	    public static boolean isIntersected(int left, int top, int right, int bottom, float arr[]) {
+	    	boolean ret = false;
+	    	
+	    	for(int i = 0; i < 8; i = i + 2) {
+	    		ret = cohenSutherland((int)arr[i], (int)arr[i+1], (int)arr[i+2], (int)arr[i+3], left, top, right, bottom);
+	    		if(ret) break;
+	    	}
+	    	
+	    	return ret;
+	    }
+	 
+	 
+	}
 }

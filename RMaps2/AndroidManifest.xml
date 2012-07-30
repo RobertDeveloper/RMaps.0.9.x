@@ -84,6 +84,7 @@
 
         <activity android:name="org.openintents.filemanager.FileManagerActivity" >
         </activity>
+        <activity android:name=".downloader.AreaSelectorActivity"></activity>
     </application>
 
     <uses-permission android:name="android.permission.WAKE_LOCK" />

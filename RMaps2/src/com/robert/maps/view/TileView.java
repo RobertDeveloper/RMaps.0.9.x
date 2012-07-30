@@ -15,11 +15,8 @@ import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.graphics.Path.Direction;
 import android.graphics.Point;
 import android.graphics.Rect;
-import android.graphics.RectF;
-import android.graphics.Region;
 import android.os.Handler;
 import android.os.Message;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -43,6 +40,8 @@ public class TileView extends View {
 	private int mZoom = 0;
 	private float mBearing = 0;
 	final Paint mPaint = new Paint();
+	final Matrix mMatrixBearing = new Matrix();
+	final Rect mRectDraw = new Rect();
 	
 	private boolean mStopProcessing;
 	
@@ -222,155 +221,6 @@ public class TileView extends View {
 		return super.onKeyDown(keyCode, event);
 	}
 
-
-	
-	private static class Algorithm
-	{
-	 
-	    /**
-	     * @param args the command line arguments
-	     */
-	    private static int RIGHT = 2;
-	    private static int TOP = 8;
-	    private static int BOTTOM = 4;
-	    private static int LEFT = 1;
-	 
-	    private int x1, x2, y1, y2;
-	 
-	    public static int ComputeOutCode (int x, int y, int xmin, int ymin, int xmax, int ymax)
-	    {
-	        int code = 0;
-	        if (y > ymax)
-	            code |= TOP;
-	        else if (y < ymin)
-	            code |= BOTTOM;
-	        if (x > xmax)
-	            code |= RIGHT;
-	        else if (x < xmin)
-	            code |= LEFT;
-	        return code;
-	    }
-	 
-	    public static boolean cohenSutherland( int x1, int y1, int x2, int y2, int xmin, int ymin, int xmax, int ymax)
-	    {
-	        //Outcodes for P0, P1, and whatever point lies outside the clip rectangle
-	        int outcode0, outcode1, outcodeOut, hhh = 0;
-	        boolean accept = false, done = false;
-	 
-	        //compute outcodes
-	        outcode0 = ComputeOutCode (x1, y1, xmin, ymin, xmax, ymax);
-	        outcode1 = ComputeOutCode (x2, y2, xmin, ymin, xmax, ymax);
-	 
-	        //System.out.println( outcode0 + " " + outcode1 );
-	 
-	        do{
-	            if ((outcode0 | outcode1) == 0 )
-	            {
-	                accept = true;
-	                done = true;
-	            }
-	            else if ( (outcode0 & outcode1) > 0 )
-	            {
-	                done = true;
-	            }
-	 
-	            else
-	            {
-	                //failed both tests, so calculate the line segment to clip
-	                //from an outside point to an intersection with clip edge
-	                int x = 0, y = 0;
-	                //At least one endpoint is outside the clip rectangle; pick it.
-	                outcodeOut = outcode0 != 0 ? outcode0: outcode1;
-	                //Now find the intersection point;
-	                //use formulas y = y0 + slope * (x - x0), x = x0 + (1/slope)* (y - y0)
-	                if ( (outcodeOut & TOP) > 0 )
-	                {
-	                    x = x1 + (x2 - x1) * (ymax - y1)/(y2 - y1);
-	                    y = ymax;
-	                }
-	                else if ((outcodeOut & BOTTOM) > 0 )
-	                {
-	                    x = x1 + (x2 - x1) * (ymin - y1)/(y2 - y1);
-	                    y = ymin;
-	                }
-	                else if ((outcodeOut & RIGHT)> 0)
-	                {
-	                    y = y1 + (y2 - y1) * (xmax - x1)/(x2 - x1);
-	                    x = xmax;
-	                }
-	                else if ((outcodeOut & LEFT) > 0)
-	                {
-	                    y = y1 + (y2 - y1) * (xmin - x1)/(x2 - x1);
-	                    x = xmin;
-	                }
-	                //Now we move outside point to intersection point to clip
-	                //and get ready for next pass.
-	                if (outcodeOut == outcode0)
-	                {
-	                    x1 = x;
-	                    y1 = y;
-	                    outcode0 = ComputeOutCode (x1, y1, xmin, ymin, xmax, ymax);
-	                }
-	                else
-	                {
-	                    x2 = x;
-	                    y2 = y;
-	                    outcode1 = ComputeOutCode (x2, y2, xmin, ymin, xmax, ymax);
-	                }
-	            }
-	            hhh ++;
-	        }
-	        while (done  != true && hhh < 5000);
-	 
-//	        if(accept)
-//	        {
-//	            set( x1, y1, x2, y2);
-//	        }
-	        
-	        return accept;
-	    }
-	    
-	    public static boolean isIntersected(int left, int top, int right, int bottom, float arr[]) {
-	    	boolean ret = false;
-	    	
-	    	for(int i = 0; i < 8; i = i + 2) {
-	    		ret = cohenSutherland((int)arr[i], (int)arr[i+1], (int)arr[i+2], (int)arr[i+3], left, top, right, bottom);
-	    		if(ret) break;
-	    	}
-	    	
-	    	return ret;
-	    }
-	 
-	    public static void set( int x1, int y1, int x2, int y2 )
-	    {
-//	        this.x1 = x1;
-//	        this.y1 = y1;
-//	        this.x2 = x2;
-//	        this.y2 = y2;
-	    }
-	 
-	    public int getx1()
-	    {
-	        return x1;
-	    }
-	 
-	    public int getx2()
-	    {
-	        return x2;
-	    }
-	 
-	    public int gety1()
-	    {
-	        return y1;
-	    }
-	 
-	    public int gety2()
-	    {
-	        return y2;
-	    }
-	 
-	}
-	
 	@Override
 	protected void onDraw(Canvas c) {
 		c.save();
@@ -383,51 +233,27 @@ public class TileView extends View {
 		if (mTileSource != null) {
 			final int tileSizePxNotScale = mTileSource.getTileSizePx(mZoom);
 			final int tileSizePx = (int) (tileSizePxNotScale * mTouchScale);
-			final int[] centerMapTileCoords = Util.getMapTileFromCoordinates(
-					this.mLatitudeE6, this.mLongitudeE6, mZoom, null,
-					mTileSource.PROJECTION);
+			final int[] centerMapTileCoords = Util.getMapTileFromCoordinates(this.mLatitudeE6, this.mLongitudeE6, mZoom, null, mTileSource.PROJECTION);
 
 			/*
 			 * Calculate the Latitude/Longitude on the left-upper ScreenCoords
 			 * of the center MapTile. So in the end we can determine which
 			 * MapTiles we additionally need next to the centerMapTile.
 			 */
-			final Point upperLeftCornerOfCenterMapTileNotScale = getUpperLeftCornerOfCenterMapTileInScreen(
-					centerMapTileCoords, tileSizePxNotScale, null);
-
-			final int centerMapTileScreenLeftNotScale = upperLeftCornerOfCenterMapTileNotScale.x;
-			final int centerMapTileScreenTopNotScale = upperLeftCornerOfCenterMapTileNotScale.y;
-			final int centerMapTileScreenRightNotScale = centerMapTileScreenLeftNotScale
-					+ tileSizePxNotScale;
-			final int centerMapTileScreenBottomNotScale = centerMapTileScreenTopNotScale
-					+ tileSizePxNotScale;
+//			final Point upperLeftCornerOfCenterMapTileNotScale = getUpperLeftCornerOfCenterMapTileInScreen(
+//					centerMapTileCoords, tileSizePxNotScale, null);
+//
+//			final int centerMapTileScreenLeftNotScale = upperLeftCornerOfCenterMapTileNotScale.x;
+//			final int centerMapTileScreenTopNotScale = upperLeftCornerOfCenterMapTileNotScale.y;
+//			final int centerMapTileScreenRightNotScale = centerMapTileScreenLeftNotScale
+//					+ tileSizePxNotScale;
+//			final int centerMapTileScreenBottomNotScale = centerMapTileScreenTopNotScale
+//					+ tileSizePxNotScale;
 
 			final Point upperLeftCornerOfCenterMapTile = getUpperLeftCornerOfCenterMapTileInScreen(
 					centerMapTileCoords, tileSizePx, null);
 			final int centerMapTileScreenLeft = upperLeftCornerOfCenterMapTile.x;
 			final int centerMapTileScreenTop = upperLeftCornerOfCenterMapTile.y;
-
-			/*
-			 * Calculate the amount of tiles needed for each side around the
-			 * center one.
-			 */
-			// TODO Нужен адекватный алгоритм для отбора необходимых тайлов,
-			// попадающих в экран при повороте карты
-			final int iDelta = 1; //mBearing > 0 && mTileSource.YANDEX_TRAFFIC_ON == 0 ? 1 : 0;
-			final int additionalTilesNeededToLeftOfCenter = iDelta
-					+ (int) Math.ceil((float) centerMapTileScreenLeftNotScale
-							/ tileSizePxNotScale); // i.e.
-			final int additionalTilesNeededToRightOfCenter = iDelta
-					+ (int) Math
-							.ceil((float) (this.getWidth() - centerMapTileScreenRightNotScale)
-									/ tileSizePxNotScale);
-			final int additionalTilesNeededToTopOfCenter = iDelta
-					+ (int) Math.ceil((float) centerMapTileScreenTopNotScale
-							/ tileSizePxNotScale); // i.e.
-			final int additionalTilesNeededToBottomOfCenter = iDelta
-					+ (int) Math
-							.ceil((float) (this.getHeight() - centerMapTileScreenBottomNotScale)
-									/ tileSizePxNotScale);
 
 			final int mapTileUpperBound = mTileSource.getTileUpperBound(mZoom);
 			final int[] mapTileCoords = new int[] {
@@ -435,43 +261,41 @@ public class TileView extends View {
 					centerMapTileCoords[LONGITUDE] };
 			
 			//mTileSource.getTileProvider().ResizeCashe((additionalTilesNeededToTopOfCenter+additionalTilesNeededToBottomOfCenter+1)*(additionalTilesNeededToLeftOfCenter+additionalTilesNeededToRightOfCenter+1));
-			
-			
-			
-			Region reg = new Region(getLeft()+20, getTop()+20, getLeft()+getWidth()-20, getTop()+getHeight()-20);
-			Path p = new Path();
-			p.addRect(getLeft()+20, getTop()+20, getLeft()+getWidth()-20, getTop()+getHeight()-20, Direction.CW);
+//			Region reg = new Region(getLeft()+20, getTop()+20, getLeft()+getWidth()-20, getTop()+getHeight()-20);
+//			Path p = new Path();
+//			p.addRect(getLeft()+20, getTop()+20, getLeft()+getWidth()-20, getTop()+getHeight()-20, Direction.CW);
 			
 			boolean tileIn = true;
-			int x = 0, y = 0, rad = 0, tilecnt = 0;
+			int x = 0, y = 0, radius = 0, tilecnt = 0;
+			mMatrixBearing.reset();
+			mMatrixBearing.setRotate(360-mBearing, this.getWidth() / 2, this.getHeight() / 2);
 			
 			while (tileIn) {
 				tileIn = false;
 				
-				for(x = -rad; x <= rad; x++) {
-					for(y = -rad; y <= rad; y++) {
-						if(x != -rad && x != rad && y != -rad && y != rad) continue;
+				for(x = -radius; x <= radius; x++) {
+					for(y = -radius; y <= radius; y++) {
+						if(x != -radius && x != radius && y != -radius && y != radius) continue;
 						
 						mapTileCoords[LATITUDE] = MyMath.mod(centerMapTileCoords[LATITUDE] + y, mapTileUpperBound);
 						mapTileCoords[LONGITUDE] = MyMath.mod(centerMapTileCoords[LONGITUDE] + x, mapTileUpperBound);
 
 						final int tileLeft = centerMapTileScreenLeft + (x * tileSizePx);
 						final int tileTop = centerMapTileScreenTop + (y * tileSizePx);
-						final Rect r = new Rect(tileLeft, tileTop, tileLeft + tileSizePx, tileTop + tileSizePx);
+						mRectDraw.set(tileLeft, tileTop, tileLeft + tileSizePx, tileTop + tileSizePx);
 
 						//if (!reg.quickReject(r)) {
-						float arr[] = {r.left, r.top, r.right, r.top, r.right, r.bottom, r.left, r.bottom, r.left, r.top};
-						final Matrix m = new Matrix();
-						m.setRotate(360-mBearing, this.getWidth() / 2, this.getHeight() / 2);
-						m.mapPoints(arr);
-						if(Algorithm.isIntersected(getLeft()+20, getTop()+20, getLeft()+getWidth()-20, getTop()+getHeight()-20, arr)) {
+						float arr[] = {mRectDraw.left, mRectDraw.top, mRectDraw.right, mRectDraw.top, mRectDraw.right, mRectDraw.bottom, mRectDraw.left, mRectDraw.bottom, mRectDraw.left, mRectDraw.top};
+						mMatrixBearing.mapPoints(arr);
+						
+						if(Ut.Algorithm.isIntersected((int)(getWidth()*(1-mTouchScale)/2), (int)(getHeight()*(1-mTouchScale)/2), (int)(getWidth()*(1+mTouchScale)/2), (int)(getHeight()*(1+mTouchScale)/2), arr)) {
 							tileIn = true;
 							tilecnt++;
 							
 							final Bitmap currentMapTile = this.mTileSource.getTile(mapTileCoords[LONGITUDE], mapTileCoords[LATITUDE], mZoom);
 							if (currentMapTile != null) {
 								if (!currentMapTile.isRecycled())
-									c.drawBitmap(currentMapTile, null, r, mPaint);
+									c.drawBitmap(currentMapTile, null, mRectDraw, mPaint);
 
 								if (OpenStreetMapViewConstants.DEBUGMODE) {
 									c.drawLine(tileLeft, tileTop, tileLeft + tileSizePx, tileTop, mPaint);
@@ -485,87 +309,17 @@ public class TileView extends View {
 					}
 				}
 				
-				rad++;
+				radius++;
 			}
 			
 			mTileSource.getTileProvider().ResizeCashe(tilecnt);
 
-
-//			mPaint.setStyle(Paint.Style.STROKE);
-//			//c.drawRect(getLeft()+20, getTop()+20, getLeft()+getWidth()-20, getTop()+getHeight()-20, mPaint);
-//			final Matrix m = new Matrix();
-//			m.setRotate(360-mBearing, this.getWidth() / 2, this.getHeight() / 2);
-//			//p.transform(m);
-//			c.drawPath(p, mPaint);
-//			final RectF rect = new RectF();
-//			Ut.d("isRect = "+p.isRect(rect));
-//			Ut.d("RectF: "+rect.left+" "+rect.top+" "+rect.right+" "+rect.bottom+" ");
-			
-
-/*			for (int y = -additionalTilesNeededToTopOfCenter; y <= additionalTilesNeededToBottomOfCenter; y++) {
-				for (int x = -additionalTilesNeededToLeftOfCenter; x <= additionalTilesNeededToRightOfCenter; x++) {
-					mapTileCoords[LATITUDE] = MyMath.mod(
-							centerMapTileCoords[LATITUDE] + y,
-							mapTileUpperBound);
-					mapTileCoords[LONGITUDE] = MyMath.mod(
-							centerMapTileCoords[LONGITUDE] + x,
-							mapTileUpperBound);
-
-					final Bitmap currentMapTile = this.mTileSource.getTile(
-							mapTileCoords[LONGITUDE], mapTileCoords[LATITUDE],
-							mZoom);
-					if (currentMapTile != null) {
-						final int tileLeft = centerMapTileScreenLeft + (x * tileSizePx);
-						final int tileTop = centerMapTileScreenTop + (y * tileSizePx);
-						final Rect r = new Rect(tileLeft, tileTop, tileLeft
-								+ tileSizePx, tileTop + tileSizePx);
-						if (!currentMapTile.isRecycled())
-							c.drawBitmap(currentMapTile, null, r, mPaint);
-
-						if (OpenStreetMapViewConstants.DEBUGMODE) {
-							c.drawLine(tileLeft, tileTop,
-									tileLeft + tileSizePx, tileTop, mPaint);
-							c.drawLine(tileLeft, tileTop, tileLeft, tileTop
-									+ tileSizePx, mPaint);
-							c.drawText("y x = " + mapTileCoords[LATITUDE] + " "
-									+ mapTileCoords[LONGITUDE] + " zoom "
-									+ mZoom + " ", tileLeft + 5, tileTop + 15,
-									mPaint);
-						}
-
-					}
-
-				}
-			}
-*/
-
 			/* Draw all Overlays. */
 			for (TileViewOverlay osmvo : this.mOverlays)
 				osmvo.onManagedDraw(c, this);
-
 		}
 
 		c.restore();
-
-		Path p = new Path();
-		p.addRect(getLeft()+20, getTop()+20, getLeft()+getWidth()-20, getTop()+getHeight()-20, Direction.CW);
-		mPaint.setStyle(Paint.Style.STROKE);
-		c.drawPath(p, mPaint);
-
-		int left = 0, top = 0, right = 200, bottom = 200;
-		left  = left + this.getWidth() / 2 - 100;
-		right  = right + this.getWidth() / 2 - 100;
-		top  = top + this.getHeight() / 2 - 100;
-		bottom  = bottom + this.getHeight() / 2 - 100;
-		
-		float arr[] = {left, top, right, top, right, bottom, left, bottom, left, top};
-		final Matrix m = new Matrix();
-		m.setRotate(360-mBearing, this.getWidth() / 2, this.getHeight() / 2);
-		m.mapPoints(arr);
-		for(int i = 0; i < 8; i=i+2) {
-			c.drawCircle(arr[i], arr[i+1], 5, mPaint);
-		}
-
 		
 		super.onDraw(c);
 	}
