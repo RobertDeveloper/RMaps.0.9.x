@@ -80,6 +80,11 @@ public class TileView extends View {
 	private class TouchListener extends GestureDetector.SimpleOnGestureListener {
 		@Override
 		public boolean onDown(MotionEvent e) {
+			for (TileViewOverlay osmvo : mOverlays) {
+				if(osmvo.onDown(e, TileView.this))
+					break;
+			}
+
 			return true;
 		}
 
@@ -107,6 +112,11 @@ public class TileView extends View {
 
 		@Override
 		public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+			for (TileViewOverlay osmvo : mOverlays) {
+				if(osmvo.onScroll(e1, e2, distanceX, distanceY, TileView.this))
+					return super.onScroll(e1, e2, distanceX, distanceY);
+			}
+
 			final float aRotateToAngle = 360 - mBearing;
 			final int viewWidth_2 = TileView.this.getWidth() / 2;
 			final int viewHeight_2 = TileView.this.getHeight() / 2;
@@ -118,15 +128,8 @@ public class TileView extends View {
 					viewHeight_2 + TouchMapOffsetY);
 			TileView.this.setMapCenter(newCenter);
 			
-			// if(count > 1){
-			// final double DiagonalSize = Math.hypot((double)(x1 - x2),
-			// (double)(y1 - y2));
-			// mTouchScale = (DiagonalSize / mTouchDiagonalSize);
-			// }
 			if (mMoveListener != null)
 				mMoveListener.onMoveDetected();
-			
-			//invalidate();
 			
 			return super.onScroll(e1, e2, distanceX, distanceY);
 		}
