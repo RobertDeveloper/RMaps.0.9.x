@@ -26,6 +26,7 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import com.robert.maps.kml.Track.TrackPoint;
+import com.robert.maps.reflection.OnExGestureListener;
 import com.robert.maps.reflection.VerGestureDetector;
 import com.robert.maps.reflection.VerScaleGestureDetector;
 import com.robert.maps.tileprovider.MessageHandlerConstants;
@@ -50,6 +51,7 @@ public class TileView extends View {
 	private TileSource mTileSource;
 	private TileMapHandler mTileMapHandler = new TileMapHandler();
 	protected final List<TileViewOverlay> mOverlays = new ArrayList<TileViewOverlay>();
+	OnExGestureListener sdf;
 	
 	private GestureDetector mDetector = VerGestureDetector.newInstance().getGestureDetector(getContext(), new TouchListener()); 
 	private VerScaleGestureDetector mScaleDetector = VerScaleGestureDetector.newInstance(getContext(), new ScaleListener());
@@ -77,9 +79,9 @@ public class TileView extends View {
 		
 	}
 	
-	private class TouchListener extends GestureDetector.SimpleOnGestureListener {
-		@Override
+	private class TouchListener implements OnExGestureListener {
 		public boolean onDown(MotionEvent e) {
+			Ut.d("onDown");
 			for (TileViewOverlay osmvo : mOverlays) {
 				if(osmvo.onDown(e, TileView.this))
 					break;
@@ -88,8 +90,13 @@ public class TileView extends View {
 			return true;
 		}
 
-		@Override
+		public boolean onSingleTapUp(MotionEvent e) {
+			Ut.d("onSingleTapUp");
+			return false;
+		}
+
 		public boolean onSingleTapConfirmed(MotionEvent e) {
+			Ut.d("onSingleTapConfirmed");
 			for (TileViewOverlay osmvo : mOverlays)
 				if (osmvo.onSingleTapUp(e, TileView.this)) {
 					invalidate();
@@ -97,24 +104,21 @@ public class TileView extends View {
 				}
 			
 			invalidate();
-			return super.onSingleTapConfirmed(e);
+			return false;
 		}
 
-		@Override
 		public void onLongPress(MotionEvent e) {
 			for (TileViewOverlay osmvo : mOverlays) {
 				osmvo.onLongPress(e, TileView.this);
 			}
 			
 			showContextMenu();
-			super.onLongPress(e);
 		}
 
-		@Override
 		public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
 			for (TileViewOverlay osmvo : mOverlays) {
 				if(osmvo.onScroll(e1, e2, distanceX, distanceY, TileView.this))
-					return super.onScroll(e1, e2, distanceX, distanceY);
+					return false;
 			}
 
 			final float aRotateToAngle = 360 - mBearing;
@@ -131,10 +135,9 @@ public class TileView extends View {
 			if (mMoveListener != null)
 				mMoveListener.onMoveDetected();
 			
-			return super.onScroll(e1, e2, distanceX, distanceY);
+			return false;
 		}
 
-		@Override
 		public boolean onDoubleTap(MotionEvent e) {
 			if (mBearing != 0) {
 				mBearing = 0;
@@ -146,6 +149,23 @@ public class TileView extends View {
 			}
 
 			return true;
+		}
+
+		public void onShowPress(MotionEvent e) {
+		}
+
+		public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+			return false;
+		}
+
+		public void onUp(MotionEvent e) {
+			for (TileViewOverlay osmvo : mOverlays) {
+				osmvo.onUp(e, TileView.this);
+			}
+		}
+
+		public boolean onDoubleTapEvent(MotionEvent e) {
+			return false;
 		}
 	}
 

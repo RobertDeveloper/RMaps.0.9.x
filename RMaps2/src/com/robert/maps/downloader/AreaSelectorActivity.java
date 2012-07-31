@@ -38,6 +38,7 @@ public class AreaSelectorActivity extends Activity {
 		mMap.setMoveListener(mMoveListener);
 		mMap.displayZoomControls(Integer.parseInt(pref.getString("pref_zoomctrl", "1")));
 		mMap.getController().setCenter(new GeoPoint(uiState.getInt("Latitude", 0), uiState.getInt("Longitude", 0)));
+		mMap.setLongClickable(false);
 		mAreaSelectorOverlay = new AreaSelectorOverlay();
 		mMap.getOverlays().add(mAreaSelectorOverlay);
 		

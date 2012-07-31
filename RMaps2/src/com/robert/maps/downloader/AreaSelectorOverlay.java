@@ -3,11 +3,14 @@ package com.robert.maps.downloader;
 import org.andnav.osm.util.GeoPoint;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Paint.Style;
 import android.graphics.Point;
 import android.graphics.Rect;
-import android.graphics.Paint.Style;
+import android.graphics.drawable.Drawable;
 import android.view.MotionEvent;
 
 import com.robert.maps.R;
@@ -19,7 +22,8 @@ public class AreaSelectorOverlay extends TileViewOverlay {
 	private Rect mRect = new Rect();
 	private Paint mPaint = new Paint();
 	private GeoPoint point[] = {new GeoPoint(0,0), new GeoPoint(0,0)};
-	private int mPointHolded = -1; 
+	private int mPointHolded = -1;
+	private Bitmap mCornerMarker = null;
 	
 	public void Init(Context ctx, TileView tileView, int left, int top, int right, int bottom) {
 		mRect.set(left, top, right, bottom);
@@ -37,6 +41,13 @@ public class AreaSelectorOverlay extends TileViewOverlay {
 		Init(ctx, tileView, (int)(tileView.getWidth()*(1-0.8)/2), (int)(tileView.getHeight()*(1-0.8)/2), (int)(tileView.getWidth()*(1+0.8)/2), (int)(tileView.getHeight()*(1+0.8)/2));
 	}
 	
+	private Bitmap getPic(TileView tileView) {
+		if(mCornerMarker == null)
+			mCornerMarker = BitmapFactory.decodeResource(tileView.getContext().getResources(), R.drawable.person);
+		
+		return mCornerMarker;
+	}
+	
 	@Override
 	protected void onDraw(Canvas c, TileView tileView) {
 		final com.robert.maps.view.TileView.OpenStreetMapViewProjection pj = tileView.getProjection();
@@ -52,6 +63,11 @@ public class AreaSelectorOverlay extends TileViewOverlay {
 		mRect.set(p0.x, p0.y, p1.x, p1.y);
 		
 		c.drawRect(mRect, mPaint);
+		final Bitmap pic = getPic(tileView);
+		c.drawBitmap(pic, p0.x - (int)(pic.getWidth()/2), p0.y - (int)(pic.getHeight() / 2), mPaint);
+		c.drawBitmap(pic, p1.x - (int)(pic.getWidth()/2), p1.y - (int)(pic.getHeight() / 2), mPaint);
+		c.drawBitmap(pic, p0.x - (int)(pic.getWidth()/2), p1.y - (int)(pic.getHeight() / 2), mPaint);
+		c.drawBitmap(pic, p1.x - (int)(pic.getWidth()/2), p0.y - (int)(pic.getHeight() / 2), mPaint);
 	}
 	
 	@Override
@@ -63,28 +79,24 @@ public class AreaSelectorOverlay extends TileViewOverlay {
 	@Override
 	public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY, TileView tileView) {
 		if(mPointHolded >= 0) {
-			Ut.d("distanceX = "+distanceX+" distanceY = "+distanceY);
 			final com.robert.maps.view.TileView.OpenStreetMapViewProjection pj = tileView.getProjection();
-			final Point p0 = pj.toPixels(point[0], null);
-			final Point p1 = pj.toPixels(point[1], null);
 			
-			final GeoPoint g0 = pj.fromPixels(-distanceX + p0.x, -distanceY + p0.y);
-			final GeoPoint g1 = pj.fromPixels(-distanceX + p1.x, -distanceY + p1.y);
-
+			final GeoPoint g = pj.fromPixels(e2.getX(), e2.getY());
+			
 			switch(mPointHolded) {
 			case 0:
-				point[0].setCoordsE6(g0.getLatitudeE6(), g0.getLongitudeE6());
+				point[0].setCoordsE6(g.getLatitudeE6(), g.getLongitudeE6());
 				break;
 			case 1:
-				point[0].setLatitudeE6(g0.getLatitudeE6());
-				point[1].setLongitudeE6(g1.getLongitudeE6());
+				point[0].setLatitudeE6(g.getLatitudeE6());
+				point[1].setLongitudeE6(g.getLongitudeE6());
 				break;
 			case 2:
-				point[0].setCoordsE6(g1.getLatitudeE6(), g1.getLongitudeE6());
+				point[1].setCoordsE6(g.getLatitudeE6(), g.getLongitudeE6());
 				break;
 			case 3:
-				point[0].setLatitudeE6(g1.getLatitudeE6());
-				point[1].setLatitudeE6(g0.getLongitudeE6());
+				point[1].setLatitudeE6(g.getLatitudeE6());
+				point[0].setLongitudeE6(g.getLongitudeE6());
 				break;
 			}
 		
@@ -114,11 +126,17 @@ public class AreaSelectorOverlay extends TileViewOverlay {
 		for(int i = 0; i < 4; i++) {
 			if(bouds[i].contains((int)e.getX(), (int)e.getY())) {
 				mPointHolded = i;
+				Ut.d("mPointHolded = "+mPointHolded);
 				return true;
 			}
 		}
 
 		return super.onDown(e, tileView);
+	}
+
+	@Override
+	public void onUp(MotionEvent e, TileView tileView) {
+		mPointHolded = -1;
 	}
 	
 }

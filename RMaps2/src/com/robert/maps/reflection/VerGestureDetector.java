@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Build;
 import android.view.GestureDetector;
-import android.view.GestureDetector.OnGestureListener;
 
 public abstract class VerGestureDetector {
 
@@ -20,13 +19,13 @@ public abstract class VerGestureDetector {
         return detector;
     }
     
-    public abstract GestureDetector getGestureDetector(Context context, GestureDetector.OnGestureListener listener);
+    public abstract GestureDetector getGestureDetector(Context context, OnExGestureListener listener);
 
     private static class CupcakeDetector extends VerGestureDetector {
 
 		@Override
-		public GestureDetector getGestureDetector(Context context, OnGestureListener listener) {
-			return new GestureDetector(context, listener);
+		public RGestureDetectorCupcake getGestureDetector(Context context, OnExGestureListener listener) {
+			return new RGestureDetectorCupcake(context, listener);
 		}
     	
     }
@@ -35,8 +34,8 @@ public abstract class VerGestureDetector {
 
 		@SuppressLint("NewApi")
 		@Override
-		public GestureDetector getGestureDetector(Context context, OnGestureListener listener) {
-			return new GestureDetector(context, listener, null, false);
+		public RGestureDetectorFroyo getGestureDetector(Context context, OnExGestureListener listener) {
+			return new RGestureDetectorFroyo(context, listener, null, false);
 		}
     	
     }
