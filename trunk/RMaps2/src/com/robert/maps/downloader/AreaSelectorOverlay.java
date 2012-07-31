@@ -24,6 +24,7 @@ public class AreaSelectorOverlay extends TileViewOverlay {
 	private GeoPoint point[] = {new GeoPoint(0,0), new GeoPoint(0,0)};
 	private int mPointHolded = -1;
 	private Bitmap mCornerMarker = null;
+	private boolean mAreaCleared = false;
 	
 	public void Init(Context ctx, TileView tileView, int left, int top, int right, int bottom) {
 		mRect.set(left, top, right, bottom);
@@ -50,6 +51,8 @@ public class AreaSelectorOverlay extends TileViewOverlay {
 	
 	@Override
 	protected void onDraw(Canvas c, TileView tileView) {
+		if(mAreaCleared) return;
+		
 		final com.robert.maps.view.TileView.OpenStreetMapViewProjection pj = tileView.getProjection();
 		
 		if(point[0].getLatitudeE6()+point[0].getLongitudeE6() == 0) {
@@ -115,19 +118,28 @@ public class AreaSelectorOverlay extends TileViewOverlay {
 	@Override
 	public boolean onDown(MotionEvent e, TileView tileView) {
 		final com.robert.maps.view.TileView.OpenStreetMapViewProjection pj = tileView.getProjection();
-		final Point p0 = pj.toPixels(point[0], null);
-		final Point p1 = pj.toPixels(point[1], null);
-		
-		final Rect bouds[] = {new Rect(), new Rect(), new Rect(), new Rect()};
-		setAreaBound(bouds[0], p0.x, p0.y);
-		setAreaBound(bouds[1], p1.x, p0.y);
-		setAreaBound(bouds[2], p1.x, p1.y);
-		setAreaBound(bouds[3], p0.x, p1.y);
-		for(int i = 0; i < 4; i++) {
-			if(bouds[i].contains((int)e.getX(), (int)e.getY())) {
-				mPointHolded = i;
-				Ut.d("mPointHolded = "+mPointHolded);
-				return true;
+
+		if(mAreaCleared) {
+			final GeoPoint g = pj.fromPixels(e.getX(), e.getY());
+			point[0].setCoordsE6(g.getLatitudeE6(), g.getLongitudeE6());
+			point[1].setCoordsE6(g.getLatitudeE6(), g.getLongitudeE6());
+			mPointHolded = 2;
+			mAreaCleared = false;
+			return true;
+		} else {
+			final Point p0 = pj.toPixels(point[0], null);
+			final Point p1 = pj.toPixels(point[1], null);
+			
+			final Rect bouds[] = {new Rect(), new Rect(), new Rect(), new Rect()};
+			setAreaBound(bouds[0], p0.x, p0.y);
+			setAreaBound(bouds[1], p1.x, p0.y);
+			setAreaBound(bouds[2], p1.x, p1.y);
+			setAreaBound(bouds[3], p0.x, p1.y);
+			for(int i = 0; i < 4; i++) {
+				if(bouds[i].contains((int)e.getX(), (int)e.getY())) {
+					mPointHolded = i;
+					return true;
+				}
 			}
 		}
 
@@ -137,6 +149,11 @@ public class AreaSelectorOverlay extends TileViewOverlay {
 	@Override
 	public void onUp(MotionEvent e, TileView tileView) {
 		mPointHolded = -1;
+	}
+
+	public void clearArea(TileView tileView) {
+		mAreaCleared = true;
+		tileView.invalidate();
 	}
 	
 }

@@ -7,7 +7,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.view.View;
 import android.view.Window;
+import android.view.View.OnClickListener;
 import android.widget.TextView;
 
 import com.robert.maps.R;
@@ -41,6 +43,12 @@ public class AreaSelectorActivity extends Activity {
 		mMap.setLongClickable(false);
 		mAreaSelectorOverlay = new AreaSelectorOverlay();
 		mMap.getOverlays().add(mAreaSelectorOverlay);
+		
+		findViewById(R.id.clear).setOnClickListener(new OnClickListener() {
+
+			public void onClick(View v) {
+				mAreaSelectorOverlay.clearArea(mMap.getTileView());
+			}});
 		
 		Intent intent = getIntent();
 		if(intent != null) {
