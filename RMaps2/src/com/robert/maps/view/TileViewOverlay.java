@@ -90,6 +90,14 @@ public abstract class TileViewOverlay {
 		return false;
 	}
 	
+	public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY, final TileView tileView) {
+		return false;
+	}
+	
+	public boolean onDown(MotionEvent e, final TileView tileView) {
+		return false;
+	}
+
 	public void Free() {
 		
 	}
