@@ -97,6 +97,10 @@ public abstract class TileViewOverlay {
 	public boolean onDown(MotionEvent e, final TileView tileView) {
 		return false;
 	}
+	
+	public void onUp(MotionEvent e, final TileView tileView) {
+		
+	}
 
 	public void Free() {
 		
