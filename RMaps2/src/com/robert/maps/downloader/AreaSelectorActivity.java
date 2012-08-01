@@ -1,5 +1,11 @@
 package com.robert.maps.downloader;
 
+import java.io.File;
+import java.io.InputStream;
+
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+
 import org.andnav.osm.util.GeoPoint;
 
 import android.app.Activity;
@@ -7,13 +13,20 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.view.View.OnClickListener;
+import android.view.Window;
 import android.widget.TextView;
 
 import com.robert.maps.R;
+import com.robert.maps.kml.XMLparser.PredefMapsParser;
 import com.robert.maps.tileprovider.TileSource;
+import com.robert.maps.utils.RException;
+import com.robert.maps.utils.Ut;
 import com.robert.maps.view.IMoveListener;
 import com.robert.maps.view.MapView;
 
@@ -45,10 +58,15 @@ public class AreaSelectorActivity extends Activity {
 		mMap.getOverlays().add(mAreaSelectorOverlay);
 		
 		findViewById(R.id.clear).setOnClickListener(new OnClickListener() {
-
 			public void onClick(View v) {
 				mAreaSelectorOverlay.clearArea(mMap.getTileView());
 			}});
+		registerForContextMenu(findViewById(R.id.maps));
+		findViewById(R.id.maps).setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				v.showContextMenu();
+			}
+		});
 		
 		Intent intent = getIntent();
 		if(intent != null) {
@@ -125,7 +143,7 @@ public class AreaSelectorActivity extends Activity {
  		mMap.getController().setCenter(new GeoPoint(pref.getInt("LatitudeAS", 0), pref.getInt("LongitudeAS", 0)));
  		setTitle();
  		
- 		int lat1, lon1, lat2, lon2;
+ 		int lat1, lon1;
  		lat1 = pref.getInt("LatitudeAS1", 0);
  		lon1 = pref.getInt("LongitudeAS1", 0);
  		if(lat1+lon1 == 0)
@@ -147,4 +165,44 @@ public class AreaSelectorActivity extends Activity {
 
 		super.onPause();
 	}
+
+	@Override
+	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
+		if(v.getId() == R.id.maps) {
+			menu.clear();
+			SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+
+			final SAXParserFactory fac = SAXParserFactory.newInstance();
+			SAXParser parser = null;
+			try {
+				parser = fac.newSAXParser();
+				if(parser != null){
+					final InputStream in = getResources().openRawResource(R.raw.predefmaps);
+					parser.parse(in, new PredefMapsParser(menu, pref));
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		
+		super.onCreateContextMenu(menu, v, menuInfo);
+	}
+
+	@Override
+	public boolean onContextItemSelected(MenuItem item) {
+		final String mapid = (String)item.getTitleCondensed();
+		if(mTileSource != null)
+			mTileSource.Free();
+		try {
+			mTileSource = new TileSource(this, mapid);
+		} catch (RException e) {
+			//addMessage(e);
+		}
+		mMap.setTileSource(mTileSource);
+		
+        setTitle();
+
+		return true;
+	}
+
 }
