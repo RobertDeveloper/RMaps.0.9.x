@@ -84,7 +84,12 @@
 
         <activity android:name="org.openintents.filemanager.FileManagerActivity" >
         </activity>
-        <activity android:name=".downloader.AreaSelectorActivity"></activity>
+        <activity android:name=".downloader.AreaSelectorActivity" android:launchMode="singleInstance"></activity>
+        <service android:name=".downloader.MapDownloaderService" android:process=":mapdownloader" android:icon="@drawable/track_writer_service">
+            <intent-filter>
+                <action android:name="com.robert.maps.mapdownloader"/>
+            </intent-filter>
+        </service>
     </application>
 
     <uses-permission android:name="android.permission.WAKE_LOCK" />

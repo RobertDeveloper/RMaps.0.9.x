@@ -10,11 +10,9 @@ import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.graphics.Point;
 import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
 import android.view.MotionEvent;
 
 import com.robert.maps.R;
-import com.robert.maps.utils.Ut;
 import com.robert.maps.view.TileView;
 import com.robert.maps.view.TileViewOverlay;
 

@@ -1,6 +1,5 @@
 package com.robert.maps.downloader;
 
-import java.io.File;
 import java.io.InputStream;
 
 import javax.xml.parsers.SAXParser;
@@ -15,7 +14,6 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -26,9 +24,9 @@ import com.robert.maps.R;
 import com.robert.maps.kml.XMLparser.PredefMapsParser;
 import com.robert.maps.tileprovider.TileSource;
 import com.robert.maps.utils.RException;
-import com.robert.maps.utils.Ut;
 import com.robert.maps.view.IMoveListener;
 import com.robert.maps.view.MapView;
+import com.robert.maps.view.TileViewOverlay;
 
 public class AreaSelectorActivity extends Activity {
 	private static final String MAPNAME = "MapName";
@@ -67,6 +65,16 @@ public class AreaSelectorActivity extends Activity {
 				v.showContextMenu();
 			}
 		});
+		findViewById(R.id.start_download).setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				startDownLoad();
+			}
+		});
+		findViewById(R.id.stop_download).setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				stopDownLoad();
+			}
+		});
 		
 		Intent intent = getIntent();
 		if(intent != null) {
@@ -92,6 +100,20 @@ public class AreaSelectorActivity extends Activity {
 		}
 	}
 	
+	private void startDownLoad() {
+		findViewById(R.id.start_download).setVisibility(View.GONE);
+		findViewById(R.id.stop_download).setVisibility(View.VISIBLE);
+		
+		startService(new Intent("com.robert.maps.mapdownloader"));
+	}
+
+	private void stopDownLoad() {
+		findViewById(R.id.stop_download).setVisibility(View.GONE);
+		findViewById(R.id.start_download).setVisibility(View.VISIBLE);
+		
+		stopService(new Intent("com.robert.maps.mapdownloader"));
+	}
+
 	private class MoveListener implements IMoveListener {
 
 		public void onMoveDetected() {
@@ -164,6 +186,18 @@ public class AreaSelectorActivity extends Activity {
 		editor.commit();
 
 		super.onPause();
+	}
+
+	@Override
+	protected void onDestroy() {
+		for (TileViewOverlay osmvo : mMap.getOverlays())
+			osmvo.Free();
+
+		mTileSource.Free();
+		mTileSource = null;
+		mMap.setMoveListener(null);
+		
+		super.onDestroy();
 	}
 
 	@Override
