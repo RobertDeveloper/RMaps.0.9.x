@@ -19,6 +19,7 @@ import com.robert.maps.utils.Ut;
 
 public class TileSource {
 	private TileProviderBase mTileProvider;
+	private TileURLGeneratorBase mTileURLGenerator;
 	
 	private static final String EMPTY = "";
 	public static final String MAPNIK = "mapnik";
@@ -48,6 +49,10 @@ public class TileSource {
 	public boolean LAYER, mOnlineMapCacheEnabled;
 
 	public TileSource(Context ctx, String aId) throws SQLiteException, RException {
+		this(ctx, aId, true);
+	}
+	
+	public TileSource(Context ctx, String aId, boolean aNeedTileProvider) throws SQLiteException, RException {
 		if (aId.equalsIgnoreCase(EMPTY))
 			aId = MAPNIK;
 
@@ -97,70 +102,75 @@ public class TileSource {
 
 		}
 		
-		switch(TILE_SOURCE_TYPE) {
-		case 0:
-			TileURLGeneratorBase gen = null;
+		if(TILE_SOURCE_TYPE == 0) {
 			switch(URL_BUILDER_TYPE) {
 			case 0:
-				gen = new TileURLGeneratorOSM(BASEURL, IMAGE_FILENAMEENDING);
+				mTileURLGenerator = new TileURLGeneratorOSM(BASEURL, IMAGE_FILENAMEENDING);
 				break;
 			case 1:
-				gen = new TileURLGeneratorGOOGLEMAP(BASEURL, GOOGLE_LANG_CODE);
+				mTileURLGenerator = new TileURLGeneratorGOOGLEMAP(BASEURL, GOOGLE_LANG_CODE);
 				break;
 			case 2:
-				gen = new TileURLGeneratorYANDEX(BASEURL, IMAGE_FILENAMEENDING);
+				mTileURLGenerator = new TileURLGeneratorYANDEX(BASEURL, IMAGE_FILENAMEENDING);
 				break;
 			case 3:
-				gen = new TileURLGeneratorYANDEXTRAFFIC(BASEURL);
+				mTileURLGenerator = new TileURLGeneratorYANDEXTRAFFIC(BASEURL);
 				break;
 			case 4:
-				gen = new TileURLGeneratorGOOGLESAT(BASEURL, GOOGLE_LANG_CODE);
+				mTileURLGenerator = new TileURLGeneratorGOOGLESAT(BASEURL, GOOGLE_LANG_CODE);
 				break;
 			case 5:
-				gen = new TileURLGeneratorOrdnanceSurveyMap(BASEURL, ZOOM_MINLEVEL);
+				mTileURLGenerator = new TileURLGeneratorOrdnanceSurveyMap(BASEURL, ZOOM_MINLEVEL);
 				break;
 			case 6:
-				gen = new TileURLGeneratorMS(BASEURL, IMAGE_FILENAMEENDING);
+				mTileURLGenerator = new TileURLGeneratorMS(BASEURL, IMAGE_FILENAMEENDING);
 				break;
 			case 7:
-				gen = new TileURLGeneratorDOCELUPL(BASEURL);
+				mTileURLGenerator = new TileURLGeneratorDOCELUPL(BASEURL);
 				break;
 			case 8:
-				gen = new TileURLGeneratorVFR(BASEURL);
+				mTileURLGenerator = new TileURLGeneratorVFR(BASEURL);
 				break;
 			case 9:
-				gen = new TileURLGeneratorAVC(BASEURL, IMAGE_FILENAMEENDING);
+				mTileURLGenerator = new TileURLGeneratorAVC(BASEURL, IMAGE_FILENAMEENDING);
 				break;
 			case 10:
-				gen = new TileURLGeneratorSovMilMap(BASEURL);
+				mTileURLGenerator = new TileURLGeneratorSovMilMap(BASEURL);
 				break;
 			case 11:
-				gen = new TileURLGeneratorVFRCB(BASEURL, IMAGE_FILENAMEENDING);
+				mTileURLGenerator = new TileURLGeneratorVFRCB(BASEURL, IMAGE_FILENAMEENDING);
 				break;
 			}
-			if(LAYER)
-				mTileProvider = new TileProviderInet(ctx, gen, CacheDatabaseName(), null);
-			else
-				mTileProvider = new TileProviderInet(ctx, gen, CacheDatabaseName());
-			break;
-		case 3:
-			mTileProvider = new TileProviderMNM(ctx, BASEURL, ID);
-			mTileProvider.updateMapParams(this);
-			break;
-		case 4:
-			mTileProvider = new TileProviderTAR(ctx, BASEURL, ID);
-			mTileProvider.updateMapParams(this);
-			break;
-		case 5:
-			mTileProvider = new TileProviderSQLITEDB(ctx, BASEURL, ID);
-			mTileProvider.updateMapParams(this);
-			break;
-		default:
-			mTileProvider = new TileProviderBase(ctx);
+		}
+		
+		if(aNeedTileProvider) {
+			switch(TILE_SOURCE_TYPE) {
+			case 0:
+				if(LAYER)
+					mTileProvider = new TileProviderInet(ctx, mTileURLGenerator, CacheDatabaseName(), null);
+				else
+					mTileProvider = new TileProviderInet(ctx, mTileURLGenerator, CacheDatabaseName());
+				break;
+			case 3:
+				mTileProvider = new TileProviderMNM(ctx, BASEURL, ID);
+				mTileProvider.updateMapParams(this);
+				break;
+			case 4:
+				mTileProvider = new TileProviderTAR(ctx, BASEURL, ID);
+				mTileProvider.updateMapParams(this);
+				break;
+			case 5:
+				mTileProvider = new TileProviderSQLITEDB(ctx, BASEURL, ID);
+				mTileProvider.updateMapParams(this);
+				break;
+			default:
+				mTileProvider = new TileProviderBase(ctx);
+			}
+			
 		}
 		
 	}
-
+	
 	public boolean CacheEnabled() {
 		return mOnlineMapCacheEnabled && !LAYER;
 	}
@@ -213,6 +223,10 @@ public class TileSource {
 	
 	public TileProviderBase getTileProvider() {
 		return mTileProvider;
+	}
+	
+	public TileURLGeneratorBase getTileURLGenerator () {
+		return mTileURLGenerator;
 	}
 
 	public void postIndex() {
