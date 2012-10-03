@@ -104,7 +104,13 @@ public class AreaSelectorActivity extends Activity {
 		findViewById(R.id.start_download).setVisibility(View.GONE);
 		findViewById(R.id.stop_download).setVisibility(View.VISIBLE);
 		
-		startService(new Intent("com.robert.maps.mapdownloader"));
+		final Intent intent = new Intent("com.robert.maps.mapdownloader");
+		final int zoomArr[] = {0,1};
+		intent.putExtra("ZOOM", zoomArr);
+		intent.putExtra("COORD", mAreaSelectorOverlay.getCoordArr());
+		intent.putExtra("MAPID", mTileSource.ID);
+		intent.putExtra("OFFLINEMAPNAME", "TESTMAPNAME");
+		startService(intent);
 	}
 
 	private void stopDownLoad() {
