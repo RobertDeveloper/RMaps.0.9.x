@@ -153,5 +153,10 @@ public class AreaSelectorOverlay extends TileViewOverlay {
 		mAreaCleared = true;
 		tileView.invalidate();
 	}
+
+	public int[] getCoordArr() {
+		final int coordarr[] = {point[0].getLatitudeE6(), point[0].getLongitudeE6(), point[1].getLatitudeE6(), point[1].getLongitudeE6()};
+		return null;
+	}
 	
 }
