@@ -311,4 +311,18 @@
 		<item>Surfing</item>
 		<item>Paragliding</item>
 	</string-array>
+	<string-array name="googlescale_pref_title">
+		<item>Default</item>
+		<item>1.5</item>
+		<item>2</item>
+		<item>2.5</item>
+		<item>3</item>
+	</string-array>
+	<string-array name="googlescale_pref_values">
+		<item>1</item>
+		<item>1.5</item>
+		<item>2</item>
+		<item>2.5</item>
+		<item>3</item>
+	</string-array>
 </resources>
