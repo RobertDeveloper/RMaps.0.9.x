@@ -18,7 +18,8 @@ public class MapApplication extends Application {
 		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
         Configuration config = getBaseContext().getResources().getConfiguration();
         defLocale = config.locale;
-
+        locale = defLocale;
+        
         String lang = settings.getString("pref_locale", "");
 		if(lang.equalsIgnoreCase("zh_CN")) {
 			locale = Locale.SIMPLIFIED_CHINESE;

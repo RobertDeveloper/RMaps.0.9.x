@@ -236,15 +236,6 @@ public class TileView extends View {
 	}
 
 	@Override
-	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		for (TileViewOverlay osmvo : this.mOverlays)
-			if (osmvo.onKeyDown(keyCode, event, this))
-				return true;
-
-		return super.onKeyDown(keyCode, event);
-	}
-
-	@Override
 	protected void onDraw(Canvas c) {
 		c.save();
 
