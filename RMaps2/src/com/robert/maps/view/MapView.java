@@ -10,6 +10,7 @@ import android.content.res.TypedArray;
 import android.preference.PreferenceManager;
 import android.util.AttributeSet;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -23,6 +24,7 @@ public class MapView extends RelativeLayout {
 	private final TileView mTileView;
 	private final MapController mController;
 	private IMoveListener mMoveListener;
+	private boolean mStopBearing = false;
 
 	public MapView(Context context, int sideInOutButtons, int scaleBarVisible) {
 		super(context);
@@ -205,7 +207,8 @@ public class MapView extends RelativeLayout {
 	}
 
 	public void setBearing(float bearing) {
-		mTileView.setBearing(bearing);
+		if(!mStopBearing)
+			mTileView.setBearing(bearing);
 	}
 
 	public void setMoveListener(IMoveListener moveListener) {
@@ -215,5 +218,35 @@ public class MapView extends RelativeLayout {
 
 	public double getTouchScale() {
 		return mTileView.mTouchScale;
+	}
+
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		boolean stopPropagation = false;
+		switch (keyCode) {
+			case KeyEvent.KEYCODE_DPAD_UP:
+				stopPropagation = true;
+				getController().zoomOut();
+				break;
+			case KeyEvent.KEYCODE_DPAD_DOWN:
+				stopPropagation = true;
+				getController().zoomIn();
+				break;
+			case KeyEvent.KEYCODE_DPAD_CENTER:
+				if(mStopBearing) 
+					mStopBearing = false;
+				else {
+					setBearing(0);
+					mStopBearing = true;
+				}
+				stopPropagation = true;
+				break;
+			default:
+				break;
+		}
+		
+	    if(stopPropagation) return true;
+	    
+	    return super.onKeyDown(keyCode, event);
 	}
 }
