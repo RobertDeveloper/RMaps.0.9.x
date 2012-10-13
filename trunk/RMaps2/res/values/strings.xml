@@ -59,6 +59,11 @@
     <string name="pref_showscalebar">Show scale bar</string>
     <string name="pref_units_summary">Distance, speed units</string>
     <string name="pref_units">Units</string>
+    <string name="pref_onlinecacheclear">Online cache</string>
+    <string name="pref_onlinecacheclear_summary">.sqlitedb* Size: %dKB</string>
+    <string name="pref_googlescale">Tiles size factor</string>
+    <string name="pref_googlescale_summary">Get enlarged tiles from Google. It is recommended to clear the cache after changing the parameter</string>
+    
     <string name="hello">Hello World, OpenStreetMapViewer</string>
     <string name="app_name">RMaps</string>
     <string name="app_name_itemizedoverlay">OSMViewer ItemizedOverlay</string>

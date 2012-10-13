@@ -12,6 +12,7 @@ import android.graphics.Bitmap;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 
+import com.robert.maps.MainPreferences;
 import com.robert.maps.R;
 import com.robert.maps.kml.XMLparser.PredefMapsParser;
 import com.robert.maps.utils.RException;
@@ -46,7 +47,8 @@ public class TileSource {
 	YANDEX_TRAFFIC_ON,
 	MAP_TYPE,
 	PROJECTION; // 1-меркатор на сфероид, 2- на эллипсоид, 3- OSGB 36 British national grid reference system
-	public boolean LAYER, mOnlineMapCacheEnabled;
+	public boolean LAYER, mOnlineMapCacheEnabled, GOOGLESCALE;
+	public double MAPTILE_SIZE_FACTOR = 1;
 
 	public TileSource(Context ctx, String aId) throws SQLiteException, RException {
 		this(ctx, aId, true);
@@ -68,7 +70,7 @@ public class TileSource {
 			this.BASEURL = pref.getString(prefix + BASEURL_, NO_BASEURL);
 			this.ZOOM_MINLEVEL = 0;
 			this.ZOOM_MAXLEVEL = 24;
-			this.MAPTILE_SIZEPX = 256;
+			this.MAPTILE_SIZEPX = (int) (256 * MAPTILE_SIZE_FACTOR);
 			this.URL_BUILDER_TYPE = 0;
 			if (aId.toLowerCase().endsWith(SQLITEDB)) {
 				this.TILE_SOURCE_TYPE = 5;
@@ -95,6 +97,11 @@ public class TileSource {
 				if(parser != null){
 					final InputStream in = ctx.getResources().openRawResource(R.raw.predefmaps);
 					parser.parse(in, new PredefMapsParser(this, aId));
+					this.MAPTILE_SIZEPX = (int) (this.MAPTILE_SIZEPX * MAPTILE_SIZE_FACTOR);
+					if(this.GOOGLESCALE) {
+						final double GOOGLESCALE_SIZE_FACTOR = Double.parseDouble(pref.getString(MainPreferences.PREF_PREDEFMAPS_ + this.ID + "_googlescale", "1"));
+						this.MAPTILE_SIZEPX = (int) (this.MAPTILE_SIZEPX * GOOGLESCALE_SIZE_FACTOR);
+					}
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -108,7 +115,7 @@ public class TileSource {
 				mTileURLGenerator = new TileURLGeneratorOSM(BASEURL, IMAGE_FILENAMEENDING);
 				break;
 			case 1:
-				mTileURLGenerator = new TileURLGeneratorGOOGLEMAP(BASEURL, GOOGLE_LANG_CODE);
+				mTileURLGenerator = new TileURLGeneratorGOOGLEMAP(BASEURL, GOOGLE_LANG_CODE, pref.getString(MainPreferences.PREF_PREDEFMAPS_ + this.ID + "_googlescale", "1"));
 				break;
 			case 2:
 				mTileURLGenerator = new TileURLGeneratorYANDEX(BASEURL, IMAGE_FILENAMEENDING);

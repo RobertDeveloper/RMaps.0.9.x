@@ -314,6 +314,7 @@ public class TileView extends View {
 						if(Ut.Algorithm.isIntersected((int)(getWidth()*(1-mTouchScale)/2), (int)(getHeight()*(1-mTouchScale)/2), (int)(getWidth()*(1+mTouchScale)/2), (int)(getHeight()*(1+mTouchScale)/2), arr)) {
 							tileIn = true;
 							tilecnt++;
+							mPaint.setAntiAlias(true);
 							
 							final Bitmap currentMapTile = this.mTileSource.getTile(mapTileCoords[LONGITUDE], mapTileCoords[LATITUDE], mZoom);
 							if (currentMapTile != null) {
