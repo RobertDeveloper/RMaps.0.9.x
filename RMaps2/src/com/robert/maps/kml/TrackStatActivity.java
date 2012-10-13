@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.robert.maps.R;
 import com.robert.maps.kml.constants.PoiConstants;
+import com.robert.maps.utils.Units;
 
 public class TrackStatActivity extends Activity {
 
@@ -34,7 +35,7 @@ public class TrackStatActivity extends Activity {
 				final SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
         		final Track.Stat stat = tr.CalculateStatFull();
         		final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
-        		final int units = Integer.parseInt(pref.getString("pref_units", "0"));
+        		final Units units = new Units(pref);
 
         		((TextView)findViewById(R.id.duration_unit)).setText(String.format("(%s-%s)", sdf.format(stat.Date1), sdf.format(stat.Date2)));
 
@@ -43,25 +44,25 @@ public class TrackStatActivity extends Activity {
         		
         		((TextView)findViewById(R.id.Name)).setText(tr.Name);
         		((TextView)findViewById(R.id.duration_data)).setText(sdf.format(new Date((long) (tr.Duration*1000))));
-        		((TextView)findViewById(R.id.distance_data)).setText(String.format("%.2f", tr.Distance/1000));
+        		((TextView)findViewById(R.id.distance_data)).setText(String.format("%.2f", units.KM(tr.Distance/1000)));
         		((TextView)findViewById(R.id.points_data)).setText(String.format("%d", tr.Cnt));
-        		((TextView)findViewById(R.id.avgspeed_data)).setText(String.format("%.1f", stat.AvgSpeed));
-        		((TextView)findViewById(R.id.avgpace_data)).setText(String.format("%d:%02d", (int)(stat.AvgPace/60), (int)(stat.AvgPace - 60 * (int)(stat.AvgPace/60))));
-        		((TextView)findViewById(R.id.maxspeed_data)).setText(String.format("%.1f", stat.MaxSpeed));
+        		((TextView)findViewById(R.id.avgspeed_data)).setText(String.format("%.1f", units.KMH(stat.AvgSpeed)));
+        		((TextView)findViewById(R.id.avgpace_data)).setText(String.format("%d:%02d", (int)(units.MINKM(stat.AvgPace)/60), (int)(units.MINKM(stat.AvgPace) - 60 * (int)(units.MINKM(stat.AvgPace)/60))));
+        		((TextView)findViewById(R.id.maxspeed_data)).setText(String.format("%.1f", units.KMH(stat.MaxSpeed)));
         		((TextView)findViewById(R.id.movetime_data)).setText(sdf.format(new Date((long) (stat.MoveTime))));
-        		((TextView)findViewById(R.id.moveavgspeed_data)).setText(String.format("%.1f", stat.AvgMoveSpeed));
-        		((TextView)findViewById(R.id.minele_data)).setText(String.format("%.1f", stat.MinEle));
-        		((TextView)findViewById(R.id.maxele_data)).setText(String.format("%.1f", stat.MaxEle));
+        		((TextView)findViewById(R.id.moveavgspeed_data)).setText(String.format("%.1f", units.KMH(stat.AvgMoveSpeed)));
+        		((TextView)findViewById(R.id.minele_data)).setText(String.format("%.1f", units.M(stat.MinEle)));
+        		((TextView)findViewById(R.id.maxele_data)).setText(String.format("%.1f", units.M(stat.MaxEle)));
         		
-        		((TextView)findViewById(R.id.distance_unit)).setText(R.string.km);
+        		((TextView)findViewById(R.id.distance_unit)).setText(units.KM());
         		((TextView)findViewById(R.id.points_unit)).setText(R.string.blank);
-        		((TextView)findViewById(R.id.avgspeed_unit)).setText(R.string.kmh);
-        		((TextView)findViewById(R.id.avgpace_unit)).setText(R.string.minkm);
-        		((TextView)findViewById(R.id.maxspeed_unit)).setText(R.string.kmh);
+        		((TextView)findViewById(R.id.avgspeed_unit)).setText(units.KMH());
+        		((TextView)findViewById(R.id.avgpace_unit)).setText(units.MINKM());
+        		((TextView)findViewById(R.id.maxspeed_unit)).setText(units.KMH());
         		((TextView)findViewById(R.id.movetime_unit)).setText(R.string.blank);
-        		((TextView)findViewById(R.id.moveavgspeed_unit)).setText(R.string.kmh);
-        		((TextView)findViewById(R.id.minele_unit)).setText(R.string.m);
-        		((TextView)findViewById(R.id.maxele_unit)).setText(R.string.m);
+        		((TextView)findViewById(R.id.moveavgspeed_unit)).setText(units.KMH());
+        		((TextView)findViewById(R.id.minele_unit)).setText(units.M());
+        		((TextView)findViewById(R.id.maxele_unit)).setText(units.M());
         		
         		((ChartView) findViewById(R.id.chart)).setTrack(tr);
         	}
