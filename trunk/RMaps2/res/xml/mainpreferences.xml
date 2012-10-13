@@ -34,7 +34,7 @@
 	</PreferenceCategory>
 	<PreferenceCategory
 		android:title="@string/prefcat_main_look">
-		<CheckBoxPreference
+		<ListPreference android:entries="@array/pref_locale_title" android:entryValues="@array/pref_locale_values" android:title="@string/pref_locale" android:key="pref_locale" android:summary="@string/pref_locale_summary" android:defaultValue=" "/><CheckBoxPreference
 			android:key="pref_keepscreenon"
 			android:title="@string/pref_keepscreenon"
 			android:summary="@string/pref_keepscreenon_summary"
@@ -101,6 +101,7 @@
 <CheckBoxPreference android:key="pref_showscalebar" android:title="@string/pref_showscalebar" android:defaultValue="true" android:summary="@string/pref_showscalebar_summary"></CheckBoxPreference>
 <ListPreference android:summary="@string/pref_units_summary" android:key="pref_units" android:title="@string/pref_units" android:defaultValue="0" android:entryValues="@array/units_pref_values" android:entries="@array/units_pref_title"></ListPreference>
 <CheckBoxPreference android:key="pref_crosshair" android:defaultValue="true" android:title="@string/pref_crosshair" android:summary="@string/pref_crosshair_summary"></CheckBoxPreference>
+
 </PreferenceCategory>
 
 	<PreferenceCategory
