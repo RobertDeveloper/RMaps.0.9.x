@@ -5,15 +5,17 @@ package com.robert.maps;
 
 import java.io.File;
 import java.io.InputStream;
+import java.util.Locale;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+import android.content.res.Configuration;
 import android.os.Bundle;
-import android.os.Environment;
 import android.preference.CheckBoxPreference;
 import android.preference.EditTextPreference;
 import android.preference.ListPreference;
@@ -184,6 +186,25 @@ public class MainPreferences extends PreferenceActivity implements OnSharedPrefe
 			findPreference("pref_dir_main").setSummary(aPref.getString("pref_dir_main", Ut.getExternalStorageDirectory()+"/rmaps/"));
 			findPreference("pref_dir_import").setSummary(aPref.getString("pref_dir_import", Ut.getExternalStorageDirectory()+"/rmaps/import/"));
 			findPreference("pref_dir_export").setSummary(aPref.getString("pref_dir_export", Ut.getExternalStorageDirectory()+"/rmaps/export/"));
+		}
+		else if(aKey.equalsIgnoreCase("pref_locale")) {
+			Locale locale = ((MapApplication) getApplication()).getDefLocale();
+			final String lang = aPref.getString("pref_locale", " ");
+			if(lang.equalsIgnoreCase("zh_CN")) {
+				locale = Locale.SIMPLIFIED_CHINESE;
+			} else if(lang.equalsIgnoreCase("zh_TW")) {
+				locale = Locale.TRADITIONAL_CHINESE;
+			} else if(!lang.equalsIgnoreCase("") && !lang.equalsIgnoreCase(" ")) {
+	            locale = new Locale(lang);
+			} 
+			Locale.setDefault(locale);
+            Configuration config = getBaseContext().getResources().getConfiguration();
+            config.locale = locale;
+            getBaseContext().getResources().updateConfiguration(config, getBaseContext().getResources().getDisplayMetrics());
+            
+            finish();
+            Intent myIntent = new Intent(MainPreferences.this, MainPreferences.class);
+            startActivity(myIntent);
 		}
 		else if (Ut.equalsIgnoreCase(aKey, 0, 14, PREF_USERMAPS_))
 			if (aKey.endsWith("name") && findPreference(aKey) != null) {
