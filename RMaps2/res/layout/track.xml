@@ -35,6 +35,13 @@
 		<TextView android:textAppearance="?android:attr/textAppearance" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/activity" android:id="@+id/TextActivity"></TextView>
 		<Spinner android:layout_width="match_parent" android:layout_height="wrap_content" android:id="@+id/Activity" android:entries="@array/track_activity"></Spinner>
 
+		<Button
+		    android:id="@+id/set_color"
+		    style="buttonStyle"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:text="@string/set_color_and_style" />
+
 		<TextView
 			android:text=""
 			android:id="@+id/empty"
