@@ -5,12 +5,16 @@ import java.util.Date;
 import java.util.List;
 
 import org.andnav.osm.util.GeoPoint;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.location.Location;
 
+import com.robert.maps.R;
 import com.robert.maps.kml.constants.PoiConstants;
 
 public class Track implements PoiConstants {
+	public static final String COLOR = "color";
 
 	private final int Id;
 	public String Name;
@@ -23,6 +27,7 @@ public class Track implements PoiConstants {
 	public int Category;
 	public int Activity;
 	public Date Date;
+	public int Color;
 
 	private List<TrackPoint> trackpoints = null;
 
@@ -66,10 +71,10 @@ public class Track implements PoiConstants {
 	}
 
 	public Track() {
-		this(EMPTY_ID, "", "", false, 0, 0, 0, 0, 0, new Date(0));
+		this(EMPTY_ID, "", "", false, 0, 0, 0, 0, 0, new Date(0), "");
 	}
 
-	public Track(final int id, final String name, final String descr, final boolean show, final int cnt, final double distance, final double duration, final int category, final int activity, final Date date) {
+	public Track(final int id, final String name, final String descr, final boolean show, final int cnt, final double distance, final double duration, final int category, final int activity, final Date date, final String style) {
 		Id = id;
 		Name = name;
 		Descr = descr;
@@ -80,6 +85,22 @@ public class Track implements PoiConstants {
 		Category = category;
 		Activity = activity;
 		Date = date;
+		
+		try {
+			final JSONObject json = new JSONObject(style);
+			Color = json.optInt(COLOR, R.color.track);
+		} catch (Exception e) {
+			Color = R.color.track;
+		}
+	}
+	
+	public String getStyle() {
+		final JSONObject json = new JSONObject();
+		try {
+			json.put(COLOR, Color);
+		} catch (JSONException e) {
+		}
+		return json.toString();
 	}
 
 	public int getId() {

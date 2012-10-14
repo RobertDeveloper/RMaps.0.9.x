@@ -10,8 +10,6 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import org.andnav.osm.views.util.constants.OpenStreetMapViewConstants;
-
 import android.app.Activity;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
@@ -119,10 +117,10 @@ public class TrackListActivity extends ListActivity {
 		final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
 		mUnits = Integer.parseInt(pref.getString("pref_units", "0"));
 
-		if(versionDataUpdate < 7){
+		if(versionDataUpdate < 8){
 			mNeedTracksStatUpdate = true;
 			SharedPreferences.Editor editor = settings.edit();
-			editor.putInt("versionDataUpdate", 7);
+			editor.putInt("versionDataUpdate", 8);
 			editor.commit();
 		}
 		

@@ -58,6 +58,7 @@ public class TrackOverlay extends TileViewOverlay {
 			}
 
 			mPath = mProjection.toPixelsTrackPoints(mTrack.getPoints(), mBaseCoords, mBaseLocation);
+			mPaint.setColor(mTrack.Color);
 
 			Ut.d("Track maped");
 

@@ -121,14 +121,14 @@ public class GeoDatabase implements PoiConstants{
 
 	public void deletePoi(final int id) {
 		if (isDatabaseReady()) {
-			final Double[] args = {new Double(id)};
+			final Double[] args = {Double.valueOf(id)};
 			mDatabase.execSQL(STAT_deletePoi, args);
 		}
 	}
 
 	public void deletePoiCategory(final int id) {
 		if (isDatabaseReady() && id != ZERO) { // predef category My POI never delete
-			final Double[] args = {new Double(id)};
+			final Double[] args = {Double.valueOf(id)};
 			mDatabase.execSQL(STAT_deletePoiCategory, args);
 		}
 	}
@@ -175,7 +175,7 @@ public class GeoDatabase implements PoiConstants{
 
 	protected class GeoDatabaseHelper extends RSQLiteOpenHelper {
 		public GeoDatabaseHelper(final Context context, final String name) {
-			super(context, name, null, 18);
+			super(context, name, null, 19);
 		}
 
 		@Override
@@ -229,6 +229,14 @@ public class GeoDatabase implements PoiConstants{
 				db.execSQL(PoiConstants.SQL_UPDATE_6_4);
 				db.execSQL(PoiConstants.SQL_UPDATE_6_5);
 				LoadActivityListFromResource(db);
+			}
+			if (oldVersion < 19) {
+				db.execSQL(PoiConstants.SQL_UPDATE_6_1);
+				db.execSQL(PoiConstants.SQL_UPDATE_6_2);
+				db.execSQL(PoiConstants.SQL_UPDATE_6_3);
+				db.execSQL(PoiConstants.SQL_CREATE_tracks);
+				db.execSQL(PoiConstants.SQL_UPDATE_6_4);
+				db.execSQL(PoiConstants.SQL_UPDATE_6_5);
 			}
 		}
 
@@ -304,7 +312,7 @@ public class GeoDatabase implements PoiConstants{
 	}
 
 	public long addTrack(final String name, final String descr, final int show, final int cnt, final double distance,
-			final double duration, final int category, final int activity, final Date date) {
+			final double duration, final int category, final int activity, final Date date, final String style) {
 		long newId = -1;
 
 		if (isDatabaseReady()) {
@@ -318,13 +326,14 @@ public class GeoDatabase implements PoiConstants{
 			cv.put(CATEGORYID, category);
 			cv.put(ACTIVITY, activity);
 			cv.put(DATE, date.getTime()/1000);
+			cv.put(STYLE, style);
 			newId = this.mDatabase.insert(TRACKS, null, cv);
 		}
 
 		return newId;
 	}
 
-	public void updateTrack(final int id, final String name, final String descr, final int show, final int cnt, final double distance, final double duration, final int category, final int activity, final Date date) {
+	public void updateTrack(final int id, final String name, final String descr, final int show, final int cnt, final double distance, final double duration, final int category, final int activity, final Date date, final String style) {
 		if (isDatabaseReady()) {
 			final ContentValues cv = new ContentValues();
 			cv.put(NAME, name);
@@ -336,6 +345,7 @@ public class GeoDatabase implements PoiConstants{
 			cv.put(CATEGORYID, category);
 			cv.put(ACTIVITY, activity);
 			cv.put(DATE, date.getTime()/1000);
+			cv.put(STYLE, style);
 			final String[] args = {Integer.toString(id)};
 			this.mDatabase.update(TRACKS, cv, UPDATE_TRACKS, args);
 		}

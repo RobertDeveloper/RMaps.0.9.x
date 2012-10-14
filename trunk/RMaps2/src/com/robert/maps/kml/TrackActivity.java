@@ -1,5 +1,6 @@
 package com.robert.maps.kml;
 
+import net.margaritov.preference.colorpicker.ColorPickerDialog;
 import android.app.Activity;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -14,11 +15,12 @@ import android.widget.Toast;
 
 import com.robert.maps.R;
 
-public class TrackActivity extends Activity {
+public class TrackActivity extends Activity implements ColorPickerDialog.OnColorChangedListener{
 	EditText mName, mDescr;
 	Spinner mActivity;
 	private Track mTrack;
 	private PoiManager mPoiManager;
+	ColorPickerDialog mDialog;
 
 
 	@Override
@@ -61,6 +63,15 @@ public class TrackActivity extends Activity {
         	mDescr.setText(mTrack.Descr);
 			mActivity.setSelection(mTrack.Activity);
         }
+        
+        ((Button) findViewById(R.id.set_color)).setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				mDialog = new ColorPickerDialog(TrackActivity.this, mTrack.Color);
+				mDialog.setOnColorChangedListener(TrackActivity.this);
+				mDialog.setAlphaSliderVisible(true);
+				mDialog.show();
+			}
+		});
 
 		((Button) findViewById(R.id.saveButton))
 		.setOnClickListener(new OnClickListener() {
@@ -102,6 +113,10 @@ public class TrackActivity extends Activity {
 		finish();
 
 		Toast.makeText(TrackActivity.this, R.string.message_saved, Toast.LENGTH_SHORT).show();
+	}
+
+	public void onColorChanged(int color) {
+		mTrack.Color = color;
 	}
 
 }
