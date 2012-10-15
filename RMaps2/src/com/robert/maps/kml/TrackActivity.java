@@ -2,6 +2,7 @@ package com.robert.maps.kml;
 
 import net.margaritov.preference.colorpicker.ColorPickerDialog;
 import android.app.Activity;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -14,6 +15,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.robert.maps.R;
+import com.robert.maps.kml.utils.TrackStylePickerActivity;
 
 public class TrackActivity extends Activity implements ColorPickerDialog.OnColorChangedListener{
 	EditText mName, mDescr;
@@ -66,10 +68,10 @@ public class TrackActivity extends Activity implements ColorPickerDialog.OnColor
         
         ((Button) findViewById(R.id.set_color)).setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-				mDialog = new ColorPickerDialog(TrackActivity.this, mTrack.Color);
-				mDialog.setOnColorChangedListener(TrackActivity.this);
-				mDialog.setAlphaSliderVisible(true);
-				mDialog.show();
+				startActivityForResult(new Intent(TrackActivity.this, TrackStylePickerActivity.class)
+				.putExtra(Track.COLOR, mTrack.Color)
+				.putExtra(Track.WIDTH, mTrack.Width)
+				, R.id.set_color);
 			}
 		});
 
@@ -117,6 +119,19 @@ public class TrackActivity extends Activity implements ColorPickerDialog.OnColor
 
 	public void onColorChanged(int color) {
 		mTrack.Color = color;
+	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		switch(requestCode) {
+		case R.id.set_color:
+			if(resultCode == RESULT_OK) {
+				mTrack.Color = data.getIntExtra(Track.COLOR, getResources().getColor(R.color.track));
+				mTrack.Width = data.getIntExtra(Track.WIDTH, 4);
+			}
+			break;
+		}
+		super.onActivityResult(requestCode, resultCode, data);
 	}
 
 }

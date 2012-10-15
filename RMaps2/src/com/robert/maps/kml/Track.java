@@ -10,11 +10,11 @@ import org.json.JSONObject;
 
 import android.location.Location;
 
-import com.robert.maps.R;
 import com.robert.maps.kml.constants.PoiConstants;
 
 public class Track implements PoiConstants {
 	public static final String COLOR = "color";
+	public static final String WIDTH = "width";
 
 	private final int Id;
 	public String Name;
@@ -28,6 +28,7 @@ public class Track implements PoiConstants {
 	public int Activity;
 	public Date Date;
 	public int Color;
+	public int Width;
 
 	private List<TrackPoint> trackpoints = null;
 
@@ -88,9 +89,11 @@ public class Track implements PoiConstants {
 		
 		try {
 			final JSONObject json = new JSONObject(style);
-			Color = json.optInt(COLOR, R.color.track);
+			Color = json.optInt(COLOR, 0xffA565FE);
+			Width = json.optInt(WIDTH, 4);
 		} catch (Exception e) {
-			Color = R.color.track;
+			Color = 0xffA565FE;
+			Width = 4;
 		}
 	}
 	
@@ -98,6 +101,7 @@ public class Track implements PoiConstants {
 		final JSONObject json = new JSONObject();
 		try {
 			json.put(COLOR, Color);
+			json.put(WIDTH, Width);
 		} catch (JSONException e) {
 		}
 		return json.toString();

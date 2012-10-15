@@ -416,8 +416,6 @@ public class TrackListActivity extends ListActivity {
 
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
-		Ut.dd("pos="+position);
-		Ut.dd("id="+id);
 		mPoiManager.setTrackChecked((int)id);
 		FillData();
 		super.onListItemClick(l, v, position, id);
