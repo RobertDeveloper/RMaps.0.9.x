@@ -21,6 +21,11 @@ import com.robert.maps.utils.ScaleBarDrawable;
 import com.robert.maps.utils.Ut;
 
 public class MapView extends RelativeLayout {
+	public static final int ZOOM_CONTROL_HIDE = 0;
+	public static final int ZOOM_CONTROL_TOP = 1;
+	public static final int ZOOM_CONTROL_BOTTOM = 2;
+	public static final String MAPNAME = "MapName";
+	
 	private final TileView mTileView;
 	private final MapController mController;
 	private IMoveListener mMoveListener;
