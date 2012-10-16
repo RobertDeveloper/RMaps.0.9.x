@@ -511,10 +511,11 @@ public class MainActivity extends Activity {
 
 	@Override
 	protected void onPause() {
+		final GeoPoint point = mMap.getMapCenter();
+
 		SharedPreferences uiState = getPreferences(Activity.MODE_PRIVATE);
 		SharedPreferences.Editor editor = uiState.edit();
 		editor.putString("MapName", mTileSource.ID);
-		final GeoPoint point = mMap.getMapCenter();
 		editor.putInt("Latitude", point.getLatitudeE6());
 		editor.putInt("Longitude", point.getLongitudeE6());
 		editor.putInt("ZoomLevel", mMap.getZoomLevel());
@@ -524,6 +525,16 @@ public class MainActivity extends Activity {
 		if(mPoiOverlay != null)
 			editor.putInt("curShowPoiId", mPoiOverlay.getTapIndex());
 		mSearchResultOverlay.toPref(editor);
+		editor.commit();
+		
+		uiState = getSharedPreferences("MapName", Activity.MODE_PRIVATE);
+		editor = uiState.edit();
+		editor.putString("MapName", mTileSource.ID);
+		editor.putInt("Latitude", point.getLatitudeE6());
+		editor.putInt("Longitude", point.getLongitudeE6());
+		editor.putInt("ZoomLevel", mMap.getZoomLevel());
+		editor.putBoolean("CompassEnabled", mCompassEnabled);
+		editor.putBoolean("AutoFollow", mAutoFollow);
 		editor.commit();
 
 		if (myWakeLock != null) 
