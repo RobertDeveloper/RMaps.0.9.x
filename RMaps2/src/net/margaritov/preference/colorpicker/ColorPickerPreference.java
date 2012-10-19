@@ -16,6 +16,8 @@
 
 package net.margaritov.preference.colorpicker;
 
+import net.margaritov.preference.colorpicker.AlphaPatternDrawable;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;

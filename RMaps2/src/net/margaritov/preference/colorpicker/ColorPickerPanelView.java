@@ -23,6 +23,8 @@ import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.view.View;
 
+import net.margaritov.preference.colorpicker.AlphaPatternDrawable;
+
 /**
  * This class draws a panel which which will be filled with a color which can be set.
  * It can be used to show the currently selected color which you will get from

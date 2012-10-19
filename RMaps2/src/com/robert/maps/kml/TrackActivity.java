@@ -1,20 +1,26 @@
 package com.robert.maps.kml;
 
+import net.margaritov.preference.colorpicker.AlphaPatternDrawable;
 import net.margaritov.preference.colorpicker.ColorPickerDialog;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.Bitmap.Config;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.robert.maps.R;
+import com.robert.maps.kml.utils.TrackStyleDrawable;
 import com.robert.maps.kml.utils.TrackStylePickerActivity;
 
 public class TrackActivity extends Activity implements ColorPickerDialog.OnColorChangedListener{
@@ -23,6 +29,7 @@ public class TrackActivity extends Activity implements ColorPickerDialog.OnColor
 	private Track mTrack;
 	private PoiManager mPoiManager;
 	ColorPickerDialog mDialog;
+	private float mDensity;
 
 
 	@Override
@@ -66,14 +73,14 @@ public class TrackActivity extends Activity implements ColorPickerDialog.OnColor
 			mActivity.setSelection(mTrack.Activity);
         }
         
-        ((Button) findViewById(R.id.set_color)).setOnClickListener(new OnClickListener() {
+        findViewById(R.id.imageStyle).setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 				startActivityForResult(new Intent(TrackActivity.this, TrackStylePickerActivity.class)
 				.putExtra(Track.COLOR, mTrack.Color)
 				.putExtra(Track.WIDTH, mTrack.Width)
 				.putExtra(Track.SHADOWRADIUS, mTrack.ShadowRadius)
 				.putExtra(Track.COLORSHADOW, mTrack.ColorShadow)
-				, R.id.set_color);
+				, R.id.imageStyle);
 			}
 		});
 
@@ -89,6 +96,31 @@ public class TrackActivity extends Activity implements ColorPickerDialog.OnColor
 				TrackActivity.this.finish();
 			}
 		});
+		
+		mDensity = getResources().getDisplayMetrics().density;
+		((ImageView) findViewById(R.id.imageStyleBg)).setBackgroundDrawable(new AlphaPatternDrawable((int)(5 * mDensity)));
+		((ImageView) findViewById(R.id.imageStyle)).setBackgroundDrawable(new TrackStyleDrawable(mTrack.Color, mTrack.Width, mTrack.ColorShadow, mTrack.ShadowRadius));
+//		((ImageView) findViewById(R.id.imageStyle)).setImageBitmap(getPreviewBitmap());
+	}
+
+	private Bitmap getPreviewBitmap() {
+		int d = (int) (mDensity * 31); //30dip
+		int color = 0x55A565FE;
+		Bitmap bm = Bitmap.createBitmap(d, d, Config.ARGB_8888);
+		int w = bm.getWidth();
+		int h = bm.getHeight();
+		int c = color;
+		for (int i = 0; i < w; i++) {
+			for (int j = i; j < h; j++) {
+				c = (i <= 1 || j <= 1 || i >= w-2 || j >= h-2) ? Color.GRAY : color;
+				bm.setPixel(i, j, c);
+				if (i != j) {
+					bm.setPixel(j, i, c);
+				}
+			}
+		}
+
+		return bm;
 	}
 
 	@Override
@@ -126,7 +158,7 @@ public class TrackActivity extends Activity implements ColorPickerDialog.OnColor
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		switch(requestCode) {
-		case R.id.set_color:
+		case R.id.imageStyle:
 			if(resultCode == RESULT_OK) {
 				mTrack.Color = data.getIntExtra(Track.COLOR, getResources().getColor(R.color.track));
 				mTrack.Width = data.getIntExtra(Track.WIDTH, 4);
