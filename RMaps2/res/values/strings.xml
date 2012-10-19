@@ -297,5 +297,10 @@ v.0.7.0\n
 	<string name="error_diskio">Can\'t open file %s Disk IO error</string>
 	<string name="dialog_color_picker">Color Picker</string> 
 	<string name="press_color_to_apply">Press on Color to apply</string> 
-	<string name="set_color_and_style">Set color and style</string> 
+	<string name="set_color_and_style">Set color and style</string>
+	<string name="add_shadow_box">Add shadow</string>
+	<string name="line_color">Line color</string>
+	<string name="line_width">Line width</string>
+	<string name="shadow_color">Shadow color</string>
+	<string name="shadow_width">Shadow width</string> 
 </resources>
