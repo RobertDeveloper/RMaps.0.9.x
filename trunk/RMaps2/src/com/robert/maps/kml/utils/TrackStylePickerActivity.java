@@ -1,5 +1,6 @@
 package com.robert.maps.kml.utils;
 
+import net.margaritov.preference.colorpicker.ColorPickerDialog;
 import net.margaritov.preference.colorpicker.ColorPickerPanelView;
 import net.margaritov.preference.colorpicker.ColorPickerView;
 
@@ -8,32 +9,37 @@ import org.andnav.osm.util.GeoPoint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PixelFormat;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.LinearLayout;
+import android.view.View.OnClickListener;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 
 import com.robert.maps.R;
 import com.robert.maps.kml.Track;
 import com.robert.maps.tileprovider.TileSource;
+import com.robert.maps.utils.Ut;
 import com.robert.maps.view.MapView;
 
 public class TrackStylePickerActivity extends Activity implements ColorPickerView.OnColorChangedListener,
-		View.OnClickListener, OnSeekBarChangeListener {
+		View.OnClickListener, OnSeekBarChangeListener, ColorPickerDialog.OnColorChangedListener {
 	
-	private ColorPickerView mColorPicker;
-
 	private ColorPickerPanelView mOldColor;
 	private ColorPickerPanelView mNewColor;
 	private SeekBar mWidthBar;
+	private SeekBar mShadowRadiusBar;
 	private MapView mMap;
 	private TrackStyleOverlay mTrackStyleOverlay;
 	private TileSource mTileSource;
 	private Paint mPaint = new Paint();
 
+	private ColorPickerPanelView mColorView;
+	private ColorPickerPanelView mColorShadowView;
+	private ColorPickerDialog mDialog;
+	
 	public interface OnColorChangedListener {
 		public void onColorChanged(int color);
 	}
@@ -47,31 +53,56 @@ public class TrackStylePickerActivity extends Activity implements ColorPickerVie
         Bundle extras = getIntent().getExtras();
         if(extras == null) extras = new Bundle();
 		final int color = extras.getInt(Track.COLOR, getResources().getColor(R.color.track));
+		final int colorshadow = extras.getInt(Track.COLORSHADOW, getResources().getColor(R.color.track));
 		
 		// To fight color banding.
 		getWindow().setFormat(PixelFormat.RGBA_8888);
 		
 		setTitle(R.string.dialog_color_picker);
 		
-		mColorPicker = (ColorPickerView) findViewById(R.id.color_picker_view);
+		mColorView = (ColorPickerPanelView) findViewById(R.id.color);
+		//mColorView.setOnClickListener(this);
+		mColorView.setColor(color);
+		mColorView.setOnClickListener(new OnClickListener() {
+			
+			public void onClick(View v) {
+				mDialog = new ColorPickerDialog(TrackStylePickerActivity.this, TrackStylePickerActivity.this.mColorView.getColor());
+				mDialog.setOnColorChangedListener(TrackStylePickerActivity.this);
+				mDialog.setAlphaSliderVisible(true);
+//				if (state != null) {
+//					mDialog.onRestoreInstanceState(state);
+//				}
+				mDialog.show();
+			}
+		});
+
+		mColorShadowView = (ColorPickerPanelView) findViewById(R.id.colorshadow);
+		//mColorShadowView.setOnClickListener(this);
+		mColorShadowView.setColor(colorshadow);
+		mColorShadowView.setOnClickListener(new OnClickListener() {
+			
+			public void onClick(View v) {
+				mDialog = new ColorPickerDialog(TrackStylePickerActivity.this, TrackStylePickerActivity.this.mColorShadowView.getColor());
+				mDialog.setOnColorChangedListener(TrackStylePickerActivity.this.mColorShadowListiner);
+				mDialog.setAlphaSliderVisible(true);
+//				if (state != null) {
+//					mDialog.onRestoreInstanceState(state);
+//				}
+				mDialog.show();
+			}
+		});
+
 		mOldColor = (ColorPickerPanelView) findViewById(R.id.old_color_panel);
 		mNewColor = (ColorPickerPanelView) findViewById(R.id.new_color_panel);
 		mWidthBar = (SeekBar) findViewById(R.id.width);
-		
-		((LinearLayout) mOldColor.getParent()).setPadding(
-			Math.round(mColorPicker.getDrawingOffset()), 
-			0, 
-			Math.round(mColorPicker.getDrawingOffset()), 
-			0
-		);	
+		mShadowRadiusBar = (SeekBar) findViewById(R.id.shadowradius);
 		
 		mOldColor.setOnClickListener(this);
 		mNewColor.setOnClickListener(this);
 		mOldColor.setColor(color);
-		mColorPicker.setColor(color, true);
 
-		mColorPicker.setAlphaSliderVisible(true);
 		mWidthBar.setProgress(extras.getInt(Track.WIDTH, 4));
+		mShadowRadiusBar.setProgress((int)(extras.getDouble(Track.SHADOWRADIUS, 4) * 10));
 		
  		mMap = (MapView) findViewById(R.id.map);
 		mMap.setLongClickable(false);
@@ -80,19 +111,46 @@ public class TrackStylePickerActivity extends Activity implements ColorPickerVie
 		mPaint.setStrokeWidth(extras.getInt(Track.WIDTH, 4));
 		mPaint.setStyle(Paint.Style.STROKE);
 		mPaint.setColor(color);
+		mPaint.setStrokeCap(Paint.Cap.ROUND);
 		mTrackStyleOverlay = new TrackStyleOverlay();
 		mTrackStyleOverlay.setPaint(mPaint);
 		mMap.getOverlays().add(mTrackStyleOverlay);
 
-		mColorPicker.setOnColorChangedListener(this);
 		mWidthBar.setOnSeekBarChangeListener(this);
+		mShadowRadiusBar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+			
+			public void onStopTrackingTouch(SeekBar seekBar) {
+			}
+			
+			public void onStartTrackingTouch(SeekBar seekBar) {
+			}
+			
+			public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+				mPaint.setShadowLayer(progress / 10, 0, 0, mColorShadowView.getColor());
+				mMap.invalidate();
+			}
+		});
+		
 	}
+	
+	ColorPickerDialog.OnColorChangedListener mColorShadowListiner = new ColorPickerDialog.OnColorChangedListener() {
+		
+		public void onColorChanged(int color) {
+			mColorShadowView.setColor(color);
+			mPaint.setAlpha(Color.alpha(color));
+			Ut.dd("Color.alpha(color)="+Color.alpha(color));
+			mPaint.setShadowLayer(mShadowRadiusBar.getProgress() / 10, 0, 0, color);
+			mMap.invalidate();
+		}
+	};
 
 	public void onClick(View v) {
 		if (v.getId() == R.id.new_color_panel) {
 			setResult(RESULT_OK, (new Intent())
-					.putExtra(Track.COLOR, mNewColor.getColor())
+					.putExtra(Track.COLOR, mColorView.getColor())
+					.putExtra(Track.COLORSHADOW, mColorShadowView.getColor())
 					.putExtra(Track.WIDTH, mWidthBar.getProgress())
+					.putExtra(Track.SHADOWRADIUS, ((double)mShadowRadiusBar.getProgress()) / 10)
 					);
 		}
 		finish();
@@ -100,8 +158,10 @@ public class TrackStylePickerActivity extends Activity implements ColorPickerVie
 	
 	public void onColorChanged(int color) {
 		mNewColor.setColor(color);
+		mColorView.setColor(color);
 		
 		mPaint.setColor(color);
+		
 		mTrackStyleOverlay.setPaint(mPaint);
 		mMap.invalidate();
 	}
@@ -118,7 +178,6 @@ public class TrackStylePickerActivity extends Activity implements ColorPickerVie
 	@Override
 	protected void onRestoreInstanceState(Bundle savedInstanceState) {
 		mOldColor.setColor(savedInstanceState.getInt("old_color"));
-		mColorPicker.setColor(savedInstanceState.getInt("new_color"), true);
 		super.onRestoreInstanceState(savedInstanceState);
 	}
 

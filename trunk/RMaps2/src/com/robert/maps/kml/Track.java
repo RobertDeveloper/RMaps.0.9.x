@@ -14,7 +14,9 @@ import com.robert.maps.kml.constants.PoiConstants;
 
 public class Track implements PoiConstants {
 	public static final String COLOR = "color";
+	public static final String COLORSHADOW = "color_shadow";
 	public static final String WIDTH = "width";
+	public static final String SHADOWRADIUS = "shadowradius";
 
 	private final int Id;
 	public String Name;
@@ -28,7 +30,9 @@ public class Track implements PoiConstants {
 	public int Activity;
 	public Date Date;
 	public int Color;
+	public int ColorShadow;
 	public int Width;
+	public double ShadowRadius;
 
 	private List<TrackPoint> trackpoints = null;
 
@@ -90,10 +94,14 @@ public class Track implements PoiConstants {
 		try {
 			final JSONObject json = new JSONObject(style);
 			Color = json.optInt(COLOR, 0xffA565FE);
+			ColorShadow = json.optInt(COLORSHADOW, 0xffA565FE);
 			Width = json.optInt(WIDTH, 4);
+			ShadowRadius = json.optDouble(SHADOWRADIUS, 4);
 		} catch (Exception e) {
 			Color = 0xffA565FE;
+			ColorShadow = 0xffA565FE;
 			Width = 4;
+			ShadowRadius = 4;
 		}
 	}
 	
@@ -101,7 +109,9 @@ public class Track implements PoiConstants {
 		final JSONObject json = new JSONObject();
 		try {
 			json.put(COLOR, Color);
+			json.put(COLORSHADOW, ColorShadow);
 			json.put(WIDTH, Width);
+			json.put(SHADOWRADIUS, ShadowRadius);
 		} catch (JSONException e) {
 		}
 		return json.toString();
