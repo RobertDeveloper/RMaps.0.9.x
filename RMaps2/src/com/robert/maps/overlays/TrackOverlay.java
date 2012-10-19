@@ -6,6 +6,7 @@ import java.util.concurrent.Executors;
 import org.andnav.osm.util.GeoPoint;
 
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
@@ -60,6 +61,8 @@ public class TrackOverlay extends TileViewOverlay {
 			mPath = mProjection.toPixelsTrackPoints(mTrack.getPoints(), mBaseCoords, mBaseLocation);
 			mPaint.setColor(mTrack.Color);
 			mPaint.setStrokeWidth(mTrack.Width);
+			mPaint.setAlpha(Color.alpha(mTrack.ColorShadow));
+			mPaint.setShadowLayer((float) mTrack.ShadowRadius, 0, 0, mTrack.ColorShadow);
 
 			Ut.d("Track maped");
 
@@ -84,6 +87,7 @@ public class TrackOverlay extends TileViewOverlay {
 		mPaint.setAntiAlias(true);
 		mPaint.setStrokeWidth(4);
 		mPaint.setStyle(Paint.Style.STROKE);
+		mPaint.setStrokeCap(Paint.Cap.ROUND);
 		mPaint.setColor(mainActivity.getResources().getColor(R.color.track));
 	}
 

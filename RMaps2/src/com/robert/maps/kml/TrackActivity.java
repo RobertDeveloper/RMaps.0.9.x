@@ -71,6 +71,8 @@ public class TrackActivity extends Activity implements ColorPickerDialog.OnColor
 				startActivityForResult(new Intent(TrackActivity.this, TrackStylePickerActivity.class)
 				.putExtra(Track.COLOR, mTrack.Color)
 				.putExtra(Track.WIDTH, mTrack.Width)
+				.putExtra(Track.SHADOWRADIUS, mTrack.ShadowRadius)
+				.putExtra(Track.COLORSHADOW, mTrack.ColorShadow)
 				, R.id.set_color);
 			}
 		});
@@ -128,6 +130,8 @@ public class TrackActivity extends Activity implements ColorPickerDialog.OnColor
 			if(resultCode == RESULT_OK) {
 				mTrack.Color = data.getIntExtra(Track.COLOR, getResources().getColor(R.color.track));
 				mTrack.Width = data.getIntExtra(Track.WIDTH, 4);
+				mTrack.ColorShadow = data.getIntExtra(Track.COLORSHADOW, getResources().getColor(R.color.track));
+				mTrack.ShadowRadius = data.getDoubleExtra(Track.SHADOWRADIUS, 4);
 			}
 			break;
 		}
