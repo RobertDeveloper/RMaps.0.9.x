@@ -15,6 +15,8 @@ import android.graphics.PixelFormat;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 
@@ -27,8 +29,6 @@ import com.robert.maps.view.MapView;
 public class TrackStylePickerActivity extends Activity implements ColorPickerView.OnColorChangedListener,
 		View.OnClickListener, OnSeekBarChangeListener, ColorPickerDialog.OnColorChangedListener {
 	
-	private ColorPickerPanelView mOldColor;
-	private ColorPickerPanelView mNewColor;
 	private SeekBar mWidthBar;
 	private SeekBar mShadowRadiusBar;
 	private MapView mMap;
@@ -39,6 +39,7 @@ public class TrackStylePickerActivity extends Activity implements ColorPickerVie
 	private ColorPickerPanelView mColorView;
 	private ColorPickerPanelView mColorShadowView;
 	private ColorPickerDialog mDialog;
+	private CheckBox mAddShadowBox;
 	
 	public interface OnColorChangedListener {
 		public void onColorChanged(int color);
@@ -92,17 +93,12 @@ public class TrackStylePickerActivity extends Activity implements ColorPickerVie
 			}
 		});
 
-		mOldColor = (ColorPickerPanelView) findViewById(R.id.old_color_panel);
-		mNewColor = (ColorPickerPanelView) findViewById(R.id.new_color_panel);
 		mWidthBar = (SeekBar) findViewById(R.id.width);
 		mShadowRadiusBar = (SeekBar) findViewById(R.id.shadowradius);
 		
-		mOldColor.setOnClickListener(this);
-		mNewColor.setOnClickListener(this);
-		mOldColor.setColor(color);
-
 		mWidthBar.setProgress(extras.getInt(Track.WIDTH, 4));
-		mShadowRadiusBar.setProgress((int)(extras.getDouble(Track.SHADOWRADIUS, 4) * 10));
+		final double shadowradius = extras.getDouble(Track.SHADOWRADIUS, 4);
+		mShadowRadiusBar.setProgress((int)(shadowradius * 10));
 		
  		mMap = (MapView) findViewById(R.id.map);
 		mMap.setLongClickable(false);
@@ -112,6 +108,8 @@ public class TrackStylePickerActivity extends Activity implements ColorPickerVie
 		mPaint.setStyle(Paint.Style.STROKE);
 		mPaint.setColor(color);
 		mPaint.setStrokeCap(Paint.Cap.ROUND);
+		mPaint.setShadowLayer((float) shadowradius, 0, 0, colorshadow);
+		
 		mTrackStyleOverlay = new TrackStyleOverlay();
 		mTrackStyleOverlay.setPaint(mPaint);
 		mMap.getOverlays().add(mTrackStyleOverlay);
@@ -131,6 +129,25 @@ public class TrackStylePickerActivity extends Activity implements ColorPickerVie
 			}
 		});
 		
+		((Button) findViewById(R.id.saveButton)).setOnClickListener(this);
+		((Button) findViewById(R.id.discardButton)).setOnClickListener(this);
+		mAddShadowBox = (CheckBox) findViewById(R.id.add_shadow_box);
+		mAddShadowBox.setOnClickListener(new OnClickListener() {
+			
+			public void onClick(View v) {
+				setShadowVisible(mAddShadowBox.isChecked() ? View.VISIBLE : View.INVISIBLE);
+			}
+		});
+		mAddShadowBox.setChecked(shadowradius > 0);
+		setShadowVisible(mAddShadowBox.isChecked() ? View.VISIBLE : View.INVISIBLE);
+	}
+	
+	void setShadowVisible(final int visible) {
+		findViewById(R.id.shadow_color).setVisibility(visible);
+		findViewById(R.id.text_shadow_width).setVisibility(visible);
+		findViewById(R.id.shadowradius).setVisibility(visible);
+		if(visible == View.INVISIBLE)
+			mShadowRadiusBar.setProgress(0);
 	}
 	
 	ColorPickerDialog.OnColorChangedListener mColorShadowListiner = new ColorPickerDialog.OnColorChangedListener() {
@@ -145,7 +162,7 @@ public class TrackStylePickerActivity extends Activity implements ColorPickerVie
 	};
 
 	public void onClick(View v) {
-		if (v.getId() == R.id.new_color_panel) {
+		if (v.getId() == R.id.saveButton) {
 			setResult(RESULT_OK, (new Intent())
 					.putExtra(Track.COLOR, mColorView.getColor())
 					.putExtra(Track.COLORSHADOW, mColorShadowView.getColor())
@@ -157,7 +174,6 @@ public class TrackStylePickerActivity extends Activity implements ColorPickerVie
 	}
 	
 	public void onColorChanged(int color) {
-		mNewColor.setColor(color);
 		mColorView.setColor(color);
 		
 		mPaint.setColor(color);
@@ -177,7 +193,6 @@ public class TrackStylePickerActivity extends Activity implements ColorPickerVie
 
 	@Override
 	protected void onRestoreInstanceState(Bundle savedInstanceState) {
-		mOldColor.setColor(savedInstanceState.getInt("old_color"));
 		super.onRestoreInstanceState(savedInstanceState);
 	}
 
