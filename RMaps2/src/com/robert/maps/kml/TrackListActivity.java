@@ -30,7 +30,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.ListAdapter;
+import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Toast;
@@ -195,13 +195,29 @@ public class TrackListActivity extends ListActivity {
 		if(c != null){
 	        startManagingCursor(c);
 
-	        ListAdapter adapter = new SimpleCursorAdapter(this,
+	        SimpleCursorAdapter adapter = new SimpleCursorAdapter(this,
 	                R.layout.tracklist_item
 	                , c,
-	                        new String[] { "name", "title2", "image", "cnt", "distance" + mUnits, "duration", "units"/*, "descr"*/ },
+	                        new String[] { "name", "title2", "show", "cnt", "distance" + mUnits, "duration", "units"/*, "descr"*/ },
 	                        new int[] { R.id.title1, R.id.title2, R.id.checkbox, R.id.data_value1, R.id.data_value2, R.id.data_value3, R.id.data_unit2 /*, R.id.descr*/ });
+	        adapter.setViewBinder(mViewBinder);
 	        setListAdapter(adapter);
 		};
+	}
+	
+	private SimpleCursorAdapter.ViewBinder mViewBinder  = new CheckBoxViewBinder();
+	
+	private class CheckBoxViewBinder implements SimpleCursorAdapter.ViewBinder {
+		private static final String SHOW = "show";
+
+		public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
+			if(cursor.getColumnName(columnIndex).equalsIgnoreCase(SHOW)) {
+				((CheckBox)view.findViewById(R.id.checkbox)).setChecked(cursor.getInt(columnIndex) == 1);
+				return true;
+			}
+			return false;
+		}
+		
 	}
 
 	private void UpdateTracksStat() {
@@ -417,7 +433,10 @@ public class TrackListActivity extends ListActivity {
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		mPoiManager.setTrackChecked((int)id);
-		FillData();
+		//FillData();
+		final CheckBox ch = (CheckBox) v.findViewById(R.id.checkbox);
+		ch.setChecked(!ch.isChecked());
+		
 		super.onListItemClick(l, v, position, id);
 	}
 

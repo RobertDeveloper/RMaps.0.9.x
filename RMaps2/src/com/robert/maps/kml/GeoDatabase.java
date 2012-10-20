@@ -399,7 +399,7 @@ public class GeoDatabase implements PoiConstants{
 		if (isDatabaseReady()) {
 			final String[] args = {Long.toString(id)};
 			mDatabase.execSQL(STAT_setTrackChecked_1, args);
-			mDatabase.execSQL(STAT_setTrackChecked_2, args);
+			//mDatabase.execSQL(STAT_setTrackChecked_2, args);
 		}
 	}
 
