@@ -9,6 +9,7 @@ import org.andnav.osm.util.GeoPoint;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.preference.PreferenceManager;
 
 import com.robert.maps.R;
 import com.robert.maps.kml.Track.TrackPoint;
@@ -178,10 +179,16 @@ public class PoiManager implements PoiConstants {
 		Cursor c = mGeoDatabase.getTrackChecked();
 		if (c != null) {
 			tracks = new Track[c.getCount()];
+			final String defStyle = PreferenceManager.getDefaultSharedPreferences(mCtx).getString("pref_track_style", "");
+			
 			if (c.moveToFirst())
 				do {
 					final int pos = c.getPosition();
-					tracks[pos] = new Track(c.getInt(3), c.getString(0), c.getString(1), c.getInt(2) == ONE ? true : false, c.getInt(4), c.getDouble(5), c.getDouble(6), c.getInt(7), c.getInt(8), new Date(c.getLong(9)*1000), c.getString(10));
+					String style = c.getString(10);
+					if(style == null || style.equalsIgnoreCase(""))
+						style = defStyle;
+
+					tracks[pos] = new Track(c.getInt(3), c.getString(0), c.getString(1), c.getInt(2) == ONE ? true : false, c.getInt(4), c.getDouble(5), c.getDouble(6), c.getInt(7), c.getInt(8), new Date(c.getLong(9)*1000), style);
 					
 					Cursor cpoints = mGeoDatabase.getTrackPoints(tracks[pos].getId());
 					if (cpoints != null) {
@@ -217,8 +224,13 @@ public class PoiManager implements PoiConstants {
 		Track track = null;
 		Cursor c = mGeoDatabase.getTrack(id);
 		if (c != null) {
-			if (c.moveToFirst())
-				track = new Track(id, c.getString(0), c.getString(1), c.getInt(2) == ONE ? true : false, c.getInt(3), c.getDouble(4), c.getDouble(5), c.getInt(6), c.getInt(7), new Date(c.getLong(8)*1000), c.getString(9));
+			if (c.moveToFirst()) {
+				String style = c.getString(9);
+				if(style == null || style.equalsIgnoreCase(""))
+					style = PreferenceManager.getDefaultSharedPreferences(mCtx).getString("pref_track_style", "");
+
+				track = new Track(id, c.getString(0), c.getString(1), c.getInt(2) == ONE ? true : false, c.getInt(3), c.getDouble(4), c.getDouble(5), c.getInt(6), c.getInt(7), new Date(c.getLong(8)*1000), style);
+			};
 			c.close();
 			c = null;
 

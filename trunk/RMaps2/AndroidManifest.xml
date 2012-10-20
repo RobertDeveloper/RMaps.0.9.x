@@ -90,7 +90,7 @@
                 <action android:name="com.robert.maps.mapdownloader"/>
             </intent-filter>
         </service>
-        <activity android:name=".kml.utils.TrackStylePickerActivity"></activity>
+        <activity android:name=".kml.utils.TrackStylePickerDialog"></activity>
     </application>
 
     <uses-permission android:name="android.permission.WAKE_LOCK" />

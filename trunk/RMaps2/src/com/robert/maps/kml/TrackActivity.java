@@ -2,7 +2,6 @@ package com.robert.maps.kml;
 
 import net.margaritov.preference.colorpicker.ColorPickerDialog;
 import android.app.Activity;
-import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
@@ -18,14 +17,15 @@ import android.widget.Toast;
 
 import com.robert.maps.R;
 import com.robert.maps.kml.utils.TrackStyleDrawable;
-import com.robert.maps.kml.utils.TrackStylePickerActivity;
+import com.robert.maps.kml.utils.TrackStylePickerDialog;
+import com.robert.maps.kml.utils.TrackStylePickerDialog.OnTrackStyleChangedListener;
 
-public class TrackActivity extends Activity implements ColorPickerDialog.OnColorChangedListener{
+public class TrackActivity extends Activity implements ColorPickerDialog.OnColorChangedListener, OnTrackStyleChangedListener{
 	EditText mName, mDescr;
 	Spinner mActivity;
 	private Track mTrack;
 	private PoiManager mPoiManager;
-	ColorPickerDialog mDialog;
+	TrackStylePickerDialog mDialog;
 
 
 	@Override
@@ -71,12 +71,9 @@ public class TrackActivity extends Activity implements ColorPickerDialog.OnColor
         
         findViewById(R.id.trackstyle).setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-				startActivityForResult(new Intent(TrackActivity.this, TrackStylePickerActivity.class)
-				.putExtra(Track.COLOR, mTrack.Color)
-				.putExtra(Track.WIDTH, mTrack.Width)
-				.putExtra(Track.SHADOWRADIUS, mTrack.ShadowRadius)
-				.putExtra(Track.COLORSHADOW, mTrack.ColorShadow)
-				, R.id.trackstyle);
+				mDialog = new TrackStylePickerDialog(TrackActivity.this, mTrack.Color, mTrack.Width, mTrack.ColorShadow, mTrack.ShadowRadius);
+				mDialog.setOnTrackStyleChangedListener(TrackActivity.this);
+				mDialog.show();
 			}
 		});
 
@@ -131,24 +128,16 @@ public class TrackActivity extends Activity implements ColorPickerDialog.OnColor
 		mTrack.Color = color;
 	}
 
-	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		switch(requestCode) {
-		case R.id.trackstyle:
-			if(resultCode == RESULT_OK) {
-				mTrack.Color = data.getIntExtra(Track.COLOR, getResources().getColor(R.color.track));
-				mTrack.Width = data.getIntExtra(Track.WIDTH, 4);
-				mTrack.ColorShadow = data.getIntExtra(Track.COLORSHADOW, getResources().getColor(R.color.track));
-				mTrack.ShadowRadius = data.getDoubleExtra(Track.SHADOWRADIUS, 4);
+	public void onTrackStyleChanged(int color, int width, int colorshadow, double shadowradius) {
+		mTrack.Color = color;
+		mTrack.Width = width;
+		mTrack.ColorShadow = colorshadow;
+		mTrack.ShadowRadius = shadowradius;
 
-				final Drawable dr = new TrackStyleDrawable(mTrack.Color, mTrack.Width, mTrack.ColorShadow, mTrack.ShadowRadius);
-				final Drawable[] d = {getResources().getDrawable(R.drawable.r_home_other1), dr};
-				LayerDrawable ld = new LayerDrawable(d);
-				((Button) findViewById(R.id.trackstyle)).setCompoundDrawablesWithIntrinsicBounds(null, null, ld, null);
-			}
-			break;
-		}
-		super.onActivityResult(requestCode, resultCode, data);
+		final Drawable dr = new TrackStyleDrawable(mTrack.Color, mTrack.Width, mTrack.ColorShadow, mTrack.ShadowRadius);
+		final Drawable[] d = {getResources().getDrawable(R.drawable.r_home_other1), dr};
+		LayerDrawable ld = new LayerDrawable(d);
+		((Button) findViewById(R.id.trackstyle)).setCompoundDrawablesWithIntrinsicBounds(null, null, ld, null);
 	}
 
 }
