@@ -148,7 +148,7 @@ containing a value of this type.
         public static final int cmdbar=0x7f080011;
         public static final int color=0x7f080079;
         public static final int color_picker_view=0x7f080016;
-        public static final int colorshadow=0x7f08007f;
+        public static final int colorshadow=0x7f080080;
         public static final int compass=0x7f08009a;
         public static final int coord=0x7f08003c;
         public static final int data_header1=0x7f080005;
@@ -246,7 +246,7 @@ containing a value of this type.
         public static final int textView1=0x7f080050;
         public static final int textView3=0x7f080055;
         public static final int text_line_color=0x7f08007a;
-        public static final int text_line_shadow_color=0x7f080080;
+        public static final int text_line_shadow_color=0x7f08007f;
         public static final int text_shadow_width=0x7f080081;
         public static final int title=0x7f08001a;
         public static final int title1=0x7f080000;
@@ -402,8 +402,8 @@ containing a value of this type.
         public static final int points_cnt=0x7f0a00a5;
         public static final int pref_accuracy=0x7f0a0017;
         public static final int pref_accuracy_summary=0x7f0a0016;
-        public static final int pref_bottomzoomcontrol=0x7f0a00c0;
-        public static final int pref_bottomzoomcontrol_summary=0x7f0a00bf;
+        public static final int pref_bottomzoomcontrol=0x7f0a00c3;
+        public static final int pref_bottomzoomcontrol_summary=0x7f0a00c2;
         public static final int pref_crosshair=0x7f0a00a3;
         public static final int pref_crosshair_summary=0x7f0a00a4;
         public static final int pref_dir=0x7f0a009d;
@@ -449,6 +449,8 @@ containing a value of this type.
         public static final int pref_showstatusbar_summary=0x7f0a001d;
         public static final int pref_showtitle=0x7f0a001c;
         public static final int pref_showtitle_summary=0x7f0a001b;
+        public static final int pref_track_style=0x7f0a00c0;
+        public static final int pref_track_style_summary=0x7f0a00c1;
         public static final int pref_trackwriter_mindistance=0x7f0a008b;
         public static final int pref_trackwriter_mindistance_summary=0x7f0a008a;
         public static final int pref_trackwriter_mintime=0x7f0a008d;
@@ -487,6 +489,7 @@ containing a value of this type.
         public static final int sqlitedb=0x7f0a0056;
         public static final int tar=0x7f0a0055;
         public static final int this_folder_is_empty=0x7f0a007f;
+        public static final int track_style_picker=0x7f0a00bf;
         public static final int trackwriter_nothing=0x7f0a0088;
         public static final int trackwriter_saved=0x7f0a0089;
         public static final int unknown=0x7f0a0044;

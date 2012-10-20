@@ -7,26 +7,23 @@ import net.margaritov.preference.colorpicker.ColorPickerView;
 import org.andnav.osm.util.GeoPoint;
 
 import android.app.Activity;
-import android.content.Intent;
+import android.app.Dialog;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.PixelFormat;
-import android.os.Bundle;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 
 import com.robert.maps.R;
-import com.robert.maps.kml.Track;
 import com.robert.maps.tileprovider.TileSource;
 import com.robert.maps.utils.Ut;
 import com.robert.maps.view.MapView;
 
-public class TrackStylePickerActivity extends Activity implements ColorPickerView.OnColorChangedListener,
+public class TrackStylePickerDialog extends Dialog implements ColorPickerView.OnColorChangedListener,
 		View.OnClickListener, OnSeekBarChangeListener, ColorPickerDialog.OnColorChangedListener {
 	
 	private SeekBar mWidthBar;
@@ -40,55 +37,43 @@ public class TrackStylePickerActivity extends Activity implements ColorPickerVie
 	private ColorPickerPanelView mColorShadowView;
 	private ColorPickerDialog mDialog;
 	private CheckBox mAddShadowBox;
+	private OnTrackStyleChangedListener mListener;
 	
-	public interface OnColorChangedListener {
-		public void onColorChanged(int color);
+	public interface OnTrackStyleChangedListener {
+		public void onTrackStyleChanged(int color, int width, int colorshadow, double shadowradius);
 	}
 	
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
+	public void setOnTrackStyleChangedListener(OnTrackStyleChangedListener listener) {
+		mListener = listener;
+	}
+	
+	public TrackStylePickerDialog(Context context, int color, int width, int colorshadow, double shadowradius) {
+		super(context);
 		
 		this.setContentView(R.layout.track_style_picker);
 
-        Bundle extras = getIntent().getExtras();
-        if(extras == null) extras = new Bundle();
-		final int color = extras.getInt(Track.COLOR, getResources().getColor(R.color.track));
-		final int colorshadow = extras.getInt(Track.COLORSHADOW, getResources().getColor(R.color.track));
-		
-		// To fight color banding.
-		getWindow().setFormat(PixelFormat.RGBA_8888);
-		
-		setTitle(R.string.dialog_color_picker);
+		setTitle(R.string.track_style_picker);
 		
 		mColorView = (ColorPickerPanelView) findViewById(R.id.color);
-		//mColorView.setOnClickListener(this);
 		mColorView.setColor(color);
-		mColorView.setOnClickListener(new OnClickListener() {
+		mColorView.setOnClickListener(new View.OnClickListener() {
 			
 			public void onClick(View v) {
-				mDialog = new ColorPickerDialog(TrackStylePickerActivity.this, TrackStylePickerActivity.this.mColorView.getColor());
-				mDialog.setOnColorChangedListener(TrackStylePickerActivity.this);
+				mDialog = new ColorPickerDialog(getContext(), TrackStylePickerDialog.this.mColorView.getColor());
+				mDialog.setOnColorChangedListener(TrackStylePickerDialog.this);
 				mDialog.setAlphaSliderVisible(true);
-//				if (state != null) {
-//					mDialog.onRestoreInstanceState(state);
-//				}
 				mDialog.show();
 			}
 		});
 
 		mColorShadowView = (ColorPickerPanelView) findViewById(R.id.colorshadow);
-		//mColorShadowView.setOnClickListener(this);
 		mColorShadowView.setColor(colorshadow);
-		mColorShadowView.setOnClickListener(new OnClickListener() {
+		mColorShadowView.setOnClickListener(new View.OnClickListener() {
 			
 			public void onClick(View v) {
-				mDialog = new ColorPickerDialog(TrackStylePickerActivity.this, TrackStylePickerActivity.this.mColorShadowView.getColor());
-				mDialog.setOnColorChangedListener(TrackStylePickerActivity.this.mColorShadowListiner);
+				mDialog = new ColorPickerDialog(getContext(), TrackStylePickerDialog.this.mColorShadowView.getColor());
+				mDialog.setOnColorChangedListener(TrackStylePickerDialog.this.mColorShadowListiner);
 				mDialog.setAlphaSliderVisible(true);
-//				if (state != null) {
-//					mDialog.onRestoreInstanceState(state);
-//				}
 				mDialog.show();
 			}
 		});
@@ -96,15 +81,14 @@ public class TrackStylePickerActivity extends Activity implements ColorPickerVie
 		mWidthBar = (SeekBar) findViewById(R.id.width);
 		mShadowRadiusBar = (SeekBar) findViewById(R.id.shadowradius);
 		
-		mWidthBar.setProgress(extras.getInt(Track.WIDTH, 4));
-		final double shadowradius = extras.getDouble(Track.SHADOWRADIUS, 4);
+		mWidthBar.setProgress(width);
 		mShadowRadiusBar.setProgress((int)(shadowradius * 10));
 		
  		mMap = (MapView) findViewById(R.id.map);
 		mMap.setLongClickable(false);
 
 		mPaint.setAntiAlias(true);
-		mPaint.setStrokeWidth(extras.getInt(Track.WIDTH, 4));
+		mPaint.setStrokeWidth(width);
 		mPaint.setStyle(Paint.Style.STROKE);
 		mPaint.setColor(color);
 		mPaint.setStrokeCap(Paint.Cap.ROUND);
@@ -113,6 +97,19 @@ public class TrackStylePickerActivity extends Activity implements ColorPickerVie
 		mTrackStyleOverlay = new TrackStyleOverlay();
 		mTrackStyleOverlay.setPaint(mPaint);
 		mMap.getOverlays().add(mTrackStyleOverlay);
+		final SharedPreferences pref = getContext().getSharedPreferences("MapName", Activity.MODE_PRIVATE);
+		
+		if(mTileSource != null)
+			mTileSource.Free();
+
+		try {
+			mTileSource = new TileSource(getContext(), pref.getString(MapView.MAPNAME, TileSource.MAPNIK));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		mMap.setTileSource(mTileSource);
+ 		mMap.getController().setZoom(pref.getInt("ZoomLevel", 0));
+ 		mMap.getController().setCenter(new GeoPoint(pref.getInt("Latitude", 0), pref.getInt("Longitude", 0)));
 
 		mWidthBar.setOnSeekBarChangeListener(this);
 		mShadowRadiusBar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
@@ -132,7 +129,7 @@ public class TrackStylePickerActivity extends Activity implements ColorPickerVie
 		((Button) findViewById(R.id.saveButton)).setOnClickListener(this);
 		((Button) findViewById(R.id.discardButton)).setOnClickListener(this);
 		mAddShadowBox = (CheckBox) findViewById(R.id.add_shadow_box);
-		mAddShadowBox.setOnClickListener(new OnClickListener() {
+		mAddShadowBox.setOnClickListener(new View.OnClickListener() {
 			
 			public void onClick(View v) {
 				setShadowVisible(mAddShadowBox.isChecked() ? View.VISIBLE : View.INVISIBLE);
@@ -163,14 +160,10 @@ public class TrackStylePickerActivity extends Activity implements ColorPickerVie
 
 	public void onClick(View v) {
 		if (v.getId() == R.id.saveButton) {
-			setResult(RESULT_OK, (new Intent())
-					.putExtra(Track.COLOR, mColorView.getColor())
-					.putExtra(Track.COLORSHADOW, mColorShadowView.getColor())
-					.putExtra(Track.WIDTH, mWidthBar.getProgress())
-					.putExtra(Track.SHADOWRADIUS, ((double)mShadowRadiusBar.getProgress()) / 10)
-					);
+			if(mListener != null)
+				mListener.onTrackStyleChanged(mColorView.getColor(), mWidthBar.getProgress(), mColorShadowView.getColor(), ((double)mShadowRadiusBar.getProgress()) / 10);
 		}
-		finish();
+		dismiss();
 	}
 	
 	public void onColorChanged(int color) {
@@ -180,39 +173,6 @@ public class TrackStylePickerActivity extends Activity implements ColorPickerVie
 		
 		mTrackStyleOverlay.setPaint(mPaint);
 		mMap.invalidate();
-	}
-
-	@Override
-	protected void onSaveInstanceState(Bundle outState) {
-//		Bundle state = super.onSaveInstanceState();
-//		state.putInt("old_color", mOldColor.getColor());
-//		state.putInt("new_color", mNewColor.getColor());
-//		return state;
-		super.onSaveInstanceState(outState);
-	}
-
-	@Override
-	protected void onRestoreInstanceState(Bundle savedInstanceState) {
-		super.onRestoreInstanceState(savedInstanceState);
-	}
-
-	@Override
-	protected void onResume() {
-		final SharedPreferences pref = getSharedPreferences("MapName", Activity.MODE_PRIVATE);
-		
-		if(mTileSource != null)
-			mTileSource.Free();
-
-		try {
-			mTileSource = new TileSource(this, pref.getString(MapView.MAPNAME, TileSource.MAPNIK));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		mMap.setTileSource(mTileSource);
- 		mMap.getController().setZoom(pref.getInt("ZoomLevel", 0));
- 		mMap.getController().setCenter(new GeoPoint(pref.getInt("Latitude", 0), pref.getInt("Longitude", 0)));
-
- 		super.onResume();
 	}
 
 	public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {

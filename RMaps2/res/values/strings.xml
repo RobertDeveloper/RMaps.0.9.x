@@ -303,4 +303,7 @@ v.0.7.0\n
 	<string name="line_width">Line width</string>
 	<string name="shadow_color">Shadow color</string>
 	<string name="shadow_width">Shadow width</string> 
+	<string name="track_style_picker">Track style piker</string>
+	<string name="pref_track_style">Track style</string>
+	<string name="pref_track_style_summary">Track color, width, shadow color</string>
 </resources>

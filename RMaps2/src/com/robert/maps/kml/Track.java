@@ -94,14 +94,14 @@ public class Track implements PoiConstants {
 		try {
 			final JSONObject json = new JSONObject(style);
 			Color = json.optInt(COLOR, 0xffA565FE);
-			ColorShadow = json.optInt(COLORSHADOW, 0xffA565FE);
 			Width = json.optInt(WIDTH, 4);
-			ShadowRadius = json.optDouble(SHADOWRADIUS, 4);
+			ShadowRadius = json.optDouble(SHADOWRADIUS, 0);
+			ColorShadow = json.optInt(COLORSHADOW, 0xffA565FE);
 		} catch (Exception e) {
 			Color = 0xffA565FE;
-			ColorShadow = 0xffA565FE;
 			Width = 4;
-			ShadowRadius = 4;
+			ShadowRadius = 0;
+			ColorShadow = 0xffA565FE;
 		}
 	}
 	
