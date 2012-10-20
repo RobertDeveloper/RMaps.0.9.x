@@ -124,7 +124,6 @@ public class TrackListActivity extends ListActivity {
 			editor.commit();
 		}
 		
-		//PoiConstants.DATE_FORMAT = Settings.System.getString(getContentResolver(), Settings.System.DATE_FORMAT);
 	}
 
 	@Override
@@ -433,9 +432,10 @@ public class TrackListActivity extends ListActivity {
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		mPoiManager.setTrackChecked((int)id);
-		//FillData();
+
 		final CheckBox ch = (CheckBox) v.findViewById(R.id.checkbox);
 		ch.setChecked(!ch.isChecked());
+		((SimpleCursorAdapter) getListAdapter()).getCursor().requery();
 		
 		super.onListItemClick(l, v, position, id);
 	}
