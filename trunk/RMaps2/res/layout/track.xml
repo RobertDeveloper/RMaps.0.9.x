@@ -9,6 +9,7 @@
 		android:layout_width="fill_parent"
 		android:layout_height="fill_parent"
 		android:orientation="vertical">
+
 		<TextView
 			android:text="@string/PoiTitle"
 			android:id="@+id/TextTitle"
@@ -35,32 +36,13 @@
 		<TextView android:textAppearance="?android:attr/textAppearance" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/activity" android:id="@+id/TextActivity"></TextView>
 		<Spinner android:layout_width="match_parent" android:layout_height="wrap_content" android:id="@+id/Activity" android:entries="@array/track_activity"></Spinner>
 
-		<RelativeLayout
-		    android:layout_width="match_parent"
-		    android:layout_height="wrap_content" >
-
-			<ImageView
-			    android:id="@+id/imageStyleBg"
-			    android:layout_width="150dp"
-			    android:layout_height="50dp"
-			    android:layout_alignParentRight="true" />
-
-			<ImageView
-			    android:id="@+id/imageStyle"
-			    android:layout_width="150dp"
-			    android:layout_height="50dp"
-			    android:layout_alignParentRight="true" />
-
-			<TextView
-			    android:id="@+id/TextView01"
-			    android:layout_width="wrap_content"
-			    android:layout_height="wrap_content"
-			    android:layout_alignParentLeft="true"
-			    android:layout_centerVertical="true"
-			    android:text="@string/set_color_and_style"
-			    android:textAppearance="?android:attr/textAppearance" />
-
-		</RelativeLayout>
+		<Button
+		    android:id="@+id/trackstyle"
+		    android:layout_width="fill_parent"
+		    android:layout_height="wrap_content"
+		    android:gravity="left|center_vertical"
+		    android:text="@string/set_color_and_style"
+		    android:textAppearance="?android:attr/textAppearance" />
 
 		<TextView
 			android:text=""
