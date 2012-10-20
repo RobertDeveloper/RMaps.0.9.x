@@ -14,7 +14,6 @@ import android.os.Handler;
 import android.os.Message;
 
 import com.robert.maps.MainActivity;
-import com.robert.maps.R;
 import com.robert.maps.kml.PoiManager;
 import com.robert.maps.kml.Track;
 import com.robert.maps.utils.SimpleThreadFactory;
@@ -23,10 +22,10 @@ import com.robert.maps.view.TileView;
 import com.robert.maps.view.TileViewOverlay;
 
 public class TrackOverlay extends TileViewOverlay {
-	private Paint mPaint;
+	private Paint[] mPaints;
 	private int mLastZoom;
-	private Path mPath;
-	private Track mTrack;
+	private Path[] mPaths;
+	private Track[] mTracks;
 	private Point mBaseCoords;
 	private GeoPoint mBaseLocation;
 	private PoiManager mPoiManager;
@@ -45,11 +44,11 @@ public class TrackOverlay extends TileViewOverlay {
 		public void run() {
 			Ut.d("run TrackThread");
 
-			mPath = null;
+			mPaths = null;
 
-			if(mTrack == null){
-				mTrack = mPoiManager.getTrackChecked();
-				if(mTrack == null){
+			if(mTracks == null){
+				mTracks = mPoiManager.getTrackChecked();
+				if(mTracks == null){
 					Ut.d("Track is null. Stoped??");
 					mThreadRunned = false;
 					mStopDraw = true;
@@ -58,15 +57,24 @@ public class TrackOverlay extends TileViewOverlay {
 				Ut.d("Track loaded");
 			}
 
-			mPath = mProjection.toPixelsTrackPoints(mTrack.getPoints(), mBaseCoords, mBaseLocation);
-			mPaint.setColor(mTrack.Color);
-			mPaint.setStrokeWidth(mTrack.Width);
-			mPaint.setAlpha(Color.alpha(mTrack.ColorShadow));
-			mPaint.setShadowLayer((float) mTrack.ShadowRadius, 0, 0, mTrack.ColorShadow);
+			mPaths = new Path[mTracks.length];
+			mPaints = new Paint[mTracks.length];
+			
+			for(int i = 0; i < mTracks.length; i++) {
+				mPaths[i] = mProjection.toPixelsTrackPoints(mTracks[i].getPoints(), mBaseCoords, mBaseLocation);
+				
+				mPaints[i] = new Paint();
+				mPaints[i].setAntiAlias(true);
+				mPaints[i].setStyle(Paint.Style.STROKE);
+				mPaints[i].setStrokeCap(Paint.Cap.ROUND);
+				mPaints[i].setColor(mTracks[i].Color);
+				mPaints[i].setStrokeWidth(mTracks[i].Width);
+				mPaints[i].setAlpha(Color.alpha(mTracks[i].ColorShadow));
+				mPaints[i].setShadowLayer((float) mTracks[i].ShadowRadius, 0, 0, mTracks[i].ColorShadow);
 
-			Ut.d("Track maped");
+				Message.obtain(mMainMapActivityCallbackHandler, Ut.MAPTILEFSLOADER_SUCCESS_ID).sendToTarget();
+			}
 
-			Message.obtain(mMainMapActivityCallbackHandler, Ut.MAPTILEFSLOADER_SUCCESS_ID).sendToTarget();
 
 			mThreadRunned = false;
 		}
@@ -74,21 +82,13 @@ public class TrackOverlay extends TileViewOverlay {
 
 	public TrackOverlay(MainActivity mainActivity, PoiManager poiManager, Handler aHandler) {
 		mMainMapActivityCallbackHandler = aHandler;
-		mTrack = null;
+		mTracks = null;
 		mPoiManager = poiManager;
 		mBaseCoords = new Point();
 		mBaseLocation = new GeoPoint(0, 0);
 		mLastZoom = -1;
 		mThread = new TrackThread();
 		mThread.setName("Track thread");
-
-
-		mPaint = new Paint();
-		mPaint.setAntiAlias(true);
-		mPaint.setStrokeWidth(4);
-		mPaint.setStyle(Paint.Style.STROKE);
-		mPaint.setStrokeCap(Paint.Cap.ROUND);
-		mPaint.setColor(mainActivity.getResources().getColor(R.color.track));
 	}
 
 	@Override
@@ -109,20 +109,17 @@ public class TrackOverlay extends TileViewOverlay {
 	protected void onDraw(Canvas c, TileView osmv) {
 		if(mStopDraw) return;
 
-		if (!mThreadRunned && (mTrack == null || mLastZoom != osmv.getZoomLevel())) {
-			mPath = null;
+		if (!mThreadRunned && (mTracks == null || mLastZoom != osmv.getZoomLevel())) {
+			mPaths = null;
 			mLastZoom = osmv.getZoomLevel();
-			//mMainMapActivityCallbackHandler = osmv.getHandler();
 			mOsmv = osmv;
-			//mThread.run();
-			Ut.d("mThreadExecutor.execute "+mThread.isAlive());
 			mProjection = mOsmv.getProjection();
 			mThreadRunned = true;
 			mThreadExecutor.execute(mThread);
 			return;
 		}
 
-		if(mPath == null)
+		if(mPaths == null)
 			return;
 
 		final com.robert.maps.view.TileView.OpenStreetMapViewProjection pj = osmv.getProjection();
@@ -135,10 +132,14 @@ public class TrackOverlay extends TileViewOverlay {
 		if(screenCoords.x != mBaseCoords.x && screenCoords.y != mBaseCoords.y){
 			c.save();
 			c.translate(screenCoords.x - mBaseCoords.x, screenCoords.y - mBaseCoords.y);
-			c.drawPath(mPath, mPaint);
+			for(int i = 0; i < mPaths.length; i++)
+				if(mPaths[i] != null && mPaints[i] != null)
+					c.drawPath(mPaths[i], mPaints[i]);
 			c.restore();
 		} else
-			c.drawPath(mPath, mPaint);
+			for(int i = 0; i < mPaths.length; i++)
+				if(mPaths[i] != null && mPaints[i] != null)
+					c.drawPath(mPaths[i], mPaints[i]);
 	}
 
 	@Override
@@ -146,7 +147,7 @@ public class TrackOverlay extends TileViewOverlay {
 	}
 
 	public void clearTrack(){
-		mTrack = null;
+		mTracks = null;
 	}
 
 }

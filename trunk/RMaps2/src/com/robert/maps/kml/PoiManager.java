@@ -172,40 +172,45 @@ public class PoiManager implements PoiConstants {
 		return ret;
 	}
 
-	public Track getTrackChecked(){
+	public Track[] getTrackChecked(){
 		mStopProcessing = false;
-		Track track = null;
+		Track tracks[] = null;
 		Cursor c = mGeoDatabase.getTrackChecked();
 		if (c != null) {
+			tracks = new Track[c.getCount()];
 			if (c.moveToFirst())
-				track = new Track(c.getInt(3), c.getString(0), c.getString(1), c.getInt(2) == ONE ? true : false, c.getInt(4), c.getDouble(5), c.getDouble(6), c.getInt(7), c.getInt(8), new Date(c.getLong(9)*1000), c.getString(10));
+				do {
+					final int pos = c.getPosition();
+					tracks[pos] = new Track(c.getInt(3), c.getString(0), c.getString(1), c.getInt(2) == ONE ? true : false, c.getInt(4), c.getDouble(5), c.getDouble(6), c.getInt(7), c.getInt(8), new Date(c.getLong(9)*1000), c.getString(10));
+					
+					Cursor cpoints = mGeoDatabase.getTrackPoints(tracks[pos].getId());
+					if (cpoints != null) {
+						if (cpoints.moveToFirst()) {
+							do {
+								if(Stop()) {
+									tracks[pos] = null;
+									break;
+								}
+								tracks[pos].AddTrackPoint(); //track.trackpoints.size()
+								tracks[pos].LastTrackPoint.lat = cpoints.getDouble(0);
+								tracks[pos].LastTrackPoint.lon = cpoints.getDouble(1);
+								tracks[pos].LastTrackPoint.alt = cpoints.getDouble(2);
+								tracks[pos].LastTrackPoint.speed = cpoints.getDouble(3);
+								tracks[pos].LastTrackPoint.date.setTime(cpoints.getLong(4) * 1000); // System.currentTimeMillis()
+							} while (cpoints.moveToNext());
+						}
+						cpoints.close();
+					}
+				} while (c.moveToNext());
 			else {
 				c.close();
 				return null;
 			}
 			c.close();
 
-			c = mGeoDatabase.getTrackPoints(track.getId());
-			if (c != null) {
-				if (c.moveToFirst()) {
-					do {
-						if(Stop()) {
-							track = null;
-							break;
-						}
-						track.AddTrackPoint(); //track.trackpoints.size()
-						track.LastTrackPoint.lat = c.getDouble(0);
-						track.LastTrackPoint.lon = c.getDouble(1);
-						track.LastTrackPoint.alt = c.getDouble(2);
-						track.LastTrackPoint.speed = c.getDouble(3);
-						track.LastTrackPoint.date.setTime(c.getLong(4) * 1000); // System.currentTimeMillis()
-					} while (c.moveToNext());
-				}
-				c.close();
-			}
 
 		}
-		return track;
+		return tracks;
 	}
 
 	public Track getTrack(int id){
