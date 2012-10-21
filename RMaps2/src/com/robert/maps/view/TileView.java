@@ -21,7 +21,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.GestureDetector;
-import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 

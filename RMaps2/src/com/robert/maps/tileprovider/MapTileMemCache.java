@@ -32,10 +32,17 @@ public class MapTileMemCache {
 
 	public synchronized void putTile(final String aTileURLString, final Bitmap aTile) {
 		this.mHardCachedTiles.put(aTileURLString, aTile);
+		
 		if(mHardCachedTiles.size() > mSize) {
 			Iterator<String> it = mHardCachedTiles.keySet().iterator();
 			if(it.hasNext()) {
 				final String key = it.next();
+				final Bitmap bmpHard = this.mHardCachedTiles.get(key);
+				if(bmpHard != null){
+					if(!bmpHard.isRecycled()) {
+						bmpHard.recycle();
+					}
+				}
 				mHardCachedTiles.remove(key);
 			}
 		}

@@ -1,6 +1,5 @@
 package com.robert.maps.kml;
 
-import net.margaritov.preference.colorpicker.ColorPickerDialog;
 import android.app.Activity;
 import android.database.Cursor;
 import android.graphics.drawable.Drawable;
@@ -20,7 +19,7 @@ import com.robert.maps.kml.utils.TrackStyleDrawable;
 import com.robert.maps.kml.utils.TrackStylePickerDialog;
 import com.robert.maps.kml.utils.TrackStylePickerDialog.OnTrackStyleChangedListener;
 
-public class TrackActivity extends Activity implements ColorPickerDialog.OnColorChangedListener, OnTrackStyleChangedListener{
+public class TrackActivity extends Activity implements OnTrackStyleChangedListener{
 	EditText mName, mDescr;
 	Spinner mActivity;
 	private Track mTrack;
@@ -124,16 +123,13 @@ public class TrackActivity extends Activity implements ColorPickerDialog.OnColor
 		Toast.makeText(TrackActivity.this, R.string.message_saved, Toast.LENGTH_SHORT).show();
 	}
 
-	public void onColorChanged(int color) {
-		mTrack.Color = color;
-	}
-
 	public void onTrackStyleChanged(int color, int width, int colorshadow, double shadowradius) {
 		mTrack.Color = color;
 		mTrack.Width = width;
 		mTrack.ColorShadow = colorshadow;
 		mTrack.ShadowRadius = shadowradius;
-
+		mTrack.Style = mTrack.getStyle();
+		
 		final Drawable dr = new TrackStyleDrawable(mTrack.Color, mTrack.Width, mTrack.ColorShadow, mTrack.ShadowRadius);
 		final Drawable[] d = {getResources().getDrawable(R.drawable.r_home_other1), dr};
 		LayerDrawable ld = new LayerDrawable(d);
