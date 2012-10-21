@@ -127,19 +127,15 @@ public class TrackOverlay extends TileViewOverlay {
 
 		pj.toPixels(mBaseLocation, screenCoords);
 
-		//final long startMs = System.currentTimeMillis();
-
+		c.save();
 		if(screenCoords.x != mBaseCoords.x && screenCoords.y != mBaseCoords.y){
-			c.save();
 			c.translate(screenCoords.x - mBaseCoords.x, screenCoords.y - mBaseCoords.y);
-			for(int i = 0; i < mPaths.length; i++)
-				if(mPaths[i] != null && mPaints[i] != null)
-					c.drawPath(mPaths[i], mPaints[i]);
-			c.restore();
-		} else
-			for(int i = 0; i < mPaths.length; i++)
-				if(mPaths[i] != null && mPaints[i] != null)
-					c.drawPath(mPaths[i], mPaints[i]);
+			c.scale((float)osmv.mTouchScale, (float)osmv.mTouchScale, mBaseCoords.x, mBaseCoords.y);
+		};
+		for(int i = 0; i < mPaths.length; i++)
+			if(mPaths[i] != null && mPaints[i] != null)
+				c.drawPath(mPaths[i], mPaints[i]);
+		c.restore();
 	}
 
 	@Override

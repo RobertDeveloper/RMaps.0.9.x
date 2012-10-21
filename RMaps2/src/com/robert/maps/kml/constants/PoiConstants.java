@@ -101,6 +101,9 @@ public interface PoiConstants {
 	public static final String SQL_UPDATE_6_3 = "DROP TABLE IF EXISTS 'tracks'; ";
 	public static final String SQL_UPDATE_6_4 = "INSERT INTO 'tracks' (trackid, name, descr, date, show, cnt, duration, distance, categoryid, activity) SELECT trackid, name, descr, date, show, (SELECT COUNT(*) FROM trackpoints WHERE trackid = tracks_46134313.trackid), null, null, null, 0 FROM 'tracks_46134313';";
 	public static final String SQL_UPDATE_6_5 = "DROP TABLE 'tracks_46134313';";
+	
+	public static final String SQL_UPDATE_20_1 = "INSERT INTO 'tracks' (trackid, name, descr, date, show, cnt, duration, distance, categoryid, activity, style) SELECT trackid, name, descr, date, show, cnt, duration, distance, categoryid, activity, '' FROM 'tracks_46134313';";
+
 	//(trackid INTEGER NOT NULL PRIMARY KEY UNIQUE, name VARCHAR, descr VARCHAR, date DATETIME
 	//, show INTEGER, cnt INTEGER, duration INTEGER, distance INTEGER, categoryid INTEGER, activity INTEGER);";
 }
