@@ -33,6 +33,8 @@ public class Track implements PoiConstants {
 	public int ColorShadow;
 	public int Width;
 	public double ShadowRadius;
+	public String Style;
+	public String DefaultStyle;
 
 	private List<TrackPoint> trackpoints = null;
 
@@ -76,10 +78,14 @@ public class Track implements PoiConstants {
 	}
 
 	public Track() {
-		this(EMPTY_ID, "", "", false, 0, 0, 0, 0, 0, new Date(0), "");
+		this(EMPTY_ID, "", "", false, 0, 0, 0, 0, 0, new Date(0), "", "");
 	}
 
-	public Track(final int id, final String name, final String descr, final boolean show, final int cnt, final double distance, final double duration, final int category, final int activity, final Date date, final String style) {
+	public Track(final String style) {
+		this(EMPTY_ID, "", "", false, 0, 0, 0, 0, 0, new Date(0), style, style);
+	}
+
+	public Track(final int id, final String name, final String descr, final boolean show, final int cnt, final double distance, final double duration, final int category, final int activity, final Date date, final String style, final String defaultStyle) {
 		Id = id;
 		Name = name;
 		Descr = descr;
@@ -90,9 +96,11 @@ public class Track implements PoiConstants {
 		Category = category;
 		Activity = activity;
 		Date = date;
+		Style = style;
+		DefaultStyle = defaultStyle;
 		
 		try {
-			final JSONObject json = new JSONObject(style);
+			final JSONObject json = new JSONObject(Style.equalsIgnoreCase("") ? DefaultStyle : Style);
 			Color = json.optInt(COLOR, 0xffA565FE);
 			Width = json.optInt(WIDTH, 4);
 			ShadowRadius = json.optDouble(SHADOWRADIUS, 0);

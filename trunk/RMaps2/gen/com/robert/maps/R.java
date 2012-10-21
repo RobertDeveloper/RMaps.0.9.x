@@ -402,8 +402,8 @@ containing a value of this type.
         public static final int points_cnt=0x7f0a00a5;
         public static final int pref_accuracy=0x7f0a0017;
         public static final int pref_accuracy_summary=0x7f0a0016;
-        public static final int pref_bottomzoomcontrol=0x7f0a00c3;
-        public static final int pref_bottomzoomcontrol_summary=0x7f0a00c2;
+        public static final int pref_bottomzoomcontrol=0x7f0a00c4;
+        public static final int pref_bottomzoomcontrol_summary=0x7f0a00c3;
         public static final int pref_crosshair=0x7f0a00a3;
         public static final int pref_crosshair_summary=0x7f0a00a4;
         public static final int pref_dir=0x7f0a009d;
@@ -450,6 +450,7 @@ containing a value of this type.
         public static final int pref_showtitle=0x7f0a001c;
         public static final int pref_showtitle_summary=0x7f0a001b;
         public static final int pref_track_style=0x7f0a00c0;
+        public static final int pref_track_style_current=0x7f0a00c2;
         public static final int pref_track_style_summary=0x7f0a00c1;
         public static final int pref_trackwriter_mindistance=0x7f0a008b;
         public static final int pref_trackwriter_mindistance_summary=0x7f0a008a;

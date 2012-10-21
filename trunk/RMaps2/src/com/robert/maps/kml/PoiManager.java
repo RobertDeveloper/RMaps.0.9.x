@@ -150,13 +150,13 @@ public class PoiManager implements PoiConstants {
 
 	public void updateTrack(Track track) {
 		if(track.getId() < 0){
-			long newId = mGeoDatabase.addTrack(track.Name, track.Descr, track.Show ? ONE : ZERO, track.Cnt, track.Distance, track.Duration, track.Category, track.Activity, track.Date, track.getStyle());
+			long newId = mGeoDatabase.addTrack(track.Name, track.Descr, track.Show ? ONE : ZERO, track.Cnt, track.Distance, track.Duration, track.Category, track.Activity, track.Date, track.Style);
 
 			for(TrackPoint trackpoint: track.getPoints()){
 				mGeoDatabase.addTrackPoint(newId, trackpoint.lat, trackpoint.lon, trackpoint.alt, trackpoint.speed, trackpoint.date);
 			}
 		} else
-			mGeoDatabase.updateTrack(track.getId(), track.Name, track.Descr, track.Show ? ONE : ZERO, track.Cnt, track.Distance, track.Duration, track.Category, track.Activity, track.Date, track.getStyle());
+			mGeoDatabase.updateTrack(track.getId(), track.Name, track.Descr, track.Show ? ONE : ZERO, track.Cnt, track.Distance, track.Duration, track.Category, track.Activity, track.Date, track.Style);
 	}
 	
 	
@@ -186,9 +186,9 @@ public class PoiManager implements PoiConstants {
 					final int pos = c.getPosition();
 					String style = c.getString(10);
 					if(style == null || style.equalsIgnoreCase(""))
-						style = defStyle;
+						style = "";
 
-					tracks[pos] = new Track(c.getInt(3), c.getString(0), c.getString(1), c.getInt(2) == ONE ? true : false, c.getInt(4), c.getDouble(5), c.getDouble(6), c.getInt(7), c.getInt(8), new Date(c.getLong(9)*1000), style);
+					tracks[pos] = new Track(c.getInt(3), c.getString(0), c.getString(1), c.getInt(2) == ONE ? true : false, c.getInt(4), c.getDouble(5), c.getDouble(6), c.getInt(7), c.getInt(8), new Date(c.getLong(9)*1000), style, defStyle);
 					
 					Cursor cpoints = mGeoDatabase.getTrackPoints(tracks[pos].getId());
 					if (cpoints != null) {
@@ -225,11 +225,12 @@ public class PoiManager implements PoiConstants {
 		Cursor c = mGeoDatabase.getTrack(id);
 		if (c != null) {
 			if (c.moveToFirst()) {
+				final String defStyle = PreferenceManager.getDefaultSharedPreferences(mCtx).getString("pref_track_style", "");
 				String style = c.getString(9);
 				if(style == null || style.equalsIgnoreCase(""))
-					style = PreferenceManager.getDefaultSharedPreferences(mCtx).getString("pref_track_style", "");
+					style = "";
 
-				track = new Track(id, c.getString(0), c.getString(1), c.getInt(2) == ONE ? true : false, c.getInt(3), c.getDouble(4), c.getDouble(5), c.getInt(6), c.getInt(7), new Date(c.getLong(8)*1000), style);
+				track = new Track(id, c.getString(0), c.getString(1), c.getInt(2) == ONE ? true : false, c.getInt(3), c.getDouble(4), c.getDouble(5), c.getInt(6), c.getInt(7), new Date(c.getLong(8)*1000), style, defStyle);
 			};
 			c.close();
 			c = null;
