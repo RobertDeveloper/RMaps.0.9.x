@@ -111,6 +111,7 @@ How to and FAQ you can find on http://robertdeveloper.blogspot.com/\n
     <string name="whats_new_dialog_text">
 \n
 v.0.8.11\n
++ New maps Cloudmade (OSM data) with comfort label size\n
 + Google scale factor. You can enlarge size of the labels on the map. See the preference of the map\n
 + Language preference. You can set UI language independent of system\n
 + Imperial units in statistic view\n
