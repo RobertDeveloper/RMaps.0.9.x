@@ -87,6 +87,12 @@ All rights reserved\n
 </string>
     <string name="whats_new_dialog_text">
 \n
+v.0.8.11\n
++ Возможность увеличить размер карты Google, надписи и пр.\n
++ Возможносить установить языка интерфейса назависито от системы\n
++ Возможность установить цвет, толщину, тень для треков\n
++ Возможность отображения нескольких треков на карте\n
+\n
 v.0.8.10.2\n
 + Поддержка geo intents. Вы можете тапнуть по адресу в календаре и увидеть адрес на карте\n
 - Поправил поддерку MNM файлов и c:geo\n
@@ -263,7 +269,7 @@ v.0.5.2\n
     <string name="menu_tracks">Треки</string>
 
     <string name="menu_goto_track">Перейти к треку</string>
-    <string name="btn_start">Начать запись трека</string>
+    <string name="btn_start">Старт</string>
     <string name="btn_stop">Остановить</string>
     <string name="trackwriter_nothing">Нечего сохранять</string>
     <string name="trackwriter_saved">Трек сохранен</string>
@@ -290,4 +296,23 @@ v.0.5.2\n
 	<string name="pref_dir_summary">Папки где RMaps сохраняет свои файлы</string>
 	<string name="pref_crosshair">Перекрестие в центре</string>
 	<string name="pref_crosshair_summary">Показать перекрестие в центре карты</string>
+	<string name="add_shadow_box">Добавить тень</string>
+	<string name="btn_pause">Пауза</string>
+	<string name="dialog_color_picker">Выбор цвета</string>
+	<string name="line_color">Цвет линии</string>
+	<string name="line_width">Толщина линии</string>
+	<string name="pref_googlescale">Размер тайлов</string>
+	<string name="pref_googlescale_summary">Позволяет получать увеличеную карту. Рекомендуется после изменения этого параметра очистить кэш карты</string>
+	<string name="pref_locale">Язык инерфейса</string>
+	<string name="pref_locale_summary">Позволяет установить язык интерфейса независимо от установок системы</string>
+	<string name="pref_onlinecacheclear">Кэш карты</string>
+	<string name="pref_onlinecacheclear_summary">.sqlitedb* Размер: %dKB</string>
+	<string name="pref_track_style">Стиль трека</string>
+	<string name="pref_track_style_current">Стиль записываемого трека</string>
+	<string name="pref_track_style_summary">Цвет, толщина, тень трека на карте</string>
+	<string name="press_color_to_apply">Чтобы выбрать нажмите на цвет:</string>
+	<string name="set_color_and_style">Установить цвет и стиль</string>
+	<string name="shadow_color">Цвет тени</string>
+	<string name="shadow_width">Толщина тени</string>
+	<string name="track_style_picker">Выбор стиля трека</string>
 </resources>

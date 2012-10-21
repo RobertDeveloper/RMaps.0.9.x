@@ -109,7 +109,13 @@ Questions, sentences mail to robertk506@gmail.com\n
 How to and FAQ you can find on http://robertdeveloper.blogspot.com/\n
 	</string>
     <string name="whats_new_dialog_text">
-The source site of VFR, IFR High, IFR Low charts is unavailable now. Read here about it. http://blog.runwayfinder.com/\n
+\n
+v.0.8.11\n
++ Google scale factor. You can enlarge size of the labels on the map. See the preference of the map\n
++ Language preference. You can set UI language independent of system\n
++ Imperial units in statistic view\n
++ Track color, width, shadow\n
++ Multiple tracks on the map\n
 \n
 v.0.8.10.2\n
 + Support geo intents. You can tap address in calendar app and show it in RMaps\n
@@ -243,7 +249,7 @@ v.0.7.0\n
     <string name="remote_service_started">RMaps track writer</string>
     <string name="menu_goto_track">Go to Track</string>
 
-    <string name="btn_start">Start record</string>
+    <string name="btn_start">Start</string>
     <string name="btn_pause">Pause</string>
     <string name="btn_stop">Stop</string>
     <string name="trackwriter_nothing">Nothing to save</string>
