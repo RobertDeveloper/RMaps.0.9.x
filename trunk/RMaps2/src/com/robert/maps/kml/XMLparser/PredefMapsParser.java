@@ -16,11 +16,11 @@ import android.view.MenuItem;
 
 import com.robert.maps.MainPreferences;
 import com.robert.maps.R;
-import com.robert.maps.tileprovider.TileSource;
+import com.robert.maps.tileprovider.TileSourceBase;
 import com.robert.maps.utils.OnlineCachePreference;
 
 public class PredefMapsParser extends DefaultHandler {
-	private final TileSource mRendererInfo;
+	private final TileSourceBase mRendererInfo;
 	private final String mMapId;
 
 	private static final String MAP = "map";
@@ -64,7 +64,7 @@ public class PredefMapsParser extends DefaultHandler {
 		mPrefMapsgroup = null;
 	}
 
-	public PredefMapsParser(final TileSource aRendererInfo, final String aMapId) {
+	public PredefMapsParser(final TileSourceBase aRendererInfo, final String aMapId) {
 		super();
 		mSubmenu = null;
 		mRendererInfo = aRendererInfo;

@@ -23,7 +23,6 @@ import android.os.IBinder;
 import android.os.Message;
 
 import com.robert.maps.R;
-import com.robert.maps.tileprovider.MessageHandlerConstants;
 import com.robert.maps.tileprovider.TileSource;
 import com.robert.maps.utils.SQLiteMapDatabase;
 import com.robert.maps.utils.SimpleThreadFactory;
