@@ -28,10 +28,10 @@ public class TileProviderSQLITEDB extends TileProviderFileBase {
 	private String mMapID;
 	private ProgressDialog mProgressDialog;
 
-	public TileProviderSQLITEDB(Context ctx, final String filename, final String mapid) throws SQLiteException, RException {
+	public TileProviderSQLITEDB(Context ctx, final String filename, final String mapid, MapTileMemCache aTileCache) throws SQLiteException, RException {
 		super(ctx);
 		mTileURLGenerator = new TileURLGeneratorBase(filename);
-		mTileCache = new MapTileMemCache();
+		mTileCache = aTileCache == null ? new MapTileMemCache() : aTileCache;
 		mUserMapDatabase = new SQLiteMapDatabase();
 		mUserMapDatabase.setFile(filename);
 		mMapID = mapid;

@@ -24,30 +24,47 @@ public class TileSource extends TileSourceBase {
 		
 		final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(ctx);
 		mTileURLGenerator = initTileURLGenerator(this, pref);
-		mTileProvider = initTileProvider(ctx, this, mTileURLGenerator, aNeedTileProvider);
+		mTileProvider = initTileProvider(ctx, this, mTileURLGenerator, aNeedTileProvider, null);
 	}
 	
-	private TileProviderBase initTileProvider(Context ctx, TileSourceBase tileSource, TileURLGeneratorBase aTileURLGenerator, boolean aNeedTileProvider) throws SQLiteException, RException {
+	public TileSource(Context ctx, String aId, String aLayerId) throws SQLiteException, RException {
+		super(ctx, aId, true);
+		
+		final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(ctx);
+
+		final MapTileMemCache tileCache = new MapTileMemCache();
+		mTileURLGenerator = initTileURLGenerator(this, pref);
+		final TileProviderBase provider = initTileProvider(ctx, this, mTileURLGenerator, true, null);
+		
+		final TileSourceBase layerTileSource = new TileSourceBase(ctx, aLayerId, true);
+		final TileURLGeneratorBase layerURLGenerator = initTileURLGenerator(layerTileSource, pref);
+		final TileProviderBase layerProvider = initTileProvider(ctx, layerTileSource, layerURLGenerator, true, null);
+		
+		mTileProvider = new TileProviderDual(ctx, provider, layerProvider, tileCache);
+		
+	}
+	
+	private TileProviderBase initTileProvider(Context ctx, TileSourceBase tileSource, TileURLGeneratorBase aTileURLGenerator, boolean aNeedTileProvider, MapTileMemCache aTileCache) throws SQLiteException, RException {
 		TileProviderBase provider = null;
 		
 		if(aNeedTileProvider) {
-			switch(TILE_SOURCE_TYPE) {
+			switch(tileSource.TILE_SOURCE_TYPE) {
 			case 0:
-				if(LAYER)
-					provider = new TileProviderInet(ctx, aTileURLGenerator, CacheDatabaseName(tileSource), null);
+				if(tileSource.LAYER)
+					provider = new TileProviderInet(ctx, aTileURLGenerator, CacheDatabaseName(tileSource), aTileCache, null);
 				else
-					provider = new TileProviderInet(ctx, aTileURLGenerator, CacheDatabaseName(tileSource));
+					provider = new TileProviderInet(ctx, aTileURLGenerator, CacheDatabaseName(tileSource), aTileCache);
 				break;
 			case 3:
-				provider = new TileProviderMNM(ctx, tileSource.BASEURL, tileSource.ID);
+				provider = new TileProviderMNM(ctx, tileSource.BASEURL, tileSource.ID, aTileCache);
 				provider.updateMapParams(this);
 				break;
 			case 4:
-				provider = new TileProviderTAR(ctx, tileSource.BASEURL, tileSource.ID);
+				provider = new TileProviderTAR(ctx, tileSource.BASEURL, tileSource.ID, aTileCache);
 				provider.updateMapParams(this);
 				break;
 			case 5:
-				provider = new TileProviderSQLITEDB(ctx, tileSource.BASEURL, tileSource.ID);
+				provider = new TileProviderSQLITEDB(ctx, tileSource.BASEURL, tileSource.ID, aTileCache);
 				provider.updateMapParams(this);
 				break;
 			default:
