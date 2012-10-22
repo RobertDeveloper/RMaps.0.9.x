@@ -47,6 +47,18 @@ public class MapTileMemCache {
 			}
 		}
 	}
+	
+	public void removeTile(final String aTileURLString) {
+		if(mHardCachedTiles.containsKey(aTileURLString)) {
+			final Bitmap bmpHard = this.mHardCachedTiles.get(aTileURLString);
+			if(bmpHard != null){
+				if(!bmpHard.isRecycled()) {
+					bmpHard.recycle();
+				}
+			}
+			mHardCachedTiles.remove(mHardCachedTiles);
+		}
+	}
 
 	public synchronized void Commit() {
 	}

@@ -468,7 +468,7 @@ public class MainActivity extends Activity {
 		if(mTileSource != null)
 			mTileSource.Free();
 		try {
-			mTileSource = new TileSource(this, pref.getString(MAPNAME, TileSource.MAPNIK));
+			mTileSource = new TileSource(this, pref.getString(MAPNAME, TileSource.MAPNIK), "osmsemi");
 		} catch (RException e) {
 			addMessage(e);
 		}
@@ -676,7 +676,7 @@ public class MainActivity extends Activity {
 			if(mTileSource != null)
 				mTileSource.Free();
 			try {
-				mTileSource = new TileSource(this, mapid);
+				mTileSource = new TileSource(this, mapid, "osmsemi");
 			} catch (RException e) {
 				addMessage(e);
 			}

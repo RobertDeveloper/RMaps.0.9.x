@@ -28,15 +28,18 @@ public class TileProviderInet extends TileProviderBase {
 	private ICacheProvider mCacheProvider = null;
 	private ExecutorService mThreadPool = Executors.newFixedThreadPool(5, new SimpleThreadFactory("TileProviderInet"));
 
-	public TileProviderInet(Context ctx, TileURLGeneratorBase gen, final String cacheDatabaseName, final Bitmap aLoadingMapTile) throws SQLiteException, RException {
-		this(ctx, gen, cacheDatabaseName);
+	public TileProviderInet(Context ctx, TileURLGeneratorBase gen, final String cacheDatabaseName, MapTileMemCache aTileCache, final Bitmap aLoadingMapTile) throws SQLiteException, RException {
+		this(ctx, gen, cacheDatabaseName, aTileCache);
 		mLoadingMapTile = aLoadingMapTile;
 	}
 	
-	public TileProviderInet(Context ctx, TileURLGeneratorBase gen, final String cacheDatabaseName) throws SQLiteException, RException {
+	public TileProviderInet(Context ctx, TileURLGeneratorBase gen, final String cacheDatabaseName, MapTileMemCache aTileCache) throws SQLiteException, RException {
 		super(ctx);
 		mTileURLGenerator = gen;
-		mTileCache = new MapTileMemCache();
+		if(aTileCache == null)
+			mTileCache = new MapTileMemCache();
+		else
+			mTileCache = aTileCache;
 		if(cacheDatabaseName != null) {
 			final SQLiteMapDatabase cacheDatabase = new SQLiteMapDatabase();
 			final File folder = Ut.getRMapsMainDir(ctx, "cache");

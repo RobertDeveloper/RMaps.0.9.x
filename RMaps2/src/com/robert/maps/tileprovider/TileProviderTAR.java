@@ -33,10 +33,10 @@ public class TileProviderTAR extends TileProviderFileBase {
 	private ProgressDialog mProgressDialog;
 	private boolean mStopIndexing;
 
-	public TileProviderTAR(Context ctx, final String filename, final String mapid) {
+	public TileProviderTAR(Context ctx, final String filename, final String mapid, MapTileMemCache aTileCache) {
 		super(ctx);
 		mTileURLGenerator = new TileURLGeneratorTAR(filename);
-		mTileCache = new MapTileMemCache();
+		mTileCache = aTileCache == null ? new MapTileMemCache() : aTileCache;
 		mMapFile = new File(filename);
 		mMapID = mapid;
 		

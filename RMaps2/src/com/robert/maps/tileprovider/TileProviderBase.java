@@ -45,6 +45,11 @@ public class TileProviderBase {
 		return mLoadingMapTile;
 	}
 	
+	public void removeTile(final String aTileURLString) {
+		if(mTileCache != null)
+			mTileCache.removeTile(aTileURLString);
+	}
+	
 	protected void SendMessageSuccess() {
 		if(mCallbackHandler != null)
 			Message.obtain(mCallbackHandler, MessageHandlerConstants.MAPTILEFSLOADER_SUCCESS_ID).sendToTarget();
@@ -78,6 +83,10 @@ public class TileProviderBase {
 	
 	public void Index() {
 		
+	}
+	
+	public void setLoadingMapTile(Bitmap aLoadingMapTile) {
+		mLoadingMapTile = aLoadingMapTile;
 	}
 
 }
