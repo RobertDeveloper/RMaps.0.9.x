@@ -14,6 +14,7 @@ import com.robert.maps.utils.Ut;
 public class TileSource extends TileSourceBase {
 	private TileProviderBase mTileProvider;
 	private TileURLGeneratorBase mTileURLGenerator;
+	private TileSourceBase mTileSourceOverlay;
 	
 	public TileSource(Context ctx, String aId) throws SQLiteException, RException {
 		this(ctx, aId, true);
@@ -25,6 +26,7 @@ public class TileSource extends TileSourceBase {
 		final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(ctx);
 		mTileURLGenerator = initTileURLGenerator(this, pref);
 		mTileProvider = initTileProvider(ctx, this, mTileURLGenerator, aNeedTileProvider, null);
+		mTileSourceOverlay = null;
 	}
 	
 	public TileSource(Context ctx, String aId, String aLayerId) throws SQLiteException, RException {
@@ -36,12 +38,20 @@ public class TileSource extends TileSourceBase {
 		mTileURLGenerator = initTileURLGenerator(this, pref);
 		final TileProviderBase provider = initTileProvider(ctx, this, mTileURLGenerator, true, null);
 		
-		final TileSourceBase layerTileSource = new TileSourceBase(ctx, aLayerId, true);
-		final TileURLGeneratorBase layerURLGenerator = initTileURLGenerator(layerTileSource, pref);
-		final TileProviderBase layerProvider = initTileProvider(ctx, layerTileSource, layerURLGenerator, true, null);
+		mTileSourceOverlay = new TileSourceBase(ctx, aLayerId, true);
+		final TileURLGeneratorBase layerURLGenerator = initTileURLGenerator(mTileSourceOverlay, pref);
+		final TileProviderBase layerProvider = initTileProvider(ctx, mTileSourceOverlay, layerURLGenerator, true, null);
 		
 		mTileProvider = new TileProviderDual(ctx, this.ID, provider, layerProvider, tileCache);
 		
+	}
+	
+	public TileSourceBase getTileSourceOverlay() {
+		return mTileSourceOverlay;
+	}
+	
+	public String getOverlayName() {
+		return mTileSourceOverlay == null ? "" : mTileSourceOverlay.ID;
 	}
 	
 	private TileProviderBase initTileProvider(Context ctx, TileSourceBase tileSource, TileURLGeneratorBase aTileURLGenerator, boolean aNeedTileProvider, MapTileMemCache aTileCache) throws SQLiteException, RException {

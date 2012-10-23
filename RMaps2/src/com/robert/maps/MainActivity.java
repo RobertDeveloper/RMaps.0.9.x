@@ -109,6 +109,8 @@ public class MainActivity extends Activity {
 	
 	// Overlays
 	private YandexTrafficOverlay mYandexTrafficOverlay = null;
+	private boolean mShowOverlay = false;
+	private String mOverlayId = "";
 	private MyLocationOverlay mMyLocationOverlay;
 	private PoiOverlay mPoiOverlay;
 	private TrackOverlay mTrackOverlay;
@@ -364,13 +366,53 @@ public class MainActivity extends Activity {
         mLayerView.setOnClickListener(new View.OnClickListener() {
 			
 			public void onClick(View v) {
-				v.showContextMenu();
+				if(mTileSource.YANDEX_TRAFFIC_ON == 1) {
+					mShowOverlay = !mShowOverlay;
+					FillOverlays();
+				} else {
+					final String mapId = mTileSource.ID;
+
+					if(mShowOverlay) {
+						mShowOverlay = !mShowOverlay;
+						mOverlayId = mTileSource.getOverlayName();
+						
+						if(mTileSource != null)
+							mTileSource.Free();
+						try {
+							mTileSource = new TileSource(MainActivity.this, mapId);
+						} catch (RException e) {
+							addMessage(e);
+						}
+						mMap.setTileSource(mTileSource);
+						
+						FillOverlays();
+				        setTitle();
+					} else if(!mOverlayId.equalsIgnoreCase("")) {
+						mShowOverlay = !mShowOverlay;
+
+						if(mTileSource != null)
+							mTileSource.Free();
+						try {
+							mTileSource = new TileSource(MainActivity.this, mapId, mOverlayId);
+						} catch (RException e) {
+							addMessage(e);
+						}
+						mMap.setTileSource(mTileSource);
+						
+						FillOverlays();
+				        setTitle();
+					} else
+						v.showContextMenu();
+				}
+				
+				mMap.postInvalidate();
 			}
 		});
         mLayerView.setOnLongClickListener(new View.OnLongClickListener() {
 			
 			public boolean onLongClick(View v) {
-				Ut.w("mLayerView.OnLongClickListener");
+				if(mTileSource.YANDEX_TRAFFIC_ON != 1)
+					v.showContextMenu();
 				return true;
 			}
 		});
@@ -382,23 +424,22 @@ public class MainActivity extends Activity {
 				
 				SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
 
-//				File folder = Ut.getRMapsMapsDir(MainActivity.this);
-//				if (folder.exists()) {
-//					File[] files = folder.listFiles();
-//					if (files != null)
-//						for (int i = 0; i < files.length; i++) {
-//							if (files[i].getName().toLowerCase().endsWith(".mnm")
-//									|| files[i].getName().toLowerCase().endsWith(".tar")
-//									|| files[i].getName().toLowerCase().endsWith(".sqlitedb")) {
-//								String name = Ut.FileName2ID(files[i].getName());
-//								if (pref.getBoolean("pref_usermaps_" + name + "_enabled", false)) {
-//									MenuItem item = submenu.add(pref.getString("pref_usermaps_" + name + "_name",
-//											files[i].getName()));
-//									item.setTitleCondensed("usermap_" + name);
-//								}
-//							}
-//						}
-//				}
+				File folder = Ut.getRMapsMapsDir(MainActivity.this);
+				if (folder.exists()) {
+					File[] files = folder.listFiles();
+					if (files != null)
+						for (int i = 0; i < files.length; i++) {
+							if (files[i].getName().toLowerCase().endsWith(".mnm")
+									|| files[i].getName().toLowerCase().endsWith(".tar")
+									|| files[i].getName().toLowerCase().endsWith(".sqlitedb")) {
+								String name = Ut.FileName2ID(files[i].getName());
+								if (pref.getBoolean("pref_usermaps_" + name + "_enabled", false) && pref.getBoolean("pref_usermaps_" + name + "_isoverlay", false)) {
+									MenuItem item = menu.add(Menu.NONE, R.id.isoverlay, Menu.NONE, pref.getString("pref_usermaps_" + name + "_name", files[i].getName()));
+									item.setTitleCondensed("usermap_" + name);
+								}
+							}
+						}
+				}
 
 				final SAXParserFactory fac = SAXParserFactory.newInstance();
 				SAXParser parser = null;
@@ -426,9 +467,9 @@ public class MainActivity extends Activity {
 		this.mMap.getOverlays().clear();
 
 		if(mTileSource == null) {
-		} else if(mTileSource.YANDEX_TRAFFIC_ON == 1 && mYandexTrafficOverlay == null) {
+		} else if(mTileSource.YANDEX_TRAFFIC_ON == 1 && mShowOverlay && mYandexTrafficOverlay == null) {
  			mYandexTrafficOverlay = new YandexTrafficOverlay(this, mMap.getTileView());
- 		} else if(mTileSource.YANDEX_TRAFFIC_ON != 1 && mYandexTrafficOverlay != null) {
+ 		} else if((mTileSource.YANDEX_TRAFFIC_ON != 1 || !mShowOverlay) && mYandexTrafficOverlay != null) {
  			mYandexTrafficOverlay.Free();
  			mYandexTrafficOverlay = null;
  		}
@@ -529,10 +570,16 @@ public class MainActivity extends Activity {
 	protected void onResume() {
 		final SharedPreferences pref = getPreferences(Activity.MODE_PRIVATE);
 		
+		mShowOverlay = pref.getBoolean("ShowOverlay", true);
+		mOverlayId = pref.getString("OverlayID", "");
+		
 		if(mTileSource != null)
 			mTileSource.Free();
 		try {
-			mTileSource = new TileSource(this, pref.getString(MAPNAME, TileSource.MAPNIK));
+			if(mShowOverlay && !mOverlayId.equalsIgnoreCase(""))
+				mTileSource = new TileSource(this, pref.getString(MAPNAME, TileSource.MAPNIK), mOverlayId);
+			else
+				mTileSource = new TileSource(this, pref.getString(MAPNAME, TileSource.MAPNIK));
 		} catch (RException e) {
 			addMessage(e);
 		}
@@ -579,6 +626,8 @@ public class MainActivity extends Activity {
 		SharedPreferences uiState = getPreferences(Activity.MODE_PRIVATE);
 		SharedPreferences.Editor editor = uiState.edit();
 		editor.putString("MapName", mTileSource.ID);
+		editor.putString("OverlayID", mTileSource.getOverlayName());
+		editor.putBoolean("ShowOverlay", mShowOverlay);
 		editor.putInt("Latitude", point.getLatitudeE6());
 		editor.putInt("Longitude", point.getLongitudeE6());
 		editor.putInt("ZoomLevel", mMap.getZoomLevel());
@@ -736,6 +785,9 @@ public class MainActivity extends Activity {
 			setLastKnownLocation();
 			return true;
 		default:
+			mOverlayId = "";
+			mShowOverlay = false;
+			
 			final String mapid = (String)item.getTitleCondensed();
 			if(mTileSource != null)
 				mTileSource.Free();
@@ -806,6 +858,9 @@ public class MainActivity extends Activity {
 	public boolean onContextItemSelected(MenuItem item) {
 		if (item.getGroupId() == R.id.isoverlay) {
 			final String overlayid = (String)item.getTitleCondensed();
+			mOverlayId = overlayid;
+			mShowOverlay = true;
+			
 			if(mTileSource != null)
 				mTileSource.Free();
 			try {
@@ -827,6 +882,8 @@ public class MainActivity extends Activity {
 		} else {
 			switch (item.getItemId()) {
 			case R.id.hide_overlay:
+				mShowOverlay = false;
+				
 				if(mTileSource != null)
 					mTileSource.Free();
 				try {
