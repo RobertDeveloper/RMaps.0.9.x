@@ -137,6 +137,14 @@ public class MainPreferences extends PreferenceActivity implements OnSharedPrefe
 						pref.setDefaultValue(false);
 						prefscr.addPreference(pref);
 					}
+					{
+						final CheckBoxPreference pref = new CheckBoxPreference(this);
+						pref.setKey(PREF_USERMAPS_ + name + "_isoverlay");
+						pref.setTitle(getString(R.string.pref_usermap_overlay));
+						pref.setSummary(getString(R.string.pref_usermap_overlay_summary));
+						pref.setDefaultValue(false);
+						prefscr.addPreference(pref);
+					}
 
 					prefscr.setTitle(prefscr.getSharedPreferences().getString(PREF_USERMAPS_ + name + "_name",
 							files[i].getName()));
