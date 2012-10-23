@@ -40,7 +40,7 @@ public class TileSource extends TileSourceBase {
 		final TileURLGeneratorBase layerURLGenerator = initTileURLGenerator(layerTileSource, pref);
 		final TileProviderBase layerProvider = initTileProvider(ctx, layerTileSource, layerURLGenerator, true, null);
 		
-		mTileProvider = new TileProviderDual(ctx, provider, layerProvider, tileCache);
+		mTileProvider = new TileProviderDual(ctx, this.ID, provider, layerProvider, tileCache);
 		
 	}
 	

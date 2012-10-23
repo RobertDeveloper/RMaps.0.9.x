@@ -23,7 +23,7 @@
 	-->
 
 <root>
-	<map id="osmsemi" cat="OSM" name="OSM.Semitransparent" descr="" baseurl="http://129.206.74.245:8003/tms_h.ashx?x=" IMAGE_FILENAMEENDING="" ZOOM_MINLEVEL="0" ZOOM_MAXLEVEL="18" MAPTILE_SIZEPX="256" URL_BUILDER_TYPE="2" TILE_SOURCE_TYPE="0" PROJECTION="1" YANDEX_TRAFFIC_ON="0"></map>
+	<map layer="true" id="osmsemi" cat="OSM" name="OSM.Semitransparent" descr="" baseurl="http://129.206.74.245:8003/tms_h.ashx?x=" IMAGE_FILENAMEENDING="" ZOOM_MINLEVEL="0" ZOOM_MAXLEVEL="18" MAPTILE_SIZEPX="256" URL_BUILDER_TYPE="2" TILE_SOURCE_TYPE="0" PROJECTION="1" YANDEX_TRAFFIC_ON="0"></map>
 	
 	<map id="googlemap" cat="Google" name="Google.Map" descr="" baseurl="http://mts0.google.com/vt/lyrs=m@189000000&amp;" IMAGE_FILENAMEENDING=".png" ZOOM_MINLEVEL="0" ZOOM_MAXLEVEL="19" MAPTILE_SIZEPX="256" URL_BUILDER_TYPE="1" TILE_SOURCE_TYPE="0" PROJECTION="1" YANDEX_TRAFFIC_ON="0" GOOGLESCALE="true"></map>
 	<map id="googlesat" cat="Google" name="Google.Satellite" descr="" baseurl="http://khms1.google.com/kh/v=113" IMAGE_FILENAMEENDING=".png" ZOOM_MINLEVEL="0" ZOOM_MAXLEVEL="18" MAPTILE_SIZEPX="256" URL_BUILDER_TYPE="4" TILE_SOURCE_TYPE="0" PROJECTION="1" YANDEX_TRAFFIC_ON="0" GOOGLESCALE="true"></map>

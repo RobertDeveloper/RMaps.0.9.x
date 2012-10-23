@@ -33,13 +33,12 @@
         <PreferenceScreen
             android:summary="@string/pref_main_maps_summary"
             android:title="@string/pref_main_maps" >
-            <PreferenceCategory
+            <PreferenceCategory android:key="pref_predefmaps_overlaysgroup" android:title="@string/prefcat_main_predefinedoverlays"></PreferenceCategory><PreferenceCategory
                 android:key="pref_predefmaps_mapsgroup"
                 android:title="@string/prefcat_main_predefinedmaps" >
             </PreferenceCategory>
-        </PreferenceScreen>
-
-        <ListPreference
+            
+        </PreferenceScreen><ListPreference
             android:entries="@array/languages_names"
             android:entryValues="@array/languages_codes"
             android:key="pref_googlelanguagecode"
@@ -56,6 +55,7 @@
                 android:title="@string/pref_main_usermaps" >
             </PreferenceCategory>
         </PreferenceScreen>
+        
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/prefcat_main_look" >
         
