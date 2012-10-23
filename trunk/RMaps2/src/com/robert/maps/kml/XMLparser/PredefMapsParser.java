@@ -27,6 +27,7 @@ public class PredefMapsParser extends DefaultHandler {
 
 	private static final String MAP = "map";
 	private static final String LAYER = "layer";
+	private static final String TIMEDEPENDENT = "timedependent";
 	private static final String CACHE = "cache";
 	private static final String TRUE = "true";
 	private static final String ID = "id";
@@ -119,9 +120,14 @@ public class PredefMapsParser extends DefaultHandler {
 			}
 			else if(mSubmenu != null) {
 				final int i = attributes.getIndex(LAYER);
+				boolean timeDependent = false;
+				final int j = attributes.getIndex(TIMEDEPENDENT);
+				if(j != -1)
+					timeDependent = Boolean.parseBoolean(attributes.getValue(TIMEDEPENDENT));
+				
 				if(mSharedPreferences.getBoolean(MainPreferences.PREF_PREDEFMAPS_+attributes.getValue(ID), true)) {
 					final boolean isLayer = !(i == -1 || !attributes.getValue(LAYER).equalsIgnoreCase(TRUE));
-					if(mNeedOverlays && isLayer && mNeedProjection == Integer.parseInt(attributes.getValue(PROJECTION)) || !mNeedOverlays && !isLayer) {
+					if(mNeedOverlays && isLayer && !timeDependent && mNeedProjection == Integer.parseInt(attributes.getValue(PROJECTION)) || !mNeedOverlays && !isLayer) {
 						final MenuItem item = mSubmenu.add(R.id.isoverlay, Menu.NONE, Menu.NONE, attributes.getValue(NAME));
 						item.setTitleCondensed(attributes.getValue(ID));
 					}
