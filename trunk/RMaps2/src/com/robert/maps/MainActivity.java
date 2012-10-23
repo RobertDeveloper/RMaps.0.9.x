@@ -126,6 +126,7 @@ public class MainActivity extends Activity {
 	private boolean mNorthDirectionUp;
 	
 	private GoogleAnalyticsTracker mTracker;
+	private ImageView mLayerView;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -352,8 +353,71 @@ public class MainActivity extends Activity {
 				setLastKnownLocation();
 			}
         });
+        
+        mLayerView = new ImageView(this);
+        mLayerView.setImageResource(R.drawable.zoom_out);
+        final RelativeLayout.LayoutParams layerParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        layerParams.addRule(RelativeLayout.CENTER_VERTICAL);
+       	layerParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        rl.addView(mLayerView, layerParams);
+        
+        mLayerView.setOnClickListener(new View.OnClickListener() {
+			
+			public void onClick(View v) {
+				v.showContextMenu();
+			}
+		});
+        mLayerView.setOnLongClickListener(new View.OnLongClickListener() {
+			
+			public boolean onLongClick(View v) {
+				Ut.w("mLayerView.OnLongClickListener");
+				return true;
+			}
+		});
+        mLayerView.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
+			
+			public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
+				menu.setHeaderTitle(R.string.menu_title_overlays);
+				menu.add(Menu.NONE, R.id.hide_overlay, Menu.NONE, R.string.menu_hide_overlay);
+				
+				SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
 
- 		registerForContextMenu(mMap);
+//				File folder = Ut.getRMapsMapsDir(MainActivity.this);
+//				if (folder.exists()) {
+//					File[] files = folder.listFiles();
+//					if (files != null)
+//						for (int i = 0; i < files.length; i++) {
+//							if (files[i].getName().toLowerCase().endsWith(".mnm")
+//									|| files[i].getName().toLowerCase().endsWith(".tar")
+//									|| files[i].getName().toLowerCase().endsWith(".sqlitedb")) {
+//								String name = Ut.FileName2ID(files[i].getName());
+//								if (pref.getBoolean("pref_usermaps_" + name + "_enabled", false)) {
+//									MenuItem item = submenu.add(pref.getString("pref_usermaps_" + name + "_name",
+//											files[i].getName()));
+//									item.setTitleCondensed("usermap_" + name);
+//								}
+//							}
+//						}
+//				}
+
+				final SAXParserFactory fac = SAXParserFactory.newInstance();
+				SAXParser parser = null;
+				try {
+					parser = fac.newSAXParser();
+					if(parser != null){
+						final InputStream in = getResources().openRawResource(R.raw.predefmaps);
+						parser.parse(in, new PredefMapsParser(menu, pref, true, mTileSource.PROJECTION));
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+
+				
+				
+			}
+		});
+        
+        registerForContextMenu(mMap);
  		
 		return rl;
 	}
@@ -468,7 +532,7 @@ public class MainActivity extends Activity {
 		if(mTileSource != null)
 			mTileSource.Free();
 		try {
-			mTileSource = new TileSource(this, pref.getString(MAPNAME, TileSource.MAPNIK), "osmsemi");
+			mTileSource = new TileSource(this, pref.getString(MAPNAME, TileSource.MAPNIK));
 		} catch (RException e) {
 			addMessage(e);
 		}
@@ -676,7 +740,7 @@ public class MainActivity extends Activity {
 			if(mTileSource != null)
 				mTileSource.Free();
 			try {
-				mTileSource = new TileSource(this, mapid, "osmsemi");
+				mTileSource = new TileSource(this, mapid);
 			} catch (RException e) {
 				addMessage(e);
 			}
@@ -740,43 +804,78 @@ public class MainActivity extends Activity {
 
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
-		switch(item.getItemId()){
-		case R.id.menu_addpoi:
-			GeoPoint point = ((TileView.PoiMenuInfo)item.getMenuInfo()).EventGeoPoint;
-			startActivityForResult((new Intent(this, PoiActivity.class))
-					.putExtra("lat", point.getLatitude()).putExtra("lon", point.getLongitude()).putExtra("title", "POI"), R.id.menu_addpoi);
-			break;
-		case R.id.menu_editpoi:
-			startActivityForResult((new Intent(this, PoiActivity.class)).putExtra("pointid", mPoiOverlay.getPoiPoint(mMarkerIndex).getId()), R.id.menu_editpoi);
-			mMap.postInvalidate();
-			break;
-		case R.id.menu_deletepoi:
-			mPoiManager.deletePoi(mPoiOverlay.getPoiPoint(mMarkerIndex).getId());
-			mPoiOverlay.UpdateList();
-			mMap.postInvalidate();
-			break;
-		case R.id.menu_hide:
-			final PoiPoint poi = mPoiOverlay.getPoiPoint(mMarkerIndex);
-			poi.Hidden = true;
-			mPoiManager.updatePoi(poi);
-			mPoiOverlay.UpdateList();
-			mMap.postInvalidate();
-			break;
-		case R.id.menu_toradar:
-			final PoiPoint poi1 = mPoiOverlay.getPoiPoint(mMarkerIndex);
+		if (item.getGroupId() == R.id.isoverlay) {
+			final String overlayid = (String)item.getTitleCondensed();
+			if(mTileSource != null)
+				mTileSource.Free();
 			try {
+				mTileSource = new TileSource(this, mTileSource.ID, overlayid);
+			} catch (RException e) {
+				addMessage(e);
+			}
+			mMap.setTileSource(mTileSource);
+			
+			if(mTileSource.MAP_TYPE == TileSource.PREDEF_ONLINE) {
+				mTracker.setCustomVar(1, "OVERLAY", overlayid);
+				mTracker.trackPageView("/overlays");
+			}
+			
+			FillOverlays();
+
+	        setTitle();
+
+		} else {
+			switch (item.getItemId()) {
+			case R.id.hide_overlay:
+				if(mTileSource != null)
+					mTileSource.Free();
+				try {
+					mTileSource = new TileSource(this, mTileSource.ID);
+				} catch (RException e) {
+					addMessage(e);
+				}
+				mMap.setTileSource(mTileSource);
+				
+				FillOverlays();
+		        setTitle();
+				break;
+			case R.id.menu_addpoi:
+				GeoPoint point = ((TileView.PoiMenuInfo) item.getMenuInfo()).EventGeoPoint;
+				startActivityForResult((new Intent(this, PoiActivity.class)).putExtra("lat", point.getLatitude()).putExtra("lon", point.getLongitude())
+						.putExtra("title", "POI"), R.id.menu_addpoi);
+				break;
+			case R.id.menu_editpoi:
+				startActivityForResult((new Intent(this, PoiActivity.class)).putExtra("pointid", mPoiOverlay.getPoiPoint(mMarkerIndex).getId()),
+						R.id.menu_editpoi);
+				mMap.postInvalidate();
+				break;
+			case R.id.menu_deletepoi:
+				mPoiManager.deletePoi(mPoiOverlay.getPoiPoint(mMarkerIndex).getId());
+				mPoiOverlay.UpdateList();
+				mMap.postInvalidate();
+				break;
+			case R.id.menu_hide:
+				final PoiPoint poi = mPoiOverlay.getPoiPoint(mMarkerIndex);
+				poi.Hidden = true;
+				mPoiManager.updatePoi(poi);
+				mPoiOverlay.UpdateList();
+				mMap.postInvalidate();
+				break;
+			case R.id.menu_toradar:
+				final PoiPoint poi1 = mPoiOverlay.getPoiPoint(mMarkerIndex);
+				try {
 					Intent i = new Intent("com.google.android.radar.SHOW_RADAR");
 					i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
 					i.putExtra("name", poi1.Title);
-					i.putExtra("latitude",  (float)(poi1.GeoPoint.getLatitudeE6() / 1000000f));
-					i.putExtra("longitude", (float)(poi1.GeoPoint.getLongitudeE6() / 1000000f));
+					i.putExtra("latitude", (float) (poi1.GeoPoint.getLatitudeE6() / 1000000f));
+					i.putExtra("longitude", (float) (poi1.GeoPoint.getLongitudeE6() / 1000000f));
 					startActivity(i);
 				} catch (Exception e) {
 					Toast.makeText(this, R.string.message_noradar, Toast.LENGTH_LONG).show();
 				}
-			break;
+				break;
+			}
 		}
-
 		return super.onContextItemSelected(item);
 	}
 

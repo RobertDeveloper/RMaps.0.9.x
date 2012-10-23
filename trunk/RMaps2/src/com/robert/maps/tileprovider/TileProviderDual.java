@@ -13,12 +13,12 @@ public class TileProviderDual extends TileProviderBase {
 	TileProviderBase mTileProviderLayer;
 	Paint mPaint;
 
-	public TileProviderDual(Context ctx, TileProviderBase aTileProviderMap, TileProviderBase aTileProviderLayer, MapTileMemCache aTileCache) {
+	public TileProviderDual(Context ctx, String aName, TileProviderBase aTileProviderMap, TileProviderBase aTileProviderLayer, MapTileMemCache aTileCache) {
 		super(ctx);
 		mTileCache = aTileCache;
 		mTileProviderMap = aTileProviderMap;
 		mTileProviderLayer = aTileProviderLayer;
-		mTileURLGenerator = new TileURLGeneratorBase("MAP");
+		mTileURLGenerator = new TileURLGeneratorBase(aName);
 		mPaint = new Paint();
 		
 		mTileProviderMap.setLoadingMapTile(null);
@@ -50,19 +50,22 @@ public class TileProviderDual extends TileProviderBase {
 		} else if(bmpMap == null && bmpLayer != null) {
 			bmpDual = bmpLayer;
 		} else if(bmpMap != null && bmpLayer != null) {
-			bmpDual = Bitmap.createBitmap(bmpMap.getWidth(), bmpMap.getHeight(), Config.ARGB_8888);
-			Canvas canvas = new Canvas(bmpDual);
-			canvas.drawBitmap(bmpMap, 0, 0, mPaint);
-			final Rect src = new Rect(0, 0, bmpLayer.getWidth(), bmpLayer.getHeight());
-			final Rect dst = new Rect(0, 0, bmpMap.getWidth(), bmpMap.getHeight());
-			canvas.drawBitmap(bmpLayer, src, dst, mPaint);
-			
-			mTileProviderMap.removeTile(tileurl);
-			mTileProviderLayer.removeTile(tileurl);
-			
-			mTileCache.putTile(tileurl, bmpDual);
+			try {
+				bmpDual = Bitmap.createBitmap(bmpMap.getWidth(), bmpMap.getHeight(), Config.ARGB_8888);
+				Canvas canvas = new Canvas(bmpDual);
+				canvas.drawBitmap(bmpMap, 0, 0, mPaint);
+				final Rect src = new Rect(0, 0, bmpLayer.getWidth(), bmpLayer.getHeight());
+				final Rect dst = new Rect(0, 0, bmpMap.getWidth(), bmpMap.getHeight());
+				canvas.drawBitmap(bmpLayer, src, dst, mPaint);
+				
+				mTileProviderMap.removeTile(tileurl);
+				mTileProviderLayer.removeTile(tileurl);
+				
+				mTileCache.putTile(tileurl, bmpDual);
+			} catch (Exception e) {
+				bmpDual = bmpMap;
+			}
 
-			bmpDual = bmpMap;
 		} else {
 			bmpDual = super.getTile(x, y, z);
 		};

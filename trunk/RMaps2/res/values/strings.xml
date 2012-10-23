@@ -46,7 +46,8 @@
     <string name="pref_main_maps_summary">Internet connection is required</string>
     <string name="pref_main_usermaps">User defined maps</string>
     <string name="pref_main_usermaps_summary">Maps from /sdcard/rmaps/maps</string>
-    <string name="prefcat_main_predefinedmaps"/>
+    <string name="prefcat_main_predefinedmaps">Maps</string>
+    <string name="prefcat_main_predefinedoverlays">Overlays</string>
     <string name="btn_clear_cache_title">Clear cache</string>
     <string name="pref_internalcache_title">Internal cache</string>
     <string name="pref_internalcache_summary">Used for temp storage map tiles. Size: %dKB/4MB</string>
@@ -200,4 +201,7 @@ How to and FAQ you can find on http://robertdeveloper.blogspot.com/\n
 	<string name="pref_track_style">Track style</string>
 	<string name="pref_track_style_summary">Track color, width, shadow color</string>
 	<string name="pref_track_style_current">Recorded track style</string>
+	<string name="pref_tile_size">Tile size</string>
+	<string name="menu_title_overlays">Overlays</string>
+	<string name="menu_hide_overlay">Hide overlay</string>
 </resources>

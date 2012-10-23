@@ -56,6 +56,7 @@ public class MainPreferences extends PreferenceActivity implements OnSharedPrefe
 		findPreference("pref_dir_export").setSummary(aPref.getString("pref_dir_export", Ut.getExternalStorageDirectory()+"/rmaps/export/"));
 
 		final PreferenceGroup prefMapsgroup = (PreferenceGroup) findPreference("pref_predefmaps_mapsgroup");
+		final PreferenceGroup prefOverlaysgroup = (PreferenceGroup) findPreference("pref_predefmaps_overlaysgroup");
 
 		final SAXParserFactory fac = SAXParserFactory.newInstance();
 		SAXParser parser = null;
@@ -63,7 +64,7 @@ public class MainPreferences extends PreferenceActivity implements OnSharedPrefe
 			parser = fac.newSAXParser();
 			if(parser != null){
 				final InputStream in = getResources().openRawResource(R.raw.predefmaps);
-				parser.parse(in, new PredefMapsParser(prefMapsgroup, this));
+				parser.parse(in, new PredefMapsParser(prefMapsgroup, prefOverlaysgroup, this));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
