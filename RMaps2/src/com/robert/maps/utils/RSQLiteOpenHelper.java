@@ -98,7 +98,7 @@ public abstract class RSQLiteOpenHelper {
                 db = SQLiteDatabase.create(null);
             } else {
 //                db = mContext.openOrCreateDatabase(mName, 0, mFactory);
-            	Ut.dd("RSQLiteOpenHelper: Open database " + mName);
+            	Ut.d("RSQLiteOpenHelper: Open database " + mName);
                 db = SQLiteDatabase.openOrCreateDatabase(mName, mFactory);
             }
 

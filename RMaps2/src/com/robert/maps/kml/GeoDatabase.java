@@ -168,7 +168,13 @@ public class GeoDatabase implements PoiConstants{
 		if(!folder.exists()) // no sdcard
 			return null;
 
-		SQLiteDatabase db = new GeoDatabaseHelper(mCtx, folder.getAbsolutePath() + GEODATA_FILENAME).getWritableDatabase();
+		SQLiteDatabase db;
+		try {
+			db = new GeoDatabaseHelper(mCtx, folder.getAbsolutePath() + GEODATA_FILENAME).getWritableDatabase();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
 
 		return db;
 	}
