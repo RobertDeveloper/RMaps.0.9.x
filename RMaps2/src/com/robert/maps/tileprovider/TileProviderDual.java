@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.os.Handler;
 
 public class TileProviderDual extends TileProviderBase {
@@ -52,7 +53,9 @@ public class TileProviderDual extends TileProviderBase {
 			bmpDual = Bitmap.createBitmap(bmpMap.getWidth(), bmpMap.getHeight(), Config.ARGB_8888);
 			Canvas canvas = new Canvas(bmpDual);
 			canvas.drawBitmap(bmpMap, 0, 0, mPaint);
-			canvas.drawBitmap(bmpLayer, 0, 0, mPaint);
+			final Rect src = new Rect(0, 0, bmpLayer.getWidth(), bmpLayer.getHeight());
+			final Rect dst = new Rect(0, 0, bmpMap.getWidth(), bmpMap.getHeight());
+			canvas.drawBitmap(bmpLayer, src, dst, mPaint);
 			
 			mTileProviderMap.removeTile(tileurl);
 			mTileProviderLayer.removeTile(tileurl);
