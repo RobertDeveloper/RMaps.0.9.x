@@ -202,40 +202,51 @@ public class SQLiteMapDatabase implements ICacheProvider {
 		return ret;
 	}
 
-	public int getMaxZoom() {
+	public synchronized int getMaxZoom() {
 		int ret = 0;
-		for(int i = 0; i < mDatabase.length; i++) {
-			if(mDatabase[i] != null){
-				final Cursor c = this.mDatabase[i].rawQuery(SQL_SELECT_MINZOOM, null);
-				if (c != null) {
-					if (c.moveToFirst()) {
-						final int zoom = c.getInt(c.getColumnIndexOrThrow(RET));
-						if(zoom > ret)
-							ret = zoom;
+		
+		try {
+			for(int i = 0; i < mDatabase.length; i++) {
+				if(mDatabase[i] != null){
+					final Cursor c = this.mDatabase[i].rawQuery(SQL_SELECT_MINZOOM, null);
+					if (c != null) {
+						if (c.moveToFirst()) {
+							final int zoom = c.getInt(c.getColumnIndexOrThrow(RET));
+							if(zoom > ret)
+								ret = zoom;
+						}
+						c.close();
 					}
-					c.close();
-				}
+				};
 			};
-		};
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		}
+		
 		return ret;
 	}
 
-	public int getMinZoom() {
-		int ret = 99;
+	public synchronized int getMinZoom() {
+		int ret = 22;
 		
-		for(int i = 0; i < mDatabase.length; i++) {
-			if(mDatabase[i] != null){
-				final Cursor c = this.mDatabase[i].rawQuery(SQL_SELECT_MAXZOOM, null);
-				if (c != null) {
-					if (c.moveToFirst()) {
-						final int zoom = c.getInt(c.getColumnIndexOrThrow(RET));
-						if(zoom < ret)
-							ret = zoom;
+		try {
+			for(int i = 0; i < mDatabase.length; i++) {
+				if(mDatabase[i] != null){
+					final Cursor c = this.mDatabase[i].rawQuery(SQL_SELECT_MAXZOOM, null);
+					if (c != null) {
+						if (c.moveToFirst()) {
+							final int zoom = c.getInt(c.getColumnIndexOrThrow(RET));
+							if(zoom < ret)
+								ret = zoom;
+						}
+						c.close();
 					}
-					c.close();
 				}
 			}
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
 		}
+		
 		return ret;
 	}
 

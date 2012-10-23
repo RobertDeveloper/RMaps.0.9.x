@@ -137,7 +137,10 @@ public class CurrentTrackOverlay extends TileViewOverlay {
 
 			mPath = mBasePj.toPixelsTrackPoints(mTrack.getPoints(), mBaseCoords, mBaseLocation);
 
-			Message.obtain(mOsmv.getHandler(), Ut.MAPTILEFSLOADER_SUCCESS_ID).sendToTarget();
+			try {
+				Message.obtain(mOsmv.getHandler(), Ut.MAPTILEFSLOADER_SUCCESS_ID).sendToTarget();
+			} catch (Exception e) {
+			}
 
 			mThreadRunned = false;
 		}

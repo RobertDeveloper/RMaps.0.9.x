@@ -61,18 +61,22 @@ public class TrackOverlay extends TileViewOverlay {
 			mPaints = new Paint[mTracks.length];
 			
 			for(int i = 0; i < mTracks.length; i++) {
-				mPaths[i] = mProjection.toPixelsTrackPoints(mTracks[i].getPoints(), mBaseCoords, mBaseLocation);
-				
-				mPaints[i] = new Paint();
-				mPaints[i].setAntiAlias(true);
-				mPaints[i].setStyle(Paint.Style.STROKE);
-				mPaints[i].setStrokeCap(Paint.Cap.ROUND);
-				mPaints[i].setColor(mTracks[i].Color);
-				mPaints[i].setStrokeWidth(mTracks[i].Width);
-				mPaints[i].setAlpha(Color.alpha(mTracks[i].ColorShadow));
-				mPaints[i].setShadowLayer((float) mTracks[i].ShadowRadius, 0, 0, mTracks[i].ColorShadow);
-
-				Message.obtain(mMainMapActivityCallbackHandler, Ut.MAPTILEFSLOADER_SUCCESS_ID).sendToTarget();
+				if (mTracks[i] != null) {
+					mPaths[i] = mProjection.toPixelsTrackPoints(mTracks[i].getPoints(), mBaseCoords, mBaseLocation);
+					mPaints[i] = new Paint();
+					mPaints[i].setAntiAlias(true);
+					mPaints[i].setStyle(Paint.Style.STROKE);
+					mPaints[i].setStrokeCap(Paint.Cap.ROUND);
+					mPaints[i].setColor(mTracks[i].Color);
+					mPaints[i].setStrokeWidth(mTracks[i].Width);
+					mPaints[i].setAlpha(Color.alpha(mTracks[i].ColorShadow));
+					mPaints[i].setShadowLayer((float) mTracks[i].ShadowRadius, 0, 0, mTracks[i].ColorShadow);
+					try {
+						Message.obtain(mMainMapActivityCallbackHandler, Ut.MAPTILEFSLOADER_SUCCESS_ID).sendToTarget();
+					} catch (Exception e) {
+					}
+				} else
+					mPaths[i] = null;
 			}
 
 
