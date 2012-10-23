@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="blank"> </string>
+    <string name="app_user_id"/>
+    <string name="app_user_label">Robert.Developer</string>
+    <string name="app_name">RMaps</string>
+    <string name="mnm">.mnm</string>
+    <string name="tar">.tar</string>
+    <string name="sqlitedb">.sqlitedb</string>
+	<string name="km">km</string>
+	<string name="kmh">km/h</string>
+	<string name="minkm">min/km</string>
+	<string name="m">m</string>
+	<string name="ml">ml</string>
+</resources>

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <resources>
-	<string name="error">Error...</string>
-	<string name="blank"> </string>
+	<string name="error">Error&#8230;</string>
 	<string name="pref_zoomctrl_summary">Position of buttons on the screen</string>
     <string name="pref_zoomctrl">Zoom buttons</string>
 	<string name="pref_screen_orientation">Screen Orientation</string>
@@ -19,8 +18,6 @@
     <string name="pref_zoomminlevel">Favourite min zoom</string>
     <string name="pref_zoommaxlevel_summary">Set this zoom level at long press on plus button</string>
     <string name="pref_zoommaxlevel">Favourite max zoom</string>
-    <string name="app_user_id"/>
-    <string name="app_user_label">Robert.Developer</string>
     <string name="prefcat_main_misc">Misc</string>
     <string name="pref_accuracy_summary">Show blue disk indicator like Google Map</string>
     <string name="pref_accuracy">Accuracy indicator</string>
@@ -66,10 +63,6 @@
     <string name="pref_locale">UI Language</string>
     <string name="pref_locale_summary">UI language independent of system setting</string>
     
-    <string name="hello">Hello World, OpenStreetMapViewer</string>
-    <string name="app_name">RMaps</string>
-    <string name="app_name_itemizedoverlay">OSMViewer ItemizedOverlay</string>
-    <string name="unknown">Unknown</string>
     <string name="menu_settings">Settings</string>
     <string name="menu_exit">Exit</string>
     <string name="menu_mylocation">My location</string>
@@ -85,14 +78,11 @@
     <string name="menu_import">Import</string>
     <string name="menu_deleteall">Delete All</string>
     <string name="menu_area_selector">Downloader</string>
-    <string name="mnm">.mnm</string>
-    <string name="tar">.tar</string>
-    <string name="sqlitedb">.sqlitedb</string>
     <string name="no_traffic">On this zoom traffic info are unavailable</string>
     <string name="auto_follow_enabled">Auto-Follow Enabled</string>
     <string name="auto_follow_disabled">Auto-Follow Disabled</string>
     <string name="message_geodata_notavailable">Data on SD card is not available. Operation cannot be performed.</string>
-    <string name="no_inet_conn">No internet connection...</string>
+    <string name="no_inet_conn">No internet connection&#8230;</string>
     <string name="no_items">Your search did not match any items</string>
     <string name="about_dialog_text">
 ©2009 Robert.Developer\n
@@ -108,114 +98,15 @@ Questions, sentences mail to robertk506@gmail.com\n
 \n
 How to and FAQ you can find on http://robertdeveloper.blogspot.com/\n
 	</string>
-    <string name="whats_new_dialog_text">
-\n
-v.0.8.11\n
-+ New maps Cloudmade (OSM data) with comfort label size\n
-+ Google scale factor. You can enlarge size of the labels on the map. See the preference of the map\n
-+ Language preference. You can set UI language independent of system\n
-+ Imperial units in statistic view\n
-+ Track color, width, shadow\n
-+ Multiple tracks on the map\n
-\n
-v.0.8.10.2\n
-+ Support geo intents. You can tap address in calendar app and show it in RMaps\n
-- Bugfix support MNM files and c:geo app\n
-\n
-v.0.8.10\n
-+ UI updates\n
-+ Maps URL updates\n
-\n
-v.0.8.9\n
-+ Crosshair on centre of the map\n
-+ Added new map maps.refuges.info\n
-\n
-v.0.8.8\n
-+ Update maps URL\n
-- UI improvement for high res screens\n
-\n
-v.0.8.7\n
-+ New preference Directory\n
-+ Now RMaps stores tiles of online maps on sdcard in sqlite format\n
-\n
-v.0.8.6\n
-+ New maps: VFR (avcharts.com), MyTopo, OSM MTB Mapa Česká republika\n
-+ Error report (please, send me message about force close)\n
-- Bug fix: Mutlitouch, Scale bar, more\n
-\n
-v.0.8.5\n
-+ Scale bar, Units property\n
-\n
-v.0.8.4\n
--  Mutlitouch zooming\n
-+ Zoom buttons settings: top, bottom, hide\n
-\n
-v.0.8.3.2\n
-+ Ready to install to SD card\n
-+ Update maps URL\n
-- Bug fix: Force close on Stop trackwriter on Froyo\n
-- Bug fix: Wrong date time on tracks. New tracks will be OK\n
-\n
-v.0.8.3\n
-+ Export track to GPX, KML file\n
-\n
-v.0.8.2\n
-+ Drawing of a current written track\n
-\n
-v.0.8.1\n
-+ Track writer\n
-+ Integration with Radar programs\n
-+ New maps for USA aviators: VFR Chart, IFR Low, IFR High\n
-\n
-v.0.8.0\n
-+ Import tracks from KML, GPX files\n
-\n
-v.0.7.7.1\n
-- Bug fix: Import some poi files\n
-+ Delete all poi confirm dialog\n
-\n
-v.0.7.7\n
-+ Import POI from KML, GPX files\n
-+ Optimisation of drawing of POI\n
-+ Update Yandex.Map URL, Google.Map URL\n
-\n
-v.0.7.6\n
-+ Add localisation of Google Maps. See Preference\n
-+ Added new online maps (Topographic map of Norway, Sea map of Norway)\n
-+ Add screen orientation preference\n
-+ Update Yandex.Map URL, Google.Map URL\n
-\n
-v.0.7.5\n
-+ POI category\n
-+ The back button close the search result window\n
-- Bug fix: OS Map\n
-\n
-v.0.7.4\n
-+ Added new online maps (Docelu.pl Poland, Freemap.sk Slovakia, Slovakia Hiking, Slovakia Hiking HillShade)\n
-Do you want to add new online map? Write to me.\n
-\n
-v.0.7.3\n
-- Bug fix: 100 value zoom in sqlitedb format maps\n
-+ Added new online maps (Microsoft Maps, Maps China, Virtual Earth, Hybrid, OSM Hiking Germany, OSM Public Transport, Outdooractive.com, Cykloatlas CZ, UMP-pcPL Poland)\n
-\n
-v.0.7.0\n
-+ Minimum POI functionality\n
-+ Integration with GPS Status by Rudolf Hornig\n
-+ Move index data of offline maps to sdcard\n
-+ Added buttons for clearing internal cache and index database to preference\n
-+ Update Yandex.Map URL, Google.Map URL\n
-- Bug fix: Wrong compass orientation on landscape mode\n
-\n
-	</string>
-    <string name="about_dialog_whats_new">What s new</string>
+    <string name="about_dialog_whats_new">What\'s new&#8230;</string>
     <string name="about_dialog_close">Close</string>
     <string name="search_label">Address:</string>
     <string name="search_hint">e.g. Abbey Road, London</string>
-    <string name="message_gpsdisabled">GPS is disabled. Trying to use wireless network to determine your location...</string>
-    <string name="message_locationunavailable">GPS and Network detection is disabled. Your current location is temporarily unavailable...</string>
-    <string name="message_lastknownlocation">GPS and Network detection is disabled. Showing last known location...</string>
+    <string name="message_gpsdisabled">GPS is disabled. Trying to use wireless network to determine your location&#8230;</string>
+    <string name="message_locationunavailable">GPS and Network detection is disabled. Your current location is temporarily unavailable&#8230;</string>
+    <string name="message_lastknownlocation">GPS and Network detection is disabled. Showing last known location&#8230;</string>
     <string name="message_corruptindex">You have corrupt index data. I recommend to clear index data in settings.</string>
-    <string name="message_updateminmax">Update min max zoom data of map file...</string>
+    <string name="message_updateminmax">Update min max zoom data of map file&#8230;</string>
     <string name="message_saved">Item saved</string>
     <string name="menu_done">Done</string>
     <string name="menu_doNotSave">Revert</string>
@@ -273,7 +164,7 @@ v.0.7.0\n
 	<string name="error_send">Generate report</string>
 	<string name="pref_onlinecache">Online maps cache</string>
 	<string name="pref_onlinecache_summary">Store online maps tiles to sdcard</string>
-	<string name="message_wait">Wait a moment, please...</string>
+	<string name="message_wait">Wait a moment, please&#8230;</string>
 	<string name="pref_dir">Directories</string>
 	<string name="pref_dir_main">Main RMaps directory</string>
 	<string name="pref_dir_maps">User maps directory</string>
@@ -294,11 +185,6 @@ v.0.7.0\n
 	<string name="min_elevation">MIN ELEVATION</string>
 	<string name="max_elevation">MAX ELEVATION</string>
 	<string name="menu_stat">Statistics</string>
-	<string name="km">km</string>
-	<string name="kmh">km/h</string>
-	<string name="minkm">min/km</string>
-	<string name="m">m</string>
-	<string name="ml">ml</string>
 	<string name="activity">Activity</string>
 
 	<string name="error_diskio">Can\'t open file %s Disk IO error</string>
