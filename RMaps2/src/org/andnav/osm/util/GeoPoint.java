@@ -56,9 +56,17 @@ public class GeoPoint implements MathConstants, GeoConstants{
 	}
 
 	public static GeoPoint fromIntString(final String s){
-		final int commaPos = s.indexOf(',');
-		return new GeoPoint(Integer.parseInt(s.substring(0,commaPos-1)),
-				Integer.parseInt(s.substring(commaPos+1,s.length())));
+		final String word[] = s.split(",");
+		int lat = 0, lon = 0;
+		try {
+			lat = Integer.parseInt(word[0]);
+		} catch (Exception e) {
+		}
+		try {
+			lon = Integer.parseInt(word[1]);
+		} catch (Exception e) {
+		}
+		return new GeoPoint(lat, lon);
 	}
 
 	// ===========================================================
