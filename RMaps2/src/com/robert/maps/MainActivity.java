@@ -230,12 +230,6 @@ public class MainActivity extends Activity {
 		}
 	}
 
-//	@Override
-//	public boolean onSearchRequested() {
-//        startSearch("", false, null, false);
-//		return true;
-//	}
-
 	@Override
 	protected void onNewIntent(Intent intent) {
 		super.onNewIntent(intent);
@@ -433,8 +427,10 @@ public class MainActivity extends Activity {
 									|| files[i].getName().toLowerCase().endsWith(".tar")
 									|| files[i].getName().toLowerCase().endsWith(".sqlitedb")) {
 								String name = Ut.FileName2ID(files[i].getName());
-								if (pref.getBoolean("pref_usermaps_" + name + "_enabled", false) && pref.getBoolean("pref_usermaps_" + name + "_isoverlay", false)) {
-									MenuItem item = menu.add(Menu.NONE, R.id.isoverlay, Menu.NONE, pref.getString("pref_usermaps_" + name + "_name", files[i].getName()));
+								if (pref.getBoolean("pref_usermaps_" + name + "_enabled", false)
+										&& mTileSource.PROJECTION == Integer.parseInt(pref.getString("pref_usermaps_" + name + "_projection", "1"))
+										&& pref.getBoolean("pref_usermaps_" + name + "_isoverlay", false)) {
+									MenuItem item = menu.add(R.id.isoverlay, Menu.NONE, Menu.NONE, pref.getString("pref_usermaps_" + name + "_name", files[i].getName()));
 									item.setTitleCondensed("usermap_" + name);
 								}
 							}

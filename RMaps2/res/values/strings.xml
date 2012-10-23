@@ -204,4 +204,6 @@ How to and FAQ you can find on http://robertdeveloper.blogspot.com/\n
 	<string name="pref_tile_size">Tile size</string>
 	<string name="menu_title_overlays">Overlays</string>
 	<string name="menu_hide_overlay">Hide overlay</string>
+	<string name="pref_usermap_overlay">Overlay</string>
+	<string name="pref_usermap_overlay_summary">Set up as overlay</string>
 </resources>
