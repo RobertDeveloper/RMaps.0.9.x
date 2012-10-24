@@ -578,6 +578,7 @@ public class MainActivity extends Activity {
 				mTileSource = new TileSource(this, pref.getString(MAPNAME, TileSource.MAPNIK));
 		} catch (RException e) {
 			addMessage(e);
+			e.printStackTrace();
 		}
 		mMap.setTileSource(mTileSource);
  		mMap.getController().setZoom(pref.getInt("ZoomLevel", 0));

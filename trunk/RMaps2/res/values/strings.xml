@@ -71,7 +71,6 @@
     <string name="menu_compass">Compass</string>
     <string name="menu_about">About</string>
     <string name="menu_search">Search</string>
-    <string name="menu_gpsstatus">GPS Status</string>
     <string name="menu_add">Add</string>
     <string name="menu_addpoi">Add POI</string>
     <string name="menu_poilist">POI</string>
@@ -123,9 +122,6 @@ How to and FAQ you can find on http://robertdeveloper.blogspot.com/\n
     <string name="PoiDescr">Description</string>
     <string name="hidden">Hidden</string>
     <string name="hiddencategory">Hide POI of this category</string>
-    <string name="ya_dialog_title"/>
-    <string name="ya_dialog_message"/>
-    <string name="ya_dialog_button_caption"/>
     <string name="menu_goto">Go to POI</string>
 
 
