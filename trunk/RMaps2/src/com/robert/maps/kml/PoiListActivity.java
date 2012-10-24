@@ -1,12 +1,22 @@
 package com.robert.maps.kml;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.text.SimpleDateFormat;
+
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ListActivity;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Message;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
@@ -20,9 +30,14 @@ import android.widget.SimpleCursorAdapter;
 import android.widget.Toast;
 
 import com.robert.maps.R;
+import com.robert.maps.kml.Track.TrackPoint;
+import com.robert.maps.kml.XMLparser.SimpleXML;
+import com.robert.maps.kml.constants.PoiConstants;
+import com.robert.maps.utils.Ut;
 
 public class PoiListActivity extends ListActivity {
 	private PoiManager mPoiManager;
+	private ProgressDialog dlgWait;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -87,11 +102,149 @@ public class PoiListActivity extends ListActivity {
 		case R.id.menu_deleteall:
 			showDialog(R.id.menu_deleteall);
 			return true;
+		case R.id.menu_exportgpx:
+			DoExportGpx();
+			return true;
+		case R.id.menu_exportkml:
+			DoExportKml();
 		}
 
 		return true;
 	}
 
+	private void DoExportKml() {
+		dlgWait = Ut.ShowWaitDialog(this, 0);
+		
+		new ExportKmlTask().execute();
+	}
+	
+	class ExportKmlTask extends AsyncTask<Void, Void, String> {
+
+		@Override
+		protected String doInBackground(Void... params) {
+			SimpleXML xml = new SimpleXML("kml");
+			xml.setAttr("xmlns:gx", "http://www.google.com/kml/ext/2.2");
+			xml.setAttr("xmlns", "http://www.opengis.net/kml/2.2");
+			SimpleXML fold = xml.createChild("Folder");
+			
+			Cursor c = mPoiManager.getGeoDatabase().getPoiListCursor();
+			PoiPoint poi = null;
+			
+			if(c != null) {
+				if(c.moveToFirst()) {
+					do {
+						poi = mPoiManager.getPoiPoint(c.getInt(4));
+						
+						SimpleXML wpt = fold.createChild("Placemark");
+						wpt.createChild(PoiConstants.NAME).setText(poi.Title);
+						wpt.createChild(PoiConstants.DESCRIPTION).setText(poi.Descr);
+						SimpleXML point = wpt.createChild("Point");
+						point.createChild("coordinates").setText(new StringBuilder().append(poi.GeoPoint.getLongitude()).append(",").append(poi.GeoPoint.getLatitude()).toString());
+						
+					} while(c.moveToNext());
+				};
+				c.close();
+			}
+
+			File folder = Ut.getRMapsExportDir(PoiListActivity.this);
+			String filename = folder.getAbsolutePath() + "/poilist.kml";
+			File file = new File(filename);
+			FileOutputStream out;
+			try {
+				file.createNewFile();
+				out = new FileOutputStream(file);
+				OutputStreamWriter wr = new OutputStreamWriter(out);
+				wr.write(SimpleXML.saveXml(xml));
+				wr.close();
+				return PoiListActivity.this.getResources().getString(R.string.message_poiexported, filename);
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+				return PoiListActivity.this.getResources().getString(R.string.message_error, e.getMessage());
+			} catch (IOException e) {
+				e.printStackTrace();
+				return PoiListActivity.this.getResources().getString(R.string.message_error, e.getMessage());
+			}
+
+		}
+
+		@Override
+		protected void onPostExecute(String result) {
+			dlgWait.dismiss();
+			Toast.makeText(PoiListActivity.this, result, Toast.LENGTH_LONG).show();
+			super.onPostExecute(result);
+		}
+		
+	}
+
+	private void DoExportGpx() {
+		dlgWait = Ut.ShowWaitDialog(this, 0);
+		
+		new ExportGpxTask().execute();
+	}
+
+	class ExportGpxTask extends AsyncTask<Void, Void, String> {
+
+		@Override
+		protected String doInBackground(Void... params) {
+			//SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+			SimpleXML xml = new SimpleXML("gpx");
+			xml.setAttr("xsi:schemaLocation", "http://www.topografix.com/GPX/1/0 http://www.topografix.com/GPX/1/0/gpx.xsd");
+			xml.setAttr("xmlns", "http://www.topografix.com/GPX/1/0");
+			xml.setAttr("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
+			xml.setAttr("creator", "RMaps - http://code.google.com/p/robertprojects/");
+			xml.setAttr("version", "1.0");
+			
+			Cursor c = mPoiManager.getGeoDatabase().getPoiListCursor();
+			PoiPoint poi = null;
+			
+			if(c != null) {
+				if(c.moveToFirst()) {
+					do {
+						poi = mPoiManager.getPoiPoint(c.getInt(4));
+						
+						SimpleXML wpt = xml.createChild("wpt");
+						wpt.setAttr(PoiConstants.LAT, Double.toString(poi.GeoPoint.getLatitude()));
+						wpt.setAttr(PoiConstants.LON, Double.toString(poi.GeoPoint.getLongitude()));
+						wpt.createChild(PoiConstants.ELE).setText(Double.toString(poi.Alt));
+						wpt.createChild(PoiConstants.NAME).setText(poi.Title);
+						wpt.createChild(PoiConstants.DESC).setText(poi.Descr);
+						wpt.createChild(PoiConstants.TYPE).setText(mPoiManager.getPoiCategory(poi.CategoryId).Title);
+						/*SimpleXML ext =*/ xml.createChild(PoiConstants.EXTENSIONS);
+						
+					} while(c.moveToNext());
+				};
+				c.close();
+			}
+
+			File folder = Ut.getRMapsExportDir(PoiListActivity.this);
+			String filename = folder.getAbsolutePath() + "/poilist.gpx";
+			File file = new File(filename);
+			FileOutputStream out;
+			try {
+				file.createNewFile();
+				out = new FileOutputStream(file);
+				OutputStreamWriter wr = new OutputStreamWriter(out);
+				wr.write(SimpleXML.saveXml(xml));
+				wr.close();
+				return PoiListActivity.this.getResources().getString(R.string.message_poiexported, filename);
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+				return PoiListActivity.this.getResources().getString(R.string.message_error, e.getMessage());
+			} catch (IOException e) {
+				e.printStackTrace();
+				return PoiListActivity.this.getResources().getString(R.string.message_error, e.getMessage());
+			}
+		}
+
+		@Override
+		protected void onPostExecute(String result) {
+			dlgWait.dismiss();
+			Toast.makeText(PoiListActivity.this, result, Toast.LENGTH_LONG).show();
+			super.onPostExecute(result);
+		}
+		
+	};
+	
 	@Override
 	protected Dialog onCreateDialog(int id) {
 		switch (id) {

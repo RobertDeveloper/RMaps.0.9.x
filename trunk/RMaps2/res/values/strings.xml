@@ -159,7 +159,7 @@ How to and FAQ you can find on http://robertdeveloper.blogspot.com/\n
 	<string name="menu_exporttokml">Export to KML file</string>
 	<string name="message_trackexported">The track is exported to </string>
 	<string name="message_cantstarttrackwriter">Can\'t start TrackWriter because can\'t write track to </string>
-	<string name="message_error">Error: </string>
+	<string name="message_error">Error: %s</string>
 	<string name="error_title">Error report</string>
 	<string name="error_text">After the last start the software problem has forced RMaps to be closed unexpectedly. Please, send the error report to the author of the program. Click Generate report, you can read the message before it is sent.</string>
 	<string name="error_send">Generate report</string>
@@ -206,4 +206,5 @@ How to and FAQ you can find on http://robertdeveloper.blogspot.com/\n
 	<string name="menu_hide_overlay">Hide overlay</string>
 	<string name="pref_usermap_overlay">Overlay</string>
 	<string name="pref_usermap_overlay_summary">Set up as overlay</string>
+	<string name="message_poiexported">The POIs exported to %s</string>
 </resources>
