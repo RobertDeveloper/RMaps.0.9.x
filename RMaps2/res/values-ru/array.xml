@@ -1,44 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<string-array name="projection_title">
-		<item>Меркатор на сфероид (как Google.Map)</item>
-		<item>Меркатор на эллипсоид (как Yandex.Map)</item>
-	</string-array>
-	<string-array name="accuracy_pref_title">
-		<item>Всегда показывать</item>
-		<item>Никогда не показывать</item>
-		<item>Когда точность &gt; 5 m</item>
-		<item>Когда точность &gt; 10 m</item>
-		<item>Когда точность &gt; 20 m</item>
-		<item>Когда точность &gt; 50 m</item>
-		<item>Когда точность &gt; 100</item>
-	</string-array>
-<string-array name="zoomlevel_pref_title">
-	<item>Не установлен</item>
-	<item>1</item>
-	<item>2</item>
-	<item>3</item>
-	<item>4</item>
-	<item>5</item>
-	<item>6</item>
-	<item>7</item>
-	<item>8</item>
-	<item>9</item>
-	<item>10</item>
-	<item>11</item>
-	<item>12</item>
-	<item>13</item>
-	<item>14</item>
-	<item>15</item>
-	<item>16</item>
-	<item>17</item>
-	<item>18</item>
-	<item>19</item>
-	<item>20</item>
-</string-array>
-<string-array name="zoomctrl_pref_title">
-	<item>Внизу</item>
-	<item>Вверху</item>
-	<item>Не показывать</item>
-</string-array>
+
+    <string-array name="accuracy_pref_title">
+        <item>Всегда показывать</item>
+        <item>Никогда не показывать</item>
+        <item>Когда точность &gt; 5 m</item>
+        <item>Когда точность &gt; 10 m</item>
+        <item>Когда точность &gt; 20 m</item>
+        <item>Когда точность &gt; 50 m</item>
+        <item>Когда точность &gt; 100</item>
+    </string-array>
+    <string-array name="screen_orientation_pref_title">
+        <item>Default</item>
+        <item>Force Landscape</item>
+        <item>Force Portrait</item>
+    </string-array>
+    <string-array name="mintime_pref_title">
+        <item>1 s</item>
+        <item>2 s (recommended)</item>
+        <item>3 s</item>
+        <item>4 s</item>
+        <item>5 s</item>
+        <item>10 s</item>
+        <item>20 s</item>
+        <item>30 s</item>
+        <item>1 min</item>
+        <item>2 min</item>
+        <item>3 min</item>
+        <item>5 min</item>
+        <item>10 min</item>
+        <item>15 min</item>
+        <item>30 min</item>
+    </string-array>
+    <string-array name="mindistance_pref_title">
+        <item>5 m</item>
+        <item>10 m (recommended)</item>
+        <item>50 m</item>
+        <item>100 m</item>
+        <item>200 m</item>
+        <item>500 m</item>
+    </string-array>
+    <string-array name="units_pref_title">
+        <item>km, m, km/h, m/s</item>
+        <item>ml, ft, mph</item>
+    </string-array>
+    <string-array name="projection_title">
+        <item>Меркатор на сфероид (как Google.Map)</item>
+        <item>Меркатор на эллипсоид (как Yandex.Map)</item>
+    </string-array>
+    <string-array name="zoomlevel_pref_title">
+        <item>Не установлен</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+        <item>11</item>
+        <item>12</item>
+        <item>13</item>
+        <item>14</item>
+        <item>15</item>
+        <item>16</item>
+        <item>17</item>
+        <item>18</item>
+        <item>19</item>
+        <item>20</item>
+    </string-array>
+    <string-array name="zoomctrl_pref_title">
+        <item>Внизу</item>
+        <item>Вверху</item>
+        <item>Не показывать</item>
+    </string-array>
+
 </resources>
