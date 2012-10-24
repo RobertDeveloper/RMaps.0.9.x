@@ -72,7 +72,8 @@ public class GpxTrackParser extends DefaultHandler {
 			mTrack.LastTrackPoint.alt = Double.parseDouble(builder.toString().trim());
 		}
 		else if (localName.equalsIgnoreCase(TIME)) {
-			mTrack.LastTrackPoint.date = Ut.ParseDate(builder.toString().trim());
+			if(mTrack.LastTrackPoint != null)
+				mTrack.LastTrackPoint.date = Ut.ParseDate(builder.toString().trim());
 		}
 
 		super.endElement(uri, localName, name);
