@@ -11,9 +11,14 @@ public interface PoiConstants {
 
 	public static final String LON = "lon";
 	public static final String LAT = "lat";
+	public static final String ELE = "ele";
 	public static final String NAME = "name";
 	public static final String DESCR = "descr";
+	public static final String DESC = "desc";
+	public static final String DESCRIPTION = "description";
 	public static final String ALT = "alt";
+	public static final String TYPE = "type";
+	public static final String EXTENSIONS = "extensions";
 	public static final String CATEGORYID = "categoryid";
 	public static final String POINTSOURCEID = "pointsourceid";
 	public static final String HIDDEN = "hidden";
