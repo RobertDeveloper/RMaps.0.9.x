@@ -146,7 +146,8 @@ public class MainActivity extends Activity {
 		mPoiManager = new PoiManager(this);
 		mLocationListener = new SampleLocationListener();
 		mMap.setMoveListener(mMoveListener);
-		mOrientationSensorManager = (SensorManager)getSystemService(Context.SENSOR_SERVICE);
+		if(!OpenStreetMapViewConstants.DEBUGMODE) // эмулятор стал виснуть на след строчке
+			mOrientationSensorManager = (SensorManager)getSystemService(Context.SENSOR_SERVICE);
 
 		final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
  		SharedPreferences uiState = getPreferences(Activity.MODE_PRIVATE);
@@ -649,7 +650,8 @@ public class MainActivity extends Activity {
 		if (myWakeLock != null) 
 			myWakeLock.release();
 
-		mOrientationSensorManager.unregisterListener(mListener);
+		if(mOrientationSensorManager != null)
+			mOrientationSensorManager.unregisterListener(mListener);
 		
 		if(mCurrentTrackOverlay != null)
 			mCurrentTrackOverlay.onPause();
