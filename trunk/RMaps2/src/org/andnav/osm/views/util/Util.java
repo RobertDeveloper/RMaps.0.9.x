@@ -106,47 +106,54 @@ public class Util implements OpenStreetMapViewConstants{
 	private static double tile2lat(int y, int aZoom, final int aProjection) {
 
 		if (aProjection == 1) {
-			final double n = Math.PI
-					- ((2.0 * Math.PI * y) / Math.pow(2.0, aZoom));
-			return 180.0 / Math.PI
-					* Math.atan(0.5 * (Math.exp(n) - Math.exp(-n)));
+			final double n = Math.PI - ((2.0 * Math.PI * y) / Math.pow(2.0, aZoom));
+			//final double n1 = 180.0 / Math.PI * Math.atan(0.5 * (Math.exp(n) - Math.exp(-n)));
+			return 180.0 / Math.PI * Math.atan(0.5 * (Math.exp(n) - Math.exp(-n)));
+			
+			//return 180 / Math.PI * (2 * Math.atan(Math.exp(a*Math.PI/180)) - Math.PI/2); // http://wiki.openstreetmap.org/wiki/Mercator
 		} else {
+			final double y1 = 20037508.342789 - 20037508.342789 * 2 / (1 << aZoom) * y;
+			
+			final double r_major = 6378137.0; //Equatorial Radius, WGS84
+			final double r_minor = 6356752.314245179; //defined as constant
+			
+			double ts = Math.exp ( -y1 / r_major);
+	        double phi = Math.PI/2 - 2 * Math.atan(ts);
+	        double dphi = 1.0;
+	        int i;
+	        for (i = 0; Math.abs(dphi) > 0.000000001 && i < 15; i++) {
+	                double con = (Math.sqrt(1.0 - (r_minor/r_major * r_minor/r_major))) * Math.sin (phi);
+	                dphi = Math.PI/2 - 2 * Math.atan (ts * Math.pow((1.0 - con) / (1.0 + con), (0.5 * (Math.sqrt(1.0 - (r_minor/r_major * r_minor/r_major)))))) - phi;
+	                phi += dphi;
+	        }
+	        return phi / (Math.PI / 180.0);	
+			/*
 			final double MerkElipsK = 0.0000001;
 			final long sradiusa = 6378137;
 			final long sradiusb = 6356752;
-			final double FExct = (double) Math.sqrt(sradiusa * sradiusa
-					- sradiusb * sradiusb)
-					/ sradiusa;
+			final double FExct = (double) Math.sqrt(sradiusa * sradiusa - sradiusb * sradiusb) / sradiusa;
 			final int TilesAtZoom = 1 << aZoom;
-			double result = (y - TilesAtZoom / 2)
-					/ -(TilesAtZoom / (2 * Math.PI));
-			result = (2 * Math.atan(Math.exp(result)) - Math.PI / 2) * 180
-					/ Math.PI;
+			double result = (y - TilesAtZoom / 2) / -(TilesAtZoom / (2 * Math.PI));
+			result = (2 * Math.atan(Math.exp(result)) - Math.PI / 2) * 180 / Math.PI;
 			double Zu = result / (180 / Math.PI);
 			double yy = ((y) - TilesAtZoom / 2);
 
 			double Zum1 = Zu;
-			Zu = Math
-					.asin(1
-							- ((1 + Math.sin(Zum1)) * Math.pow(1 - FExct
-									* Math.sin(Zum1), FExct))
-							/ (Math.exp((2 * yy)
-									/ -(TilesAtZoom / (2 * Math.PI))) * Math
-									.pow(1 + FExct * Math.sin(Zum1), FExct)));
+			Zu = Math.asin(1 - ((1 + Math.sin(Zum1)) * Math.pow(1 - FExct * Math.sin(Zum1), FExct))
+					/ (Math.exp((2 * yy) / -(TilesAtZoom / (2 * Math.PI))) * Math.pow(1 + FExct * Math.sin(Zum1), FExct)));
 			while (Math.abs(Zum1 - Zu) >= MerkElipsK) {
 				Zum1 = Zu;
-				Zu = Math
-						.asin(1
-								- ((1 + Math.sin(Zum1)) * Math.pow(1 - FExct
-										* Math.sin(Zum1), FExct))
-								/ (Math.exp((2 * yy)
-										/ -(TilesAtZoom / (2 * Math.PI))) * Math
-										.pow(1 + FExct * Math.sin(Zum1), FExct)));
+				Zu = Math.asin(1 - ((1 + Math.sin(Zum1)) * Math.pow(1 - FExct * Math.sin(Zum1), FExct))
+						/ (Math.exp((2 * yy) / -(TilesAtZoom / (2 * Math.PI))) * Math.pow(1 + FExct * Math.sin(Zum1), FExct)));
 			}
+
+			if (Zu == Float.NaN)
+				Zu = 0.0;
 
 			result = Zu * 180 / Math.PI;
 
 			return result;
+			*/
 		}
 	}
 

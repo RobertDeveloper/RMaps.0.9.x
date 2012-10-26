@@ -102,12 +102,12 @@ public class BoundingBoxE6 implements OpenStreetMapViewConstants, OpenStreetMapC
 		return out;
 	}
 	
-	public GeoPoint getGeoPointOfRelativePositionWithLinearInterpolation(final float relX, final float relY) {		
+	public GeoPoint getGeoPointOfRelativePositionWithLinearInterpolation(final float relX, final float relY) {
 		
 		int lat = (int)(this.mLatNorthE6 - (this.getLatitudeSpanE6() * relY));
 							
 		int lon = (int)(this.mLonWestE6 + (this.getLongitudeSpanE6() * relX));
-		
+
 		/* Bring into bounds. */
 		while(lat > 90500000)
 			lat -= 90500000;
@@ -116,9 +116,9 @@ public class BoundingBoxE6 implements OpenStreetMapViewConstants, OpenStreetMapC
 		
 		/* Bring into bounds. */
 		while(lon > 180000000)
-			lon -= 180000000;
+			lon -= 2*180000000;
 		while(lon < -180000000)
-			lon += 180000000;
+			lon += 2*180000000;
 		
 		return new GeoPoint(lat, lon);
 	}
