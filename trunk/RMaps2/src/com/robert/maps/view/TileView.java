@@ -10,6 +10,7 @@ import org.andnav.osm.views.util.Util;
 import org.andnav.osm.views.util.constants.OpenStreetMapViewConstants;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
@@ -705,71 +706,75 @@ public class TileView extends View {
 			return false;
 		}
 
-		public Path toPixelsTrackPoints(List<TrackPoint> in, Point baseCoord, GeoPoint baseLocation) throws IllegalArgumentException {
-			if (in.size() < 2)
-				return null;
-				//throw new IllegalArgumentException("List of GeoPoints needs to be at least 2.");
-
+		public Path toPixelsTrackPoints(Cursor cursor, Point baseCoord, GeoPoint baseLocation) throws IllegalArgumentException {
 			mStopProcessing = false;
-			final Path out = new Path();
+			Path out = new Path();
 			final boolean doGudermann = true;
+			int lat, lon;
 
 			int i = 0;
 			int lastX = 0, lastY = 0;
-			for (TrackPoint tp : in) {
-				if(Stop()) {
-					return null;
+			if(cursor != null) {
+				if(cursor.moveToFirst()) {
+					do {
+						if(Stop()) {
+							out = null;
+							break;
+						}
+						
+						lat = (int) (cursor.getDouble(0) * 1E6);
+						lon = (int) (cursor.getDouble(1) * 1E6);
+						
+						final int[] underGeopointTileCoords = Util.getMapTileFromCoordinates(lat, lon, zoomLevel, null, mTileSource.PROJECTION);
+
+						/*
+						 * Calculate the Latitude/Longitude on the left-upper ScreenCoords of the MapTile.
+						 */
+						final BoundingBoxE6 bb = Util.getBoundingBoxFromMapTile(underGeopointTileCoords, zoomLevel,
+								mTileSource.PROJECTION);
+
+						final float[] relativePositionInCenterMapTile;
+						if (doGudermann && zoomLevel < 7)
+							relativePositionInCenterMapTile = bb
+									.getRelativePositionOfGeoPointInBoundingBoxWithExactGudermannInterpolation(lat, lon, null);
+						else
+							relativePositionInCenterMapTile = bb
+									.getRelativePositionOfGeoPointInBoundingBoxWithLinearInterpolation(lat, lon, null);
+
+						final int tileDiffX = centerMapTileCoords[LONGITUDE]
+								- underGeopointTileCoords[LONGITUDE];
+						final int tileDiffY = centerMapTileCoords[LATITUDE]
+								- underGeopointTileCoords[LATITUDE];
+						final int underGeopointTileScreenLeft = upperLeftCornerOfCenterMapTile.x - (tileSizePx * tileDiffX);
+						final int underGeopointTileScreenTop = upperLeftCornerOfCenterMapTile.y - (tileSizePx * tileDiffY);
+
+						final int x = underGeopointTileScreenLeft
+								+ (int) (relativePositionInCenterMapTile[LONGITUDE] * tileSizePx);
+						final int y = underGeopointTileScreenTop
+								+ (int) (relativePositionInCenterMapTile[LATITUDE] * tileSizePx);
+
+						/* Add up the offset caused by touch. */
+						if (i == 0) {
+							out.setLastPoint(x, y);
+							lastX = x;
+							lastY = y;
+							baseCoord.x = x;
+							baseCoord.y = y;
+							baseLocation.setCoordsE6(lat, lon);
+							i++;
+						} else {
+							if (Math.abs(lastX - x) > 5 || Math.abs(lastY - y) > 5) {
+								out.lineTo(x, y);
+								lastX = x;
+								lastY = y;
+								i++;
+							}
+						}
+					} while(cursor.moveToNext());
 				}
-				final int[] underGeopointTileCoords = Util.getMapTileFromCoordinates(tp.getLatitudeE6(), tp
-						.getLongitudeE6(), zoomLevel, null, mTileSource.PROJECTION);
-
-				/*
-				 * Calculate the Latitude/Longitude on the left-upper ScreenCoords of the MapTile.
-				 */
-				final BoundingBoxE6 bb = Util.getBoundingBoxFromMapTile(underGeopointTileCoords, zoomLevel,
-						mTileSource.PROJECTION);
-
-				final float[] relativePositionInCenterMapTile;
-				if (doGudermann && zoomLevel < 7)
-					relativePositionInCenterMapTile = bb
-							.getRelativePositionOfGeoPointInBoundingBoxWithExactGudermannInterpolation(tp
-									.getLatitudeE6(), tp.getLongitudeE6(), null);
-				else
-					relativePositionInCenterMapTile = bb
-							.getRelativePositionOfGeoPointInBoundingBoxWithLinearInterpolation(tp.getLatitudeE6(), tp
-									.getLongitudeE6(), null);
-
-				final int tileDiffX = centerMapTileCoords[LONGITUDE]
-						- underGeopointTileCoords[LONGITUDE];
-				final int tileDiffY = centerMapTileCoords[LATITUDE]
-						- underGeopointTileCoords[LATITUDE];
-				final int underGeopointTileScreenLeft = upperLeftCornerOfCenterMapTile.x - (tileSizePx * tileDiffX);
-				final int underGeopointTileScreenTop = upperLeftCornerOfCenterMapTile.y - (tileSizePx * tileDiffY);
-
-				final int x = underGeopointTileScreenLeft
-						+ (int) (relativePositionInCenterMapTile[LONGITUDE] * tileSizePx);
-				final int y = underGeopointTileScreenTop
-						+ (int) (relativePositionInCenterMapTile[LATITUDE] * tileSizePx);
-
-				/* Add up the offset caused by touch. */
-				if (i == 0) {
-					out.setLastPoint(x, y);
-					lastX = x;
-					lastY = y;
-					baseCoord.x = x;
-					baseCoord.y = y;
-					baseLocation.setCoordsE6(tp.getLatitudeE6(), tp.getLongitudeE6());
-					i++;
-				} else {
-					if (Math.abs(lastX - x) > 5 || Math.abs(lastY - y) > 5) {
-						out.lineTo(x, y);
-						lastX = x;
-						lastY = y;
-						i++;
-					}
-				}
+				cursor.close();
 			}
-
+			
 			return out;
 		}
 	}

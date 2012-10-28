@@ -120,22 +120,10 @@ public class CurrentTrackOverlay extends TileViewOverlay {
 
 				if(db != null){
 					final Cursor c = db.rawQuery("SELECT lat, lon FROM trackpoints ORDER BY id", null);
-
-					if(c != null){
-						if (c.moveToFirst()) {
-							do {
-								mTrack.AddTrackPoint();
-								mTrack.LastTrackPoint.lat = c.getDouble(0);
-								mTrack.LastTrackPoint.lon = c.getDouble(1);
-							} while (c.moveToNext());
-						}
-						c.close();
-					}
-					db.close();
+					
+					mPath = mBasePj.toPixelsTrackPoints(c, mBaseCoords, mBaseLocation);
 				};
 			};
-
-			mPath = mBasePj.toPixelsTrackPoints(mTrack.getPoints(), mBaseCoords, mBaseLocation);
 
 			try {
 				Message.obtain(mOsmv.getHandler(), Ut.MAPTILEFSLOADER_SUCCESS_ID).sendToTarget();
