@@ -180,7 +180,7 @@ public class GeoDatabase implements PoiConstants{
 	}
 
 	protected class GeoDatabaseHelper extends RSQLiteOpenHelper {
-		private final static int mCurrentVersion = 20;
+		private final static int mCurrentVersion = 21;
 		
 		public GeoDatabaseHelper(final Context context, final String name) {
 			super(context, name, null, mCurrentVersion);
@@ -194,6 +194,7 @@ public class GeoDatabase implements PoiConstants{
 			db.execSQL(PoiConstants.SQL_ADD_category);
 			db.execSQL(PoiConstants.SQL_CREATE_tracks);
 			db.execSQL(PoiConstants.SQL_CREATE_trackpoints);
+			db.execSQL(PoiConstants.SQL_CREATE_maps);
 			LoadActivityListFromResource(db);
 		}
 
@@ -245,6 +246,9 @@ public class GeoDatabase implements PoiConstants{
 				db.execSQL(PoiConstants.SQL_CREATE_tracks);
 				db.execSQL(PoiConstants.SQL_UPDATE_20_1);
 				db.execSQL(PoiConstants.SQL_UPDATE_6_5);
+			}
+			if (oldVersion < 21) {
+				db.execSQL(PoiConstants.SQL_CREATE_maps);
 			}
 		}
 
@@ -472,5 +476,10 @@ public class GeoDatabase implements PoiConstants{
 		return res;
 	}
 
+	public Cursor getMixedMaps() {
+		if (isDatabaseReady())
+			return mDatabase.rawQuery(STAT_get_maps, null);
+		return null;
+	}
 
 }

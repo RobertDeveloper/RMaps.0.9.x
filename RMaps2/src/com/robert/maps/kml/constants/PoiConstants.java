@@ -69,6 +69,8 @@ public interface PoiConstants {
 	public static final String STAT_deleteTrack_2 = "DELETE FROM tracks WHERE trackid = @1";
 	public static final String STAT_saveTrackFromWriter = "SELECT lat, lon, alt, speed, date FROM trackpoints ORDER BY id;";
 	public static final String STAT_CLEAR_TRACKPOINTS = "DELETE FROM 'trackpoints';";
+	public static final String STAT_get_maps = "SELECT * FROM 'maps';";
+	
 
 	public static final String SQL_CREATE_points = "CREATE TABLE 'points' (pointid INTEGER NOT NULL PRIMARY KEY UNIQUE,name VARCHAR,descr VARCHAR,lat FLOAT DEFAULT '0',lon FLOAT DEFAULT '0',alt FLOAT DEFAULT '0',hidden INTEGER DEFAULT '0',categoryid INTEGER,pointsourceid INTEGER,iconid INTEGER DEFAULT NULL);";
 	public static final String SQL_CREATE_category = "CREATE TABLE 'category' (categoryid INTEGER NOT NULL PRIMARY KEY UNIQUE, name VARCHAR, hidden INTEGER DEFAULT '0', iconid INTEGER DEFAULT NULL, minzoom INTEGER DEFAULT '14');";
@@ -78,6 +80,7 @@ public interface PoiConstants {
 	public static final String SQL_CREATE_activity = "CREATE TABLE 'activity' (activityid INTEGER NOT NULL PRIMARY KEY UNIQUE, name VARCHAR);";
 	public static final String SQL_CREATE_drop_activity = "DROP TABLE IF EXISTS 'activity';";
 	public static final String SQL_CREATE_insert_activity = "INSERT INTO 'activity' (activityid, name) VALUES (%d, '%s');";
+	public static final String SQL_CREATE_maps = "CREATE TABLE IF NOT EXISTS 'maps' (mapid INTEGER NOT NULL PRIMARY KEY UNIQUE, name VARCHAR, type INTEGER, params VARCHAR)";
 
 	public static final String SQL_ADD_category = "INSERT INTO 'category' (categoryid, name, hidden, iconid) VALUES (0, 'My POI', 0, "
 			+ R.drawable.poiblue + ");";
