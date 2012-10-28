@@ -47,7 +47,7 @@ public class TrackOverlay extends TileViewOverlay {
 			mPaths = null;
 
 			if(mTracks == null){
-				mTracks = mPoiManager.getTrackChecked();
+				mTracks = mPoiManager.getTrackChecked(false);
 				if(mTracks == null){
 					Ut.d("Track is null. Stoped??");
 					mThreadRunned = false;
@@ -62,7 +62,8 @@ public class TrackOverlay extends TileViewOverlay {
 			
 			for(int i = 0; i < mTracks.length; i++) {
 				if (mTracks[i] != null) {
-					mPaths[i] = mProjection.toPixelsTrackPoints(mTracks[i].getPoints(), mBaseCoords, mBaseLocation);
+					//mPaths[i] = mProjection.toPixelsTrackPoints(mTracks[i].getPoints(), mBaseCoords, mBaseLocation);
+					mPaths[i] = mProjection.toPixelsTrackPoints(mPoiManager.getGeoDatabase().getTrackPoints(mTracks[i].getId()), mBaseCoords, mBaseLocation);
 					mPaints[i] = new Paint();
 					mPaints[i].setAntiAlias(true);
 					mPaints[i].setStyle(Paint.Style.STROKE);

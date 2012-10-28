@@ -174,6 +174,10 @@ public class PoiManager implements PoiConstants {
 	}
 
 	public Track[] getTrackChecked(){
+		return getTrackChecked(true);
+	}
+
+	public Track[] getTrackChecked(final boolean aNeedPoints){
 		mStopProcessing = false;
 		Track tracks[] = null;
 		Cursor c = mGeoDatabase.getTrackChecked();
@@ -190,23 +194,25 @@ public class PoiManager implements PoiConstants {
 
 					tracks[pos] = new Track(c.getInt(3), c.getString(0), c.getString(1), c.getInt(2) == ONE ? true : false, c.getInt(4), c.getDouble(5), c.getDouble(6), c.getInt(7), c.getInt(8), new Date(c.getLong(9)*1000), style, defStyle);
 					
-					Cursor cpoints = mGeoDatabase.getTrackPoints(tracks[pos].getId());
-					if (cpoints != null) {
-						if (cpoints.moveToFirst()) {
-							do {
-								if(Stop()) {
-									tracks[pos] = null;
-									break;
-								}
-								tracks[pos].AddTrackPoint(); //track.trackpoints.size()
-								tracks[pos].LastTrackPoint.lat = cpoints.getDouble(0);
-								tracks[pos].LastTrackPoint.lon = cpoints.getDouble(1);
-								tracks[pos].LastTrackPoint.alt = cpoints.getDouble(2);
-								tracks[pos].LastTrackPoint.speed = cpoints.getDouble(3);
-								tracks[pos].LastTrackPoint.date.setTime(cpoints.getLong(4) * 1000); // System.currentTimeMillis()
-							} while (cpoints.moveToNext());
+					if (aNeedPoints) {
+						Cursor cpoints = mGeoDatabase.getTrackPoints(tracks[pos].getId());
+						if (cpoints != null) {
+							if (cpoints.moveToFirst()) {
+								do {
+									if (Stop()) {
+										tracks[pos] = null;
+										break;
+									}
+									tracks[pos].AddTrackPoint(); //track.trackpoints.size()
+									tracks[pos].LastTrackPoint.lat = cpoints.getDouble(0);
+									tracks[pos].LastTrackPoint.lon = cpoints.getDouble(1);
+									tracks[pos].LastTrackPoint.alt = cpoints.getDouble(2);
+									tracks[pos].LastTrackPoint.speed = cpoints.getDouble(3);
+									tracks[pos].LastTrackPoint.date.setTime(cpoints.getLong(4) * 1000); // System.currentTimeMillis()
+								} while (cpoints.moveToNext());
+							}
+							cpoints.close();
 						}
-						cpoints.close();
 					}
 				} while (c.moveToNext());
 			else {
