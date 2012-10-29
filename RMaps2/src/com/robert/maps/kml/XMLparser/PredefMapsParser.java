@@ -1,5 +1,8 @@
 package com.robert.maps.kml.XMLparser;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -45,12 +48,31 @@ public class PredefMapsParser extends DefaultHandler {
 	private static final String GOOGLESCALE = "GOOGLESCALE";
 
 	private Menu mSubmenu;
+	private boolean mNeedMaps;
 	private boolean mNeedOverlays;
 	private int mNeedProjection;
 	private PreferenceGroup mPrefMapsgroup;
 	private PreferenceGroup mPrefOverlaysgroup;
 	private Context mPrefActivity;
 	private SharedPreferences mSharedPreferences;
+	private ArrayList<String> mID;
+	private ArrayList<String> mName;
+	
+	public PredefMapsParser(final ArrayList<String> arrayListID, final ArrayList<String> arrayListName, final boolean aGetMaps, final boolean aGetOverlays) {
+		super();
+		
+		mID = arrayListID;
+		mName = arrayListName;
+		mNeedMaps = aGetMaps;
+		mNeedOverlays = aGetOverlays;
+		
+		mSubmenu = null;
+		mRendererInfo = null;
+		mMapId = null;
+		mPrefMapsgroup = null;
+		mPrefOverlaysgroup = null;
+		mPrefActivity = null;
+	}
 
 	public PredefMapsParser(final PreferenceGroup aPrefMapsgroup, final PreferenceGroup aPrefOverlaysgroup, final Context aPrefActivity) {
 		super();
@@ -197,6 +219,20 @@ public class PredefMapsParser extends DefaultHandler {
 				prefscr.setTitle(attributes.getValue(NAME));
 				prefscr.setSummary(attributes.getValue(DESCR));
 				prefGroup.addPreference(prefscr);
+			}
+			else if(mID != null) {
+				final int i = attributes.getIndex(LAYER);
+				boolean timeDependent = false;
+				final int j = attributes.getIndex(TIMEDEPENDENT);
+				if(j != -1)
+					timeDependent = Boolean.parseBoolean(attributes.getValue(TIMEDEPENDENT));
+				
+				final boolean isLayer = !(i == -1 || !attributes.getValue(LAYER).equalsIgnoreCase(TRUE));
+				
+				if(mNeedMaps && !isLayer || mNeedOverlays && isLayer && !timeDependent) {
+					mID.add(attributes.getValue(ID));
+					mName.add(attributes.getValue(NAME));
+				}
 			}
 		}
 		super.startElement(uri, localName, name, attributes);

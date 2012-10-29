@@ -482,4 +482,38 @@ public class GeoDatabase implements PoiConstants{
 		return null;
 	}
 
+	public long addMap(int type, String params) {
+		long newId = -1;
+
+		if (isDatabaseReady()) {
+			final ContentValues cv = new ContentValues();
+			cv.put(NAME, "New map");
+			cv.put(TYPE, type);
+			cv.put(PARAMS, params);
+			newId = this.mDatabase.insert(MAPS, null, cv);
+		}
+
+		return newId;
+	}
+	
+	public Cursor getMap(long id) {
+		if (isDatabaseReady()) {
+			final String[] args = {Long.toString(id)};
+			// не менять порядок полей
+			return mDatabase.rawQuery(STAT_get_map, args);
+		};
+		return null;
+	}
+	
+	public void updateMap(long id, String name, int type, String params) {
+		if (isDatabaseReady()) {
+			final ContentValues cv = new ContentValues();
+			cv.put(NAME, name);
+			cv.put(TYPE, type);
+			cv.put(PARAMS, params);
+			final String[] args = {Long.toString(id)};
+			this.mDatabase.update(MAPS, cv, UPDATE_MAPS, args);
+		}
+	}
+	
 }
