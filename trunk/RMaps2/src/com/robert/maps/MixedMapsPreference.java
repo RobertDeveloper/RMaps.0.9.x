@@ -25,6 +25,7 @@ import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ListView;
 
 import com.robert.maps.kml.PoiManager;
 import com.robert.maps.kml.XMLparser.PredefMapsParser;
@@ -72,17 +73,15 @@ public class MixedMapsPreference extends PreferenceActivity implements OnSharedP
 			final int idType = c.getColumnIndex(TYPE);
 			final int idParams = c.getColumnIndex(PARAMS);
 			
-			final String[] listMapIDs = null; //= new ArrayList<String>();
-			final String[] listMapNames = null; //= new ArrayList<String>();
-			final String[] listOverlayIDs = null; //= new ArrayList<String>();
-			final String[] listOverlayNames = null; //= new ArrayList<String>();
-			getMaps(listMapIDs, listMapNames, true, false);
-			getMaps(listOverlayIDs, listOverlayNames, false, true);
+			final String[][] listMap = getMaps(true, false);
+			final String[][] listOverlays = getMaps(false, true);
 			
 			if(c.moveToFirst()) {
 				do {
 					switch(c.getInt(idType)) {
 					case 1: {
+						final JSONObject json = getMapPairParams(c.getString(idParams));
+						
 						final PreferenceScreen prefscr = getPreferenceManager().createPreferenceScreen(this);
 						prefscr.setKey(PREF_MIXMAPS_ + c.getInt(idMapid));
 						
@@ -108,16 +107,24 @@ public class MixedMapsPreference extends PreferenceActivity implements OnSharedP
 							final ListPreference pref = new ListPreference(this);
 							pref.setKey(PREF_MIXMAPS_ + c.getInt(idMapid) + "_"+MAPID);
 							pref.setTitle(getString(R.string.pref_mixmap_map));
-							pref.setEntries(listMapNames);
-							pref.setEntryValues(listMapIDs);
+							if(listMap != null) {
+								pref.setEntryValues(listMap[0]);
+								pref.setEntries(listMap[1]);
+							}
+							pref.setValue(json.optString(MAPID));
+							pref.setSummary(pref.getEntry());
 							prefscr.addPreference(pref);
 						}
 						{
 							final ListPreference pref = new ListPreference(this);
 							pref.setKey(PREF_MIXMAPS_ + c.getInt(idMapid) + "_"+OVERLAYID);
 							pref.setTitle(getString(R.string.pref_mixmap_overlay));
-							pref.setEntries(listOverlayNames);
-							pref.setEntryValues(listOverlayIDs);
+							if(listOverlays != null) {
+								pref.setEntryValues(listOverlays[0]);
+								pref.setEntries(listOverlays[1]);
+							}
+							pref.setValue(json.optString(OVERLAYID));
+							pref.setSummary(pref.getEntry());
 							prefscr.addPreference(pref);
 						}
 						prefGroup.addPreference(prefscr);
@@ -133,17 +140,26 @@ public class MixedMapsPreference extends PreferenceActivity implements OnSharedP
 
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
-		Ut.w("onCreateContextMenu");
+		((ListView) v).getSelectedItem();
+		((ListView) v).getSelectedItemId();
+		
 		menu.add(Menu.NONE, R.id.add_dualmap, Menu.NONE, R.string.menu_add_dualmap);
 		menu.add(Menu.NONE, R.id.add_ownsourcemap, Menu.NONE, R.string.menu_add_ownsourcemap);
 		super.onCreateContextMenu(menu, v, menuInfo);
+	}
+
+	public PrefMenuInfo mPrefMenuInfo = new PrefMenuInfo();
+	
+	public class PrefMenuInfo implements ContextMenuInfo {
+		public int MenuId;
+		public long MapId;
 	}
 
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
 		switch(item.getItemId()) {
 		case R.id.add_dualmap:
-			mPoiManager.addMap(1, getMapPairParams("").toString());
+			//mPoiManager.addMap(1, getMapPairParams("").toString());
 			loadMixedMaps();
 			break;
 		case R.id.add_ownsourcemap:
@@ -171,14 +187,32 @@ public class MixedMapsPreference extends PreferenceActivity implements OnSharedP
 
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
 		if(key.startsWith(PREF_MIXMAPS_)) {
+			final String params[] = key.split("_");
+			mMapHelper.getMap(Long.parseLong(params[2]));
 			if(key.endsWith("_name")) {
-				final String params[] = key.split("_");
-				mMapHelper.getMap(Long.parseLong(params[2]));
 				mMapHelper.NAME = sharedPreferences.getString(key, "");
-				mMapHelper.updateMap();
 				findPreference(key).setSummary(mMapHelper.NAME);
 				findPreference(PREF_MIXMAPS_+mMapHelper.ID).setTitle(mMapHelper.NAME);
+			} else if(key.endsWith(MAPID)) {
+				final JSONObject json = getMapPairParams(mMapHelper.PARAMS);
+				try {
+					json.put(MAPID, sharedPreferences.getString(key, ""));
+					mMapHelper.PARAMS = json.toString();
+					findPreference(key).setSummary(((ListPreference)findPreference(key)).getEntry());
+				} catch (JSONException e) {
+				}
+				
+			} else if(key.endsWith(OVERLAYID)) {
+				final JSONObject json = getMapPairParams(mMapHelper.PARAMS);
+				try {
+					json.put(OVERLAYID, sharedPreferences.getString(key, ""));
+					mMapHelper.PARAMS = json.toString();
+					findPreference(key).setSummary(((ListPreference)findPreference(key)).getEntry());
+				} catch (JSONException e) {
+				}
+				
 			}
+			mMapHelper.updateMap();
 		}
 	}
 	
@@ -223,7 +257,7 @@ public class MixedMapsPreference extends PreferenceActivity implements OnSharedP
 		super.onPause();
 	}
 
-	private void getMaps(String[] arrayListID, String[] arrayListName, final boolean aGetMaps, final boolean aGetOverlays) {
+	private String[][] getMaps(final boolean aGetMaps, final boolean aGetOverlays) {
 		ArrayList<String> arr1 = new ArrayList<String>();
 		ArrayList<String> arr2 = new ArrayList<String>();
 		
@@ -234,13 +268,16 @@ public class MixedMapsPreference extends PreferenceActivity implements OnSharedP
 			if(parser != null){
 				final InputStream in = getResources().openRawResource(R.raw.predefmaps);
 				parser.parse(in, new PredefMapsParser(arr1, arr2, aGetMaps, aGetOverlays));
-				arrayListID = new String[arr1.size()];
-				arrayListName = new String[arr2.size()];
-				arr1.toArray(arrayListID);
-				arr2.toArray(arrayListName);
+				String[][] arrayList = new String[2][arr2.size()];
+				arr1.toArray(arrayList[0]);
+				arr2.toArray(arrayList[1]);
+				
+				return arrayList;
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
+		return null;
 	}
 }
