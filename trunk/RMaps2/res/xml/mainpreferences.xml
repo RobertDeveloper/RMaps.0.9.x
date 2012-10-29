@@ -56,8 +56,6 @@
             </PreferenceCategory>
         </PreferenceScreen>
         <PreferenceScreen android:key="pref_main_mixmaps" android:summary="@string/pref_main_mixmaps_summary" android:title="@string/pref_main_mixmaps">
-            <Preference android:title="@string/pref_addmixmap" android:key="pref_addmixmap"/>
-            <PreferenceCategory android:key="pref_mixmaps_group" android:title="@string/pref_main_mixmaps"></PreferenceCategory>
         </PreferenceScreen>
         
     </PreferenceCategory>
