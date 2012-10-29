@@ -31,6 +31,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -710,6 +711,19 @@ public class MainActivity extends Activity {
 						}
 					}
 				}
+		}
+		
+		Cursor c = mPoiManager.getGeoDatabase().getMixedMaps();
+		if(c != null) {
+			if(c.moveToFirst()) {
+				do {
+					if (pref.getBoolean("PREF_MIXMAPS_" + c.getInt(0) + "_enabled", false)) {
+						MenuItem item = submenu.add(c.getString(1));
+						item.setTitleCondensed("mixmap_" + c.getInt(0));
+					}
+				} while(c.moveToNext());
+			}
+			c.close();
 		}
 
 		final SAXParserFactory fac = SAXParserFactory.newInstance();
