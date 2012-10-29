@@ -269,5 +269,10 @@ public class PoiManager implements PoiConstants {
 		mGeoDatabase.deleteTrack(id);
 
 	}
+	
+	public long addMap(int type, String params) {
+		return mGeoDatabase.addMap(type, params);
+	}
+	
 
 }

@@ -33,6 +33,7 @@ public interface PoiConstants {
 	public static final String DISTANCE = "distance";
 	public static final String DURATION = "duration";
 	public static final String ACTIVITY = "activity";
+	public static final String MAPID = "mapid";
 
 	public static final String POINTS = "points";
 	public static final String CATEGORY = "category";
@@ -41,10 +42,13 @@ public interface PoiConstants {
 	public static final String DATA = "data";
 	public static final String GEODATA_FILENAME = "/geodata.db";
 	public static final String TRACK = "Track";
+	public static final String PARAMS = "params";
+	public static final String MAPS = "maps";
 
 	public static final String UPDATE_POINTS = "pointid = @1";
 	public static final String UPDATE_CATEGORY = "categoryid = @1";
 	public static final String UPDATE_TRACKS = "trackid = @1";
+	public static final String UPDATE_MAPS = "mapid = @1";
 
 	public static final String STAT_GET_POI_LIST = "SELECT lat, lon, points.name, descr, pointid, pointid _id, pointid ID, category.iconid, category.name || ', ' || lat || ' ' || lon poititle2 FROM points LEFT JOIN category ON category.categoryid = points.categoryid ORDER BY lat, lon";
 	public static final String STAT_PoiListNotHidden = "SELECT poi.lat, poi.lon, poi.name, poi.descr, poi.pointid, poi.pointid _id, poi.pointid ID, poi.categoryid, cat.iconid FROM points poi LEFT JOIN category cat ON cat.categoryid = poi.categoryid WHERE poi.hidden = 0 AND cat.hidden = 0 "
@@ -70,6 +74,7 @@ public interface PoiConstants {
 	public static final String STAT_saveTrackFromWriter = "SELECT lat, lon, alt, speed, date FROM trackpoints ORDER BY id;";
 	public static final String STAT_CLEAR_TRACKPOINTS = "DELETE FROM 'trackpoints';";
 	public static final String STAT_get_maps = "SELECT * FROM 'maps';";
+	public static final String STAT_get_map = "SELECT mapid, name, type, params FROM 'maps' WHERE mapid = @1;";
 	
 
 	public static final String SQL_CREATE_points = "CREATE TABLE 'points' (pointid INTEGER NOT NULL PRIMARY KEY UNIQUE,name VARCHAR,descr VARCHAR,lat FLOAT DEFAULT '0',lon FLOAT DEFAULT '0',alt FLOAT DEFAULT '0',hidden INTEGER DEFAULT '0',categoryid INTEGER,pointsourceid INTEGER,iconid INTEGER DEFAULT NULL);";

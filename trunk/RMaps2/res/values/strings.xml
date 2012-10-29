@@ -208,4 +208,6 @@ How to and FAQ you can find on http://robertdeveloper.blogspot.com/\n
 	<string name="pref_addmixmap">Add map</string>
 	<string name="menu_add_dualmap">Map + overlay pair</string>
 	<string name="menu_add_ownsourcemap">Your own map source</string>
+	<string name="pref_mixmap_map">Map</string>
+	<string name="pref_mixmap_overlay">Overlay</string>
 </resources>
