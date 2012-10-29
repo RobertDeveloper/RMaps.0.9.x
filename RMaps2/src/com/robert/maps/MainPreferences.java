@@ -72,6 +72,9 @@ public class MainPreferences extends PreferenceActivity implements OnSharedPrefe
 
 		final File folder = Ut.getRMapsMapsDir(this);
 		LoadUserMaps(folder);
+		
+		findPreference("pref_main_mixmaps").setIntent(new Intent(getApplicationContext(), MixedMapsPreference.class));
+		
 	}
 
 	private void LoadUserMaps(final File folder) {

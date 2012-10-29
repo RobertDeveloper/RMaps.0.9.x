@@ -14,8 +14,9 @@
     <item name="data_header3" type="id"></item>
     <item name="data_value3" type="id"></item>
     <item name="data_unit3" type="id"></item>
-    <item name="kkkkkk" type="id"/>
     <item name="isoverlay" type="id"/>
     <item name="hide_overlay" type="id"/>
+    <item name="add_dualmap" type="id"/>
+    <item name="add_ownsourcemap" type="id"/>
     
 </resources>
