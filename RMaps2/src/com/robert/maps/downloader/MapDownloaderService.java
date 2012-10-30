@@ -67,7 +67,7 @@ public class MapDownloaderService extends Service {
 		mOfflineMapName = intent.getStringExtra("OFFLINEMAPNAME");
 		
 		try {
-			mTileSource = new TileSource(this, mMapID, false);
+			mTileSource = new TileSource(this, mMapID, true, false);
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}

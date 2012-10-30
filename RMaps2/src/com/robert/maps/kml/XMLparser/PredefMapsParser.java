@@ -115,6 +115,7 @@ public class PredefMapsParser extends DefaultHandler {
 			if (mRendererInfo != null) {
 				if(attributes.getValue(ID).equalsIgnoreCase(mMapId)){
 					mRendererInfo.ID = attributes.getValue(ID);
+					mRendererInfo.MAPID = attributes.getValue(ID);
 					mRendererInfo.NAME = attributes.getValue(NAME);
 					mRendererInfo.BASEURL = attributes.getValue(BASEURL);
 					mRendererInfo.ZOOM_MINLEVEL = Integer.parseInt(attributes.getValue(ZOOM_MINLEVEL));

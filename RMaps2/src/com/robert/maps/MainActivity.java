@@ -32,6 +32,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteException;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -83,6 +84,7 @@ import com.robert.maps.overlays.SearchResultOverlay;
 import com.robert.maps.overlays.TrackOverlay;
 import com.robert.maps.overlays.YandexTrafficOverlay;
 import com.robert.maps.tileprovider.TileSource;
+import com.robert.maps.tileprovider.TileSourceBase;
 import com.robert.maps.utils.CompassView;
 import com.robert.maps.utils.CrashReportHandler;
 import com.robert.maps.utils.RException;
@@ -306,7 +308,7 @@ public class MainActivity extends Activity {
 			StreamUtils.closeStream(out);
 		}
 	}
-
+	
 	private View CreateContentView() {
 		setContentView(R.layout.main);
 		
@@ -366,39 +368,10 @@ public class MainActivity extends Activity {
 					mShowOverlay = !mShowOverlay;
 					FillOverlays();
 				} else {
-					final String mapId = mTileSource.ID;
-
-					if(mShowOverlay) {
-						mShowOverlay = !mShowOverlay;
-						mOverlayId = mTileSource.getOverlayName();
-						
-						if(mTileSource != null)
-							mTileSource.Free();
-						try {
-							mTileSource = new TileSource(MainActivity.this, mapId);
-						} catch (RException e) {
-							addMessage(e);
-						}
-						mMap.setTileSource(mTileSource);
-						
-						FillOverlays();
-				        setTitle();
-					} else if(!mOverlayId.equalsIgnoreCase("")) {
-						mShowOverlay = !mShowOverlay;
-
-						if(mTileSource != null)
-							mTileSource.Free();
-						try {
-							mTileSource = new TileSource(MainActivity.this, mapId, mOverlayId);
-						} catch (RException e) {
-							addMessage(e);
-						}
-						mMap.setTileSource(mTileSource);
-						
-						FillOverlays();
-				        setTitle();
-					} else
+					if(mOverlayId.equalsIgnoreCase("") && mTileSource.MAP_TYPE != TileSourceBase.MIXMAP_PAIR)
 						v.showContextMenu();
+					else
+						setTileSource(mTileSource.ID, mOverlayId, !mShowOverlay);
 				}
 				
 				mMap.postInvalidate();
@@ -568,21 +541,12 @@ public class MainActivity extends Activity {
 	protected void onResume() {
 		final SharedPreferences pref = getPreferences(Activity.MODE_PRIVATE);
 		
-		mShowOverlay = pref.getBoolean("ShowOverlay", true);
+		final String mapId = pref.getString(MAPNAME, TileSource.MAPNIK);
 		mOverlayId = pref.getString("OverlayID", "");
+		mShowOverlay = pref.getBoolean("ShowOverlay", true);
 		
-		if(mTileSource != null)
-			mTileSource.Free();
-		try {
-			if(mShowOverlay && !mOverlayId.equalsIgnoreCase(""))
-				mTileSource = new TileSource(this, pref.getString(MAPNAME, TileSource.MAPNIK), mOverlayId);
-			else
-				mTileSource = new TileSource(this, pref.getString(MAPNAME, TileSource.MAPNIK));
-		} catch (RException e) {
-			addMessage(e);
-			e.printStackTrace();
-		}
-		mMap.setTileSource(mTileSource);
+		setTileSource(mapId, mOverlayId, mShowOverlay);
+		
  		mMap.getController().setZoom(pref.getInt("ZoomLevel", 0));
  		setTitle();
  		
@@ -798,18 +762,9 @@ public class MainActivity extends Activity {
 			setLastKnownLocation();
 			return true;
 		default:
-			mOverlayId = "";
-			mShowOverlay = false;
 			
 			final String mapid = (String)item.getTitleCondensed();
-			if(mTileSource != null)
-				mTileSource.Free();
-			try {
-				mTileSource = new TileSource(this, mapid);
-			} catch (RException e) {
-				addMessage(e);
-			}
-			mMap.setTileSource(mTileSource);
+			setTileSource(mapid, "", true);
 			
 			if(mTileSource.MAP_TYPE == TileSource.PREDEF_ONLINE) {
 				mTracker.setCustomVar(1, "MAP", mapid);
@@ -823,6 +778,41 @@ public class MainActivity extends Activity {
 			return true;
 		}
 
+	}
+
+	private void setTileSource(String aMapId, String aOverlayId, boolean aShowOverlay) {
+		final String mapId = aMapId == null ? (mTileSource == null ? TileSource.MAPNIK : mTileSource.ID) : aMapId;
+		final String overlayId = aOverlayId == null ? mOverlayId : aOverlayId;
+		final String lastMapID = mTileSource == null ? TileSource.MAPNIK : mTileSource.ID;
+		
+		if(mTileSource != null) mTileSource.Free();
+		
+		if(overlayId != null && !overlayId.equalsIgnoreCase("") && aShowOverlay) {
+			mOverlayId = overlayId;
+			mShowOverlay = true;
+			try {
+				mTileSource = new TileSource(this, mapId, overlayId);
+			} catch (SQLiteException e) {
+				mTileSource = null;
+			} catch (RException e) {
+				mTileSource = null;
+				addMessage(e);
+			}
+		} else {
+			try {
+				mTileSource = new TileSource(this, mapId, aShowOverlay);
+				mShowOverlay = aShowOverlay;
+				if(mapId != lastMapID)
+					mOverlayId = "";
+			} catch (SQLiteException e) {
+				mTileSource = null;
+			} catch (RException e) {
+				mTileSource = null;
+				addMessage(e);
+			}
+		}
+		
+		mMap.setTileSource(mTileSource);
 	}
 
 	private void addMessage(RException e) {
@@ -871,17 +861,7 @@ public class MainActivity extends Activity {
 	public boolean onContextItemSelected(MenuItem item) {
 		if (item.getGroupId() == R.id.isoverlay) {
 			final String overlayid = (String)item.getTitleCondensed();
-			mOverlayId = overlayid;
-			mShowOverlay = true;
-			
-			if(mTileSource != null)
-				mTileSource.Free();
-			try {
-				mTileSource = new TileSource(this, mTileSource.ID, overlayid);
-			} catch (RException e) {
-				addMessage(e);
-			}
-			mMap.setTileSource(mTileSource);
+			setTileSource(mTileSource.ID, overlayid, true);
 			
 			if(mTileSource.MAP_TYPE == TileSource.PREDEF_ONLINE) {
 				mTracker.setCustomVar(1, "OVERLAY", overlayid);
@@ -895,16 +875,7 @@ public class MainActivity extends Activity {
 		} else {
 			switch (item.getItemId()) {
 			case R.id.hide_overlay:
-				mShowOverlay = false;
-				
-				if(mTileSource != null)
-					mTileSource.Free();
-				try {
-					mTileSource = new TileSource(this, mTileSource.ID);
-				} catch (RException e) {
-					addMessage(e);
-				}
-				mMap.setTileSource(mTileSource);
+				setTileSource(mTileSource.ID, mOverlayId, false);
 				
 				FillOverlays();
 		        setTitle();

@@ -17,46 +17,54 @@ public class TileSource extends TileSourceBase {
 	private TileSourceBase mTileSourceOverlay;
 	
 	public TileSource(Context ctx, String aId) throws SQLiteException, RException {
-		this(ctx, aId, true);
+		this(ctx, aId, true, true);
 	}
 	
-	public TileSource(Context ctx, String aId, boolean aNeedTileProvider) throws SQLiteException, RException {
-		super(ctx, aId, aNeedTileProvider);
+	public TileSource(Context ctx, String aId, boolean aShowOverlay) throws SQLiteException, RException {
+		this(ctx, aId, aShowOverlay, true);
+	}
+	
+	public TileSource(Context ctx, String aId, boolean aShowOverlay, boolean aNeedTileProvider) throws SQLiteException, RException {
+		super(ctx, aId);
 		
 		if(MAP_TYPE == MIXMAP_PAIR) {
 			final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(ctx);
 
 			final MapTileMemCache tileCache = new MapTileMemCache();
 			mTileURLGenerator = initTileURLGenerator(this, pref);
-			final TileProviderBase provider = initTileProvider(ctx, this, mTileURLGenerator, true, null);
+			final TileProviderBase provider = initTileProvider(ctx, this, mTileURLGenerator, null);
 			
-			mTileSourceOverlay = new TileSourceBase(ctx, OVERLAYID, true);
-			final TileURLGeneratorBase layerURLGenerator = initTileURLGenerator(mTileSourceOverlay, pref);
-			final TileProviderBase layerProvider = initTileProvider(ctx, mTileSourceOverlay, layerURLGenerator, true, null);
-			
-			mTileProvider = new TileProviderDual(ctx, this.ID, provider, layerProvider, tileCache);
+			if(aShowOverlay) {
+				mTileSourceOverlay = new TileSourceBase(ctx, OVERLAYID);
+				final TileURLGeneratorBase layerURLGenerator = initTileURLGenerator(mTileSourceOverlay, pref);
+				final TileProviderBase layerProvider = initTileProvider(ctx, mTileSourceOverlay, layerURLGenerator, null);
+				
+				mTileProvider = new TileProviderDual(ctx, this.ID, provider, layerProvider, tileCache);
+			} else {
+				mTileProvider = aNeedTileProvider ? initTileProvider(ctx, this, mTileURLGenerator, null) : null;
+			}
 
 		} else {
 			final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(ctx);
 			mTileURLGenerator = initTileURLGenerator(this, pref);
-			mTileProvider = initTileProvider(ctx, this, mTileURLGenerator, aNeedTileProvider, null);
+			mTileProvider = aNeedTileProvider ? initTileProvider(ctx, this, mTileURLGenerator, null) : null;
 			mTileSourceOverlay = null;
 		}
 		
 	}
 	
 	public TileSource(Context ctx, String aId, String aLayerId) throws SQLiteException, RException {
-		super(ctx, aId, true);
+		super(ctx, aId);
 		
 		final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(ctx);
 
 		final MapTileMemCache tileCache = new MapTileMemCache();
 		mTileURLGenerator = initTileURLGenerator(this, pref);
-		final TileProviderBase provider = initTileProvider(ctx, this, mTileURLGenerator, true, null);
+		final TileProviderBase provider = initTileProvider(ctx, this, mTileURLGenerator, null);
 		
-		mTileSourceOverlay = new TileSourceBase(ctx, aLayerId, true);
+		mTileSourceOverlay = new TileSourceBase(ctx, aLayerId);
 		final TileURLGeneratorBase layerURLGenerator = initTileURLGenerator(mTileSourceOverlay, pref);
-		final TileProviderBase layerProvider = initTileProvider(ctx, mTileSourceOverlay, layerURLGenerator, true, null);
+		final TileProviderBase layerProvider = initTileProvider(ctx, mTileSourceOverlay, layerURLGenerator, null);
 		
 		mTileProvider = new TileProviderDual(ctx, this.ID, provider, layerProvider, tileCache);
 		
@@ -70,35 +78,32 @@ public class TileSource extends TileSourceBase {
 		return mTileSourceOverlay == null ? "" : mTileSourceOverlay.ID;
 	}
 	
-	private TileProviderBase initTileProvider(Context ctx, TileSourceBase tileSource, TileURLGeneratorBase aTileURLGenerator, boolean aNeedTileProvider, MapTileMemCache aTileCache) throws SQLiteException, RException {
+	private TileProviderBase initTileProvider(Context ctx, TileSourceBase tileSource, TileURLGeneratorBase aTileURLGenerator, MapTileMemCache aTileCache) throws SQLiteException, RException {
 		TileProviderBase provider = null;
 		
-		if(aNeedTileProvider) {
-			switch(tileSource.TILE_SOURCE_TYPE) {
-			case 0:
-				if(tileSource.LAYER)
-					provider = new TileProviderInet(ctx, aTileURLGenerator, CacheDatabaseName(tileSource), aTileCache, null);
-				else
-					provider = new TileProviderInet(ctx, aTileURLGenerator, CacheDatabaseName(tileSource), aTileCache);
-				break;
-			case 3:
-				provider = new TileProviderMNM(ctx, tileSource.BASEURL, tileSource.ID, aTileCache);
-				provider.updateMapParams(this);
-				break;
-			case 4:
-				provider = new TileProviderTAR(ctx, tileSource.BASEURL, tileSource.ID, aTileCache);
-				provider.updateMapParams(this);
-				break;
-			case 5:
-				provider = new TileProviderSQLITEDB(ctx, tileSource.BASEURL, tileSource.ID, aTileCache);
-				provider.updateMapParams(this);
-				break;
-			default:
-				provider = new TileProviderBase(ctx);
-			}
-			
+		switch(tileSource.TILE_SOURCE_TYPE) {
+		case 0:
+			if(tileSource.LAYER)
+				provider = new TileProviderInet(ctx, aTileURLGenerator, CacheDatabaseName(tileSource), aTileCache, null);
+			else
+				provider = new TileProviderInet(ctx, aTileURLGenerator, CacheDatabaseName(tileSource), aTileCache);
+			break;
+		case 3:
+			provider = new TileProviderMNM(ctx, tileSource.BASEURL, tileSource.ID, aTileCache);
+			provider.updateMapParams(this);
+			break;
+		case 4:
+			provider = new TileProviderTAR(ctx, tileSource.BASEURL, tileSource.ID, aTileCache);
+			provider.updateMapParams(this);
+			break;
+		case 5:
+			provider = new TileProviderSQLITEDB(ctx, tileSource.BASEURL, tileSource.ID, aTileCache);
+			provider.updateMapParams(this);
+			break;
+		default:
+			provider = new TileProviderBase(ctx);
 		}
-		
+			
 		return provider;
 	}
 	
