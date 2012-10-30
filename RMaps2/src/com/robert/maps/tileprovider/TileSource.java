@@ -4,10 +4,12 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteException;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 
 import com.robert.maps.MainPreferences;
+import com.robert.maps.R;
 import com.robert.maps.utils.RException;
 import com.robert.maps.utils.Ut;
 
@@ -100,6 +102,10 @@ public class TileSource extends TileSourceBase {
 			provider = new TileProviderSQLITEDB(ctx, tileSource.BASEURL, tileSource.ID, aTileCache);
 			provider.updateMapParams(this);
 			break;
+		case 6:
+			provider = new TileProviderBase(ctx);
+			provider.setLoadingMapTile(BitmapFactory.decodeResource(ctx.getResources(), R.drawable.r_blank));
+			break;
 		default:
 			provider = new TileProviderBase(ctx);
 		}
@@ -147,6 +153,9 @@ public class TileSource extends TileSourceBase {
 				break;
 			case 11:
 				generator = new TileURLGeneratorVFRCB(tileSource.BASEURL, tileSource.IMAGE_FILENAMEENDING);
+				break;
+			case 13:
+				generator = null;
 				break;
 			}
 		}
