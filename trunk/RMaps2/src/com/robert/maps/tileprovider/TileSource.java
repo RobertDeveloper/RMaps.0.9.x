@@ -154,6 +154,8 @@ public class TileSource extends TileSourceBase {
 			case 11:
 				generator = new TileURLGeneratorVFRCB(tileSource.BASEURL, tileSource.IMAGE_FILENAMEENDING);
 				break;
+			case 12:
+				generator = new TileURLGeneratorCustom(tileSource.BASEURL);
 			case 13:
 				generator = null;
 				break;
