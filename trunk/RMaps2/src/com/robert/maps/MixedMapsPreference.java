@@ -28,7 +28,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ListView;
 
 import com.robert.maps.kml.PoiManager;
 import com.robert.maps.kml.XMLparser.PredefMapsParser;
@@ -190,7 +189,7 @@ public class MixedMapsPreference extends PreferenceActivity implements OnSharedP
 		return super.onContextItemSelected(item);
 	}
 
-	private JSONObject getMapPairParams(String jsonstring) {
+	public static JSONObject getMapPairParams(String jsonstring) {
 		JSONObject json;
 		try {
 			json = new JSONObject(jsonstring);

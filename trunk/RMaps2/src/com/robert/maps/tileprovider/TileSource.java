@@ -23,10 +23,26 @@ public class TileSource extends TileSourceBase {
 	public TileSource(Context ctx, String aId, boolean aNeedTileProvider) throws SQLiteException, RException {
 		super(ctx, aId, aNeedTileProvider);
 		
-		final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(ctx);
-		mTileURLGenerator = initTileURLGenerator(this, pref);
-		mTileProvider = initTileProvider(ctx, this, mTileURLGenerator, aNeedTileProvider, null);
-		mTileSourceOverlay = null;
+		if(MAP_TYPE == MIXMAP_PAIR) {
+			final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(ctx);
+
+			final MapTileMemCache tileCache = new MapTileMemCache();
+			mTileURLGenerator = initTileURLGenerator(this, pref);
+			final TileProviderBase provider = initTileProvider(ctx, this, mTileURLGenerator, true, null);
+			
+			mTileSourceOverlay = new TileSourceBase(ctx, OVERLAYID, true);
+			final TileURLGeneratorBase layerURLGenerator = initTileURLGenerator(mTileSourceOverlay, pref);
+			final TileProviderBase layerProvider = initTileProvider(ctx, mTileSourceOverlay, layerURLGenerator, true, null);
+			
+			mTileProvider = new TileProviderDual(ctx, this.ID, provider, layerProvider, tileCache);
+
+		} else {
+			final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(ctx);
+			mTileURLGenerator = initTileURLGenerator(this, pref);
+			mTileProvider = initTileProvider(ctx, this, mTileURLGenerator, aNeedTileProvider, null);
+			mTileSourceOverlay = null;
+		}
+		
 	}
 	
 	public TileSource(Context ctx, String aId, String aLayerId) throws SQLiteException, RException {
