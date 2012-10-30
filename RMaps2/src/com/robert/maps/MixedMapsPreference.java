@@ -13,6 +13,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteException;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.EditTextPreference;
@@ -32,11 +33,15 @@ import android.widget.AdapterView;
 import com.robert.maps.kml.PoiManager;
 import com.robert.maps.kml.XMLparser.PredefMapsParser;
 import com.robert.maps.kml.constants.PoiConstants;
+import com.robert.maps.tileprovider.TileSourceBase;
+import com.robert.maps.utils.RException;
 import com.robert.maps.utils.Ut;
 
 public class MixedMapsPreference extends PreferenceActivity implements OnSharedPreferenceChangeListener, PoiConstants {
 	public static final String MAPID = "mapid";
+	public static final String MAPPROJECTION = "mapprojection";
 	public static final String OVERLAYID = "overlayid";
+	public static final String OVERLAYPROJECTION = "overlayprojection";
 	public static final String OVERLAYOPAQUE = "overlayopaque";
 	public static final String PREF_MIXMAPS_ = "PREF_MIXMAPS_";
 	
@@ -75,8 +80,8 @@ public class MixedMapsPreference extends PreferenceActivity implements OnSharedP
 			final int idType = c.getColumnIndex(TYPE);
 			final int idParams = c.getColumnIndex(PARAMS);
 			
-			final String[][] listMap = getMaps(true, false);
-			final String[][] listOverlays = getMaps(false, true);
+			final String[][] listMap = getMaps(true, false, 0);
+			final String[][] listOverlays = getMaps(false, true, 0);
 			
 			if(c.moveToFirst()) {
 				do {
@@ -219,6 +224,28 @@ public class MixedMapsPreference extends PreferenceActivity implements OnSharedP
 				final JSONObject json = getMapPairParams(mMapHelper.PARAMS);
 				try {
 					json.put(MAPID, sharedPreferences.getString(key, ""));
+					
+					try {
+						final TileSourceBase tileSouce = new TileSourceBase(this, sharedPreferences.getString(key, ""));
+						json.put(MAPPROJECTION, tileSouce.PROJECTION);
+						if(tileSouce.PROJECTION != json.optInt(OVERLAYPROJECTION)) {
+							json.put(OVERLAYID, "");
+							json.put(OVERLAYPROJECTION, tileSouce.PROJECTION);
+							final String overlaykey = key.replace(MAPID, OVERLAYID);
+							final ListPreference pref = (ListPreference) findPreference(overlaykey);
+							pref.setSummary("");
+							
+							final String[][] listOverlays = getMaps(false, true, tileSouce.PROJECTION);
+							if(listOverlays != null) {
+								pref.setEntryValues(listOverlays[0]);
+								pref.setEntries(listOverlays[1]);
+							}
+	
+						}
+					} catch (SQLiteException e) {
+					} catch (RException e) {
+					}
+					
 					mMapHelper.PARAMS = json.toString();
 					findPreference(key).setSummary(((ListPreference)findPreference(key)).getEntry());
 				} catch (JSONException e) {
@@ -279,7 +306,7 @@ public class MixedMapsPreference extends PreferenceActivity implements OnSharedP
 		super.onPause();
 	}
 
-	private String[][] getMaps(final boolean aGetMaps, final boolean aGetOverlays) {
+	private String[][] getMaps(final boolean aGetMaps, final boolean aGetOverlays, final int aProjection) {
 		ArrayList<String> arr1 = new ArrayList<String>();
 		ArrayList<String> arr2 = new ArrayList<String>();
 		
@@ -289,7 +316,7 @@ public class MixedMapsPreference extends PreferenceActivity implements OnSharedP
 			parser = fac.newSAXParser();
 			if(parser != null){
 				final InputStream in = getResources().openRawResource(R.raw.predefmaps);
-				parser.parse(in, new PredefMapsParser(arr1, arr2, aGetMaps, aGetOverlays));
+				parser.parse(in, new PredefMapsParser(arr1, arr2, aGetMaps, aGetOverlays, aProjection));
 				String[][] arrayList = new String[2][arr2.size()];
 				arr1.toArray(arrayList[0]);
 				arr2.toArray(arrayList[1]);
