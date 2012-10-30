@@ -139,7 +139,7 @@
             android:title="@string/pref_zoommaxlevel" >
         </ListPreference>
 
-        <CheckBoxPreference
+        <ListPreference android:title="@string/pref_overlay_button_visibility" android:entryValues="@array/overlay_button_visibility_values" android:defaultValue="0" android:summary="@string/pref_overlay_button_visibility_summary" android:entries="@array/overlay_button_visibility" android:key="pref_overlay_button_visibility"/><ListPreference android:entryValues="@array/overlay_button_behavior_values" android:entries="@array/overlay_button_behavior" android:title="@string/pref_overlay_button_behavior" android:summary="@string/pref_overlay_button_behavior_summary" android:key="pref_overlay_button_behavior" android:defaultValue="0"/><CheckBoxPreference
             android:defaultValue="true"
             android:key="pref_drivingdirectionup"
             android:summary="@string/pref_drivingdirectionup_summary"
@@ -174,6 +174,8 @@
             android:title="@string/pref_crosshair" >
         </CheckBoxPreference><com.robert.maps.utils.TrackStylePreference android:key="pref_track_style" android:summary="@string/pref_track_style_summary" android:title="@string/pref_track_style" android:defaultValue='{"color":-5937666,"shadowradius":0,"width":10,"color_shadow":-5937666}' />
         <com.robert.maps.utils.TrackStylePreference android:key="pref_track_style_current" android:summary="@string/pref_track_style_summary" android:title="@string/pref_track_style_current" android:defaultValue='{"color":-5937666,"shadowradius":0,"width":10,"color_shadow":-5937666}' />
+        
+        
         </PreferenceCategory>
     <PreferenceCategory android:title="@string/prefcat_main_poi" >
         <CheckBoxPreference

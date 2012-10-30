@@ -129,9 +129,11 @@ public class MainActivity extends Activity {
 	private boolean mCompassEnabled;
 	private boolean mDrivingDirectionUp;
 	private boolean mNorthDirectionUp;
+	private int mPrefOverlayButtonBehavior;
+	private int mPrefOverlayButtonVisibility;
 	
 	private GoogleAnalyticsTracker mTracker;
-	private ImageView mLayerView;
+	private ImageView mOverlayView;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -156,6 +158,10 @@ public class MainActivity extends Activity {
  		SharedPreferences uiState = getPreferences(Activity.MODE_PRIVATE);
  		
  		// Init 
+ 		mPrefOverlayButtonBehavior = Integer.parseInt(pref.getString("pref_overlay_button_behavior", "0"));
+ 		mPrefOverlayButtonVisibility = Integer.parseInt(pref.getString("pref_overlay_button_visibility", "0"));
+ 		if(mPrefOverlayButtonVisibility == 1) // Always hide
+ 			mOverlayView.setVisibility(View.GONE);
 		mCompassEnabled = uiState.getBoolean("CompassEnabled", false);
 		mCompassView.setVisibility(mCompassEnabled ? View.VISIBLE : View.INVISIBLE);
 		mAutoFollow = uiState.getBoolean("AutoFollow", true);
@@ -354,38 +360,43 @@ public class MainActivity extends Activity {
 			}
         });
         
-        mLayerView = new ImageView(this);
-        mLayerView.setImageResource(R.drawable.zoom_out);
+        mOverlayView = new ImageView(this);
+        mOverlayView.setImageResource(R.drawable.zoom_out);
         final RelativeLayout.LayoutParams layerParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         layerParams.addRule(RelativeLayout.CENTER_VERTICAL);
        	layerParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-        rl.addView(mLayerView, layerParams);
+        rl.addView(mOverlayView, layerParams);
         
-        mLayerView.setOnClickListener(new View.OnClickListener() {
+        mOverlayView.setOnClickListener(new View.OnClickListener() {
 			
 			public void onClick(View v) {
 				if(mTileSource.YANDEX_TRAFFIC_ON == 1) {
 					mShowOverlay = !mShowOverlay;
 					FillOverlays();
 				} else {
-					if(mOverlayId.equalsIgnoreCase("") && mTileSource.MAP_TYPE != TileSourceBase.MIXMAP_PAIR)
+					if(mPrefOverlayButtonBehavior == 1) {
 						v.showContextMenu();
-					else
+					} else if(mPrefOverlayButtonBehavior == 2) {
 						setTileSource(mTileSource.ID, mOverlayId, !mShowOverlay);
+					} else if(mOverlayId.equalsIgnoreCase("") && mTileSource.MAP_TYPE != TileSourceBase.MIXMAP_PAIR) {
+						v.showContextMenu();
+					} else {
+						setTileSource(mTileSource.ID, mOverlayId, !mShowOverlay);
+					}
 				}
 				
 				mMap.postInvalidate();
 			}
 		});
-        mLayerView.setOnLongClickListener(new View.OnLongClickListener() {
+        mOverlayView.setOnLongClickListener(new View.OnLongClickListener() {
 			
 			public boolean onLongClick(View v) {
-				if(mTileSource.YANDEX_TRAFFIC_ON != 1)
+				if(mTileSource.YANDEX_TRAFFIC_ON != 1 && mPrefOverlayButtonBehavior == 0)
 					v.showContextMenu();
 				return true;
 			}
 		});
-        mLayerView.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
+        mOverlayView.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
 			
 			public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
 				menu.setHeaderTitle(R.string.menu_title_overlays);
@@ -813,6 +824,9 @@ public class MainActivity extends Activity {
 		}
 		
 		mMap.setTileSource(mTileSource);
+		
+		if(mPrefOverlayButtonVisibility == 2)
+			mOverlayView.setVisibility(mTileSource.MAP_TYPE == TileSourceBase.MIXMAP_PAIR || mTileSource.YANDEX_TRAFFIC_ON == 1 ? View.VISIBLE : View.GONE);
 	}
 
 	private void addMessage(RException e) {
