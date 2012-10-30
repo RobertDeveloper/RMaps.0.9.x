@@ -1,7 +1,6 @@
 package com.robert.maps.kml.XMLparser;
 
 import java.util.ArrayList;
-import java.util.Collection;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -151,7 +150,7 @@ public class PredefMapsParser extends DefaultHandler {
 				
 				if(mSharedPreferences.getBoolean(MainPreferences.PREF_PREDEFMAPS_+attributes.getValue(ID), true)) {
 					final boolean isLayer = !(i == -1 || !attributes.getValue(LAYER).equalsIgnoreCase(TRUE));
-					if(mNeedOverlays && isLayer && !timeDependent && mNeedProjection == Integer.parseInt(attributes.getValue(PROJECTION)) || !mNeedOverlays && !isLayer) {
+					if(mNeedOverlays && isLayer && !timeDependent && (mNeedProjection == 0 || mNeedProjection == Integer.parseInt(attributes.getValue(PROJECTION))) || !mNeedOverlays && !isLayer) {
 						final MenuItem item = mSubmenu.add(R.id.isoverlay, Menu.NONE, Menu.NONE, attributes.getValue(NAME));
 						item.setTitleCondensed(attributes.getValue(ID));
 					}
@@ -230,8 +229,9 @@ public class PredefMapsParser extends DefaultHandler {
 					timeDependent = Boolean.parseBoolean(attributes.getValue(TIMEDEPENDENT));
 				
 				final boolean isLayer = !(i == -1 || !attributes.getValue(LAYER).equalsIgnoreCase(TRUE));
+				final int proj = Integer.parseInt(attributes.getValue(PROJECTION));
 				
-				if(mNeedMaps && !isLayer || mNeedOverlays && isLayer && !timeDependent && (mNeedProjection == 0 || mNeedProjection == Integer.parseInt(attributes.getValue(PROJECTION)))) {
+				if(mNeedMaps && !isLayer || mNeedOverlays && isLayer && !timeDependent && (mNeedProjection == 0 || mNeedProjection == proj)) {
 					mID.add(attributes.getValue(ID));
 					mName.add(attributes.getValue(NAME));
 				}

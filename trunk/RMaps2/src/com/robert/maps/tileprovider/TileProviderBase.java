@@ -86,6 +86,8 @@ public class TileProviderBase {
 	}
 	
 	public void setLoadingMapTile(Bitmap aLoadingMapTile) {
+		if(mLoadingMapTile != null)
+			mLoadingMapTile.recycle();
 		mLoadingMapTile = aLoadingMapTile;
 	}
 
