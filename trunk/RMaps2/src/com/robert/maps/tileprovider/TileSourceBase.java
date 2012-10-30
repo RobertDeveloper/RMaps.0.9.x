@@ -37,12 +37,16 @@ public class TileSourceBase {
 	protected static final String MNM = "mnm";
 	protected static final String PROJECTION_ = "_projection";
 	protected static final String TRAFFIC_ = "_traffic";
+	protected static final String MIXMAP_ = "mixmap_";
+	protected static final String GOOGLESCALE_ = "_googlescale";
+	protected static final String STRING_1 = "1";
+	protected static final String UNDERLINE = "_";
 	
 	public final static int PREDEF_ONLINE = 0;
 	public final static int USERMAP_OFFLINE = 1;
 	public final static int MIXMAP_PAIR = 2;
 	
-	public String ID, BASEURL, NAME, IMAGE_FILENAMEENDING, GOOGLE_LANG_CODE, CACHE, OVERLAYID;
+	public String ID, BASEURL, NAME, IMAGE_FILENAMEENDING, GOOGLE_LANG_CODE, CACHE, MAPID, OVERLAYID;
 	public int MAPTILE_SIZEPX, ZOOM_MINLEVEL, ZOOM_MAXLEVEL,
 	URL_BUILDER_TYPE, // 0 - OSM, 1 - Google, 2 - Yandex, 3 - Yandex.Traffic, 4 - Google.Sattelite, 5 - openspace, 6 - microsoft, 8 - VFR Chart
 	TILE_SOURCE_TYPE, // 0 - internet, 3 - MapNav file, 4 - TAR, 5 - sqlitedb
@@ -52,23 +56,27 @@ public class TileSourceBase {
 	public boolean LAYER, mOnlineMapCacheEnabled, GOOGLESCALE;
 	public double MAPTILE_SIZE_FACTOR = 1;
 
-	public TileSourceBase(Context ctx, String aId, boolean aNeedTileProvider) throws SQLiteException, RException {
+	public TileSourceBase(Context ctx, String aId) throws SQLiteException, RException {
 		if (aId.equalsIgnoreCase(EMPTY))
 			aId = MAPNIK;
 		
 		final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(ctx);
 		mOnlineMapCacheEnabled = pref.getBoolean(PREF_ONLINECACHE, true);
 		GOOGLE_LANG_CODE = pref.getString(PREF_GOOGLELANG, EN);
-		this.OVERLAYID = "";
+		this.OVERLAYID = EMPTY;
+		String mixMapName = EMPTY;
+		String mixMapId = EMPTY;
 
-		if (aId.startsWith("mixmap_")) {
-			final String[] params = aId.split("_");
+		if (aId.startsWith(MIXMAP_)) {
+			final String[] params = aId.split(UNDERLINE);
 			final PoiManager poiman = new PoiManager(ctx);
+			mixMapId = aId;
 			aId = MAPNIK;
 			MAP_TYPE = PREDEF_ONLINE;
 			Cursor c = poiman.getGeoDatabase().getMap(Long.parseLong(params[1]));
 			if(c != null) {
 				if(c.moveToFirst()) {
+					mixMapName = c.getString(1);
 					if(c.getInt(2) == 1) {
 						final JSONObject json = MixedMapsPreference.getMapPairParams(c.getString(3));
 						try {
@@ -90,6 +98,7 @@ public class TileSourceBase {
 		if (aId.contains(USERMAP_)) {
 			String prefix = PREF_USERMAP_ + aId.substring(8);
 			this.ID = aId;
+			this.MAPID = aId;
 			this.NAME = pref.getString(prefix + NAME_, aId);
 			this.BASEURL = pref.getString(prefix + BASEURL_, NO_BASEURL);
 			this.ZOOM_MINLEVEL = 0;
@@ -107,7 +116,7 @@ public class TileSourceBase {
 				this.TILE_SOURCE_TYPE = 4;
 				this.IMAGE_FILENAMEENDING = EMPTY;
 			}
-			this.PROJECTION = Integer.parseInt(pref.getString(prefix + PROJECTION_, "1"));
+			this.PROJECTION = Integer.parseInt(pref.getString(prefix + PROJECTION_, STRING_1));
 			if (pref.getBoolean(prefix + TRAFFIC_, false))
 				this.YANDEX_TRAFFIC_ON = 1;
 			else
@@ -122,7 +131,7 @@ public class TileSourceBase {
 					parser.parse(in, new PredefMapsParser(this, aId));
 					this.MAPTILE_SIZEPX = (int) (this.MAPTILE_SIZEPX * MAPTILE_SIZE_FACTOR);
 					if(this.GOOGLESCALE) {
-						final double GOOGLESCALE_SIZE_FACTOR = Double.parseDouble(pref.getString(MainPreferences.PREF_PREDEFMAPS_ + this.ID + "_googlescale", "1"));
+						final double GOOGLESCALE_SIZE_FACTOR = Double.parseDouble(pref.getString(MainPreferences.PREF_PREDEFMAPS_ + this.ID + GOOGLESCALE_, STRING_1));
 						this.MAPTILE_SIZEPX = (int) (this.MAPTILE_SIZEPX * GOOGLESCALE_SIZE_FACTOR);
 					}
 				}
@@ -130,6 +139,11 @@ public class TileSourceBase {
 				e.printStackTrace();
 			}
 
+		}
+		
+		if(!mixMapName.equals(EMPTY)) {
+			this.NAME = mixMapName;
+			this.ID = mixMapId;
 		}
 	}
 }
