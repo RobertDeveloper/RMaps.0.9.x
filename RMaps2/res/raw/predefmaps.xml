@@ -108,5 +108,5 @@
 	<map id="mtbmapa" name="OSM MTB Mapa Česká republika" descr="http://tchor.fi.muni.cz:8080/" baseurl="http://tchor.fi.muni.cz:8080/mtbmap_tiles/" IMAGE_FILENAMEENDING=".png" ZOOM_MINLEVEL="3" ZOOM_MAXLEVEL="18" MAPTILE_SIZEPX="256" URL_BUILDER_TYPE="0" TILE_SOURCE_TYPE="0" PROJECTION="1" YANDEX_TRAFFIC_ON="0"></map>
 	<map id="refuges" name="maps.refuges.info" descr="" baseurl="http://maps.refuges.info/tiles/renderer.py/hiking/" IMAGE_FILENAMEENDING=".jpeg" ZOOM_MINLEVEL="0" ZOOM_MAXLEVEL="18" MAPTILE_SIZEPX="256" URL_BUILDER_TYPE="0" TILE_SOURCE_TYPE="0" PROJECTION="1" YANDEX_TRAFFIC_ON="0"></map>
 
-	<map id="blank" name="Blank" descr="" baseurl="" IMAGE_FILENAMEENDING="" ZOOM_MINLEVEL="0" ZOOM_MAXLEVEL="20" MAPTILE_SIZEPX="256" URL_BUILDER_TYPE="13" TILE_SOURCE_TYPE="6" PROJECTION="0" YANDEX_TRAFFIC_ON="0"></map>
+	<map id="blank" name="Blank" descr="" baseurl="" IMAGE_FILENAMEENDING="" ZOOM_MINLEVEL="0" ZOOM_MAXLEVEL="20" MAPTILE_SIZEPX="256" URL_BUILDER_TYPE="13" TILE_SOURCE_TYPE="6" PROJECTION="1" YANDEX_TRAFFIC_ON="0"></map>
 </root>

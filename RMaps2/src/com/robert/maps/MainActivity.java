@@ -414,13 +414,29 @@ public class MainActivity extends Activity {
 									|| files[i].getName().toLowerCase().endsWith(".sqlitedb")) {
 								String name = Ut.FileName2ID(files[i].getName());
 								if (pref.getBoolean("pref_usermaps_" + name + "_enabled", false)
-										&& mTileSource.PROJECTION == Integer.parseInt(pref.getString("pref_usermaps_" + name + "_projection", "1"))
+										&& (mTileSource.PROJECTION == 0 || mTileSource.PROJECTION == Integer.parseInt(pref.getString("pref_usermaps_" + name + "_projection", "1")))
 										&& pref.getBoolean("pref_usermaps_" + name + "_isoverlay", false)) {
 									MenuItem item = menu.add(R.id.isoverlay, Menu.NONE, Menu.NONE, pref.getString("pref_usermaps_" + name + "_name", files[i].getName()));
 									item.setTitleCondensed("usermap_" + name);
 								}
 							}
 						}
+				}
+
+				Cursor c = mPoiManager.getGeoDatabase().getMixedMaps();
+				if(c != null) {
+					if(c.moveToFirst()) {
+						do {
+							if (pref.getBoolean("PREF_MIXMAPS_" + c.getInt(0) + "_enabled", false) && c.getInt(2) == 3) {
+								final JSONObject json = MixedMapsPreference.getMapCustomParams(c.getString(3));
+								if(mTileSource.PROJECTION == 0 || mTileSource.PROJECTION == json.optInt(MixedMapsPreference.MAPPROJECTION)) {
+									MenuItem item = menu.add(R.id.isoverlay, Menu.NONE, Menu.NONE, c.getString(1));
+									item.setTitleCondensed("mixmap_" + c.getInt(0));
+								}
+							}
+						} while(c.moveToNext());
+					}
+					c.close();
 				}
 
 				final SAXParserFactory fac = SAXParserFactory.newInstance();
@@ -692,7 +708,7 @@ public class MainActivity extends Activity {
 		if(c != null) {
 			if(c.moveToFirst()) {
 				do {
-					if (pref.getBoolean("PREF_MIXMAPS_" + c.getInt(0) + "_enabled", false)) {
+					if (pref.getBoolean("PREF_MIXMAPS_" + c.getInt(0) + "_enabled", false) && c.getInt(2) < 3) {
 						MenuItem item = submenu.add(c.getString(1));
 						item.setTitleCondensed("mixmap_" + c.getInt(0));
 					}

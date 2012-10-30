@@ -73,7 +73,7 @@ public interface PoiConstants {
 	public static final String STAT_deleteTrack_2 = "DELETE FROM tracks WHERE trackid = @1";
 	public static final String STAT_saveTrackFromWriter = "SELECT lat, lon, alt, speed, date FROM trackpoints ORDER BY id;";
 	public static final String STAT_CLEAR_TRACKPOINTS = "DELETE FROM 'trackpoints';";
-	public static final String STAT_get_maps = "SELECT * FROM 'maps';";
+	public static final String STAT_get_maps = "SELECT mapid, name, type, params FROM 'maps';";
 	public static final String STAT_get_map = "SELECT mapid, name, type, params FROM 'maps' WHERE mapid = @1;";
 	
 

@@ -45,6 +45,7 @@ public class TileSourceBase {
 	public final static int PREDEF_ONLINE = 0;
 	public final static int USERMAP_OFFLINE = 1;
 	public final static int MIXMAP_PAIR = 2;
+	public final static int MIXMAP_CUSTOM = 3;
 	
 	public String ID, BASEURL, NAME, IMAGE_FILENAMEENDING, GOOGLE_LANG_CODE, CACHE, MAPID, OVERLAYID;
 	public int MAPTILE_SIZEPX, ZOOM_MINLEVEL, ZOOM_MAXLEVEL,
@@ -77,12 +78,21 @@ public class TileSourceBase {
 			if(c != null) {
 				if(c.moveToFirst()) {
 					mixMapName = c.getString(1);
-					if(c.getInt(2) == 1) {
+					if(c.getInt(2) == 1) { // Pair maps
 						final JSONObject json = MixedMapsPreference.getMapPairParams(c.getString(3));
 						try {
 							aId = json.getString(MixedMapsPreference.MAPID);
 							this.OVERLAYID = json.getString(MixedMapsPreference.OVERLAYID);
-							MAP_TYPE = MIXMAP_PAIR;
+							this.MAP_TYPE = MIXMAP_PAIR;
+						} catch (JSONException e) {
+						}
+					} else if(c.getInt(2) == 2) { // Custom source
+						final JSONObject json = MixedMapsPreference.getMapCustomParams(c.getString(3));
+						try {
+							this.BASEURL = json.getString(MixedMapsPreference.BASEURL);
+							this.PROJECTION = json.getInt(MixedMapsPreference.MAPPROJECTION);
+							this.LAYER = json.getBoolean(MixedMapsPreference.ISOVERLAY);
+							this.MAP_TYPE = MIXMAP_CUSTOM;
 						} catch (JSONException e) {
 						}
 					}

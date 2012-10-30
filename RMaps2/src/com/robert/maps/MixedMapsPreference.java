@@ -35,7 +35,6 @@ import com.robert.maps.kml.XMLparser.PredefMapsParser;
 import com.robert.maps.kml.constants.PoiConstants;
 import com.robert.maps.tileprovider.TileSourceBase;
 import com.robert.maps.utils.RException;
-import com.robert.maps.utils.Ut;
 
 public class MixedMapsPreference extends PreferenceActivity implements OnSharedPreferenceChangeListener, PoiConstants {
 	public static final String MAPID = "mapid";
@@ -44,6 +43,8 @@ public class MixedMapsPreference extends PreferenceActivity implements OnSharedP
 	public static final String OVERLAYPROJECTION = "overlayprojection";
 	public static final String OVERLAYOPAQUE = "overlayopaque";
 	public static final String PREF_MIXMAPS_ = "PREF_MIXMAPS_";
+	public static final String BASEURL = "baseurl";
+	public static final String ISOVERLAY = "isoverlay";
 	
 	
 	private PoiManager mPoiManager;
@@ -86,6 +87,59 @@ public class MixedMapsPreference extends PreferenceActivity implements OnSharedP
 			if(c.moveToFirst()) {
 				do {
 					switch(c.getInt(idType)) {
+					case 3:
+					case 2: {
+						final JSONObject json = getMapCustomParams(c.getString(idParams));
+						
+						final PreferenceScreen prefscr = getPreferenceManager().createPreferenceScreen(this);
+						prefscr.setKey(PREF_MIXMAPS_ + c.getInt(idMapid));
+						
+						prefscr.setTitle(prefscr.getSharedPreferences().getString(PREF_MIXMAPS_ + c.getInt(idMapid) + "_name", c.getString(idName)));
+						prefscr.setSummary(R.string.menu_add_ownsourcemap);
+						{
+							final CheckBoxPreference pref = new CheckBoxPreference(this);
+							pref.setKey(PREF_MIXMAPS_ + c.getInt(idMapid) + "_enabled");
+							pref.setTitle(getString(R.string.pref_usermap_enabled));
+							pref.setSummary(getString(R.string.pref_usermap_enabled_summary));
+							pref.setDefaultValue(true);
+							prefscr.addPreference(pref);
+						}
+						{
+							final EditTextPreference pref = new EditTextPreference(this);
+							pref.setKey(PREF_MIXMAPS_ + c.getInt(idMapid) + "_name");
+							pref.setTitle(getString(R.string.pref_usermap_name));
+							pref.setSummary(c.getString(idName));
+							pref.setDefaultValue(c.getString(idName));
+							prefscr.addPreference(pref);
+						}
+						{
+							final EditTextPreference pref = new EditTextPreference(this);
+							pref.setKey(PREF_MIXMAPS_ + c.getInt(idMapid) + "_baseurl");
+							pref.setTitle(getString(R.string.pref_usermap_baseurl));
+							pref.setSummary(json.optString(BASEURL));
+							pref.setDefaultValue(json.optString(BASEURL));
+							prefscr.addPreference(pref);
+						}
+						{
+							final ListPreference pref = new ListPreference(this);
+							pref.setKey(PREF_MIXMAPS_ + c.getInt(idMapid) + "_projection");
+							pref.setTitle(getString(R.string.pref_usermap_projection));
+							pref.setEntryValues(R.array.projection_value);
+							pref.setEntries(R.array.projection_title);
+							pref.setValue(json.optString(MAPPROJECTION));
+							pref.setSummary(pref.getEntry());
+							prefscr.addPreference(pref);
+						}
+						{
+							final CheckBoxPreference pref = new CheckBoxPreference(this);
+							pref.setKey(PREF_MIXMAPS_ + c.getInt(idMapid) + "_isoverlay");
+							pref.setTitle(getString(R.string.pref_usermap_overlay));
+							pref.setSummary(getString(R.string.pref_usermap_overlay_summary));
+							pref.setDefaultValue(false);
+							prefscr.addPreference(pref);
+						}
+						prefGroup.addPreference(prefscr);
+						} break;
 					case 1: {
 						final JSONObject json = getMapPairParams(c.getString(idParams));
 						
@@ -99,7 +153,7 @@ public class MixedMapsPreference extends PreferenceActivity implements OnSharedP
 							pref.setKey(PREF_MIXMAPS_ + c.getInt(idMapid) + "_enabled");
 							pref.setTitle(getString(R.string.pref_usermap_enabled));
 							pref.setSummary(getString(R.string.pref_usermap_enabled_summary));
-							pref.setDefaultValue(false);
+							pref.setDefaultValue(true);
 							prefscr.addPreference(pref);
 						}
 						{
@@ -136,8 +190,6 @@ public class MixedMapsPreference extends PreferenceActivity implements OnSharedP
 						}
 						prefGroup.addPreference(prefscr);
 						} break;
-					case 2: {
-						} break;
 					};
 				} while(c.moveToNext());
 			}
@@ -172,7 +224,8 @@ public class MixedMapsPreference extends PreferenceActivity implements OnSharedP
 			loadMixedMaps();
 			break;
 		case R.id.add_ownsourcemap:
-			Ut.w("add_ownsourcemap");
+			mPoiManager.addMap(2, getMapCustomParams("").toString());
+			loadMixedMaps();
 			break;
 		case R.id.menu_deletepoi:
 			PreferenceGroup prefGroup = (PreferenceGroup) findPreference("pref_mixmaps_group");
@@ -186,6 +239,9 @@ public class MixedMapsPreference extends PreferenceActivity implements OnSharedP
 			editor.remove(PREF_MIXMAPS_+params[2]+"_name");
 			editor.remove(PREF_MIXMAPS_+params[2]+MAPID);
 			editor.remove(PREF_MIXMAPS_+params[2]+OVERLAYID);
+			editor.remove(PREF_MIXMAPS_+params[2]+"_baseurl");
+			editor.remove(PREF_MIXMAPS_+params[2]+"_projection");
+			editor.remove(PREF_MIXMAPS_+params[2]+"_isoverlay");
 			editor.commit();
 			
 			loadMixedMaps();
@@ -204,6 +260,24 @@ public class MixedMapsPreference extends PreferenceActivity implements OnSharedP
 				json.put(MAPID, "");
 				json.put(OVERLAYID, "");
 				json.put(OVERLAYOPAQUE, 0);
+				json.put(MAPPROJECTION, 0);
+				json.put(OVERLAYPROJECTION, 0);
+			} catch (JSONException e1) {
+			}
+		}
+		return json;
+	}
+
+	public static JSONObject getMapCustomParams(String jsonstring) {
+		JSONObject json;
+		try {
+			json = new JSONObject(jsonstring);
+		} catch(Exception e) {
+			json = new JSONObject();
+			try {
+				json.put(BASEURL, "");
+				json.put(MAPPROJECTION, 1);
+				json.put(ISOVERLAY, false);
 			} catch (JSONException e1) {
 			}
 		}
@@ -257,6 +331,33 @@ public class MixedMapsPreference extends PreferenceActivity implements OnSharedP
 					json.put(OVERLAYID, sharedPreferences.getString(key, ""));
 					mMapHelper.PARAMS = json.toString();
 					findPreference(key).setSummary(((ListPreference)findPreference(key)).getEntry());
+				} catch (JSONException e) {
+				}
+				
+			} else if(key.endsWith(BASEURL)) {
+				final JSONObject json = getMapCustomParams(mMapHelper.PARAMS);
+				try {
+					json.put(BASEURL, sharedPreferences.getString(key, ""));
+					mMapHelper.PARAMS = json.toString();
+					findPreference(key).setSummary(sharedPreferences.getString(key, ""));
+				} catch (JSONException e) {
+				}
+				
+			} else if(key.endsWith("_projection")) {
+				final JSONObject json = getMapCustomParams(mMapHelper.PARAMS);
+				try {
+					json.put(MAPPROJECTION, Integer.parseInt(sharedPreferences.getString(key, "")));
+					mMapHelper.PARAMS = json.toString();
+					findPreference(key).setSummary(((ListPreference)findPreference(key)).getEntry());
+				} catch (JSONException e) {
+				}
+				
+			} else if(key.endsWith("_isoverlay")) {
+				final JSONObject json = getMapCustomParams(mMapHelper.PARAMS);
+				try {
+					json.put(ISOVERLAY, sharedPreferences.getBoolean(key, false));
+					mMapHelper.PARAMS = json.toString();
+					mMapHelper.TYPE = sharedPreferences.getBoolean(key, false) ? 3 : 2;
 				} catch (JSONException e) {
 				}
 				
