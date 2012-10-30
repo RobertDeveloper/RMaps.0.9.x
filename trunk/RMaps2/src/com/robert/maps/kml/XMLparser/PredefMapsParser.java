@@ -58,13 +58,14 @@ public class PredefMapsParser extends DefaultHandler {
 	private ArrayList<String> mID;
 	private ArrayList<String> mName;
 	
-	public PredefMapsParser(final ArrayList<String> arrayListID, final ArrayList<String> arrayListName, final boolean aGetMaps, final boolean aGetOverlays) {
+	public PredefMapsParser(final ArrayList<String> arrayListID, final ArrayList<String> arrayListName, final boolean aGetMaps, final boolean aGetOverlays, final int aProjection) {
 		super();
 		
 		mID = arrayListID;
 		mName = arrayListName;
 		mNeedMaps = aGetMaps;
 		mNeedOverlays = aGetOverlays;
+		mNeedProjection = aProjection;
 		
 		mSubmenu = null;
 		mRendererInfo = null;
@@ -230,7 +231,7 @@ public class PredefMapsParser extends DefaultHandler {
 				
 				final boolean isLayer = !(i == -1 || !attributes.getValue(LAYER).equalsIgnoreCase(TRUE));
 				
-				if(mNeedMaps && !isLayer || mNeedOverlays && isLayer && !timeDependent) {
+				if(mNeedMaps && !isLayer || mNeedOverlays && isLayer && !timeDependent && (mNeedProjection == 0 || mNeedProjection == Integer.parseInt(attributes.getValue(PROJECTION)))) {
 					mID.add(attributes.getValue(ID));
 					mName.add(attributes.getValue(NAME));
 				}
