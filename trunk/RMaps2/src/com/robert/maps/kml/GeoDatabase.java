@@ -515,5 +515,12 @@ public class GeoDatabase implements PoiConstants{
 			this.mDatabase.update(MAPS, cv, UPDATE_MAPS, args);
 		}
 	}
+
+	public void deleteMap(long id) {
+		if (isDatabaseReady()) {
+			final String[] args = {Long.toString(id)};
+			mDatabase.delete(MAPS, UPDATE_MAPS, args);
+		}
+	}
 	
 }

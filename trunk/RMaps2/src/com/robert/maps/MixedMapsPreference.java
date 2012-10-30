@@ -10,6 +10,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -19,12 +20,14 @@ import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceGroup;
+import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.robert.maps.kml.PoiManager;
@@ -140,11 +143,13 @@ public class MixedMapsPreference extends PreferenceActivity implements OnSharedP
 
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
-		((ListView) v).getSelectedItem();
-		((ListView) v).getSelectedItemId();
-		
-		menu.add(Menu.NONE, R.id.add_dualmap, Menu.NONE, R.string.menu_add_dualmap);
-		menu.add(Menu.NONE, R.id.add_ownsourcemap, Menu.NONE, R.string.menu_add_ownsourcemap);
+		if(menuInfo == null || menuInfo != null && ((AdapterView.AdapterContextMenuInfo) menuInfo).id == 0) {
+			menu.add(Menu.NONE, R.id.add_dualmap, Menu.NONE, R.string.menu_add_dualmap);
+			menu.add(Menu.NONE, R.id.add_ownsourcemap, Menu.NONE, R.string.menu_add_ownsourcemap);
+		} else {
+			menu.add(Menu.NONE, R.id.menu_deletepoi, Menu.NONE, R.string.menu_delete);
+			((AdapterView.AdapterContextMenuInfo) menuInfo).id = 0;
+		}
 		super.onCreateContextMenu(menu, v, menuInfo);
 	}
 
@@ -159,11 +164,27 @@ public class MixedMapsPreference extends PreferenceActivity implements OnSharedP
 	public boolean onContextItemSelected(MenuItem item) {
 		switch(item.getItemId()) {
 		case R.id.add_dualmap:
-			//mPoiManager.addMap(1, getMapPairParams("").toString());
+			mPoiManager.addMap(1, getMapPairParams("").toString());
 			loadMixedMaps();
 			break;
 		case R.id.add_ownsourcemap:
 			Ut.w("add_ownsourcemap");
+			break;
+		case R.id.menu_deletepoi:
+			PreferenceGroup prefGroup = (PreferenceGroup) findPreference("pref_mixmaps_group");
+			final String key = prefGroup.getPreference(((AdapterView.AdapterContextMenuInfo)item.getMenuInfo()).position - 2).getKey();
+			final String params[] = key.split("_");
+			mPoiManager.getGeoDatabase().deleteMap(Long.parseLong(params[2]));
+			
+			final SharedPreferences aPref = PreferenceManager.getDefaultSharedPreferences(this);
+			final Editor editor = aPref.edit();
+			editor.remove(PREF_MIXMAPS_+params[2]+"_enabled");
+			editor.remove(PREF_MIXMAPS_+params[2]+"_name");
+			editor.remove(PREF_MIXMAPS_+params[2]+MAPID);
+			editor.remove(PREF_MIXMAPS_+params[2]+OVERLAYID);
+			editor.commit();
+			
+			loadMixedMaps();
 			break;
 		}
 		return super.onContextItemSelected(item);
@@ -191,8 +212,10 @@ public class MixedMapsPreference extends PreferenceActivity implements OnSharedP
 			mMapHelper.getMap(Long.parseLong(params[2]));
 			if(key.endsWith("_name")) {
 				mMapHelper.NAME = sharedPreferences.getString(key, "");
-				findPreference(key).setSummary(mMapHelper.NAME);
-				findPreference(PREF_MIXMAPS_+mMapHelper.ID).setTitle(mMapHelper.NAME);
+				if(findPreference(key) != null)
+					findPreference(key).setSummary(mMapHelper.NAME);
+				if(findPreference(PREF_MIXMAPS_+mMapHelper.ID) != null)
+					findPreference(PREF_MIXMAPS_+mMapHelper.ID).setTitle(mMapHelper.NAME);
 			} else if(key.endsWith(MAPID)) {
 				final JSONObject json = getMapPairParams(mMapHelper.PARAMS);
 				try {
