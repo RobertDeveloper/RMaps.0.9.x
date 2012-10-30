@@ -5,13 +5,19 @@ import java.io.InputStream;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteException;
 import android.preference.PreferenceManager;
 
 import com.robert.maps.MainPreferences;
+import com.robert.maps.MixedMapsPreference;
 import com.robert.maps.R;
+import com.robert.maps.kml.PoiManager;
 import com.robert.maps.kml.XMLparser.PredefMapsParser;
 import com.robert.maps.utils.RException;
 
@@ -34,8 +40,9 @@ public class TileSourceBase {
 	
 	public final static int PREDEF_ONLINE = 0;
 	public final static int USERMAP_OFFLINE = 1;
+	public final static int MIXMAP_PAIR = 2;
 	
-	public String ID, BASEURL, NAME, IMAGE_FILENAMEENDING, GOOGLE_LANG_CODE, CACHE;
+	public String ID, BASEURL, NAME, IMAGE_FILENAMEENDING, GOOGLE_LANG_CODE, CACHE, OVERLAYID;
 	public int MAPTILE_SIZEPX, ZOOM_MINLEVEL, ZOOM_MAXLEVEL,
 	URL_BUILDER_TYPE, // 0 - OSM, 1 - Google, 2 - Yandex, 3 - Yandex.Traffic, 4 - Google.Sattelite, 5 - openspace, 6 - microsoft, 8 - VFR Chart
 	TILE_SOURCE_TYPE, // 0 - internet, 3 - MapNav file, 4 - TAR, 5 - sqlitedb
@@ -48,13 +55,39 @@ public class TileSourceBase {
 	public TileSourceBase(Context ctx, String aId, boolean aNeedTileProvider) throws SQLiteException, RException {
 		if (aId.equalsIgnoreCase(EMPTY))
 			aId = MAPNIK;
-
+		
 		final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(ctx);
 		mOnlineMapCacheEnabled = pref.getBoolean(PREF_ONLINECACHE, true);
 		GOOGLE_LANG_CODE = pref.getString(PREF_GOOGLELANG, EN);
+		this.OVERLAYID = "";
 
-		if (aId.contains(USERMAP_)) {
+		if (aId.startsWith("mixmap_")) {
+			final String[] params = aId.split("_");
+			final PoiManager poiman = new PoiManager(ctx);
+			aId = MAPNIK;
+			MAP_TYPE = PREDEF_ONLINE;
+			Cursor c = poiman.getGeoDatabase().getMap(Long.parseLong(params[1]));
+			if(c != null) {
+				if(c.moveToFirst()) {
+					if(c.getInt(2) == 1) {
+						final JSONObject json = MixedMapsPreference.getMapPairParams(c.getString(3));
+						try {
+							aId = json.getString(MixedMapsPreference.MAPID);
+							this.OVERLAYID = json.getString(MixedMapsPreference.OVERLAYID);
+							MAP_TYPE = MIXMAP_PAIR;
+						} catch (JSONException e) {
+						}
+					}
+				}
+				c.close();
+			}
+		} else if (aId.contains(USERMAP_)) {
 			MAP_TYPE = USERMAP_OFFLINE;
+		} else {
+			MAP_TYPE = PREDEF_ONLINE;
+		}
+		
+		if (aId.contains(USERMAP_)) {
 			String prefix = PREF_USERMAP_ + aId.substring(8);
 			this.ID = aId;
 			this.NAME = pref.getString(prefix + NAME_, aId);
@@ -80,7 +113,6 @@ public class TileSourceBase {
 			else
 				this.YANDEX_TRAFFIC_ON = 0;
 		} else {
-			MAP_TYPE = PREDEF_ONLINE;
 			final SAXParserFactory fac = SAXParserFactory.newInstance();
 			SAXParser parser = null;
 			try {
