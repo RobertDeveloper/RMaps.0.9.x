@@ -10,7 +10,6 @@ import android.os.Handler;
 import android.os.Message;
 
 import com.robert.maps.R;
-import com.robert.maps.utils.Ut;
 
 public class TileProviderBase {
 	protected Bitmap mLoadingMapTile;
@@ -22,12 +21,10 @@ public class TileProviderBase {
 	
 	public TileProviderBase(Context ctx) {
 		super();
-		Ut.d("TileProviderBase Created");
 		mLoadingMapTile = BitmapFactory.decodeResource(ctx.getResources(), R.drawable.maptile_loading);
 	}
 	
 	public void Free() {
-		Ut.d("TileProviderBase Free");
 		mPending.clear();
 		if(mTileURLGenerator != null)
 			mTileURLGenerator.Free();
@@ -37,7 +34,6 @@ public class TileProviderBase {
 	}
 
 	protected void finalize() throws Throwable {
-		Ut.d("TileProviderBase finalize");
 		super.finalize();
 	}
 

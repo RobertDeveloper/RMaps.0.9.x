@@ -118,6 +118,7 @@ public class MixedMapsPreference extends PreferenceActivity implements OnSharedP
 							pref.setTitle(getString(R.string.pref_usermap_baseurl));
 							pref.setSummary(json.optString(BASEURL));
 							pref.setDefaultValue(json.optString(BASEURL));
+							pref.setDialogMessage(R.string.pref_custommap_dialogmessage);
 							prefscr.addPreference(pref);
 						}
 						{
