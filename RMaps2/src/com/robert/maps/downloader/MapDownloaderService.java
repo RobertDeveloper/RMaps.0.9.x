@@ -114,7 +114,7 @@ public class MapDownloaderService extends Service {
 		CharSequence text = getText(R.string.remote_service_started);
 
 		// Set the icon, scrolling text and timestamp
-		Notification notification = new Notification(R.drawable.track_writer_service, text, System.currentTimeMillis());
+		Notification notification = new Notification(R.drawable.r_download, text, System.currentTimeMillis());
 		notification.flags = notification.flags | Notification.FLAG_NO_CLEAR;
 
 		// The PendingIntent to launch our activity if the user selects this notification
