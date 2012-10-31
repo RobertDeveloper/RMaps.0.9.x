@@ -10,7 +10,7 @@ package com.robert.maps;
 public final class R {
     public static final class array {
         public static final int accuracy_pref_title=0x7f060002;
-        public static final int accuracy_pref_value=0x7f06000c;
+        public static final int accuracy_pref_value=0x7f06000b;
         public static final int googlescale_pref_title=0x7f060017;
         public static final int googlescale_pref_values=0x7f060018;
         public static final int languages_codes=0x7f060010;
@@ -26,7 +26,7 @@ public final class R {
         public static final int pref_locale_title=0x7f060019;
         public static final int pref_locale_values=0x7f06001a;
         public static final int projection_title=0x7f060009;
-        public static final int projection_value=0x7f06000b;
+        public static final int projection_value=0x7f06000a;
         public static final int screen_orientation_pref_title=0x7f060003;
         public static final int screen_orientation_pref_value=0x7f060012;
         public static final int track_activity=0x7f060008;
@@ -34,7 +34,7 @@ public final class R {
         public static final int units_pref_values=0x7f060016;
         public static final int zoomctrl_pref_title=0x7f060006;
         public static final int zoomctrl_pref_values=0x7f060015;
-        public static final int zoomlevel_pref_title=0x7f06000a;
+        public static final int zoomlevel_pref_title=0x7f06000c;
         public static final int zoomlevel_pref_value=0x7f06000d;
     }
     public static final class attr {

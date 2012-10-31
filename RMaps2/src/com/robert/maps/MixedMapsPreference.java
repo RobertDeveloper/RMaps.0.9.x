@@ -321,8 +321,9 @@ public class MixedMapsPreference extends PreferenceActivity implements OnSharedP
 					}
 					
 					mMapHelper.PARAMS = json.toString();
-					findPreference(key).setSummary(((ListPreference)findPreference(key)).getEntry());
-				} catch (JSONException e) {
+					if(findPreference(key) != null)
+						findPreference(key).setSummary(((ListPreference)findPreference(key)).getEntry());
+				} catch (Exception e) {
 				}
 				
 			} else if(key.endsWith(OVERLAYID)) {
@@ -330,8 +331,9 @@ public class MixedMapsPreference extends PreferenceActivity implements OnSharedP
 				try {
 					json.put(OVERLAYID, sharedPreferences.getString(key, ""));
 					mMapHelper.PARAMS = json.toString();
-					findPreference(key).setSummary(((ListPreference)findPreference(key)).getEntry());
-				} catch (JSONException e) {
+					if(findPreference(key) != null)
+						findPreference(key).setSummary(((ListPreference)findPreference(key)).getEntry());
+				} catch (Exception e) {
 				}
 				
 			} else if(key.endsWith(BASEURL)) {
@@ -339,8 +341,9 @@ public class MixedMapsPreference extends PreferenceActivity implements OnSharedP
 				try {
 					json.put(BASEURL, sharedPreferences.getString(key, ""));
 					mMapHelper.PARAMS = json.toString();
-					findPreference(key).setSummary(sharedPreferences.getString(key, ""));
-				} catch (JSONException e) {
+					if(findPreference(key) != null)
+						findPreference(key).setSummary(sharedPreferences.getString(key, ""));
+				} catch (Exception e) {
 				}
 				
 			} else if(key.endsWith("_projection")) {
@@ -348,8 +351,9 @@ public class MixedMapsPreference extends PreferenceActivity implements OnSharedP
 				try {
 					json.put(MAPPROJECTION, Integer.parseInt(sharedPreferences.getString(key, "")));
 					mMapHelper.PARAMS = json.toString();
-					findPreference(key).setSummary(((ListPreference)findPreference(key)).getEntry());
-				} catch (JSONException e) {
+					if(findPreference(key) != null)
+						findPreference(key).setSummary(((ListPreference)findPreference(key)).getEntry());
+				} catch (Exception e) {
 				}
 				
 			} else if(key.endsWith("_isoverlay")) {
@@ -358,7 +362,7 @@ public class MixedMapsPreference extends PreferenceActivity implements OnSharedP
 					json.put(ISOVERLAY, sharedPreferences.getBoolean(key, false));
 					mMapHelper.PARAMS = json.toString();
 					mMapHelper.TYPE = sharedPreferences.getBoolean(key, false) ? 3 : 2;
-				} catch (JSONException e) {
+				} catch (Exception e) {
 				}
 				
 			}

@@ -4,7 +4,7 @@
     <string-array name="overlay_button_visibility">
         <item>Always show</item>
         <item>Always hide</item>
-        <item>Show for mixed maps only</item>
+        <item>Show for custom maps only</item>
     </string-array>
     <string-array name="overlay_button_behavior">
         <item>Hide/show overlay, Long touch - show menu</item>
