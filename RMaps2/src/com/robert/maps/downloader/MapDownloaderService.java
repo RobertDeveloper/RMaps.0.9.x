@@ -29,8 +29,9 @@ import com.robert.maps.utils.SimpleThreadFactory;
 import com.robert.maps.utils.Ut;
 
 public class MapDownloaderService extends Service {
-	private final int THREADCOUNT = 1;
+	private final int THREADCOUNT = 5;
 
+    private NotificationManager mNM;
 	private int mZoomArr[];
 	private int mCoordArr[];
 	private String mMapID;
@@ -46,6 +47,7 @@ public class MapDownloaderService extends Service {
 	public void onCreate() {
 		super.onCreate();
 		
+		mNM = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
 		showNotification();
 	}
 
@@ -56,11 +58,13 @@ public class MapDownloaderService extends Service {
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
+		Ut.w("onStartCommand downloader");
 		handleCommand(intent);
 		return START_STICKY;
 	}
 
 	private void handleCommand(Intent intent) {
+
 		mZoomArr = intent.getIntArrayExtra("ZOOM");
 		mCoordArr = intent.getIntArrayExtra("COORD");
 		mMapID = intent.getStringExtra("MAPID");
@@ -74,8 +78,11 @@ public class MapDownloaderService extends Service {
 
 		final SQLiteMapDatabase cacheDatabase = new SQLiteMapDatabase();
 		final File folder = Ut.getRMapsMapsDir(this);
+		final File file = new File(folder.getAbsolutePath()+"/"+mOfflineMapName+".sqlitedb");
+		if(file.exists())
+			file.delete();
 		try {
-			cacheDatabase.setFile(folder.getAbsolutePath()+"/"+mOfflineMapName+".sqlitedb");
+			cacheDatabase.setFile(file.getAbsolutePath());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -83,17 +90,21 @@ public class MapDownloaderService extends Service {
 		
 		mTileIterator = new TileIterator(mZoomArr, mCoordArr);
 		
-		for(int i = 0; i < 5; i++)
-			mThreadPool.execute(new Downloader());
+		for(int i = 0; i < THREADCOUNT; i++)
+			mThreadPool.execute(new Downloader(i));
 	}
 
 	@Override
 	public void onDestroy() {
-		mThreadPool.shutdown();
-		mTileSource.Free();
-		mMapDatabase.Free();
+		Ut.w("onDestroy downloader");
 		
-		((NotificationManager)getSystemService(NOTIFICATION_SERVICE)).cancel(R.string.remote_service_started);
+		mThreadPool.shutdown();
+		if(mTileSource != null)
+			mTileSource.Free();
+		if(mMapDatabase != null)
+			mMapDatabase.Free();
+		
+		mNM.cancel(R.string.remote_service_started);
 		
 		super.onDestroy();
 	}
@@ -115,28 +126,28 @@ public class MapDownloaderService extends Service {
 
 		// Send the notification.
 		// We use a string id because it is a unique number. We use it later to cancel.
-		((NotificationManager)getSystemService(NOTIFICATION_SERVICE)).notify(R.string.remote_service_started, notification);
+		mNM.notify(R.string.remote_service_started, notification);
 	}
 	
 	private void downloadDone() {
-		((NotificationManager)getSystemService(NOTIFICATION_SERVICE)).cancel(R.string.remote_service_started);
-		
-		CharSequence text = getText(R.string.auto_follow_enabled);
-
-		// Set the icon, scrolling text and timestamp
-		Notification notification = new Notification(R.drawable.track_writer_service, text, System.currentTimeMillis());
-		//notification.flags = notification.flags | Notification.FLAG_NO_CLEAR;
-
-		// The PendingIntent to launch our activity if the user selects this notification
-		PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
-				new Intent(this, AreaSelectorActivity.class), 0);
-
-		// Set the info for the views that show in the notification panel.
-		notification.setLatestEventInfo(this, getText(R.string.auto_follow_enabled), text, contentIntent);
-
-		// Send the notification.
-		// We use a string id because it is a unique number. We use it later to cancel.
-		((NotificationManager)getSystemService(NOTIFICATION_SERVICE)).notify(R.string.auto_follow_enabled, notification);
+//		((NotificationManager)getSystemService(NOTIFICATION_SERVICE)).cancel(R.string.remote_service_started);
+//		
+//		CharSequence text = getText(R.string.auto_follow_enabled);
+//
+//		// Set the icon, scrolling text and timestamp
+//		Notification notification = new Notification(R.drawable.track_writer_service, text, System.currentTimeMillis());
+//		//notification.flags = notification.flags | Notification.FLAG_NO_CLEAR;
+//
+//		// The PendingIntent to launch our activity if the user selects this notification
+//		PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
+//				new Intent(this, AreaSelectorActivity.class), 0);
+//
+//		// Set the info for the views that show in the notification panel.
+//		notification.setLatestEventInfo(this, getText(R.string.auto_follow_enabled), text, contentIntent);
+//
+//		// Send the notification.
+//		// We use a string id because it is a unique number. We use it later to cancel.
+//		((NotificationManager)getSystemService(NOTIFICATION_SERVICE)).notify(R.string.auto_follow_enabled, notification);
 		
 		stopSelf();
 	}
@@ -155,6 +166,7 @@ public class MapDownloaderService extends Service {
 			switch (msg.what) {
 			case DONE:
 				doneCounter++;
+				Ut.d("DONE "+doneCounter);
 				if(doneCounter >= THREADCOUNT)
 					downloadDone();
 				break;
@@ -164,8 +176,14 @@ public class MapDownloaderService extends Service {
 	}
 	
 	private class Downloader implements Runnable {
+		private int mID;
+
+		public Downloader(int id) {
+			mID = id;
+		}
 
 		public void run() {
+			
 			XYZ tileParam = null;
 			boolean continueExecute = true;
 			
@@ -175,8 +193,10 @@ public class MapDownloaderService extends Service {
 						tileParam = mTileIterator.next();
 					} else {
 						continueExecute = false;
+						tileParam = null;
 					}
 				}
+				
 				
 				if (tileParam != null) {
 					tileParam.TILEURL = mTileSource.getTileURLGenerator().Get(tileParam.X, tileParam.Y, tileParam.Z);
@@ -184,7 +204,7 @@ public class MapDownloaderService extends Service {
 					OutputStream out = null;
 					
 					try {
-						Ut.i("Downloading Maptile from url: " + tileParam.TILEURL);
+						Ut.i("Downloading #"+mID+" from url: " + tileParam.TILEURL);
 						
 						byte[] data = null;
 						
@@ -215,7 +235,8 @@ public class MapDownloaderService extends Service {
 				}
 			}
 			
-			Message.obtain(mHandler, DownloaderHanler.DONE).sendToTarget();
+			if(mHandler != null)
+				Message.obtain(mHandler, DownloaderHanler.DONE).sendToTarget();
 		}
 
 	}
@@ -245,20 +266,14 @@ public class MapDownloaderService extends Service {
 					if(zInd > zArr.length - 1) {
 						return false;
 					}
-					final int c0[] = Util.getMapTileFromCoordinates(coordArr[0], coordArr[1], zArr[zInd], null, 1/*
-																												 * mTileSource
-																												 * .
-																												 * PROJECTION
-																												 */);
-					final int c1[] = Util.getMapTileFromCoordinates(coordArr[2], coordArr[3], zArr[zInd], null, 1/*
-																												 * mTileSource
-																												 * .
-																												 * PROJECTION
-																												 */);
+					final int c0[] = Util.getMapTileFromCoordinates(coordArr[0], coordArr[1], zArr[zInd], null, mTileSource.PROJECTION);
+					final int c1[] = Util.getMapTileFromCoordinates(coordArr[2], coordArr[3], zArr[zInd], null, mTileSource.PROJECTION);
 					xMin = Math.min(c0[0], c1[0]);
 					xMax = Math.max(c0[0], c1[0]);
 					yMin = Math.min(c0[1], c1[1]);
 					yMax = Math.max(c0[1], c1[1]);
+					x = xMin;
+					y = yMin;
 				}
 			}
 			
@@ -266,7 +281,11 @@ public class MapDownloaderService extends Service {
 		}
 
 		public XYZ next() {
-			return new XYZ(null, x, y, zArr[zInd]);
+			try {
+				return new XYZ(null, x, y, zArr[zInd]);
+			} catch (Exception e) {
+				return null;
+			}
 		}
 
 	}

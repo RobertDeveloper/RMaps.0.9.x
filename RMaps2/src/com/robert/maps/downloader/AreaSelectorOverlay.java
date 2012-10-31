@@ -13,6 +13,7 @@ import android.graphics.Rect;
 import android.view.MotionEvent;
 
 import com.robert.maps.R;
+import com.robert.maps.utils.Ut;
 import com.robert.maps.view.TileView;
 import com.robert.maps.view.TileViewOverlay;
 
@@ -83,6 +84,8 @@ public class AreaSelectorOverlay extends TileViewOverlay {
 			final com.robert.maps.view.TileView.OpenStreetMapViewProjection pj = tileView.getProjection();
 			
 			final GeoPoint g = pj.fromPixels(e2.getX(), e2.getY());
+			
+			Ut.dd(g.toDoubleString());
 			
 			switch(mPointHolded) {
 			case 0:
@@ -156,7 +159,7 @@ public class AreaSelectorOverlay extends TileViewOverlay {
 
 	public int[] getCoordArr() {
 		final int coordarr[] = {point[0].getLatitudeE6(), point[0].getLongitudeE6(), point[1].getLatitudeE6(), point[1].getLongitudeE6()};
-		return null;
+		return coordarr;
 	}
 	
 }
