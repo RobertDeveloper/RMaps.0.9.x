@@ -122,6 +122,8 @@ public class CurrentTrackOverlay extends TileViewOverlay {
 					final Cursor c = db.rawQuery("SELECT lat, lon FROM trackpoints ORDER BY id", null);
 					
 					mPath = mBasePj.toPixelsTrackPoints(c, mBaseCoords, mBaseLocation);
+					if(mPath.isEmpty())
+						mPath = null;
 				};
 			};
 
@@ -169,6 +171,7 @@ public class CurrentTrackOverlay extends TileViewOverlay {
 	}
 
 	public void onResume(){
+		mTrack = null;
 		mContext.bindService(new Intent(IRemoteService.class.getName()), mConnection, 0 /*Context.BIND_AUTO_CREATE*/);
 		mIsBound = true;
 	}
