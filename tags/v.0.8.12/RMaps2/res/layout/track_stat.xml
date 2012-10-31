@@ -1,0 +1,438 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:rmaps="http://schemas.android.com/apk/res/com.robert.maps"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/r_back"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/Name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="6dp"
+        android:layout_marginTop="6dp"
+        android:text="TextView"
+        android:textAppearance="@style/title_red" >
+    </TextView>
+
+    <TableLayout
+        android:id="@+id/tableLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="6dp"
+        android:layout_marginRight="6dp"
+        android:layout_marginTop="3dp" >
+
+        <TableRow
+            android:id="@+id/tableRow1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/textView1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
+                android:text="@string/duration"
+                android:textAppearance="@style/stat_title" >
+            </TextView>
+
+            <RelativeLayout
+                android:id="@+id/rl1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" >
+
+                <TextView
+                    android:id="@+id/duration_data"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="TextView"
+                    android:textAppearance="@style/stat_value" >
+                </TextView>
+
+                <TextView
+                    android:id="@+id/duration_unit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBaseline="@+id/duration_data"
+                    android:layout_toRightOf="@+id/duration_data"
+                    android:paddingLeft="5dp"
+                    android:text="TextView"
+                    android:textAppearance="@style/stat_unit" >
+                </TextView>
+            </RelativeLayout>
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/tableRow2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="6dp"
+                android:text="@string/distance"
+                android:textAppearance="@style/stat_title" >
+            </TextView>
+
+            <RelativeLayout
+                android:id="@+id/rl1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" >
+
+                <TextView
+                    android:id="@+id/distance_data"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="TextView"
+                    android:textAppearance="@style/stat_value" >
+                </TextView>
+
+                <TextView
+                    android:id="@+id/distance_unit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBaseline="@+id/distance_data"
+                    android:layout_toRightOf="@+id/distance_data"
+                    android:paddingLeft="5dp"
+                    android:text="TextView"
+                    android:textAppearance="@style/stat_unit" >
+                </TextView>
+            </RelativeLayout>
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/tableRow3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/TextView01"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="6dp"
+                android:text="@string/points_cnt"
+                android:textAppearance="@style/stat_title" >
+            </TextView>
+
+            <RelativeLayout
+                android:id="@+id/rl1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" >
+
+                <TextView
+                    android:id="@+id/points_data"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="TextView"
+                    android:textAppearance="@style/stat_value" >
+                </TextView>
+
+                <TextView
+                    android:id="@+id/points_unit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBaseline="@+id/points_data"
+                    android:layout_toRightOf="@+id/points_data"
+                    android:paddingLeft="5dp"
+                    android:text="TextView"
+                    android:textAppearance="@style/stat_unit" >
+                </TextView>
+            </RelativeLayout>
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/tableRow4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/TextView02"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="6dp"
+                android:text="@string/avg_speed"
+                android:textAppearance="@style/stat_title" >
+            </TextView>
+
+            <RelativeLayout
+                android:id="@+id/rl1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" >
+
+                <TextView
+                    android:id="@+id/avgspeed_data"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="TextView"
+                    android:textAppearance="@style/stat_value" >
+                </TextView>
+
+                <TextView
+                    android:id="@+id/avgspeed_unit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBaseline="@+id/avgspeed_data"
+                    android:layout_toRightOf="@+id/avgspeed_data"
+                    android:paddingLeft="5dp"
+                    android:text="TextView"
+                    android:textAppearance="@style/stat_unit" >
+                </TextView>
+            </RelativeLayout>
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/TableRow06"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/TextView15"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="6dp"
+                android:text="@string/avg_pace"
+                android:textAppearance="@style/stat_title" >
+            </TextView>
+
+            <RelativeLayout
+                android:id="@+id/rl1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" >
+
+                <TextView
+                    android:id="@+id/avgpace_data"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="TextView"
+                    android:textAppearance="@style/stat_value" >
+                </TextView>
+
+                <TextView
+                    android:id="@+id/avgpace_unit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBaseline="@+id/avgpace_data"
+                    android:layout_toRightOf="@+id/avgpace_data"
+                    android:paddingLeft="5dp"
+                    android:text="TextView"
+                    android:textAppearance="@style/stat_unit" >
+                </TextView>
+            </RelativeLayout>
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/TableRow05"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/TextView13"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="6dp"
+                android:text="@string/max_speed"
+                android:textAppearance="@style/stat_title" >
+            </TextView>
+
+            <RelativeLayout
+                android:id="@+id/rl1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" >
+
+                <TextView
+                    android:id="@+id/maxspeed_data"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="TextView"
+                    android:textAppearance="@style/stat_value" >
+                </TextView>
+
+                <TextView
+                    android:id="@+id/maxspeed_unit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBaseline="@+id/maxspeed_data"
+                    android:layout_toRightOf="@+id/maxspeed_data"
+                    android:paddingLeft="5dp"
+                    android:text="TextView"
+                    android:textAppearance="@style/stat_unit" >
+                </TextView>
+            </RelativeLayout>
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/TableRow04"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/TextView11"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="6dp"
+                android:text="@string/moving_time"
+                android:textAppearance="@style/stat_title" >
+            </TextView>
+
+            <RelativeLayout
+                android:id="@+id/rl1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" >
+
+                <TextView
+                    android:id="@+id/movetime_data"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="TextView"
+                    android:textAppearance="@style/stat_value" >
+                </TextView>
+
+                <TextView
+                    android:id="@+id/movetime_unit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBaseline="@+id/movetime_data"
+                    android:layout_toRightOf="@+id/movetime_data"
+                    android:paddingLeft="5dp"
+                    android:text="TextView"
+                    android:textAppearance="@style/stat_unit" >
+                </TextView>
+            </RelativeLayout>
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/TableRow03"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/TextView09"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
+                android:text="@string/avg_moving_speed"
+                android:textAppearance="@style/stat_title" >
+            </TextView>
+
+            <RelativeLayout
+                android:id="@+id/rl1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" >
+
+                <TextView
+                    android:id="@+id/moveavgspeed_data"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="TextView"
+                    android:textAppearance="@style/stat_value" >
+                </TextView>
+
+                <TextView
+                    android:id="@+id/moveavgspeed_unit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBaseline="@+id/moveavgspeed_data"
+                    android:layout_toRightOf="@+id/moveavgspeed_data"
+                    android:paddingLeft="5dp"
+                    android:text="TextView"
+                    android:textAppearance="@style/stat_unit" >
+                </TextView>
+            </RelativeLayout>
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/TableRow02"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/TextView07"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="6dp"
+                android:text="@string/min_elevation"
+                android:textAppearance="@style/stat_title" >
+            </TextView>
+
+            <RelativeLayout
+                android:id="@+id/rl1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" >
+
+                <TextView
+                    android:id="@+id/minele_data"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="TextView"
+                    android:textAppearance="@style/stat_value" >
+                </TextView>
+
+                <TextView
+                    android:id="@+id/minele_unit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBaseline="@+id/minele_data"
+                    android:layout_toRightOf="@+id/minele_data"
+                    android:paddingLeft="5dp"
+                    android:text="TextView"
+                    android:textAppearance="@style/stat_unit" >
+                </TextView>
+            </RelativeLayout>
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/TableRow01"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/TextView05"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="6dp"
+                android:text="@string/max_elevation"
+                android:textAppearance="@style/stat_title" >
+            </TextView>
+
+            <RelativeLayout
+                android:id="@+id/rl1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" >
+
+                <TextView
+                    android:id="@+id/maxele_data"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="TextView"
+                    android:textAppearance="@style/stat_value" >
+                </TextView>
+
+                <TextView
+                    android:id="@+id/maxele_unit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBaseline="@+id/maxele_data"
+                    android:layout_toRightOf="@+id/maxele_data"
+                    android:paddingLeft="5dp"
+                    android:text="TextView"
+                    android:textAppearance="@style/stat_unit" >
+                </TextView>
+            </RelativeLayout>
+        </TableRow>
+    </TableLayout>
+
+    <com.robert.maps.kml.ChartView
+        android:id="@+id/chart"
+        android:layout_width="wrap_content"
+        android:layout_height="200dp"
+        android:layout_marginLeft="6dp"
+        android:layout_marginRight="6dp"
+        android:visibility="gone" >
+    </com.robert.maps.kml.ChartView>
+
+</LinearLayout>

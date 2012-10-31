@@ -1,0 +1,63 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content" android:orientation="vertical" android:background="@drawable/r_back">
+    <LinearLayout
+    	android:id="@+id/LinearLayout01"
+    	android:layout_width="fill_parent"
+    	android:layout_height="wrap_content" android:orientation="horizontal">
+        <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@id/pic" android:src="@drawable/r_home_other1" android:layout_marginTop="9dp" android:layout_marginLeft="8dp"></ImageView>
+    
+    	<LinearLayout
+    		android:id="@+id/LinearLayout02"
+    		android:layout_width="0dip"
+    		android:layout_weight="1"
+    		android:layout_height="wrap_content"
+    		android:orientation="vertical">
+    		<TextView
+    			android:layout_width="fill_parent"
+    			android:layout_height="wrap_content"
+    			android:layout_marginLeft="6dip"
+    			android:text="@string/btn_start"
+    			android:ellipsize="end"
+    			android:textAppearance="@style/title_red" android:id="@id/title1" android:layout_marginTop="4dip"/>
+    
+    		<TextView
+    			android:layout_width="fill_parent"
+    			android:layout_height="wrap_content"
+    			android:layout_marginLeft="6dip"
+    			android:layout_below="@android:id/text1"
+    			android:layout_alignLeft="@android:id/text1"
+    			android:text="@string/btn_stop"
+    			android:textAppearance="@style/title_white_2" android:id="@id/title2"/>
+    	</LinearLayout>
+
+    	<CheckBox
+    	    android:id="@+id/checkbox"
+    	    android:layout_width="wrap_content"
+    	    android:layout_height="wrap_content"
+    	    android:button="@drawable/track_checkbox"
+    	    android:clickable="false"
+    	    android:focusable="false" />
+
+    </LinearLayout>
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:id="@+id/linearLayoutData" android:layout_marginTop="3dp" android:layout_marginBottom="2dp" android:layout_marginLeft="6dp" android:layout_marginRight="15dp">
+        <RelativeLayout android:layout_width="0dip" android:layout_height="wrap_content" android:layout_weight="1">
+            <TextView android:layout_width="wrap_content" android:textAppearance="@style/data_header" android:layout_height="wrap_content" android:includeFontPadding="false" android:id="@id/data_header1" android:text="@string/points_cnt"></TextView>
+            <TextView android:layout_below="@+id/data_header1" android:id="@+id/data_value1" android:layout_width="wrap_content" android:textAppearance="@style/data_value" android:layout_height="wrap_content" android:includeFontPadding="false" android:text="452"></TextView>
+            <TextView android:layout_toRightOf="@+id/data_value1" android:id="@+id/data_unit1" android:layout_alignBaseline="@+id/data_value1" android:layout_width="wrap_content" android:textAppearance="@style/data_unit" android:layout_height="wrap_content" android:includeFontPadding="false" android:paddingLeft="5.0px"></TextView>
+        </RelativeLayout>
+        <RelativeLayout android:layout_width="0dip" android:layout_height="wrap_content" android:layout_weight="1">
+            <TextView android:id="@+id/data_header2" android:layout_width="wrap_content" android:textAppearance="@style/data_header" android:layout_height="wrap_content" android:includeFontPadding="false" android:text="@string/distance"></TextView>
+            <TextView android:layout_below="@+id/data_header2" android:id="@+id/data_value2" android:layout_width="wrap_content" android:textAppearance="@style/data_value" android:layout_height="wrap_content" android:includeFontPadding="false" android:text="452"></TextView>
+            <TextView android:layout_toRightOf="@+id/data_value2" android:id="@+id/data_unit2" android:layout_alignBaseline="@+id/data_value2" android:layout_width="wrap_content" android:textAppearance="@style/data_unit" android:layout_height="wrap_content" android:includeFontPadding="false" android:paddingLeft="5.0px" android:text="@string/km"></TextView>
+        </RelativeLayout>
+        <RelativeLayout android:layout_width="0dip" android:layout_height="wrap_content" android:layout_weight="1">
+            <TextView android:id="@+id/data_header3" android:layout_width="wrap_content" android:textAppearance="@style/data_header" android:layout_height="wrap_content" android:includeFontPadding="false" android:text="@string/duration"></TextView>
+            <TextView android:layout_below="@+id/data_header3" android:id="@+id/data_value3" android:layout_width="wrap_content" android:textAppearance="@style/data_value" android:layout_height="wrap_content" android:includeFontPadding="false" android:text="452"></TextView>
+            <TextView android:layout_toRightOf="@+id/data_value3" android:id="@+id/data_unit3" android:layout_alignBaseline="@+id/data_value3" android:layout_width="wrap_content" android:textAppearance="@style/data_unit" android:layout_height="wrap_content" android:includeFontPadding="false" android:paddingLeft="5.0px"></TextView>
+        </RelativeLayout>
+
+    </LinearLayout>
+</LinearLayout>

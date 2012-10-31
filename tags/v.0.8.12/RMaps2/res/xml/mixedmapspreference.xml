@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <Preference
+        android:key="pref_addmixmap"
+        android:title="@string/pref_addmixmap" />
+
+    <PreferenceCategory
+        android:key="pref_mixmaps_group"
+        android:title="@string/pref_main_mixmaps" >
+    </PreferenceCategory>
+
+</PreferenceScreen>

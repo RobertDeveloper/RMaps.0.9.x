@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <PreferenceScreen
+        android:key="pref_dir"
+        android:summary="@string/pref_dir_summary"
+        android:title="@string/pref_dir" >
+        <EditTextPreference
+            android:dialogTitle="@string/pref_dir_main"
+            android:key="pref_dir_main"
+            android:title="@string/pref_dir_main" >
+        </EditTextPreference>
+        <EditTextPreference
+            android:dialogTitle="@string/pref_dir_maps"
+            android:key="pref_dir_maps"
+            android:title="@string/pref_dir_maps" >
+        </EditTextPreference>
+        <EditTextPreference
+            android:dialogTitle="@string/pref_dir_import"
+            android:key="pref_dir_import"
+            android:title="@string/pref_dir_import" >
+        </EditTextPreference>
+        <EditTextPreference
+            android:dialogTitle="@string/pref_dir_export"
+            android:key="pref_dir_export"
+            android:title="@string/pref_dir_export" >
+        </EditTextPreference>
+    </PreferenceScreen>
+
+    <PreferenceCategory android:title="@string/prefcat_main_maps" >
+        
+
+        <PreferenceScreen
+            android:summary="@string/pref_main_maps_summary"
+            android:title="@string/pref_main_maps" >
+            <PreferenceCategory android:key="pref_predefmaps_overlaysgroup" android:title="@string/prefcat_main_predefinedoverlays"></PreferenceCategory><PreferenceCategory
+                android:key="pref_predefmaps_mapsgroup"
+                android:title="@string/prefcat_main_predefinedmaps" >
+            </PreferenceCategory>
+            
+        </PreferenceScreen><ListPreference
+            android:entries="@array/languages_names"
+            android:entryValues="@array/languages_codes"
+            android:key="pref_googlelanguagecode"
+            android:summary="@string/pref_googlelanguagecode_summary"
+            android:title="@string/pref_googlelanguagecode" >
+        </ListPreference>
+
+        <PreferenceScreen
+            android:key="pref_main_usermaps"
+            android:summary="@string/pref_main_usermaps_summary"
+            android:title="@string/pref_main_usermaps" >
+            <PreferenceCategory
+                android:key="pref_usermaps_mapsgroup"
+                android:title="@string/pref_main_usermaps" >
+            </PreferenceCategory>
+        </PreferenceScreen>
+        <PreferenceScreen android:key="pref_main_mixmaps" android:summary="@string/pref_main_mixmaps_summary" android:title="@string/pref_main_mixmaps">
+        </PreferenceScreen>
+        
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/prefcat_main_look" >
+        
+        <ListPreference
+            android:defaultValue=" "
+            android:entries="@array/pref_locale_title"
+            android:entryValues="@array/pref_locale_values"
+            android:key="pref_locale"
+            android:summary="@string/pref_locale_summary"
+            android:title="@string/pref_locale" />
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="pref_keepscreenon"
+            android:summary="@string/pref_keepscreenon_summary"
+            android:summaryOff="@string/pref_keepscreenon_summaryoff"
+            android:summaryOn="@string/pref_keepscreenon_summary"
+            android:title="@string/pref_keepscreenon" >
+        </CheckBoxPreference>
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="pref_showstatusbar"
+            android:summary="@string/pref_showstatusbar_summary"
+            android:title="@string/pref_showstatusbar" >
+        </CheckBoxPreference>
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="pref_showtitle"
+            android:summary="@string/pref_showtitle_summary"
+            android:title="@string/pref_showtitle" >
+        </CheckBoxPreference>
+
+        <ListPreference
+            android:defaultValue="-1"
+            android:entries="@array/screen_orientation_pref_title"
+            android:entryValues="@array/screen_orientation_pref_value"
+            android:key="pref_screen_orientation"
+            android:summary="@string/pref_screen_orientation_summary"
+            android:title="@string/pref_screen_orientation" >
+        </ListPreference>
+        <ListPreference
+            android:defaultValue="1"
+            android:entries="@array/accuracy_pref_title"
+            android:entryValues="@array/accuracy_pref_value"
+            android:key="pref_accuracy"
+            android:summary="@string/pref_accuracy_summary"
+            android:title="@string/pref_accuracy" >
+        </ListPreference>
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="pref_gpsfastupdate"
+            android:summary="@string/pref_gpsfastupdate_summary"
+            android:title="@string/pref_gpsfastupdate" >
+        </CheckBoxPreference>
+
+        <ListPreference
+            android:defaultValue="1"
+            android:entries="@array/zoomctrl_pref_title"
+            android:entryValues="@array/zoomctrl_pref_values"
+            android:key="pref_zoomctrl"
+            android:summary="@string/pref_zoomctrl_summary"
+            android:title="@string/pref_zoomctrl" >
+        </ListPreference>
+        <ListPreference
+            android:defaultValue="10"
+            android:entries="@array/zoomlevel_pref_title"
+            android:entryValues="@array/zoomlevel_pref_value"
+            android:key="pref_zoomminlevel"
+            android:summary="@string/pref_zoomminlevel_summary"
+            android:title="@string/pref_zoomminlevel" >
+        </ListPreference>
+        <ListPreference
+            android:defaultValue="17"
+            android:entries="@array/zoomlevel_pref_title"
+            android:entryValues="@array/zoomlevel_pref_value"
+            android:key="pref_zoommaxlevel"
+            android:summary="@string/pref_zoommaxlevel_summary"
+            android:title="@string/pref_zoommaxlevel" >
+        </ListPreference>
+
+        <ListPreference android:title="@string/pref_overlay_button_visibility" android:entryValues="@array/overlay_button_visibility_values" android:defaultValue="0" android:summary="@string/pref_overlay_button_visibility_summary" android:entries="@array/overlay_button_visibility" android:key="pref_overlay_button_visibility"/><ListPreference android:entryValues="@array/overlay_button_behavior_values" android:entries="@array/overlay_button_behavior" android:title="@string/pref_overlay_button_behavior" android:summary="@string/pref_overlay_button_behavior_summary" android:key="pref_overlay_button_behavior" android:defaultValue="0"/><CheckBoxPreference
+            android:defaultValue="true"
+            android:key="pref_drivingdirectionup"
+            android:summary="@string/pref_drivingdirectionup_summary"
+            android:title="@string/pref_drivingdirectionup" >
+        </CheckBoxPreference>
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="pref_northdirectionup"
+            android:summary="@string/pref_northdirectionup_summary"
+            android:title="@string/pref_northdirectionup" >
+        </CheckBoxPreference>
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="pref_showscalebar"
+            android:summary="@string/pref_showscalebar_summary"
+            android:title="@string/pref_showscalebar" >
+        </CheckBoxPreference>
+
+        <ListPreference
+            android:defaultValue="0"
+            android:entries="@array/units_pref_title"
+            android:entryValues="@array/units_pref_values"
+            android:key="pref_units"
+            android:summary="@string/pref_units_summary"
+            android:title="@string/pref_units" >
+        </ListPreference>
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="pref_crosshair"
+            android:summary="@string/pref_crosshair_summary"
+            android:title="@string/pref_crosshair" >
+        </CheckBoxPreference><com.robert.maps.utils.TrackStylePreference android:key="pref_track_style" android:summary="@string/pref_track_style_summary" android:title="@string/pref_track_style" android:defaultValue='{"color":-5937666,"shadowradius":0,"width":10,"color_shadow":-5937666}' />
+        <com.robert.maps.utils.TrackStylePreference android:key="pref_track_style_current" android:summary="@string/pref_track_style_summary" android:title="@string/pref_track_style_current" android:defaultValue='{"color":-5937666,"shadowradius":0,"width":10,"color_shadow":-5937666}' />
+        
+        
+        </PreferenceCategory>
+    <PreferenceCategory android:title="@string/prefcat_main_poi" >
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="pref_hidepoi"
+            android:summary="@string/pref_hidepoi_summary"
+            android:title="@string/pref_hidepoi" >
+        </CheckBoxPreference>
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/prefcat_main_trackwriter" >
+        <ListPreference
+            android:defaultValue="2000"
+            android:entries="@array/mintime_pref_title"
+            android:entryValues="@array/mintime_pref_values"
+            android:key="pref_trackwriter_mintime"
+            android:summary="@string/pref_trackwriter_mintime_summary"
+            android:title="@string/pref_trackwriter_mintime" >
+        </ListPreference>
+        <ListPreference
+            android:defaultValue="10"
+            android:entries="@array/mindistance_pref_title"
+            android:entryValues="@array/mindistance_pref_values"
+            android:key="pref_trackwriter_mindistance"
+            android:summary="@string/pref_trackwriter_mindistance_summary"
+            android:title="@string/pref_trackwriter_mindistance" >
+        </ListPreference>
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/prefcat_main_indexing" >
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="pref_turnoffautoreindex"
+            android:summary="@string/pref_turnoffautoreindex_summary"
+            android:title="@string/pref_turnoffautoreindex" >
+        </CheckBoxPreference>
+
+        <com.robert.maps.utils.InternalCachePreference
+            android:key="pref_internalcache"
+            android:summary="@string/pref_internalcache_summary"
+            android:title="@string/pref_internalcache_title" />
+
+        <com.robert.maps.utils.IndexPreference
+            android:key="pref_index"
+            android:summary="@string/pref_index_summary"
+            android:title="@string/pref_index_title" />
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="pref_onlinecache"
+            android:summary="@string/pref_onlinecache_summary"
+            android:title="@string/pref_onlinecache" >
+        </CheckBoxPreference>
+    </PreferenceCategory>
+
+</PreferenceScreen>
