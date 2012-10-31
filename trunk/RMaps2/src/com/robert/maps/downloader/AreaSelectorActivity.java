@@ -10,6 +10,7 @@ import org.andnav.osm.util.GeoPoint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.ContextMenu;
@@ -21,8 +22,10 @@ import android.view.Window;
 import android.widget.TextView;
 
 import com.robert.maps.R;
+import com.robert.maps.kml.PoiManager;
 import com.robert.maps.kml.XMLparser.PredefMapsParser;
 import com.robert.maps.tileprovider.TileSource;
+import com.robert.maps.tileprovider.TileSourceBase;
 import com.robert.maps.utils.RException;
 import com.robert.maps.view.IMoveListener;
 import com.robert.maps.view.MapView;
@@ -105,7 +108,7 @@ public class AreaSelectorActivity extends Activity {
 		findViewById(R.id.stop_download).setVisibility(View.VISIBLE);
 		
 		final Intent intent = new Intent("com.robert.maps.mapdownloader");
-		final int zoomArr[] = {0,1};
+		final int zoomArr[] = {0,1,2,3,4};
 		intent.putExtra("ZOOM", zoomArr);
 		intent.putExtra("COORD", mAreaSelectorOverlay.getCoordArr());
 		intent.putExtra("MAPID", mTileSource.ID);
@@ -163,6 +166,10 @@ public class AreaSelectorActivity extends Activity {
 
 		try {
 			mTileSource = new TileSource(this, pref.getString(MAPNAMEAREASELECTOR, TileSource.MAPNIK));
+			if(mTileSource.MAP_TYPE != TileSourceBase.PREDEF_ONLINE && mTileSource.MAP_TYPE != TileSourceBase.MIXMAP_CUSTOM) {
+				mTileSource.Free();
+				mTileSource = new TileSource(this, TileSource.MAPNIK);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -211,6 +218,21 @@ public class AreaSelectorActivity extends Activity {
 		if(v.getId() == R.id.maps) {
 			menu.clear();
 			SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+
+			final PoiManager poiManager = new PoiManager(this);
+			Cursor c = poiManager.getGeoDatabase().getMixedMaps();
+			if(c != null) {
+				if(c.moveToFirst()) {
+					do {
+						if (pref.getBoolean("PREF_MIXMAPS_" + c.getInt(0) + "_enabled", false) && c.getInt(2) < 3) {
+							MenuItem item = menu.add(c.getString(1));
+							item.setTitleCondensed("mixmap_" + c.getInt(0));
+						}
+					} while(c.moveToNext());
+				}
+				c.close();
+			}
+			poiManager.FreeDatabases();
 
 			final SAXParserFactory fac = SAXParserFactory.newInstance();
 			SAXParser parser = null;

@@ -4,7 +4,7 @@
 	<item
 		android:id="@+id/area_selector"
 		android:title="@string/menu_area_selector"
-		android:icon="@android:drawable/ic_menu_info_details" android:enabled="false" android:visible="false"></item>
+		android:icon="@android:drawable/ic_menu_info_details" android:enabled="true" android:visible="true"></item>
 	<item
 		android:id="@+id/search"
 		android:title="@string/menu_search"
