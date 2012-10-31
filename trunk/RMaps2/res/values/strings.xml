@@ -92,6 +92,8 @@ With the assistance of\n
   Dmytro Sandu\n
   Snake Joe\n
   Christoffer Blindheim\n
+Translators\n
+  Vitek Fedra CZ\n
 All rights reserved\n
 \n
 Questions, sentences mail to robertk506@gmail.com\n
@@ -214,4 +216,9 @@ How to and FAQ you can find on http://robertdeveloper.blogspot.com/\n
 	<string name="pref_overlay_button_visibility_summary">When show or hide overlay button</string>
 	<string name="pref_overlay_button_behavior">Overlay button behavior</string>
 	<string name="pref_overlay_button_behavior_summary">What to do on touch and long touch</string>
+	<string name="pref_custommap_dialogmessage">For example:\n
+	    http://c.tile.openstreetmap.org/{z}/{x}/{y}.png\n
+	    Addition to the obvious {z}, {x}, {y} you can use {galileo} for Google maps\n
+	    Write me to email if you need to extends this list of parameters.\n
+	    </string>
 </resources>
