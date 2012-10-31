@@ -47,8 +47,8 @@
   <string name="pref_main_maps_summary">Je vyžadováno připojení k Internetu</string>
   <string name="pref_main_usermaps">Uživatelem definované mapy</string>
   <string name="pref_main_usermaps_summary">Mapy z /sdcard/rmaps/maps</string>
-  <string name="prefcat_main_predefinedmaps">Maps</string>
-  <string name="prefcat_main_predefinedoverlays">Overlays</string>
+  <string name="prefcat_main_predefinedmaps">Mapy</string>
+  <string name="prefcat_main_predefinedoverlays">Vrstvy</string>
   <string name="btn_clear_cache_title">Vymazat cache</string>
   <string name="pref_internalcache_title">Vnitřní cache</string>
   <string name="pref_internalcache_summary">Velikost dočasně uložených map: %dKB/4MB</string>
@@ -150,7 +150,7 @@ How to and FAQ you can find on http://robertdeveloper.blogspot.com/\n
   <string name="menu_exporttokml">Exportovat do KML souboru</string>
   <string name="message_trackexported">Trasa je exportována do </string>
   <string name="message_cantstarttrackwriter">Záznamník tras nelze spustit, protože nemůže zapisovat do </string>
-  <string name="message_error">Error: %s</string>
+  <string name="message_error">Chyba: %s</string>
   <string name="error_title">Chybová zpráva</string>
   <string name="error_text">Aplikace RMaps byla neočekávaně ukončena. Zašlete prosím zprávu o chybě autorovi programu. Klepněte na tlačítko Generovat report, ten si můžete před odesláním přečíst.</string>
   <string name="error_send">Generovat report</string>
@@ -190,10 +190,21 @@ How to and FAQ you can find on http://robertdeveloper.blogspot.com/\n
   <string name="pref_track_style">Styl trasy</string>
   <string name="pref_track_style_summary">Barva trasy, šířka, barva stínu</string>
   <string name="pref_track_style_current">Styl nahrané trasy</string>
-  <string name="pref_tile_size">Tile size</string>
-  <string name="menu_title_overlays">Overlays</string>
+  <string name="pref_tile_size">Velikost dlaždic</string>
+  <string name="menu_title_overlays">Vrstvy</string>
   <string name="menu_hide_overlay">Hide overlay</string>
   <string name="pref_usermap_overlay">Overlay</string>
   <string name="pref_usermap_overlay_summary">Set up as overlay</string>
-  <string name="message_poiexported">The POIs exported to %s</string>
+  <string name="message_poiexported">POI vyexportovány do %s</string>
+  <string name="pref_main_mixmaps">Custom maps</string>
+  <string name="pref_main_mixmaps_summary">Map  + overlay, Custom map source</string>
+  <string name="pref_addmixmap">Add map</string>
+  <string name="menu_add_dualmap">Map + overlay pair</string>
+  <string name="menu_add_ownsourcemap">Custom map source</string>
+  <string name="pref_mixmap_map">Map</string>
+  <string name="pref_mixmap_overlay">Overlay</string>
+  <string name="pref_overlay_button_visibility">Overlay button visibility</string>
+  <string name="pref_overlay_button_visibility_summary">When show or hide overlay button</string>
+  <string name="pref_overlay_button_behavior">Overlay button behavior</string>
+  <string name="pref_overlay_button_behavior_summary">What to do on touch and long touch</string>
 </resources>

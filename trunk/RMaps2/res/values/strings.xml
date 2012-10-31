@@ -203,8 +203,8 @@ How to and FAQ you can find on http://robertdeveloper.blogspot.com/\n
 	<string name="pref_usermap_overlay">Overlay</string>
 	<string name="pref_usermap_overlay_summary">Set up as overlay</string>
 	<string name="message_poiexported">The POIs exported to %s</string>
-	<string name="pref_main_mixmaps">Mixed maps</string>
-	<string name="pref_main_mixmaps_summary">Map  + overlay</string>
+	<string name="pref_main_mixmaps">Custom maps</string>
+	<string name="pref_main_mixmaps_summary">Map  + overlay, Custom map source</string>
 	<string name="pref_addmixmap">Add map</string>
 	<string name="menu_add_dualmap">Map + overlay pair</string>
 	<string name="menu_add_ownsourcemap">Custom map source</string>
