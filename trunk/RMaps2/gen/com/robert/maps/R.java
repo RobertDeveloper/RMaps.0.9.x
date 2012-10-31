@@ -90,11 +90,12 @@ containing a value of this type.
         public static final int r_divider=0x7f020016;
         public static final int r_download=0x7f020017;
         public static final int r_home_other1=0x7f020018;
-        public static final int ric_menu_attachment=0x7f020019;
-        public static final int track_checkbox=0x7f02001a;
-        public static final int track_writer_service=0x7f02001b;
-        public static final int zoom_in=0x7f02001c;
-        public static final int zoom_out=0x7f02001d;
+        public static final int r_overlays=0x7f020019;
+        public static final int ric_menu_attachment=0x7f02001a;
+        public static final int track_checkbox=0x7f02001b;
+        public static final int track_writer_service=0x7f02001c;
+        public static final int zoom_in=0x7f02001d;
+        public static final int zoom_out=0x7f02001e;
     }
     public static final class id {
         public static final int Activity=0x7f08004b;

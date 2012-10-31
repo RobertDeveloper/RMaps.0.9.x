@@ -361,7 +361,7 @@ public class MainActivity extends Activity {
         });
         
         mOverlayView = new ImageView(this);
-        mOverlayView.setImageResource(R.drawable.zoom_out);
+        mOverlayView.setImageResource(R.drawable.r_overlays);
         final RelativeLayout.LayoutParams layerParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         layerParams.addRule(RelativeLayout.CENTER_VERTICAL);
        	layerParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
