@@ -21,6 +21,8 @@ import android.content.Intent;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.os.RemoteCallbackList;
+import android.os.RemoteException;
 
 import com.robert.maps.R;
 import com.robert.maps.tileprovider.TileSource;
@@ -41,7 +43,18 @@ public class MapDownloaderService extends Service {
 	private TileSource mTileSource;
 	private ExecutorService mThreadPool = Executors.newFixedThreadPool(THREADCOUNT, new SimpleThreadFactory("MapDownloaderService"));
 	private Handler mHandler = new DownloaderHanler();
+	final RemoteCallbackList<IDownloaderCallback> mCallbacks = new RemoteCallbackList<IDownloaderCallback>();
 	
+    private final IRemoteService.Stub mBinder = new IRemoteService.Stub() {
+        public void registerCallback(IDownloaderCallback cb) {
+            if (cb != null) mCallbacks.register(cb);
+            Ut.w("Callback registered");
+        }
+        public void unregisterCallback(IDownloaderCallback cb) {
+            if (cb != null) mCallbacks.unregister(cb);
+        }
+    };
+
 	
 	@Override
 	public void onCreate() {
@@ -130,6 +143,15 @@ public class MapDownloaderService extends Service {
 	}
 	
 	private void downloadDone() {
+        final int N = mCallbacks.beginBroadcast();
+        for (int i=0; i<N; i++) {
+			try {
+				mCallbacks.getBroadcastItem(i).downloadDone();
+			} catch (RemoteException e) {
+			}
+        }
+        mCallbacks.finishBroadcast();
+
 //		((NotificationManager)getSystemService(NOTIFICATION_SERVICE)).cancel(R.string.remote_service_started);
 //		
 //		CharSequence text = getText(R.string.auto_follow_enabled);
@@ -154,19 +176,17 @@ public class MapDownloaderService extends Service {
 
 	@Override
 	public IBinder onBind(Intent intent) {
-		return null;
+		return mBinder;
 	}
 	
 	private class DownloaderHanler extends Handler {
-		public static final int DONE = 0;
 		private int doneCounter = 0;
 
 		@Override
 		public void handleMessage(Message msg) {
 			switch (msg.what) {
-			case DONE:
+			case R.id.done:
 				doneCounter++;
-				Ut.d("DONE "+doneCounter);
 				if(doneCounter >= THREADCOUNT)
 					downloadDone();
 				break;
@@ -236,7 +256,7 @@ public class MapDownloaderService extends Service {
 			}
 			
 			if(mHandler != null)
-				Message.obtain(mHandler, DownloaderHanler.DONE).sendToTarget();
+				Message.obtain(mHandler, R.id.done).sendToTarget();
 		}
 
 	}

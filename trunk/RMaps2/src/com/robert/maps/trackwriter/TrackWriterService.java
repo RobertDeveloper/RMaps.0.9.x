@@ -160,17 +160,6 @@ public class TrackWriterService extends Service implements OpenStreetMapConstant
         //mHandler.removeMessages(REPORT_MSG);
 	}
 
-//    private final IBinder mBinder = new Binder() {
-//        @Override
-//		protected boolean onTransact(int code, Parcel data, Parcel reply,
-//		        int flags) throws RemoteException {
-//            return super.onTransact(code, data, reply, flags);
-//        }
-//    };
-
-
-
-
 	private LocationManager getLocationManager() {
 		if(this.mLocationManager == null)
 			this.mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
