@@ -46,6 +46,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.PowerManager;
+import android.os.Process;
 import android.preference.PreferenceManager;
 import android.provider.Browser;
 import android.provider.SearchRecentSuggestions;
@@ -787,6 +788,9 @@ public class MainActivity extends Activity {
 		case (R.id.mylocation):
 			setAutoFollow(true);
 			setLastKnownLocation();
+			return true;
+		case R.id.exit:
+			System.exit(10);
 			return true;
 		default:
 			
