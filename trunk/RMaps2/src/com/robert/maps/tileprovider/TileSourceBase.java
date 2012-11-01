@@ -89,10 +89,19 @@ public class TileSourceBase {
 					} else if(c.getInt(2) == 2) { // Custom source
 						final JSONObject json = MixedMapsPreference.getMapCustomParams(c.getString(3));
 						try {
+							aId = mixMapId;
+							this.ID = mixMapId;
+							this.NAME = c.getString(1);
 							this.BASEURL = json.getString(MixedMapsPreference.BASEURL);
 							this.PROJECTION = json.getInt(MixedMapsPreference.MAPPROJECTION);
 							this.LAYER = json.getBoolean(MixedMapsPreference.ISOVERLAY);
 							this.MAP_TYPE = MIXMAP_CUSTOM;
+							this.URL_BUILDER_TYPE = 12;
+							this.ZOOM_MINLEVEL = 0;
+							this.ZOOM_MAXLEVEL = 19;
+							this.MAPTILE_SIZEPX = 256;
+							this.CACHE = EMPTY;
+							return;
 						} catch (JSONException e) {
 						}
 					}
