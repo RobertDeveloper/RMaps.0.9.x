@@ -88,9 +88,11 @@
         <service android:name=".downloader.MapDownloaderService" android:process=":mapdownloader" android:icon="@drawable/track_writer_service">
             <intent-filter>
                 <action android:name="com.robert.maps.mapdownloader"/>
+                <action android:name="com.robert.maps.downloader.IRemoteService"/>
             </intent-filter>
         </service>
         <activity android:name="MixedMapsPreference"></activity>
+        <activity android:name=".downloader.DownloaderActivity"></activity>
     </application>
 
     <uses-permission android:name="android.permission.WAKE_LOCK" />

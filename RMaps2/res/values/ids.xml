@@ -18,5 +18,6 @@
     <item name="hide_overlay" type="id"/>
     <item name="add_dualmap" type="id"/>
     <item name="add_ownsourcemap" type="id"/>
+    <item name="done" type="id"/>
     
 </resources>

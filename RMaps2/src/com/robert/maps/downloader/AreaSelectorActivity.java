@@ -19,6 +19,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
+import android.widget.CheckBox;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.robert.maps.R;
@@ -27,6 +29,7 @@ import com.robert.maps.kml.XMLparser.PredefMapsParser;
 import com.robert.maps.tileprovider.TileSource;
 import com.robert.maps.tileprovider.TileSourceBase;
 import com.robert.maps.utils.RException;
+import com.robert.maps.utils.Ut;
 import com.robert.maps.view.IMoveListener;
 import com.robert.maps.view.MapView;
 import com.robert.maps.view.TileViewOverlay;
@@ -39,6 +42,7 @@ public class AreaSelectorActivity extends Activity {
 	private AreaSelectorOverlay mAreaSelectorOverlay;
 	private TileSource mTileSource;
 	private MoveListener mMoveListener = new MoveListener();
+	private int[] mZoomArr = new int[0];
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +82,16 @@ public class AreaSelectorActivity extends Activity {
 				stopDownLoad();
 			}
 		});
+		findViewById(R.id.next).setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				doNext();
+			}
+		});
+		findViewById(R.id.back).setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				doBack();
+			}
+		});
 		
 		Intent intent = getIntent();
 		if(intent != null) {
@@ -103,24 +117,82 @@ public class AreaSelectorActivity extends Activity {
 		}
 	}
 	
+	protected void doBack() {
+		getZoomArr();
+		LinearLayout ll = (LinearLayout) findViewById(R.id.LayerArea);
+		ll.removeAllViews();
+		
+		findViewById(R.id.step1).setVisibility(View.VISIBLE);
+		findViewById(R.id.step2).setVisibility(View.GONE);
+	}
+	
+	private int[] getZoomArr() {
+		LinearLayout ll = (LinearLayout) findViewById(R.id.LayerArea);
+		CheckBox cb;
+		final int[] zoomArr = new int[mTileSource.ZOOM_MAXLEVEL - mTileSource.ZOOM_MINLEVEL + 1];
+		int j = 0;
+		for(int i = mTileSource.ZOOM_MINLEVEL; i <= mTileSource.ZOOM_MAXLEVEL; i++) {
+			cb = (CheckBox) ll.findViewWithTag("Layer"+i);
+			if(cb != null)
+				if(cb.isChecked()) {
+					zoomArr[j] = i;
+					j++;
+				}
+		}
+		mZoomArr = new int[j];
+		for(;j > 0; j--) {
+			mZoomArr[j-1] = zoomArr[j-1];
+		}
+		
+		return mZoomArr;
+	}
+
+	protected void doNext() {
+		LinearLayout ll = (LinearLayout) findViewById(R.id.LayerArea);
+		CheckBox cb;
+		for(int i = mTileSource.ZOOM_MINLEVEL; i <= mTileSource.ZOOM_MAXLEVEL; i++) {
+			cb = new CheckBox(this);
+			cb.setTag("Layer"+i);
+			Ut.w((String)cb.getTag());
+			cb.setText("Layer"+i);
+			ll.addView(cb);
+		}
+		for(int i = 0; i < mZoomArr.length; i++) {
+			cb = (CheckBox) ll.findViewWithTag("Layer"+mZoomArr[i]);
+			if(cb != null)
+				cb.setChecked(true);
+		}
+		
+		findViewById(R.id.step1).setVisibility(View.GONE);
+		findViewById(R.id.step2).setVisibility(View.VISIBLE);
+	}
+
 	private void startDownLoad() {
 		findViewById(R.id.start_download).setVisibility(View.GONE);
-		findViewById(R.id.stop_download).setVisibility(View.VISIBLE);
+		//findViewById(R.id.stop_download).setVisibility(View.VISIBLE);
 		
 		final Intent intent = new Intent("com.robert.maps.mapdownloader");
-		final int zoomArr[] = {0,1,2,3,4};
-		intent.putExtra("ZOOM", zoomArr);
+		intent.putExtra("ZOOM", getZoomArr());
 		intent.putExtra("COORD", mAreaSelectorOverlay.getCoordArr());
 		intent.putExtra("MAPID", mTileSource.ID);
 		intent.putExtra("OFFLINEMAPNAME", "TESTMAPNAME");
 		startService(intent);
+		
+		final GeoPoint point = mMap.getMapCenter();
+		startActivity(new Intent(this, DownloaderActivity.class)
+			.putExtra("MAPID", mTileSource.ID)
+			.putExtra("Latitude", point.getLatitudeE6())
+			.putExtra("Longitude", point.getLongitudeE6())
+			.putExtra("ZoomLevel", mMap.getZoomLevel())
+			);
+		finish();
 	}
 
 	private void stopDownLoad() {
-		findViewById(R.id.stop_download).setVisibility(View.GONE);
-		findViewById(R.id.start_download).setVisibility(View.VISIBLE);
-		
-		stopService(new Intent("com.robert.maps.mapdownloader"));
+//		findViewById(R.id.stop_download).setVisibility(View.GONE);
+//		findViewById(R.id.start_download).setVisibility(View.VISIBLE);
+//		
+//		stopService(new Intent("com.robert.maps.mapdownloader"));
 	}
 
 	private class MoveListener implements IMoveListener {
