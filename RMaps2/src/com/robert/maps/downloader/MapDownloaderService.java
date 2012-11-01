@@ -117,14 +117,14 @@ public class MapDownloaderService extends Service {
 		if(mMapDatabase != null)
 			mMapDatabase.Free();
 		
-		mNM.cancel(R.string.remote_service_started);
+		mNM.cancel(R.id.downloader_service);
 		
 		super.onDestroy();
 	}
 
 	private void showNotification() {
 		// In this sample, we'll use the same text for the ticker and the expanded notification
-		CharSequence text = getText(R.string.remote_service_started);
+		CharSequence text = getText(R.string.downloader_notif_ticket);
 
 		// Set the icon, scrolling text and timestamp
 		Notification notification = new Notification(R.drawable.r_download, text, System.currentTimeMillis());
@@ -132,14 +132,14 @@ public class MapDownloaderService extends Service {
 
 		// The PendingIntent to launch our activity if the user selects this notification
 		PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
-				new Intent(this, AreaSelectorActivity.class), 0);
+				new Intent(this, DownloaderActivity.class), 0);
 
 		// Set the info for the views that show in the notification panel.
-		notification.setLatestEventInfo(this, getText(R.string.remote_service_started), text, contentIntent);
+		notification.setLatestEventInfo(this, getText(R.string.downloader_notif_title), getText(R.string.downloader_notif_text), contentIntent);
 
 		// Send the notification.
 		// We use a string id because it is a unique number. We use it later to cancel.
-		mNM.notify(R.string.remote_service_started, notification);
+		mNM.notify(R.id.downloader_service, notification);
 	}
 	
 	private void downloadDone() {
