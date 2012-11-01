@@ -3,6 +3,8 @@ package com.robert.maps.tileprovider;
 public class TileURLGeneratorSovMilMap extends TileURLGeneratorBase {
 	protected static final String F = "%f";
 	protected static final String PART_END = "&WIDTH=256&HEIGHT=256";
+	protected static final String COMMA = ",";
+	protected static final String DOT = ".";
 
 	public TileURLGeneratorSovMilMap(String mName) {
 		super(mName);
@@ -18,13 +20,13 @@ public class TileURLGeneratorSovMilMap extends TileURLGeneratorBase {
 		
 		return new StringBuilder()
 		.append(mName)
-		.append(String.format(F, delta * x - g))
+		.append(String.format(F, delta * x - g).replace(COMMA, DOT))
 		.append(COMMA)
-		.append(String.format(F, delta * y2 - g))
+		.append(String.format(F, delta * y2 - g).replace(COMMA, DOT))
 		.append(COMMA)
-		.append(String.format(F, delta * (x + 1) - g))
+		.append(String.format(F, delta * (x + 1) - g).replace(COMMA, DOT))
 		.append(COMMA)
-		.append(String.format(F, delta * (y2 + 1) - g))
+		.append(String.format(F, delta * (y2 + 1) - g).replace(COMMA, DOT))
 		.append(PART_END)
 		.toString();
 	}
