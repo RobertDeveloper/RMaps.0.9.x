@@ -156,6 +156,7 @@ public class TileSource extends TileSourceBase {
 				break;
 			case 12:
 				generator = new TileURLGeneratorCustom(tileSource.BASEURL);
+				break;
 			case 13:
 				generator = null;
 				break;
