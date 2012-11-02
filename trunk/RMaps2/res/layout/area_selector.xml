@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
-
+
     <LinearLayout
         android:id="@+id/step1"
         android:layout_width="wrap_content"
@@ -58,7 +58,7 @@
                 android:text="Next" />
         </RelativeLayout>
     </LinearLayout>
-
+
     <LinearLayout
         android:id="@+id/step2"
         android:layout_width="match_parent"
@@ -75,10 +75,27 @@
 
             <LinearLayout
                 android:id="@+id/LayerArea"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical" >
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
+
+                <LinearLayout
+                    android:id="@+id/LayerArea1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5"
+                    android:orientation="vertical" >
 
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/LayerArea2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5"
+                    android:orientation="vertical" >
+
+                </LinearLayout>
             </LinearLayout>
         </ScrollView>
 
@@ -89,7 +106,7 @@
             android:layout_marginBottom="2dp"
             android:layout_marginLeft="4dp"
             android:layout_marginTop="6dp" >
-
+
             <Button
                 android:id="@+id/back"
                 style="?android:attr/buttonStyleSmall"
@@ -103,8 +120,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:text="Start download"
-                />
+                android:text="Start download" />
 
             <Button
                 android:id="@+id/stop_download"

@@ -119,8 +119,8 @@ public class AreaSelectorActivity extends Activity {
 	
 	protected void doBack() {
 		getZoomArr();
-		LinearLayout ll = (LinearLayout) findViewById(R.id.LayerArea);
-		ll.removeAllViews();
+		((LinearLayout) findViewById(R.id.LayerArea1)).removeAllViews();
+		((LinearLayout) findViewById(R.id.LayerArea2)).removeAllViews();
 		
 		findViewById(R.id.step1).setVisibility(View.VISIBLE);
 		findViewById(R.id.step2).setVisibility(View.GONE);
@@ -148,17 +148,25 @@ public class AreaSelectorActivity extends Activity {
 	}
 
 	protected void doNext() {
-		LinearLayout ll = (LinearLayout) findViewById(R.id.LayerArea);
+		LinearLayout ll1 = (LinearLayout) findViewById(R.id.LayerArea1);
+		LinearLayout ll2 = (LinearLayout) findViewById(R.id.LayerArea2);
 		CheckBox cb;
 		for(int i = mTileSource.ZOOM_MINLEVEL; i <= mTileSource.ZOOM_MAXLEVEL; i++) {
 			cb = new CheckBox(this);
 			cb.setTag("Layer"+i);
 			Ut.w((String)cb.getTag());
 			cb.setText("Zoom "+(i+1));
-			ll.addView(cb);
+			
+			if(i > (int)(mTileSource.ZOOM_MAXLEVEL - mTileSource.ZOOM_MINLEVEL + 1) / 2 - 1)
+				ll2.addView(cb);
+			else
+				ll1.addView(cb);
 		}
 		for(int i = 0; i < mZoomArr.length; i++) {
-			cb = (CheckBox) ll.findViewWithTag("Layer"+mZoomArr[i]);
+			cb = (CheckBox) ll1.findViewWithTag("Layer"+mZoomArr[i]);
+			if(cb != null)
+				cb.setChecked(true);
+			cb = (CheckBox) ll2.findViewWithTag("Layer"+mZoomArr[i]);
 			if(cb != null)
 				cb.setChecked(true);
 		}

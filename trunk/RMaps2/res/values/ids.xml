@@ -20,6 +20,7 @@
     <item name="add_ownsourcemap" type="id"/>
     <item name="done" type="id"/>
     <item name="tile_done" type="id"/>
+    <item name="download_start" type="id"/>
     <item name="downloader_service" type="id"/>
     
 </resources>

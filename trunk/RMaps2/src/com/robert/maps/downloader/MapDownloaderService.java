@@ -35,7 +35,7 @@ public class MapDownloaderService extends Service {
 
     private NotificationManager mNM;
     private Notification mNotification;
-    private PendingIntent mContentIntent;
+    private PendingIntent mContentIntent = null;
 	private int mZoomArr[];
 	private int mCoordArr[];
 	private String mMapID;
@@ -47,10 +47,18 @@ public class MapDownloaderService extends Service {
 	private Handler mHandler = new DownloaderHanler();
 	final RemoteCallbackList<IDownloaderCallback> mCallbacks = new RemoteCallbackList<IDownloaderCallback>();
 	private int mTileCntTotal = 0, mTileCnt = 0;
+	private long mStartTime = 0;
 	
     private final IRemoteService.Stub mBinder = new IRemoteService.Stub() {
         public void registerCallback(IDownloaderCallback cb) {
-            if (cb != null) mCallbacks.register(cb);
+            if (cb != null) { 
+            	mCallbacks.register(cb);
+	            if(mStartTime > 0)
+					try {
+						cb.downloadStart(mTileCntTotal, mStartTime);
+					} catch (RemoteException e) {
+					}
+            }
         }
         public void unregisterCallback(IDownloaderCallback cb) {
             if (cb != null) mCallbacks.unregister(cb);
@@ -63,7 +71,6 @@ public class MapDownloaderService extends Service {
 		super.onCreate();
 		
 		mNM = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
-		showNotification();
 	}
 
 	@Override
@@ -83,6 +90,14 @@ public class MapDownloaderService extends Service {
 		mCoordArr = intent.getIntArrayExtra("COORD");
 		mMapID = intent.getStringExtra("MAPID");
 		mOfflineMapName = intent.getStringExtra("OFFLINEMAPNAME");
+
+		mContentIntent = PendingIntent.getActivity(this, 0, new Intent(this, DownloaderActivity.class)
+		.putExtra("MAPID", mMapID)
+		.putExtra("Latitude", mCoordArr[2] - mCoordArr[0])
+		.putExtra("Longitude", mCoordArr[3] - mCoordArr[1])
+		.putExtra("ZoomLevel", mZoomArr[0])
+		, 0);
+		showNotification();
 		
 		try {
 			mTileSource = new TileSource(this, mMapID, true, false);
@@ -105,6 +120,16 @@ public class MapDownloaderService extends Service {
 		mTileCnt = 0;
 		mTileCntTotal = getTileCount(mZoomArr, mCoordArr);
 		mTileIterator = new TileIterator(mZoomArr, mCoordArr);
+		mStartTime = System.currentTimeMillis();
+
+        final int N = mCallbacks.beginBroadcast();
+        for (int i=0; i<N; i++) {
+			try {
+				mCallbacks.getBroadcastItem(i).downloadStart(mTileCntTotal, mStartTime);
+			} catch (RemoteException e) {
+			}
+        }
+        mCallbacks.finishBroadcast();
 		
 		for(int i = 0; i < THREADCOUNT; i++)
 			mThreadPool.execute(new Downloader());
@@ -132,8 +157,7 @@ public class MapDownloaderService extends Service {
 		mNotification.flags = mNotification.flags | Notification.FLAG_NO_CLEAR;
 
 		// The PendingIntent to launch our activity if the user selects this notification
-		mContentIntent = PendingIntent.getActivity(this, 0, new Intent(this, DownloaderActivity.class), 0);
-
+		//mContentIntent = PendingIntent.getActivity(this, 0, new Intent(this, MainActivity.class), 0);
 		// Set the info for the views that show in the notification panel.
 		mNotification.setLatestEventInfo(this, getText(R.string.downloader_notif_title), getText(R.string.downloader_notif_text), mContentIntent);
 
@@ -196,7 +220,17 @@ public class MapDownloaderService extends Service {
 						, getText(R.string.downloader_notif_text)+String.format(": %d%% (%d/%d)", (mTileCnt * 100 / mTileCntTotal), mTileCnt, mTileCntTotal)
 						, mContentIntent);
 				mNM.notify(R.id.downloader_service, mNotification);
-				break;
+
+		        final int N = mCallbacks.beginBroadcast();
+		        for (int i=0; i<N; i++) {
+					try {
+						mCallbacks.getBroadcastItem(i).downloadTileDone(mTileCnt);
+					} catch (RemoteException e) {
+					}
+		        }
+		        mCallbacks.finishBroadcast();
+
+		        break;
 			}
 		}
 		
