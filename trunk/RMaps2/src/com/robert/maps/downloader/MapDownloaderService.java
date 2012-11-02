@@ -9,6 +9,7 @@ import java.io.OutputStream;
 import java.net.URL;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import org.andnav.osm.views.util.StreamUtils;
 import org.andnav.osm.views.util.Util;
@@ -85,54 +86,70 @@ public class MapDownloaderService extends Service {
 	}
 
 	private void handleCommand(Intent intent) {
-
-		mZoomArr = intent.getIntArrayExtra("ZOOM");
-		mCoordArr = intent.getIntArrayExtra("COORD");
-		mMapID = intent.getStringExtra("MAPID");
-		mOfflineMapName = intent.getStringExtra("OFFLINEMAPNAME");
-
-		mContentIntent = PendingIntent.getActivity(this, 0, new Intent(this, DownloaderActivity.class)
-		.putExtra("MAPID", mMapID)
-		.putExtra("Latitude", mCoordArr[2] - mCoordArr[0])
-		.putExtra("Longitude", mCoordArr[3] - mCoordArr[1])
-		.putExtra("ZoomLevel", mZoomArr[0])
-		, 0);
-		showNotification();
+		if(intent != null) {
+			Ut.w(intent.getAction());
+			if(intent.getAction().equalsIgnoreCase("com.robert.maps.mapdownloader.stop")) {
+				if(mThreadPool != null) {
+					mThreadPool.shutdown();
+					try {
+						if(!mThreadPool.awaitTermination(2L, TimeUnit.SECONDS))
+							mThreadPool.shutdownNow();
+					} catch (InterruptedException e) {
+					}
+				}
+				downloadDone();
+				
+			} else if(intent.getAction().equalsIgnoreCase("com.robert.maps.mapdownloader.start")) {
+				mZoomArr = intent.getIntArrayExtra("ZOOM");
+				mCoordArr = intent.getIntArrayExtra("COORD");
+				mMapID = intent.getStringExtra("MAPID");
+				mOfflineMapName = intent.getStringExtra("OFFLINEMAPNAME");
 		
-		try {
-			mTileSource = new TileSource(this, mMapID, true, false);
-		} catch (Exception e1) {
-			e1.printStackTrace();
-		}
-
-		final SQLiteMapDatabase cacheDatabase = new SQLiteMapDatabase();
-		final File folder = Ut.getRMapsMapsDir(this);
-		final File file = new File(folder.getAbsolutePath()+"/"+mOfflineMapName+".sqlitedb");
-		if(file.exists())
-			file.delete();
-		try {
-			cacheDatabase.setFile(file.getAbsolutePath());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		mMapDatabase = cacheDatabase;
+				mContentIntent = PendingIntent.getActivity(this, 0, new Intent(this, DownloaderActivity.class)
+				.putExtra("MAPID", mMapID)
+				.putExtra("Latitude", mCoordArr[2] - mCoordArr[0])
+				.putExtra("Longitude", mCoordArr[3] - mCoordArr[1])
+				.putExtra("ZoomLevel", mZoomArr[0])
+				, 0);
+				showNotification();
+				
+				try {
+					mTileSource = new TileSource(this, mMapID, true, false);
+				} catch (Exception e1) {
+					e1.printStackTrace();
+					return;
+				}
 		
-		mTileCnt = 0;
-		mTileCntTotal = getTileCount(mZoomArr, mCoordArr);
-		mTileIterator = new TileIterator(mZoomArr, mCoordArr);
-		mStartTime = System.currentTimeMillis();
-
-        final int N = mCallbacks.beginBroadcast();
-        for (int i=0; i<N; i++) {
-			try {
-				mCallbacks.getBroadcastItem(i).downloadStart(mTileCntTotal, mStartTime);
-			} catch (RemoteException e) {
+				final SQLiteMapDatabase cacheDatabase = new SQLiteMapDatabase();
+				final File folder = Ut.getRMapsMapsDir(this);
+				final File file = new File(folder.getAbsolutePath()+"/"+mOfflineMapName+".sqlitedb");
+				if(file.exists())
+					file.delete();
+				try {
+					cacheDatabase.setFile(file.getAbsolutePath());
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				mMapDatabase = cacheDatabase;
+				
+				mTileCnt = 0;
+				mTileCntTotal = getTileCount(mZoomArr, mCoordArr);
+				mTileIterator = new TileIterator(mZoomArr, mCoordArr);
+				mStartTime = System.currentTimeMillis();
+		
+		        final int N = mCallbacks.beginBroadcast();
+		        for (int i=0; i<N; i++) {
+					try {
+						mCallbacks.getBroadcastItem(i).downloadStart(mTileCntTotal, mStartTime);
+					} catch (RemoteException e) {
+					}
+		        }
+		        mCallbacks.finishBroadcast();
+				
+				for(int i = 0; i < THREADCOUNT; i++)
+					mThreadPool.execute(new Downloader());
 			}
-        }
-        mCallbacks.finishBroadcast();
-		
-		for(int i = 0; i < THREADCOUNT; i++)
-			mThreadPool.execute(new Downloader());
+		}
 	}
 
 	@Override

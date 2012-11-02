@@ -157,7 +157,7 @@ public class AreaSelectorActivity extends Activity {
 			Ut.w((String)cb.getTag());
 			cb.setText("Zoom "+(i+1));
 			
-			if(i > (int)(mTileSource.ZOOM_MAXLEVEL - mTileSource.ZOOM_MINLEVEL + 1) / 2 - 1)
+			if(i + 1 > (int)((mTileSource.ZOOM_MAXLEVEL - mTileSource.ZOOM_MINLEVEL + 1) / 2.0 + 0.5))
 				ll2.addView(cb);
 			else
 				ll1.addView(cb);
@@ -179,7 +179,7 @@ public class AreaSelectorActivity extends Activity {
 		findViewById(R.id.start_download).setVisibility(View.GONE);
 		//findViewById(R.id.stop_download).setVisibility(View.VISIBLE);
 		
-		final Intent intent = new Intent("com.robert.maps.mapdownloader");
+		final Intent intent = new Intent("com.robert.maps.mapdownloader.start");
 		intent.putExtra("ZOOM", getZoomArr());
 		intent.putExtra("COORD", mAreaSelectorOverlay.getCoordArr());
 		intent.putExtra("MAPID", mTileSource.ID);

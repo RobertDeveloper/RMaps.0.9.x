@@ -52,6 +52,14 @@ public class DownloaderActivity extends Activity {
 		mMap.setLongClickable(false);
 
 		mProgress = (ProgressBar) findViewById(R.id.progress);
+		
+		findViewById(R.id.pause).setOnClickListener(new View.OnClickListener() {
+			
+			public void onClick(View v) {
+				final Intent intent = new Intent("com.robert.maps.mapdownloader.stop");
+				startService(intent);
+			}
+		});
 
 		mConnection = new ServiceConnection() {
 			public void onServiceConnected(ComponentName className, IBinder service) {
