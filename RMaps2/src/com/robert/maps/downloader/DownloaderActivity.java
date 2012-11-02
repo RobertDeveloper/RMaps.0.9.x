@@ -15,6 +15,7 @@ import android.os.Message;
 import android.os.RemoteException;
 import android.view.View;
 import android.view.Window;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.robert.maps.R;
@@ -23,11 +24,14 @@ import com.robert.maps.utils.Ut;
 import com.robert.maps.view.MapView;
 
 public class DownloaderActivity extends Activity {
+	private static final String CNT = "cnt";
+	private static final String TIME = "time";
 
 	private MapView mMap;
 	private TileSource mTileSource;
-    private ServiceConnection mConnection;
-    IRemoteService mService = null;
+	private ServiceConnection mConnection;
+	IRemoteService mService = null;
+	private ProgressBar mProgress;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -35,41 +39,57 @@ public class DownloaderActivity extends Activity {
 
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.downloaderactivity);
-		
-		//final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+
+		// final SharedPreferences pref =
+		// PreferenceManager.getDefaultSharedPreferences(this);
 		SharedPreferences uiState = getPreferences(Activity.MODE_PRIVATE);
 
- 		mMap = (MapView) findViewById(R.id.map);
-		//mMap.setMoveListener(mMoveListener);
-		//mMap.displayZoomControls(Integer.parseInt(pref.getString("pref_zoomctrl", "1")));
+		mMap = (MapView) findViewById(R.id.map);
+		// mMap.setMoveListener(mMoveListener);
+		// mMap.displayZoomControls(Integer.parseInt(pref.getString("pref_zoomctrl",
+		// "1")));
 		mMap.getController().setCenter(new GeoPoint(uiState.getInt("Latitude", 0), uiState.getInt("Longitude", 0)));
 		mMap.setLongClickable(false);
 
+		mProgress = (ProgressBar) findViewById(R.id.progress);
+
 		mConnection = new ServiceConnection() {
-	         public void onServiceConnected(ComponentName className,
-	                 IBinder service) {
-	             mService = IRemoteService.Stub.asInterface(service);
+			public void onServiceConnected(ComponentName className, IBinder service) {
+				mService = IRemoteService.Stub.asInterface(service);
 
-	             try {
-	                 mService.registerCallback(mCallback);
-	             } catch (RemoteException e) {
-	             }
-	         }
+				try {
+					mService.registerCallback(mCallback);
+				} catch (RemoteException e) {
+				}
+			}
 
-	         public void onServiceDisconnected(ComponentName className) {
-	             mService = null;
-	         }
-	     };
+			public void onServiceDisconnected(ComponentName className) {
+				mService = null;
+			}
+		};
 	}
-	
+
 	private IDownloaderCallback mCallback = new IDownloaderCallback.Stub() {
 
 		public void downloadDone() throws RemoteException {
-			if(mHandler != null) {
+			if (mHandler != null) {
 				mHandler.sendMessage(mHandler.obtainMessage(R.id.done));
 			}
 		}
-		
+
+		public void downloadStart(int tileCnt, long startTime) throws RemoteException {
+			Bundle b = new Bundle();
+			b.putInt(CNT, tileCnt);
+			b.putLong(TIME, startTime);
+			mHandler.sendMessage(mHandler.obtainMessage(R.id.download_start, b));
+		}
+
+		public void downloadTileDone(int tileCnt) throws RemoteException {
+			Bundle b = new Bundle();
+			b.putInt(CNT, tileCnt);
+			mHandler.sendMessage(mHandler.obtainMessage(R.id.tile_done, b));
+		}
+
 	};
 
 	@SuppressLint("HandlerLeak")
@@ -79,6 +99,20 @@ public class DownloaderActivity extends Activity {
 			switch (msg.what) {
 			case R.id.done:
 				findViewById(R.id.open).setVisibility(View.VISIBLE);
+				findViewById(R.id.progress).setVisibility(View.GONE);
+				break;
+			case R.id.download_start:
+				Bundle b = (Bundle) msg.obj;
+				final int tileCnt = b.getInt(CNT);
+				final long startTime = b.getLong(TIME);
+
+				mProgress.setMax(tileCnt);
+				Ut.w("download_start = "+tileCnt);
+
+				break;
+			case R.id.tile_done:
+				mProgress.setProgress(((Bundle) msg.obj).getInt(CNT));
+				Ut.w("setProgress = "+((Bundle) msg.obj).getInt(CNT));
 				break;
 			}
 		}
@@ -86,10 +120,10 @@ public class DownloaderActivity extends Activity {
 
 	protected void onResume() {
 		Intent intent = getIntent();
-		if(intent != null) {
-			if(mTileSource != null)
+		if (intent != null) {
+			if (mTileSource != null)
 				mTileSource.Free();
-			
+
 			try {
 				mTileSource = new TileSource(this, intent.getStringExtra("MAPID"));
 			} catch (Exception e) {
@@ -99,10 +133,10 @@ public class DownloaderActivity extends Activity {
 			mMap.getController().setCenter(new GeoPoint(intent.getIntExtra("Latitude", 0), intent.getIntExtra("Longitude", 0)));
 			setTitle();
 		}
-		
+
 		Ut.w("bindService");
-		bindService(new Intent(IRemoteService.class.getName()), mConnection, 0 /*Context.BIND_AUTO_CREATE*/);
- 		
+		bindService(new Intent(IRemoteService.class.getName()), mConnection, 0);
+
 		super.onResume();
 	}
 
@@ -135,5 +169,6 @@ public class DownloaderActivity extends Activity {
 		} catch (Exception e) {
 		}
 	}
+
 
 }
