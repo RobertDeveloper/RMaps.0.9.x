@@ -34,6 +34,8 @@ public class MapDownloaderService extends Service {
 	private final int THREADCOUNT = 5;
 
     private NotificationManager mNM;
+    private Notification mNotification;
+    private PendingIntent mContentIntent;
 	private int mZoomArr[];
 	private int mCoordArr[];
 	private String mMapID;
@@ -44,11 +46,11 @@ public class MapDownloaderService extends Service {
 	private ExecutorService mThreadPool = Executors.newFixedThreadPool(THREADCOUNT, new SimpleThreadFactory("MapDownloaderService"));
 	private Handler mHandler = new DownloaderHanler();
 	final RemoteCallbackList<IDownloaderCallback> mCallbacks = new RemoteCallbackList<IDownloaderCallback>();
+	private int mTileCntTotal = 0, mTileCnt = 0;
 	
     private final IRemoteService.Stub mBinder = new IRemoteService.Stub() {
         public void registerCallback(IDownloaderCallback cb) {
             if (cb != null) mCallbacks.register(cb);
-            Ut.w("Callback registered");
         }
         public void unregisterCallback(IDownloaderCallback cb) {
             if (cb != null) mCallbacks.unregister(cb);
@@ -71,7 +73,6 @@ public class MapDownloaderService extends Service {
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
-		Ut.w("onStartCommand downloader");
 		handleCommand(intent);
 		return START_STICKY;
 	}
@@ -101,16 +102,16 @@ public class MapDownloaderService extends Service {
 		}
 		mMapDatabase = cacheDatabase;
 		
+		mTileCnt = 0;
+		mTileCntTotal = getTileCount(mZoomArr, mCoordArr);
 		mTileIterator = new TileIterator(mZoomArr, mCoordArr);
 		
 		for(int i = 0; i < THREADCOUNT; i++)
-			mThreadPool.execute(new Downloader(i));
+			mThreadPool.execute(new Downloader());
 	}
 
 	@Override
 	public void onDestroy() {
-		Ut.w("onDestroy downloader");
-		
 		mThreadPool.shutdown();
 		if(mTileSource != null)
 			mTileSource.Free();
@@ -127,19 +128,18 @@ public class MapDownloaderService extends Service {
 		CharSequence text = getText(R.string.downloader_notif_ticket);
 
 		// Set the icon, scrolling text and timestamp
-		Notification notification = new Notification(R.drawable.r_download, text, System.currentTimeMillis());
-		notification.flags = notification.flags | Notification.FLAG_NO_CLEAR;
+		mNotification = new Notification(R.drawable.r_download, text, System.currentTimeMillis());
+		mNotification.flags = mNotification.flags | Notification.FLAG_NO_CLEAR;
 
 		// The PendingIntent to launch our activity if the user selects this notification
-		PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
-				new Intent(this, DownloaderActivity.class), 0);
+		mContentIntent = PendingIntent.getActivity(this, 0, new Intent(this, DownloaderActivity.class), 0);
 
 		// Set the info for the views that show in the notification panel.
-		notification.setLatestEventInfo(this, getText(R.string.downloader_notif_title), getText(R.string.downloader_notif_text), contentIntent);
+		mNotification.setLatestEventInfo(this, getText(R.string.downloader_notif_title), getText(R.string.downloader_notif_text), mContentIntent);
 
 		// Send the notification.
 		// We use a string id because it is a unique number. We use it later to cancel.
-		mNM.notify(R.id.downloader_service, notification);
+		mNM.notify(R.id.downloader_service, mNotification);
 	}
 	
 	private void downloadDone() {
@@ -190,18 +190,19 @@ public class MapDownloaderService extends Service {
 				if(doneCounter >= THREADCOUNT)
 					downloadDone();
 				break;
+			case R.id.tile_done:
+				mTileCnt++;
+				mNotification.setLatestEventInfo(MapDownloaderService.this, getText(R.string.downloader_notif_title)
+						, getText(R.string.downloader_notif_text)+String.format(": %d%% (%d/%d)", (mTileCnt * 100 / mTileCntTotal), mTileCnt, mTileCntTotal)
+						, mContentIntent);
+				mNM.notify(R.id.downloader_service, mNotification);
+				break;
 			}
 		}
 		
 	}
 	
 	private class Downloader implements Runnable {
-		private int mID;
-
-		public Downloader(int id) {
-			mID = id;
-		}
-
 		public void run() {
 			
 			XYZ tileParam = null;
@@ -224,8 +225,6 @@ public class MapDownloaderService extends Service {
 					OutputStream out = null;
 					
 					try {
-						Ut.i("Downloading #"+mID+" from url: " + tileParam.TILEURL);
-						
 						byte[] data = null;
 						
 						in = new BufferedInputStream(new URL(tileParam.TILEURL).openStream(),
@@ -252,6 +251,9 @@ public class MapDownloaderService extends Service {
 						StreamUtils.closeStream(in);
 						StreamUtils.closeStream(out);
 					}
+					
+					if(mHandler != null)
+						Message.obtain(mHandler, R.id.tile_done).sendToTarget();
 				}
 			}
 			
@@ -259,6 +261,23 @@ public class MapDownloaderService extends Service {
 				Message.obtain(mHandler, R.id.done).sendToTarget();
 		}
 
+	}
+	
+	private int getTileCount(int[] zArr, int[] coordArr) {
+		int xMin = 0, xMax = 0;
+		int yMin = 0, yMax = 0;
+		int cnt = 0;
+
+		for(int i = 0; i < zArr.length; i++) {
+			final int c0[] = Util.getMapTileFromCoordinates(coordArr[0], coordArr[1], zArr[i], null, mTileSource.PROJECTION);
+			final int c1[] = Util.getMapTileFromCoordinates(coordArr[2], coordArr[3], zArr[i], null, mTileSource.PROJECTION);
+			xMin = Math.min(c0[0], c1[0]);
+			xMax = Math.max(c0[0], c1[0]);
+			yMin = Math.min(c0[1], c1[1]);
+			yMax = Math.max(c0[1], c1[1]);
+			cnt += (xMax - xMin + 1) * (yMax - yMin + 1);
+		}
+		return cnt;
 	}
 	
 	private class TileIterator {

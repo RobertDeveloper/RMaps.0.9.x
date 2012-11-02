@@ -649,6 +649,9 @@ public class MainActivity extends Activity {
 		if(mCurrentTrackOverlay != null)
 			mCurrentTrackOverlay.onPause();
 		
+		if(mTileSource != null)
+			mTileSource.Free();
+		mTileSource = null;
 		mPoiManager.FreeDatabases();
 		
 		mLocationListener.getLocationManager().removeUpdates(mLocationListener);
@@ -662,8 +665,8 @@ public class MainActivity extends Activity {
 	protected void onDestroy() {
 		for (TileViewOverlay osmvo : mMap.getOverlays())
 			osmvo.Free();
-
-		mTileSource.Free();
+		if(mTileSource != null)
+			mTileSource.Free();
 		mTileSource = null;
 		mMap.setMoveListener(null);
 		mTracker.stopSession();

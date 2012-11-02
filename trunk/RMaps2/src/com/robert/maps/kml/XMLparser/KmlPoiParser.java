@@ -58,20 +58,19 @@ public class KmlPoiParser extends DefaultHandler {
 				if(mPoiPoint.Title.equalsIgnoreCase("")) mPoiPoint.Title = "POI";
 				mPoiManager.updatePoi(mPoiPoint);
 			}
-		}
-		else if(localName.equalsIgnoreCase(NAME))
+		} else if(localName.equalsIgnoreCase(NAME)) {
 			if(mPoiPoint != null)
 				mPoiPoint.Title = builder.toString().trim();
-		else if(localName.equalsIgnoreCase(description))
+		} else if(localName.equalsIgnoreCase(description)) {
 			if(mPoiPoint != null)
 				mPoiPoint.Descr = builder.toString().trim();
-		else if(localName.equalsIgnoreCase(coordinates)){
+		} else if(localName.equalsIgnoreCase(coordinates)) {
 			mStrArray = builder.toString().split(",");
 			if(mPoiPoint != null)
 				mPoiPoint.GeoPoint = GeoPoint.from2DoubleString(mStrArray[1], mStrArray[0]);
-		}
-		else if(localName.equalsIgnoreCase(Point))
+		} else if(localName.equalsIgnoreCase(Point)) {
 			mItIsPoint = true;
+		}
 		super.endElement(uri, localName, name);
 	}
 

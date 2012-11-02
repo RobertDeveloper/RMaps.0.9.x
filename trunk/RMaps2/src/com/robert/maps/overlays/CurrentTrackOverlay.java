@@ -124,6 +124,8 @@ public class CurrentTrackOverlay extends TileViewOverlay {
 					mPath = mBasePj.toPixelsTrackPoints(c, mBaseCoords, mBaseLocation);
 					if(mPath.isEmpty())
 						mPath = null;
+					
+					db.close();
 				};
 			};
 

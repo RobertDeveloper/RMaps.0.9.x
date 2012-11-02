@@ -55,14 +55,13 @@ public class KmlTrackParser extends DefaultHandler {
 				if(mTrack.Name.equalsIgnoreCase("")) mTrack.Name = "Track";
 				mPoiManager.updateTrack(mTrack);
 			}
-		}
-		else if(localName.equalsIgnoreCase(NAME))
+		} else if(localName.equalsIgnoreCase(NAME)) {
 			if(mTrack != null)
 				mTrack.Name = builder.toString().trim();
-		else if(localName.equalsIgnoreCase(description))
+		} else if(localName.equalsIgnoreCase(description)) {
 			if(mTrack != null)
 				mTrack.Descr = builder.toString().trim();
-		else if(localName.equalsIgnoreCase(coordinates)){
+		} else if(localName.equalsIgnoreCase(coordinates)) {
 			mStrArray = builder.toString().trim().split("\n");
 			if(mStrArray.length < 2)
 				mStrArray = builder.toString().trim().split(" ");
@@ -86,9 +85,10 @@ public class KmlTrackParser extends DefaultHandler {
 					}
 				}
 			}
-		}
-		else if(localName.equalsIgnoreCase(LineString))
+		} else if(localName.equalsIgnoreCase(LineString)) {
 			mItIsTrack = true;
+		}
+		
 		super.endElement(uri, localName, name);
 	}
 
