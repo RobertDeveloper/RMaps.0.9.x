@@ -57,9 +57,11 @@ public class KmlTrackParser extends DefaultHandler {
 			}
 		}
 		else if(localName.equalsIgnoreCase(NAME))
-			mTrack.Name = builder.toString().trim();
+			if(mTrack != null)
+				mTrack.Name = builder.toString().trim();
 		else if(localName.equalsIgnoreCase(description))
-			mTrack.Descr = builder.toString().trim();
+			if(mTrack != null)
+				mTrack.Descr = builder.toString().trim();
 		else if(localName.equalsIgnoreCase(coordinates)){
 			mStrArray = builder.toString().trim().split("\n");
 			if(mStrArray.length < 2)
@@ -67,19 +69,21 @@ public class KmlTrackParser extends DefaultHandler {
 			for(int i = 0; i < mStrArray.length; i++){
 				if(!mStrArray[i].trim().equals("")){
 					mStrArray2 = mStrArray[i].trim().split(",");
-					mTrack.AddTrackPoint();
-					mTrack.LastTrackPoint.lat = Double.parseDouble(mStrArray2[1]);
-					mTrack.LastTrackPoint.lon = Double.parseDouble(mStrArray2[0]);
-					if(mStrArray2.length > 2)
-						try {
-							mTrack.LastTrackPoint.alt = Double.parseDouble(mStrArray2[2]);
-						} catch (NumberFormatException e) {
+					if(mTrack != null) {
+						mTrack.AddTrackPoint();
+						mTrack.LastTrackPoint.lat = Double.parseDouble(mStrArray2[1]);
+						mTrack.LastTrackPoint.lon = Double.parseDouble(mStrArray2[0]);
+						if(mStrArray2.length > 2)
 							try {
-								mTrack.LastTrackPoint.alt = (double)Integer.parseInt(mStrArray2[2]);
-							} catch (NumberFormatException e1) {
-								e1.printStackTrace();
+								mTrack.LastTrackPoint.alt = Double.parseDouble(mStrArray2[2]);
+							} catch (NumberFormatException e) {
+								try {
+									mTrack.LastTrackPoint.alt = (double)Integer.parseInt(mStrArray2[2]);
+								} catch (NumberFormatException e1) {
+									e1.printStackTrace();
+								}
 							}
-						}
+					}
 				}
 			}
 		}
