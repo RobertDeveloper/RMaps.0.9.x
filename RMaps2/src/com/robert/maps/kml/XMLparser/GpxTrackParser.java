@@ -56,20 +56,25 @@ public class GpxTrackParser extends DefaultHandler {
 	@Override
 	public void endElement(String uri, String localName, String name) throws SAXException {
 		if(localName.equalsIgnoreCase(TRK)){
-			if(mTrack.Name.equalsIgnoreCase("")) mTrack.Name = "Track";
+			if(mTrack.Name.equalsIgnoreCase("")) 
+				mTrack.Name = "Track";
 			mTrack.CalculateStat();
 			mPoiManager.updateTrack(mTrack);
 		}
 		else if(localName.equalsIgnoreCase(NAME))
-			mTrack.Name = builder.toString().trim();
+			if(mTrack != null)
+				mTrack.Name = builder.toString().trim();
 		else if(localName.equalsIgnoreCase(CMT))
-			mTrack.Descr = builder.toString().trim();
-		else if(localName.equalsIgnoreCase(DESC)){
-			if(mTrack.Descr.equals(""))
+			if(mTrack != null)
 				mTrack.Descr = builder.toString().trim();
+		else if(localName.equalsIgnoreCase(DESC)){
+			if(mTrack != null)
+				if(mTrack.Descr.equals(""))
+					mTrack.Descr = builder.toString().trim();
 		}
 		else if (localName.equalsIgnoreCase(ELE)){
-			mTrack.LastTrackPoint.alt = Double.parseDouble(builder.toString().trim());
+			if(mTrack.LastTrackPoint != null)
+				mTrack.LastTrackPoint.alt = Double.parseDouble(builder.toString().trim());
 		}
 		else if (localName.equalsIgnoreCase(TIME)) {
 			if(mTrack.LastTrackPoint != null)
