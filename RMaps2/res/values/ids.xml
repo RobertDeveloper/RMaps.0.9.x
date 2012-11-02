@@ -19,6 +19,7 @@
     <item name="add_dualmap" type="id"/>
     <item name="add_ownsourcemap" type="id"/>
     <item name="done" type="id"/>
+    <item name="tile_done" type="id"/>
     <item name="downloader_service" type="id"/>
     
 </resources>

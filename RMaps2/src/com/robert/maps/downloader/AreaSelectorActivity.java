@@ -154,7 +154,7 @@ public class AreaSelectorActivity extends Activity {
 			cb = new CheckBox(this);
 			cb.setTag("Layer"+i);
 			Ut.w((String)cb.getTag());
-			cb.setText("Layer"+i);
+			cb.setText("Zoom "+(i+1));
 			ll.addView(cb);
 		}
 		for(int i = 0; i < mZoomArr.length; i++) {

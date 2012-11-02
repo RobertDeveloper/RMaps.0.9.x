@@ -54,17 +54,17 @@ public class GpxPoiParser extends DefaultHandler {
 		if(localName.equalsIgnoreCase(WPT)){
 			if(mPoiPoint.Title.equalsIgnoreCase("")) mPoiPoint.Title = "POI";
 			mPoiManager.updatePoi(mPoiPoint);
-		}
-		else if(localName.equalsIgnoreCase(NAME))
+		} else if(localName.equalsIgnoreCase(NAME)) {
 			if(mPoiPoint != null)
 				mPoiPoint.Title = builder.toString().trim();
-		else if(localName.equalsIgnoreCase(CMT))
+		} else if(localName.equalsIgnoreCase(CMT)) {
 			if(mPoiPoint != null)
 				mPoiPoint.Descr = builder.toString().trim();
-		else if(localName.equalsIgnoreCase(DESC))
+		} else if(localName.equalsIgnoreCase(DESC)) {
 			if(mPoiPoint != null)
 				if(mPoiPoint.Descr.equals(""))
 					mPoiPoint.Descr = builder.toString().trim();
+		}
 		super.endElement(uri, localName, name);
 	}
 
