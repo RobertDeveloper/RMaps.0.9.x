@@ -87,8 +87,9 @@
         <activity android:name=".downloader.AreaSelectorActivity" android:launchMode="singleInstance"></activity>
         <service android:name=".downloader.MapDownloaderService" android:process=":mapdownloader" android:icon="@drawable/track_writer_service">
             <intent-filter>
-                <action android:name="com.robert.maps.mapdownloader"/>
-                <action android:name="com.robert.maps.downloader.IRemoteService"/>
+                <action android:name="com.robert.maps.mapdownloader.start"/>
+                <action android:name="com.robert.maps.mapdownloader.stop" /><action android:name="com.robert.maps.downloader.IRemoteService"/>
+                
             </intent-filter>
         </service>
         <activity android:name="MixedMapsPreference"></activity>
