@@ -87,7 +87,6 @@ public class MapDownloaderService extends Service {
 
 	private void handleCommand(Intent intent) {
 		if(intent != null) {
-			Ut.w(intent.getAction());
 			if(intent.getAction().equalsIgnoreCase("com.robert.maps.mapdownloader.stop")) {
 				if(mThreadPool != null) {
 					mThreadPool.shutdown();
