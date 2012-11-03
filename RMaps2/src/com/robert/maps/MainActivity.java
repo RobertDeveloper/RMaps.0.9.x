@@ -567,15 +567,16 @@ public class MainActivity extends Activity {
 
 	@Override
 	protected void onResume() {
-		final SharedPreferences pref = getPreferences(Activity.MODE_PRIVATE);
+		final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+		final SharedPreferences uiState = getPreferences(Activity.MODE_PRIVATE);
 		
-		final String mapId = pref.getString(MAPNAME, TileSource.MAPNIK);
-		mOverlayId = pref.getString("OverlayID", "");
-		mShowOverlay = pref.getBoolean("ShowOverlay", true);
+		final String mapId = uiState.getString(MAPNAME, TileSource.MAPNIK);
+		mOverlayId = uiState.getString("OverlayID", "");
+		mShowOverlay = uiState.getBoolean("ShowOverlay", true);
 		
 		setTileSource(mapId, mOverlayId, mShowOverlay);
 		
- 		mMap.getController().setZoom(pref.getInt("ZoomLevel", 0));
+ 		mMap.getController().setZoom(uiState.getInt("ZoomLevel", 0));
  		setTitle();
  		
  		FillOverlays();
@@ -592,12 +593,12 @@ public class MainActivity extends Activity {
 		mLocationListener.getBestProvider();
 
 		if (pref.getBoolean("pref_keepscreenon", true)) {
-		myWakeLock = ((PowerManager) getSystemService(POWER_SERVICE)).newWakeLock(
-				PowerManager.SCREEN_BRIGHT_WAKE_LOCK | PowerManager.ON_AFTER_RELEASE, "RMaps");
-		myWakeLock.acquire();
-	} else {
-		myWakeLock = null;
-	}
+			myWakeLock = ((PowerManager) getSystemService(POWER_SERVICE)).newWakeLock(
+					PowerManager.SCREEN_BRIGHT_WAKE_LOCK | PowerManager.ON_AFTER_RELEASE, "RMaps");
+			myWakeLock.acquire();
+		} else {
+			myWakeLock = null;
+		}
 		
 		super.onResume();
 	}

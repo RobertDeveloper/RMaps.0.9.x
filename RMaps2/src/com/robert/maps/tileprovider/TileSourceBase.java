@@ -86,7 +86,7 @@ public class TileSourceBase {
 							this.MAP_TYPE = MIXMAP_PAIR;
 						} catch (JSONException e) {
 						}
-					} else if(c.getInt(2) == 2) { // Custom source
+					} else if(c.getInt(2) == 2 || c.getInt(2) == 3) { // Custom source
 						final JSONObject json = MixedMapsPreference.getMapCustomParams(c.getString(3));
 						try {
 							aId = mixMapId;
@@ -94,7 +94,7 @@ public class TileSourceBase {
 							this.NAME = c.getString(1);
 							this.BASEURL = json.getString(MixedMapsPreference.BASEURL);
 							this.PROJECTION = json.getInt(MixedMapsPreference.MAPPROJECTION);
-							this.LAYER = json.getBoolean(MixedMapsPreference.ISOVERLAY);
+							this.LAYER = c.getInt(2) == 2 ? false : true;
 							this.MAP_TYPE = MIXMAP_CUSTOM;
 							this.URL_BUILDER_TYPE = 12;
 							this.ZOOM_MINLEVEL = 0;
