@@ -32,6 +32,10 @@ public class DownloaderActivity extends Activity {
 	private ServiceConnection mConnection;
 	IRemoteService mService = null;
 	private ProgressBar mProgress;
+	private TextView mTextVwTileCnt;
+	private TextView mTextVwTime;
+	private int mTileCntTotal;
+	private long mStartTime;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +56,8 @@ public class DownloaderActivity extends Activity {
 		mMap.setLongClickable(false);
 
 		mProgress = (ProgressBar) findViewById(R.id.progress);
+		mTextVwTileCnt = (TextView) findViewById(R.id.textTileCnt);
+		mTextVwTime = (TextView) findViewById(R.id.textTime);
 		
 		findViewById(R.id.pause).setOnClickListener(new View.OnClickListener() {
 			
@@ -108,19 +114,28 @@ public class DownloaderActivity extends Activity {
 			case R.id.done:
 				findViewById(R.id.open).setVisibility(View.VISIBLE);
 				findViewById(R.id.progress).setVisibility(View.GONE);
+				mTextVwTileCnt.setText(Integer.toString(mTileCntTotal));
+				mTextVwTime.setText(Ut.formatTime(System.currentTimeMillis() - mStartTime));
 				break;
 			case R.id.download_start:
 				Bundle b = (Bundle) msg.obj;
-				final int tileCnt = b.getInt(CNT);
-				final long startTime = b.getLong(TIME);
+				mTileCntTotal = b.getInt(CNT);
+				mStartTime = b.getLong(TIME);
 
-				mProgress.setMax(tileCnt);
-				Ut.w("download_start = "+tileCnt);
+				mProgress.setMax(mTileCntTotal);
+				mTextVwTileCnt.setText(Integer.toString(mTileCntTotal));
+				mTextVwTime.setText("00:00");
 
 				break;
-			case R.id.tile_done:
-				mProgress.setProgress(((Bundle) msg.obj).getInt(CNT));
-				Ut.w("setProgress = "+((Bundle) msg.obj).getInt(CNT));
+			case R.id.tile_done: 
+					final int tileCnt = ((Bundle) msg.obj).getInt(CNT);
+					mProgress.setProgress(tileCnt);
+					mTextVwTileCnt.setText(String.format("%d/%d", tileCnt, mTileCntTotal));
+					final long time = System.currentTimeMillis();
+					if(time - mStartTime > 5 * 1000) 
+						mTextVwTime.setText(String.format("%s / %s", Ut.formatTime(time - mStartTime), Ut.formatTime((long)((double)(time - mStartTime) / (1.0f * tileCnt / mTileCntTotal))) ));
+					else
+						mTextVwTime.setText(Ut.formatTime(time - mStartTime));
 				break;
 			}
 		}
