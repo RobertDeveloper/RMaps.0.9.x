@@ -114,6 +114,7 @@ public class MainActivity extends Activity {
 	// Overlays
 	private YandexTrafficOverlay mYandexTrafficOverlay = null;
 	private boolean mShowOverlay = false;
+	private String mMapId = null;
 	private String mOverlayId = "";
 	private MyLocationOverlay mMyLocationOverlay;
 	private PoiOverlay mPoiOverlay;
@@ -224,9 +225,9 @@ public class MainActivity extends Activity {
 			ActionShowPoints(queryIntent);
 		} else if (Intent.ACTION_VIEW.equalsIgnoreCase(queryAction)) {
 			Uri uri = queryIntent.getData();
-			if(uri.getScheme().equalsIgnoreCase("geo")) {
-				final String latlon = uri.getEncodedSchemeSpecificPart().replace("?"+uri.getEncodedQuery(), "");
-				if(latlon.equals("0,0")) {
+			if (uri.getScheme().equalsIgnoreCase("geo")) {
+				final String latlon = uri.getEncodedSchemeSpecificPart().replace("?" + uri.getEncodedQuery(), "");
+				if (latlon.equals("0,0")) {
 					final String query = uri.getEncodedQuery().replace("q=", "");
 					queryIntent.putExtra(SearchManager.QUERY, query);
 					doSearchQuery(queryIntent);
@@ -238,6 +239,8 @@ public class MainActivity extends Activity {
 					mMap.getController().setCenter(point);
 				}
 			}
+		} else if("SHOW_MAP_ID".equalsIgnoreCase(queryAction)) {
+			mMapId = queryIntent.getExtras().getString(MAPNAME);
 		}
 	}
 
@@ -248,9 +251,11 @@ public class MainActivity extends Activity {
         final String queryAction = intent.getAction();
         if (Intent.ACTION_SEARCH.equals(queryAction)) {
             doSearchQuery(intent);
-        } else if (ACTION_SHOW_POINTS.equalsIgnoreCase(queryAction))
+        } else if (ACTION_SHOW_POINTS.equalsIgnoreCase(queryAction)) {
 			ActionShowPoints(intent);
-
+		} else if("SHOW_MAP_ID".equalsIgnoreCase(queryAction)) {
+			mMapId = intent.getExtras().getString(MAPNAME);
+        }
 	}
 
 	private void doSearchQuery(Intent queryIntent) {
@@ -570,11 +575,12 @@ public class MainActivity extends Activity {
 		final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
 		final SharedPreferences uiState = getPreferences(Activity.MODE_PRIVATE);
 		
-		final String mapId = uiState.getString(MAPNAME, TileSource.MAPNIK);
+		if(mMapId == null)
+			mMapId = uiState.getString(MAPNAME, TileSource.MAPNIK);
 		mOverlayId = uiState.getString("OverlayID", "");
 		mShowOverlay = uiState.getBoolean("ShowOverlay", true);
 		
-		setTileSource(mapId, mOverlayId, mShowOverlay);
+		setTileSource(mMapId, mOverlayId, mShowOverlay);
 		
  		mMap.getController().setZoom(uiState.getInt("ZoomLevel", 0));
  		setTitle();

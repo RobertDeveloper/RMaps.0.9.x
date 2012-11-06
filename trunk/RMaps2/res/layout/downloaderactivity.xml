@@ -18,29 +18,28 @@
             android:layout_height="wrap_content" >
         </com.robert.maps.view.MapView>
     </RelativeLayout>
-
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginTop="4dp" >
-
+
         <TextView
             android:id="@+id/textTileCnt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall" />
-
+
         <TextView
             android:id="@+id/textTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:textAppearance="?android:attr/textAppearanceSmall" />
-
     </RelativeLayout>
-
+
     <ProgressBar
         android:id="@+id/progress"
         style="?android:attr/progressBarStyleHorizontal"
@@ -51,31 +50,28 @@
         android:layout_marginRight="8dp"
         android:layout_marginTop="4dp" />
 
-    <RelativeLayout
+    <LinearLayout
         android:id="@+id/cmdbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="2dp"
         android:layout_marginLeft="4dp"
-        android:layout_marginTop="6dp"
-         >
-
+        android:layout_marginTop="6dp" >
+
         <Button
             android:id="@+id/pause"
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="wrap_content"
+            style="buttonStyle"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Pause" />
-
+
         <Button
             android:id="@+id/open"
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="wrap_content"
+            style="buttonStyle"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
             android:text="Open"
             android:visibility="gone" />
-
-    </RelativeLayout>
+    </LinearLayout>
 
 </LinearLayout>

@@ -8,18 +8,22 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.RemoteException;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.view.Window;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.robert.maps.MainActivity;
 import com.robert.maps.R;
 import com.robert.maps.tileprovider.TileSource;
+import com.robert.maps.tileprovider.TileSourceBase;
 import com.robert.maps.utils.Ut;
 import com.robert.maps.view.MapView;
 
@@ -67,6 +71,13 @@ public class DownloaderActivity extends Activity {
 				startService(intent);
 			}
 		});
+		
+		findViewById(R.id.open).setOnClickListener(new View.OnClickListener() {
+			
+			public void onClick(View v) {
+				doOpenMap();
+			}
+		});
 
 		mConnection = new ServiceConnection() {
 			public void onServiceConnected(ComponentName className, IBinder service) {
@@ -84,6 +95,22 @@ public class DownloaderActivity extends Activity {
 		};
 	}
 
+	protected void doOpenMap() {
+		final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+		final Editor editor = pref.edit();
+		final String name = Ut.FileName2ID(mFileName+".sqlitedb");
+		editor.putBoolean(TileSourceBase.PREF_USERMAP_+name+"_enabled", true);
+		editor.putString(TileSourceBase.PREF_USERMAP_+name+"_name", mFileName);
+		editor.commit();
+		
+		startActivity(new Intent(this, MainActivity.class)
+		.setAction("SHOW_MAP_ID")
+		.putExtra("MapName", "usermap_"+name)
+		.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
+		);
+		finish();
+	}
+
 	private IDownloaderCallback mCallback = new IDownloaderCallback.Stub() {
 
 		public void downloadDone() throws RemoteException {
@@ -92,10 +119,11 @@ public class DownloaderActivity extends Activity {
 			}
 		}
 
-		public void downloadStart(int tileCnt, long startTime) throws RemoteException {
+		public void downloadStart(int tileCnt, long startTime, String fileName) throws RemoteException {
 			Bundle b = new Bundle();
 			b.putInt(CNT, tileCnt);
 			b.putLong(TIME, startTime);
+			mFileName = fileName;
 			mHandler.sendMessage(mHandler.obtainMessage(R.id.download_start, b));
 		}
 
@@ -115,6 +143,7 @@ public class DownloaderActivity extends Activity {
 			case R.id.done:
 				findViewById(R.id.open).setVisibility(View.VISIBLE);
 				findViewById(R.id.progress).setVisibility(View.GONE);
+				findViewById(R.id.pause).setVisibility(View.GONE);
 				mTextVwTileCnt.setText(Integer.toString(mTileCntTotal));
 				mTextVwTime.setText(Ut.formatTime(System.currentTimeMillis() - mStartTime));
 				break;
@@ -122,6 +151,7 @@ public class DownloaderActivity extends Activity {
 				Bundle b = (Bundle) msg.obj;
 				mTileCntTotal = b.getInt(CNT);
 				mStartTime = b.getLong(TIME);
+				setTitle();
 
 				mProgress.setMax(mTileCntTotal);
 				mTextVwTileCnt.setText(Integer.toString(mTileCntTotal));
