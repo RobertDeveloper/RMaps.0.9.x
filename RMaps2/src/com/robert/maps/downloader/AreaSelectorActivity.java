@@ -138,9 +138,11 @@ public class AreaSelectorActivity extends Activity {
 					j++;
 				}
 		}
+		Ut.w("j="+j);
 		mZoomArr = new int[j];
 		for(;j > 0; j--) {
 			mZoomArr[j-1] = zoomArr[j-1];
+			Ut.w("zoom"+zoomArr[j-1]);
 		}
 		
 		return mZoomArr;
@@ -262,11 +264,11 @@ public class AreaSelectorActivity extends Activity {
 		mAreaSelectorOverlay.Init(this, mMap.getTileView(), p);
 		((EditText) findViewById(R.id.name)).setText(uiState.getString("filename", "NewFile"));
 		
+		mZoomArr = new int[uiState.getInt("zoomCnt", 0)];
+		for(int i = 0; i < mZoomArr.length; i++) {
+			mZoomArr[i] = uiState.getInt("zoom"+i, 0);
+		}
 		if(uiState.getBoolean("step2", false)) {
-			mZoomArr = new int[uiState.getInt("zoomCnt", 0)];
-			for(int i = 0; i < mZoomArr.length; i++) {
-				mZoomArr[i] = uiState.getInt("zoom"+i, 0);
-			}
 			doNext();
 		}
  		
@@ -285,11 +287,15 @@ public class AreaSelectorActivity extends Activity {
 		editor.putInt("ZoomLevelAS", mMap.getZoomLevel());
 		editor.putString("filename", ((EditText) findViewById(R.id.name)).getText().toString());
 		mAreaSelectorOverlay.put(editor);
-		editor.putBoolean("step2", findViewById(R.id.step2).getVisibility() == View.VISIBLE ? true : false);
-		final int[] z = getZoomArr();
-		editor.putInt("zoomCnt", z.length);
-		for(int i = 0; i < z.length; i++) {
-			editor.putInt("zoom"+i, z[i]);
+		if(findViewById(R.id.step2).getVisibility() == View.VISIBLE) {
+			editor.putBoolean("step2", true);
+			getZoomArr();
+		} else {
+			editor.putBoolean("step2", false);
+		}
+		editor.putInt("zoomCnt", mZoomArr.length);
+		for(int i = 0; i < mZoomArr.length; i++) {
+			editor.putInt("zoom"+i, mZoomArr[i]);
 		}
 		editor.commit();
 

@@ -56,7 +56,7 @@ public class MapDownloaderService extends Service {
             	mCallbacks.register(cb);
 	            if(mStartTime > 0)
 					try {
-						cb.downloadStart(mTileCntTotal, mStartTime);
+						cb.downloadStart(mTileCntTotal, mStartTime, mOfflineMapName);
 					} catch (RemoteException e) {
 					}
             }
@@ -140,7 +140,7 @@ public class MapDownloaderService extends Service {
 		        final int N = mCallbacks.beginBroadcast();
 		        for (int i=0; i<N; i++) {
 					try {
-						mCallbacks.getBroadcastItem(i).downloadStart(mTileCntTotal, mStartTime);
+						mCallbacks.getBroadcastItem(i).downloadStart(mTileCntTotal, mStartTime, mOfflineMapName);
 					} catch (RemoteException e) {
 					}
 		        }
@@ -274,6 +274,9 @@ public class MapDownloaderService extends Service {
 					tileParam.TILEURL = mTileSource.getTileURLGenerator().Get(tileParam.X, tileParam.Y, tileParam.Z);
 					InputStream in = null;
 					OutputStream out = null;
+					Ut.w("tileParam.TILEURL = "+tileParam.TILEURL);
+					Ut.w("x="+tileParam.X);
+					Ut.w("y="+tileParam.Y);
 					
 					try {
 						byte[] data = null;
@@ -358,10 +361,10 @@ public class MapDownloaderService extends Service {
 					}
 					final int c0[] = Util.getMapTileFromCoordinates(coordArr[0], coordArr[1], zArr[zInd], null, mTileSource.PROJECTION);
 					final int c1[] = Util.getMapTileFromCoordinates(coordArr[2], coordArr[3], zArr[zInd], null, mTileSource.PROJECTION);
-					xMin = Math.min(c0[0], c1[0]);
-					xMax = Math.max(c0[0], c1[0]);
-					yMin = Math.min(c0[1], c1[1]);
-					yMax = Math.max(c0[1], c1[1]);
+					yMin = Math.min(c0[0], c1[0]);
+					yMax = Math.max(c0[0], c1[0]);
+					xMin = Math.min(c0[1], c1[1]);
+					xMax = Math.max(c0[1], c1[1]);
 					x = xMin;
 					y = yMin;
 				}

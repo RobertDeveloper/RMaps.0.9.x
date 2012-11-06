@@ -29,7 +29,7 @@ public class TileSourceBase {
 	protected static final String PREF_ONLINECACHE = "pref_onlinecache";
 	protected static final String PREF_GOOGLELANG = "pref_googlelanguagecode";
 	protected static final String USERMAP_ = "usermap_";
-	protected static final String PREF_USERMAP_ = "pref_usermaps_";
+	public static final String PREF_USERMAP_ = "pref_usermaps_";
 	protected static final String NAME_ = "_name";
 	protected static final String BASEURL_ = "_baseurl";
 	protected static final String NO_BASEURL = "no_baseurl";
