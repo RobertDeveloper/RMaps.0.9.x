@@ -109,6 +109,7 @@ public class MapDownloaderService extends Service {
 				.putExtra("Latitude", mCoordArr[2] - mCoordArr[0])
 				.putExtra("Longitude", mCoordArr[3] - mCoordArr[1])
 				.putExtra("ZoomLevel", mZoomArr[0])
+				.putExtra("OFFLINEMAPNAME", mOfflineMapName)
 				, 0);
 				showNotification();
 				
