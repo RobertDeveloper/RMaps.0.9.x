@@ -98,8 +98,11 @@ public class AreaSelectorActivity extends Activity {
 			SharedPreferences.Editor editor = uiState.edit();
 			editor.putString(MAPNAMEAREASELECTOR, intent.getStringExtra(MAPNAME));
 			editor.putInt("ZoomLevelAS", intent.getIntExtra("ZoomLevel", 0));
+			Ut.w("new = "+intent.getBooleanExtra("new", false));
 
 			if(intent.getBooleanExtra("new", false)) {
+				intent.putExtra("new", false);
+				Ut.w("new = "+intent.getBooleanExtra("new", false));
 				editor.putInt("LatitudeAS", intent.getIntExtra("Latitude", 0));
 				editor.putInt("LongitudeAS", intent.getIntExtra("Longitude", 0));
 				editor.putInt("LatitudeAS1", 0);
@@ -261,15 +264,10 @@ public class AreaSelectorActivity extends Activity {
  		mMap.getController().setCenter(new GeoPoint(uiState.getInt("LatitudeAS", 0), uiState.getInt("LongitudeAS", 0)));
  		setTitle();
  		
- 		int lat1, lon1, lat2, lon2;
- 		lat1 = uiState.getInt("LatitudeAS1", 0);
- 		lon1 = uiState.getInt("LongitudeAS1", 0);
- 		lat2 = uiState.getInt("LatitudeAS2", 0);
- 		lon2 = uiState.getInt("LongitudeAS2", 0);
- 		if(lat1+lon1 == 0)
- 			mAreaSelectorOverlay.Init(this, mMap.getTileView());
- 		else
- 			mAreaSelectorOverlay.Init(this, mMap.getTileView(), lon1, lat1, lon2, lat2);
+ 		final GeoPoint[] p = new GeoPoint[2];
+ 		p[0] = new GeoPoint(uiState.getInt("LatitudeAS1", 0), uiState.getInt("LongitudeAS1", 0));
+ 		p[1] = new GeoPoint(uiState.getInt("LatitudeAS2", 0), uiState.getInt("LongitudeAS2", 0));
+		mAreaSelectorOverlay.Init(this, mMap.getTileView(), p);
  		
 		super.onResume();
 	}
