@@ -3,6 +3,7 @@ package com.robert.maps.downloader;
 import org.andnav.osm.util.GeoPoint;
 
 import android.content.Context;
+import android.content.SharedPreferences.Editor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -160,6 +161,13 @@ public class AreaSelectorOverlay extends TileViewOverlay {
 	public int[] getCoordArr() {
 		final int coordarr[] = {point[0].getLatitudeE6(), point[0].getLongitudeE6(), point[1].getLatitudeE6(), point[1].getLongitudeE6()};
 		return coordarr;
+	}
+
+	public void put(Editor editor) {
+		editor.putInt("LatitudeAS1", point[0].getLatitudeE6());
+		editor.putInt("LongitudeAS1", point[0].getLongitudeE6());
+		editor.putInt("LatitudeAS2", point[1].getLatitudeE6());
+		editor.putInt("LongitudeAS2", point[1].getLongitudeE6());
 	}
 	
 }

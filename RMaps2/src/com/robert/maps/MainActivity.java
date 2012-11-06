@@ -744,7 +744,7 @@ public class MainActivity extends Activity {
 
 		switch (item.getItemId()) {
 		case (R.id.area_selector):
-			startActivity(new Intent(this, AreaSelectorActivity.class).putExtra(MAPNAME, mTileSource.ID).putExtra("Latitude", point.getLatitudeE6()).putExtra("Longitude", point.getLongitudeE6()).putExtra("ZoomLevel", mMap.getZoomLevel()));
+			startActivity(new Intent(this, AreaSelectorActivity.class).putExtra("new", true).putExtra(MAPNAME, mTileSource.ID).putExtra("Latitude", point.getLatitudeE6()).putExtra("Longitude", point.getLongitudeE6()).putExtra("ZoomLevel", mMap.getZoomLevel()));
 			return true;
 		case (R.id.gpsstatus):
 			try {
@@ -794,6 +794,7 @@ public class MainActivity extends Activity {
 			setLastKnownLocation();
 			return true;
 		case R.id.exit:
+			onPause();
 			System.exit(10);
 			return true;
 		default:
