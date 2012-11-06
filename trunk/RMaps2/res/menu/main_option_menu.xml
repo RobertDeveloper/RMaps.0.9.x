@@ -45,6 +45,6 @@
 		android:id="@+id/about"
 		android:title="@string/menu_about"
 		android:icon="@android:drawable/ic_menu_info_details"></item>
-	<item android:id="@+id/exit" android:title="@string/menu_exit"></item>
+	<item android:id="@+id/exit" android:title="@string/menu_exit" android:enabled="true" android:visible="true"></item>
 
 </menu>

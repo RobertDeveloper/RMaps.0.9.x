@@ -99,19 +99,22 @@ public class AreaSelectorActivity extends Activity {
 			editor.putString(MAPNAMEAREASELECTOR, intent.getStringExtra(MAPNAME));
 			editor.putInt("ZoomLevelAS", intent.getIntExtra("ZoomLevel", 0));
 
-			if(intent.getBooleanExtra("SetArea", false)) {
-				editor.putInt("LatitudeAS1", intent.getIntExtra("Latitude1", 0));
-				editor.putInt("LongitudeAS1", intent.getIntExtra("Longitude1", 0));
-				editor.putInt("LatitudeAS2", intent.getIntExtra("Latitude2", 0));
-				editor.putInt("LongitudeAS2", intent.getIntExtra("Longitude2", 0));
-			} else {
+			if(intent.getBooleanExtra("new", false)) {
 				editor.putInt("LatitudeAS", intent.getIntExtra("Latitude", 0));
 				editor.putInt("LongitudeAS", intent.getIntExtra("Longitude", 0));
 				editor.putInt("LatitudeAS1", 0);
 				editor.putInt("LongitudeAS1", 0);
 				editor.putInt("LatitudeAS2", 0);
 				editor.putInt("LongitudeAS2", 0);
-			}
+			};
+			
+//			if(intent.getBooleanExtra("SetArea", false)) {
+//				editor.putInt("LatitudeAS1", intent.getIntExtra("Latitude1", 0));
+//				editor.putInt("LongitudeAS1", intent.getIntExtra("Longitude1", 0));
+//				editor.putInt("LatitudeAS2", intent.getIntExtra("Latitude2", 0));
+//				editor.putInt("LongitudeAS2", intent.getIntExtra("Longitude2", 0));
+//			} else {
+//			}
 			editor.commit();
 			
 		}
@@ -239,13 +242,13 @@ public class AreaSelectorActivity extends Activity {
 
 	@Override
 	protected void onResume() {
-		final SharedPreferences pref = getPreferences(Activity.MODE_PRIVATE);
+		final SharedPreferences uiState = getPreferences(Activity.MODE_PRIVATE);
 		
 		if(mTileSource != null)
 			mTileSource.Free();
 
 		try {
-			mTileSource = new TileSource(this, pref.getString(MAPNAMEAREASELECTOR, TileSource.MAPNIK));
+			mTileSource = new TileSource(this, uiState.getString(MAPNAMEAREASELECTOR, TileSource.MAPNIK));
 			if(mTileSource.MAP_TYPE != TileSourceBase.PREDEF_ONLINE && mTileSource.MAP_TYPE != TileSourceBase.MIXMAP_CUSTOM) {
 				mTileSource.Free();
 				mTileSource = new TileSource(this, TileSource.MAPNIK);
@@ -254,15 +257,19 @@ public class AreaSelectorActivity extends Activity {
 			e.printStackTrace();
 		}
 		mMap.setTileSource(mTileSource);
- 		mMap.getController().setZoom(pref.getInt("ZoomLevelAS", 0));
- 		mMap.getController().setCenter(new GeoPoint(pref.getInt("LatitudeAS", 0), pref.getInt("LongitudeAS", 0)));
+ 		mMap.getController().setZoom(uiState.getInt("ZoomLevelAS", 0));
+ 		mMap.getController().setCenter(new GeoPoint(uiState.getInt("LatitudeAS", 0), uiState.getInt("LongitudeAS", 0)));
  		setTitle();
  		
- 		int lat1, lon1;
- 		lat1 = pref.getInt("LatitudeAS1", 0);
- 		lon1 = pref.getInt("LongitudeAS1", 0);
+ 		int lat1, lon1, lat2, lon2;
+ 		lat1 = uiState.getInt("LatitudeAS1", 0);
+ 		lon1 = uiState.getInt("LongitudeAS1", 0);
+ 		lat2 = uiState.getInt("LatitudeAS2", 0);
+ 		lon2 = uiState.getInt("LongitudeAS2", 0);
  		if(lat1+lon1 == 0)
  			mAreaSelectorOverlay.Init(this, mMap.getTileView());
+ 		else
+ 			mAreaSelectorOverlay.Init(this, mMap.getTileView(), lon1, lat1, lon2, lat2);
  		
 		super.onResume();
 	}
@@ -273,9 +280,11 @@ public class AreaSelectorActivity extends Activity {
 		SharedPreferences.Editor editor = uiState.edit();
 		editor.putString(MAPNAMEAREASELECTOR, mTileSource.ID);
 		final GeoPoint point = mMap.getMapCenter();
+		editor.putBoolean("new", false);
 		editor.putInt("LatitudeAS", point.getLatitudeE6());
 		editor.putInt("LongitudeAS", point.getLongitudeE6());
 		editor.putInt("ZoomLevelAS", mMap.getZoomLevel());
+		mAreaSelectorOverlay.put(editor);
 		editor.commit();
 
 		super.onPause();
