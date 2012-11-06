@@ -21,8 +21,10 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.robert.maps.R;
 import com.robert.maps.R.id;
@@ -77,11 +79,6 @@ public class AreaSelectorActivity extends Activity {
 		findViewById(R.id.start_download).setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 				startDownLoad();
-			}
-		});
-		findViewById(R.id.stop_download).setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				stopDownLoad();
 			}
 		});
 		findViewById(R.id.next).setOnClickListener(new OnClickListener() {
@@ -184,7 +181,13 @@ public class AreaSelectorActivity extends Activity {
 		intent.putExtra("ZOOM", getZoomArr());
 		intent.putExtra("COORD", mAreaSelectorOverlay.getCoordArr());
 		intent.putExtra("MAPID", mTileSource.ID);
-		intent.putExtra("OFFLINEMAPNAME", "TESTMAPNAME");
+		final String filename = ((EditText) findViewById(R.id.name)).getText().toString();
+		if(filename.equalsIgnoreCase("")) {
+			Toast.makeText(this, "Invalid file name", Toast.LENGTH_LONG).show();
+			return;
+		}
+		intent.putExtra("OFFLINEMAPNAME", filename);
+			
 		startService(intent);
 		
 		final GeoPoint point = mMap.getMapCenter();
@@ -193,15 +196,9 @@ public class AreaSelectorActivity extends Activity {
 			.putExtra("Latitude", point.getLatitudeE6())
 			.putExtra("Longitude", point.getLongitudeE6())
 			.putExtra("ZoomLevel", mMap.getZoomLevel())
+			.putExtra("OFFLINEMAPNAME", filename)
 			);
 		finish();
-	}
-
-	private void stopDownLoad() {
-//		findViewById(R.id.stop_download).setVisibility(View.GONE);
-//		findViewById(R.id.start_download).setVisibility(View.VISIBLE);
-//		
-//		stopService(new Intent("com.robert.maps.mapdownloader"));
 	}
 
 	private class MoveListener implements IMoveListener {
@@ -263,6 +260,7 @@ public class AreaSelectorActivity extends Activity {
  		p[0] = new GeoPoint(uiState.getInt("LatitudeAS1", 0), uiState.getInt("LongitudeAS1", 0));
  		p[1] = new GeoPoint(uiState.getInt("LatitudeAS2", 0), uiState.getInt("LongitudeAS2", 0));
 		mAreaSelectorOverlay.Init(this, mMap.getTileView(), p);
+		((EditText) findViewById(R.id.name)).setText(uiState.getString("filename", "NewFile"));
 		
 		if(uiState.getBoolean("step2", false)) {
 			mZoomArr = new int[uiState.getInt("zoomCnt", 0)];
@@ -285,6 +283,7 @@ public class AreaSelectorActivity extends Activity {
 		editor.putInt("LatitudeAS", point.getLatitudeE6());
 		editor.putInt("LongitudeAS", point.getLongitudeE6());
 		editor.putInt("ZoomLevelAS", mMap.getZoomLevel());
+		editor.putString("filename", ((EditText) findViewById(R.id.name)).getText().toString());
 		mAreaSelectorOverlay.put(editor);
 		editor.putBoolean("step2", findViewById(R.id.step2).getVisibility() == View.VISIBLE ? true : false);
 		final int[] z = getZoomArr();

@@ -36,6 +36,7 @@ public class DownloaderActivity extends Activity {
 	private TextView mTextVwTime;
 	private int mTileCntTotal;
 	private long mStartTime;
+	private String mFileName;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -174,7 +175,7 @@ public class DownloaderActivity extends Activity {
 		try {
 			final TextView leftText = (TextView) findViewById(R.id.left_text);
 			if(leftText != null)
-				leftText.setText(mMap.getTileSource().NAME);
+				leftText.setText(mFileName);
 			
 			final TextView gpsText = (TextView) findViewById(R.id.gps_text);
 			if(gpsText != null){

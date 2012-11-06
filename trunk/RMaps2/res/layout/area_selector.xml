@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
-
+
     <LinearLayout
         android:id="@+id/step1"
         android:layout_width="wrap_content"
@@ -26,7 +26,7 @@
             </com.robert.maps.view.MapView>
         </RelativeLayout>
 
-        <RelativeLayout
+        <LinearLayout
             android:id="@+id/cmdbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -36,29 +36,30 @@
 
             <Button
                 android:id="@+id/clear"
-                style="?android:attr/buttonStyleSmall"
+                style="buttonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_weight="0.3"
                 android:text="Clear" />
 
             <Button
                 android:id="@+id/maps"
-                style="?android:attr/buttonStyleSmall"
+                style="buttonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_toRightOf="@+id/clear"
+                android:layout_weight="0.3"
                 android:text="Maps" />
 
             <Button
                 android:id="@+id/next"
-                style="?android:attr/buttonStyleSmall"
+                style="buttonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
+                android:layout_weight="0.3"
                 android:text="Next" />
-        </RelativeLayout>
+        </LinearLayout>
     </LinearLayout>
-
+
     <LinearLayout
         android:id="@+id/step2"
         android:layout_width="match_parent"
@@ -72,35 +73,60 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1" >
-
+
             <LinearLayout
-                android:id="@+id/LayerArea"
+                android:id="@+id/sdfg"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal" >
-
-                <LinearLayout
-                    android:id="@+id/LayerArea1"
+                android:orientation="vertical" >
+
+                <TextView
+                    android:id="@+id/textView1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5"
+                    android:text="File name:"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
+
+                <EditText
+                    android:id="@+id/name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.5"
-                    android:orientation="vertical" >
+                    android:ems="10" >
 
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/LayerArea2"
-                    android:layout_width="match_parent"
+                    <requestFocus />
+                </EditText>
+
+<LinearLayout
+                    android:id="@+id/LayerArea"
+                    android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.5"
-                    android:orientation="vertical" >
+                    android:orientation="horizontal" >
 
+                    <LinearLayout
+                        android:id="@+id/LayerArea1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.5"
+                        android:orientation="vertical" >
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/LayerArea2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.5"
+                        android:orientation="vertical" >
+                    </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
+
+            
         </ScrollView>
 
-        <RelativeLayout
-            android:id="@+id/RelativeLayout01"
+        <LinearLayout
+            android:id="@+id/LinearLayout1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="2dp"
@@ -109,28 +135,20 @@
 
             <Button
                 android:id="@+id/back"
-                style="?android:attr/buttonStyleSmall"
+                style="buttonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_weight="0.5"
                 android:text="Back" />
 
             <Button
                 android:id="@+id/start_download"
-                style="?android:attr/buttonStyleSmall"
+                style="buttonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
+                android:layout_weight="0.5"
                 android:text="Start download" />
-
-            <Button
-                android:id="@+id/stop_download"
-                style="?android:attr/buttonStyleSmall"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:text="Stop download"
-                android:visibility="gone" />
-        </RelativeLayout>
+        </LinearLayout>
     </LinearLayout>
 
 </LinearLayout>
