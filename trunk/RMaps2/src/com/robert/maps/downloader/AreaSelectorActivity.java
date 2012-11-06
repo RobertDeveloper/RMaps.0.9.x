@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -24,6 +25,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.robert.maps.R;
+import com.robert.maps.R.id;
 import com.robert.maps.kml.PoiManager;
 import com.robert.maps.kml.XMLparser.PredefMapsParser;
 import com.robert.maps.tileprovider.TileSource;
@@ -109,15 +111,9 @@ public class AreaSelectorActivity extends Activity {
 				editor.putInt("LongitudeAS1", 0);
 				editor.putInt("LatitudeAS2", 0);
 				editor.putInt("LongitudeAS2", 0);
+				editor.putBoolean("step2", false);
 			};
 			
-//			if(intent.getBooleanExtra("SetArea", false)) {
-//				editor.putInt("LatitudeAS1", intent.getIntExtra("Latitude1", 0));
-//				editor.putInt("LongitudeAS1", intent.getIntExtra("Longitude1", 0));
-//				editor.putInt("LatitudeAS2", intent.getIntExtra("Latitude2", 0));
-//				editor.putInt("LongitudeAS2", intent.getIntExtra("Longitude2", 0));
-//			} else {
-//			}
 			editor.commit();
 			
 		}
@@ -160,7 +156,6 @@ public class AreaSelectorActivity extends Activity {
 		for(int i = mTileSource.ZOOM_MINLEVEL; i <= mTileSource.ZOOM_MAXLEVEL; i++) {
 			cb = new CheckBox(this);
 			cb.setTag("Layer"+i);
-			Ut.w((String)cb.getTag());
 			cb.setText("Zoom "+(i+1));
 			
 			if(i + 1 > (int)((mTileSource.ZOOM_MAXLEVEL - mTileSource.ZOOM_MINLEVEL + 1) / 2.0 + 0.5))
@@ -268,6 +263,14 @@ public class AreaSelectorActivity extends Activity {
  		p[0] = new GeoPoint(uiState.getInt("LatitudeAS1", 0), uiState.getInt("LongitudeAS1", 0));
  		p[1] = new GeoPoint(uiState.getInt("LatitudeAS2", 0), uiState.getInt("LongitudeAS2", 0));
 		mAreaSelectorOverlay.Init(this, mMap.getTileView(), p);
+		
+		if(uiState.getBoolean("step2", false)) {
+			mZoomArr = new int[uiState.getInt("zoomCnt", 0)];
+			for(int i = 0; i < mZoomArr.length; i++) {
+				mZoomArr[i] = uiState.getInt("zoom"+i, 0);
+			}
+			doNext();
+		}
  		
 		super.onResume();
 	}
@@ -283,6 +286,12 @@ public class AreaSelectorActivity extends Activity {
 		editor.putInt("LongitudeAS", point.getLongitudeE6());
 		editor.putInt("ZoomLevelAS", mMap.getZoomLevel());
 		mAreaSelectorOverlay.put(editor);
+		editor.putBoolean("step2", findViewById(R.id.step2).getVisibility() == View.VISIBLE ? true : false);
+		final int[] z = getZoomArr();
+		editor.putInt("zoomCnt", z.length);
+		for(int i = 0; i < z.length; i++) {
+			editor.putInt("zoom"+i, z[i]);
+		}
 		editor.commit();
 
 		super.onPause();
@@ -352,6 +361,15 @@ public class AreaSelectorActivity extends Activity {
         setTitle();
 
 		return true;
+	}
+
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if(keyCode == KeyEvent.KEYCODE_BACK && findViewById(R.id.step2).getVisibility() == View.VISIBLE) {
+			doBack();
+			return true;
+		}
+		return super.onKeyDown(keyCode, event);
 	}
 
 }
