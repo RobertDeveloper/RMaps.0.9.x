@@ -101,6 +101,7 @@ public class TileSourceBase {
 							this.ZOOM_MAXLEVEL = 19;
 							this.MAPTILE_SIZEPX = 256;
 							this.CACHE = EMPTY;
+							this.mOnlineMapCacheEnabled = json.optBoolean(MixedMapsPreference.ONLINECACHE, true);
 							return;
 						} catch (JSONException e) {
 						}

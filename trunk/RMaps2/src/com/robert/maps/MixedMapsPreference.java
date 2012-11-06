@@ -34,6 +34,7 @@ import com.robert.maps.kml.PoiManager;
 import com.robert.maps.kml.XMLparser.PredefMapsParser;
 import com.robert.maps.kml.constants.PoiConstants;
 import com.robert.maps.tileprovider.TileSourceBase;
+import com.robert.maps.utils.OnlineCachePreference;
 import com.robert.maps.utils.RException;
 
 public class MixedMapsPreference extends PreferenceActivity implements OnSharedPreferenceChangeListener, PoiConstants {
@@ -45,6 +46,7 @@ public class MixedMapsPreference extends PreferenceActivity implements OnSharedP
 	public static final String PREF_MIXMAPS_ = "PREF_MIXMAPS_";
 	public static final String BASEURL = "baseurl";
 	public static final String ISOVERLAY = "isoverlay";
+	public static final String ONLINECACHE = "onlinecache";
 	
 	
 	private PoiManager mPoiManager;
@@ -137,6 +139,19 @@ public class MixedMapsPreference extends PreferenceActivity implements OnSharedP
 							pref.setTitle(getString(R.string.pref_usermap_overlay));
 							pref.setSummary(getString(R.string.pref_usermap_overlay_summary));
 							pref.setDefaultValue(false);
+							prefscr.addPreference(pref);
+						}
+						{
+							final CheckBoxPreference pref = new CheckBoxPreference(this);
+							pref.setKey(PREF_MIXMAPS_ + c.getInt(idMapid) + "_onlinecache");
+							pref.setTitle(getString(R.string.pref_onlinecache));
+							pref.setSummary(getString(R.string.pref_onlinecache_summary));
+							pref.setDefaultValue(true);
+							prefscr.addPreference(pref);
+						}
+						{
+							final OnlineCachePreference pref = new OnlineCachePreference(this, "mixmap_"+c.getInt(idMapid));
+							pref.setKey(PREF_MIXMAPS_ + c.getInt(idMapid) + "_clearcache");
 							prefscr.addPreference(pref);
 						}
 						prefGroup.addPreference(prefscr);
@@ -279,6 +294,7 @@ public class MixedMapsPreference extends PreferenceActivity implements OnSharedP
 				json.put(BASEURL, "");
 				json.put(MAPPROJECTION, 1);
 				json.put(ISOVERLAY, false);
+				json.put(ONLINECACHE, true);
 			} catch (JSONException e1) {
 			}
 		}
@@ -363,6 +379,14 @@ public class MixedMapsPreference extends PreferenceActivity implements OnSharedP
 					json.put(ISOVERLAY, sharedPreferences.getBoolean(key, false));
 					mMapHelper.PARAMS = json.toString();
 					mMapHelper.TYPE = sharedPreferences.getBoolean(key, false) ? 3 : 2;
+				} catch (Exception e) {
+				}
+				
+			} else if(key.endsWith("_onlinecache")) {
+				final JSONObject json = getMapCustomParams(mMapHelper.PARAMS);
+				try {
+					json.put(ONLINECACHE, sharedPreferences.getBoolean(key, false));
+					mMapHelper.PARAMS = json.toString();
 				} catch (Exception e) {
 				}
 				
