@@ -42,6 +42,11 @@ public class AreaSelectorOverlay extends TileViewOverlay {
 		Init(ctx, tileView, (int)(tileView.getWidth()*(1-0.8)/2), (int)(tileView.getHeight()*(1-0.8)/2), (int)(tileView.getWidth()*(1+0.8)/2), (int)(tileView.getHeight()*(1+0.8)/2));
 	}
 	
+	public void Init(Context ctx, TileView tileView, GeoPoint[] p) {
+		point = p; 
+		Init(ctx, tileView);
+	}
+	
 	private Bitmap getPic(TileView tileView) {
 		if(mCornerMarker == null)
 			mCornerMarker = BitmapFactory.decodeResource(tileView.getContext().getResources(), R.drawable.person);
