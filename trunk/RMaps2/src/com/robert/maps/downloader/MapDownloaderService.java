@@ -26,6 +26,7 @@ import android.os.RemoteCallbackList;
 import android.os.RemoteException;
 
 import com.robert.maps.R;
+import com.robert.maps.tileprovider.TileProviderFileBase;
 import com.robert.maps.tileprovider.TileSource;
 import com.robert.maps.utils.SQLiteMapDatabase;
 import com.robert.maps.utils.SimpleThreadFactory;
@@ -41,6 +42,8 @@ public class MapDownloaderService extends Service {
 	private int mCoordArr[];
 	private String mMapID;
 	private String mOfflineMapName;
+	private boolean mOverwriteFile;
+	private boolean mOverwriteTiles;
 	private TileIterator mTileIterator;
 	private SQLiteMapDatabase mMapDatabase;
 	private TileSource mTileSource;
@@ -103,6 +106,8 @@ public class MapDownloaderService extends Service {
 				mCoordArr = intent.getIntArrayExtra("COORD");
 				mMapID = intent.getStringExtra("MAPID");
 				mOfflineMapName = intent.getStringExtra("OFFLINEMAPNAME");
+				mOverwriteFile = intent.getBooleanExtra("overwritefile", true);
+				mOverwriteTiles = intent.getBooleanExtra("overwritetiles", false);
 		
 				mContentIntent = PendingIntent.getActivity(this, 0, new Intent(this, DownloaderActivity.class)
 				.putExtra("MAPID", mMapID)
@@ -123,10 +128,23 @@ public class MapDownloaderService extends Service {
 				final SQLiteMapDatabase cacheDatabase = new SQLiteMapDatabase();
 				final File folder = Ut.getRMapsMapsDir(this);
 				final File file = new File(folder.getAbsolutePath()+"/"+mOfflineMapName+".sqlitedb");
-				if(file.exists())
-					file.delete();
+				if(mOverwriteFile) {
+					File[] files = folder.listFiles();
+					if(files != null) {
+						for (int i = 0; i < files.length; i++) {
+							if(files[i].getName().startsWith(file.getName()))
+								files[i].delete();
+						}
+					}
+				}
+				//boolean fileDeleteSuccess = true;
+				//if(file.exists() && mOverwriteFile)
+				//	fileDeleteSuccess = file.delete();
 				try {
 					cacheDatabase.setFile(file.getAbsolutePath());
+//					if(!fileDeleteSuccess) {
+//						cacheDatabase.clearTiles();
+//					}
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -184,7 +202,10 @@ public class MapDownloaderService extends Service {
 	}
 	
 	private void downloadDone() {
-        final int N = mCallbacks.beginBroadcast();
+		TileProviderFileBase provider = new TileProviderFileBase(this);
+		provider.CommitIndex(Ut.FileName2ID("usermap_"+mOfflineMapName+".sqlitedb"), 0, 0, mMapDatabase.getMinZoom(), mMapDatabase.getMaxZoom());
+
+		final int N = mCallbacks.beginBroadcast();
         for (int i=0; i<N; i++) {
 			try {
 				mCallbacks.getBroadcastItem(i).downloadDone();
@@ -287,20 +308,25 @@ public class MapDownloaderService extends Service {
 					Ut.w("y="+tileParam.Y);
 					
 					try {
-						byte[] data = null;
-						
-						in = new BufferedInputStream(new URL(tileParam.TILEURL).openStream(),
-								StreamUtils.IO_BUFFER_SIZE);
-						
-						final ByteArrayOutputStream dataStream = new ByteArrayOutputStream();
-						out = new BufferedOutputStream(dataStream, StreamUtils.IO_BUFFER_SIZE);
-						StreamUtils.copy(in, out);
-						out.flush();
-						
-						data = dataStream.toByteArray();
-						
-						if (data != null) {
-							mMapDatabase.putTile(tileParam.X, tileParam.Y, tileParam.Z, data);
+						if(mOverwriteFile || mOverwriteTiles || !mOverwriteTiles && !mMapDatabase.existsTile(tileParam.X, tileParam.Y, tileParam.Z)) {
+							byte[] data = null;
+							
+							in = new BufferedInputStream(new URL(tileParam.TILEURL).openStream(),
+									StreamUtils.IO_BUFFER_SIZE);
+							
+							final ByteArrayOutputStream dataStream = new ByteArrayOutputStream();
+							out = new BufferedOutputStream(dataStream, StreamUtils.IO_BUFFER_SIZE);
+							StreamUtils.copy(in, out);
+							out.flush();
+							
+							data = dataStream.toByteArray();
+							
+							if (data != null) {
+								if(mOverwriteTiles)
+									mMapDatabase.deleteTile(tileParam.X, tileParam.Y, tileParam.Z);
+	
+								mMapDatabase.putTile(tileParam.X, tileParam.Y, tileParam.Z, data);
+							}
 						}
 						
 						if(mHandler != null)

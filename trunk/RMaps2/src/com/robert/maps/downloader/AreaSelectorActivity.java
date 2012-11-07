@@ -1,5 +1,6 @@
 package com.robert.maps.downloader;
 
+import java.io.File;
 import java.io.InputStream;
 
 import javax.xml.parsers.SAXParser;
@@ -21,13 +22,13 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.robert.maps.R;
-import com.robert.maps.R.id;
 import com.robert.maps.kml.PoiManager;
 import com.robert.maps.kml.XMLparser.PredefMapsParser;
 import com.robert.maps.tileprovider.TileSource;
@@ -183,6 +184,8 @@ public class AreaSelectorActivity extends Activity {
 		intent.putExtra("ZOOM", getZoomArr());
 		intent.putExtra("COORD", mAreaSelectorOverlay.getCoordArr());
 		intent.putExtra("MAPID", mTileSource.ID);
+		intent.putExtra("overwritefile", ((CheckBox) findViewById(R.id.overwritefile)).isChecked());
+		intent.putExtra("overwritetiles", ((CheckBox) findViewById(R.id.overwritetiles)).isChecked());
 		final String filename = ((EditText) findViewById(R.id.name)).getText().toString();
 		if(filename.equalsIgnoreCase("")) {
 			Toast.makeText(this, "Invalid file name", Toast.LENGTH_LONG).show();
@@ -263,6 +266,8 @@ public class AreaSelectorActivity extends Activity {
  		p[1] = new GeoPoint(uiState.getInt("LatitudeAS2", 0), uiState.getInt("LongitudeAS2", 0));
 		mAreaSelectorOverlay.Init(this, mMap.getTileView(), p);
 		((EditText) findViewById(R.id.name)).setText(uiState.getString("filename", "NewFile"));
+		((CheckBox) findViewById(R.id.overwritefile)).setChecked(uiState.getBoolean("overwritefile", true));
+		((CheckBox) findViewById(R.id.overwritetiles)).setChecked(uiState.getBoolean("overwritetiles", false));
 		
 		mZoomArr = new int[uiState.getInt("zoomCnt", 0)];
 		for(int i = 0; i < mZoomArr.length; i++) {
@@ -286,6 +291,9 @@ public class AreaSelectorActivity extends Activity {
 		editor.putInt("LongitudeAS", point.getLongitudeE6());
 		editor.putInt("ZoomLevelAS", mMap.getZoomLevel());
 		editor.putString("filename", ((EditText) findViewById(R.id.name)).getText().toString());
+		editor.putBoolean("overwritefile", ((CheckBox) findViewById(R.id.overwritefile)).isChecked());
+		editor.putBoolean("overwritetiles", ((CheckBox) findViewById(R.id.overwritetiles)).isChecked());
+		
 		mAreaSelectorOverlay.put(editor);
 		if(findViewById(R.id.step2).getVisibility() == View.VISIBLE) {
 			editor.putBoolean("step2", true);

@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
-
+
     <LinearLayout
         android:id="@+id/step1"
         android:layout_width="wrap_content"
@@ -59,7 +59,7 @@
                 android:text="Next" />
         </LinearLayout>
     </LinearLayout>
-
+
     <LinearLayout
         android:id="@+id/step2"
         android:layout_width="match_parent"
@@ -97,6 +97,20 @@
 
                     <requestFocus />
                 </EditText>
+
+                <CheckBox
+                    android:id="@+id/overwritefile"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5"
+                    android:text="Overwrite existing file" />
+
+                <CheckBox
+                    android:id="@+id/overwritetiles"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5"
+                    android:text="Overwrite existing tiles in the file" />
 
 <LinearLayout
                     android:id="@+id/LayerArea"

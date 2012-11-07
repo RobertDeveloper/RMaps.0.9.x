@@ -19,6 +19,7 @@ public class SQLiteMapDatabase implements ICacheProvider {
 	private static final String SQL_SELECT_MINZOOM = "SELECT 17-minzoom AS ret FROM info";
 	private static final String SQL_SELECT_MAXZOOM = "SELECT 17-maxzoom AS ret FROM info";
 	private static final String SQL_SELECT_IMAGE = "SELECT image as ret FROM tiles WHERE s = 0 AND x = ? AND y = ? AND z = ?";
+	private static final String SQL_DROP_tiles = "DROP TABLE IF EXISTS tiles";
 	private static final String RET = "ret";
 	private static final long MAX_DATABASE_SIZE = 1945 * 1024 * 1024; // 1.9GB
 	private static final String JOURNAL = "-journal";
@@ -201,6 +202,31 @@ public class SQLiteMapDatabase implements ICacheProvider {
 		
 		return ret;
 	}
+	
+	public synchronized void deleteTile(final int aX, final int aY, final int aZ) {
+		final String[] args = {""+aX, ""+aY, ""+(17 - aZ)};
+		for(int i = 0; i < mDatabase.length; i++) {
+			if(mDatabase[i] != null)
+				mDatabase[i].delete(TILES, SQL_DELTILE_WHERE, args);
+		}
+	}
+
+	public synchronized boolean existsTile(final int aX, final int aY, final int aZ) {
+		final String[] args = {""+aX, ""+aY, ""+(17 - aZ)};
+		boolean ret = false;
+		for(int i = 0; i < mDatabase.length; i++) {
+			if(mDatabase[i] != null) {
+				final Cursor c = this.mDatabase[i].rawQuery(SQL_SELECT_IMAGE, args);
+				if(c != null) {
+					if(c.moveToFirst())
+						ret = true;
+					c.close();
+				}
+			}
+			if(ret) break;
+		}
+		return ret;
+	}
 
 	public synchronized int getMaxZoom() {
 		int ret = 0;
@@ -278,6 +304,15 @@ public class SQLiteMapDatabase implements ICacheProvider {
 
 	public synchronized void Free() {
 		freeDatabases();
+	}
+
+	public void clearTiles() {
+		for (int i = 0; i < mDatabase.length; i++) {
+			if (mDatabase[i] != null) {
+				mDatabase[i].execSQL(SQL_DROP_tiles);
+				mDatabase[i].execSQL(SQL_CREATE_tiles);
+			}
+		}
 	}
 
 }
