@@ -29,6 +29,7 @@ import com.robert.maps.view.MapView;
 
 public class DownloaderActivity extends Activity {
 	private static final String CNT = "cnt";
+	private static final String ERRCNT = "errcnt";
 	private static final String TIME = "time";
 
 	private MapView mMap;
@@ -119,7 +120,7 @@ public class DownloaderActivity extends Activity {
 			}
 		}
 
-		public void downloadStart(int tileCnt, long startTime, String fileName) throws RemoteException {
+		public void downloadStart(int tileCnt, long startTime, String fileName, int lat0, int lon0, int lat1, int lon1) throws RemoteException {
 			Bundle b = new Bundle();
 			b.putInt(CNT, tileCnt);
 			b.putLong(TIME, startTime);
@@ -127,9 +128,10 @@ public class DownloaderActivity extends Activity {
 			mHandler.sendMessage(mHandler.obtainMessage(R.id.download_start, b));
 		}
 
-		public void downloadTileDone(int tileCnt) throws RemoteException {
+		public void downloadTileDone(int tileCnt, int errorCnt, int x, int y, int z) throws RemoteException {
 			Bundle b = new Bundle();
 			b.putInt(CNT, tileCnt);
+			b.putInt(ERRCNT, errorCnt);
 			mHandler.sendMessage(mHandler.obtainMessage(R.id.tile_done, b));
 		}
 
@@ -159,14 +161,18 @@ public class DownloaderActivity extends Activity {
 
 				break;
 			case R.id.tile_done: 
-					final int tileCnt = ((Bundle) msg.obj).getInt(CNT);
-					mProgress.setProgress(tileCnt);
+				final int tileCnt = ((Bundle) msg.obj).getInt(CNT);
+				final int errorCnt = ((Bundle) msg.obj).getInt(ERRCNT);
+				mProgress.setProgress(tileCnt);
+				if(errorCnt > 0)
+					mTextVwTileCnt.setText(String.format("%d/%d Errors: %d", tileCnt, mTileCntTotal, errorCnt));
+				else
 					mTextVwTileCnt.setText(String.format("%d/%d", tileCnt, mTileCntTotal));
-					final long time = System.currentTimeMillis();
-					if(time - mStartTime > 5 * 1000) 
-						mTextVwTime.setText(String.format("%s / %s", Ut.formatTime(time - mStartTime), Ut.formatTime((long)((double)(time - mStartTime) / (1.0f * tileCnt / mTileCntTotal))) ));
-					else
-						mTextVwTime.setText(Ut.formatTime(time - mStartTime));
+				final long time = System.currentTimeMillis();
+				if(time - mStartTime > 5 * 1000) 
+					mTextVwTime.setText(String.format("%s / %s", Ut.formatTime(time - mStartTime), Ut.formatTime((long)((double)(time - mStartTime) / (1.0f * tileCnt / mTileCntTotal))) ));
+				else
+					mTextVwTime.setText(Ut.formatTime(time - mStartTime));
 				break;
 			}
 		}
