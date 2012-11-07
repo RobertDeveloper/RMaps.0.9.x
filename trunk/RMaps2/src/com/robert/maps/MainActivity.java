@@ -721,7 +721,7 @@ public class MainActivity extends Activity {
 		if(c != null) {
 			if(c.moveToFirst()) {
 				do {
-					if (pref.getBoolean("PREF_MIXMAPS_" + c.getInt(0) + "_enabled", false) && c.getInt(2) < 3) {
+					if (pref.getBoolean("PREF_MIXMAPS_" + c.getInt(0) + "_enabled", true) && c.getInt(2) < 3) {
 						MenuItem item = submenu.add(c.getString(1));
 						item.setTitleCondensed("mixmap_" + c.getInt(0));
 					}

@@ -214,5 +214,7 @@ How to and FAQ you can find on http://robertdeveloper.blogspot.com/\n</string>
     <string name="downloader_notif_ticket">Downloading started&#8230;</string>
     <string name="downloader_notif_title">RMaps tile downloader</string>
     <string name="downloader_notif_text">Downloading in progress</string>
+    <string name="pref_minzoom">Min zoom</string>
+    <string name="pref_maxzoom">Max zoom</string>
     
 </resources>
