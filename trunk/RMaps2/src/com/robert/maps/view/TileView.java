@@ -417,6 +417,10 @@ public class TileView extends View {
 		return new OpenStreetMapViewProjection();
 	}
 
+	public OpenStreetMapViewProjection getProjection(int zoom, double touchScale) {
+		return new OpenStreetMapViewProjection(zoom, touchScale);
+	}
+
 	public class OpenStreetMapViewProjection {
 
 		final int viewWidth;
@@ -428,6 +432,10 @@ public class TileView extends View {
 		final Point upperLeftCornerOfCenterMapTile;
 
 		public OpenStreetMapViewProjection() {
+			this(mZoom, mTouchScale);
+		}
+		
+		public OpenStreetMapViewProjection(int zoom, double touchScale) {
 			viewWidth = getWidth();
 			viewHeight = getHeight();
 
@@ -435,12 +443,12 @@ public class TileView extends View {
 			 * Do some calculations and drag attributes to local variables to
 			 * save some performance.
 			 */
-			zoomLevel = mZoom; // LATER Draw to
+			zoomLevel = zoom; // LATER Draw to
 															// attributes and so
 															// make it only
 															// 'valid' for a
 															// short time.
-			tileSizePx = (int)(mTileSource.getTileSizePx(zoomLevel)*mTouchScale);
+			tileSizePx = (int)(mTileSource.getTileSizePx(zoomLevel) * touchScale);
 
 			/*
 			 * Get the center MapTile which is above this.mLatitudeE6 and
@@ -499,7 +507,7 @@ public class TileView extends View {
 
 		public float metersToEquatorPixels(final float aMeters) {
 			return aMeters / EQUATORCIRCUMFENCE
-					* mTileSource.getTileSizePx(mZoom);
+					* mTileSource.getTileSizePx(zoomLevel);
 		}
 
 		/**

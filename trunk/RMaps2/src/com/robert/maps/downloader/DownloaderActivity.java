@@ -34,6 +34,7 @@ public class DownloaderActivity extends Activity {
 
 	private MapView mMap;
 	private TileSource mTileSource;
+	private DownloadedAreaOverlay mDownloadedAreaOverlay;
 	private ServiceConnection mConnection;
 	IRemoteService mService = null;
 	private ProgressBar mProgress;
@@ -64,6 +65,9 @@ public class DownloaderActivity extends Activity {
 		mProgress = (ProgressBar) findViewById(R.id.progress);
 		mTextVwTileCnt = (TextView) findViewById(R.id.textTileCnt);
 		mTextVwTime = (TextView) findViewById(R.id.textTime);
+		
+		mDownloadedAreaOverlay = new DownloadedAreaOverlay();
+		mMap.getOverlays().add(mDownloadedAreaOverlay);
 		
 		findViewById(R.id.pause).setOnClickListener(new View.OnClickListener() {
 			
@@ -125,6 +129,7 @@ public class DownloaderActivity extends Activity {
 			b.putInt(CNT, tileCnt);
 			b.putLong(TIME, startTime);
 			mFileName = fileName;
+			mDownloadedAreaOverlay.Init(DownloaderActivity.this, lat0, lon0, lat1, lon1);
 			mHandler.sendMessage(mHandler.obtainMessage(R.id.download_start, b));
 		}
 
@@ -132,6 +137,7 @@ public class DownloaderActivity extends Activity {
 			Bundle b = new Bundle();
 			b.putInt(CNT, tileCnt);
 			b.putInt(ERRCNT, errorCnt);
+			mDownloadedAreaOverlay.setLastDowloadedTile(x, y, z, mMap.getTileView());
 			mHandler.sendMessage(mHandler.obtainMessage(R.id.tile_done, b));
 		}
 
@@ -173,6 +179,7 @@ public class DownloaderActivity extends Activity {
 					mTextVwTime.setText(String.format("%s / %s", Ut.formatTime(time - mStartTime), Ut.formatTime((long)((double)(time - mStartTime) / (1.0f * tileCnt / mTileCntTotal))) ));
 				else
 					mTextVwTime.setText(Ut.formatTime(time - mStartTime));
+				mMap.postInvalidate();
 				break;
 			}
 		}
