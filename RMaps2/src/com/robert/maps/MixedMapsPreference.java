@@ -47,6 +47,8 @@ public class MixedMapsPreference extends PreferenceActivity implements OnSharedP
 	public static final String BASEURL = "baseurl";
 	public static final String ISOVERLAY = "isoverlay";
 	public static final String ONLINECACHE = "onlinecache";
+	public static final String MINZOOM = "minzoom";
+	public static final String MAXZOOM = "maxzoom";
 	
 	
 	private PoiManager mPoiManager;
@@ -139,6 +141,26 @@ public class MixedMapsPreference extends PreferenceActivity implements OnSharedP
 							pref.setTitle(getString(R.string.pref_usermap_overlay));
 							pref.setSummary(getString(R.string.pref_usermap_overlay_summary));
 							pref.setDefaultValue(false);
+							prefscr.addPreference(pref);
+						}
+						{
+							final ListPreference pref = new ListPreference(this);
+							pref.setKey(PREF_MIXMAPS_ + c.getInt(idMapid) + "_minzoom");
+							pref.setTitle(getString(R.string.pref_minzoom));
+							pref.setEntryValues(R.array.zoomlevel_pref_value);
+							pref.setEntries(R.array.zoomlevel_pref_title);
+							pref.setValue(""+json.optInt(MINZOOM));
+							pref.setSummary(pref.getEntry());
+							prefscr.addPreference(pref);
+						}
+						{
+							final ListPreference pref = new ListPreference(this);
+							pref.setKey(PREF_MIXMAPS_ + c.getInt(idMapid) + "_maxzoom");
+							pref.setTitle(getString(R.string.pref_maxzoom));
+							pref.setEntryValues(R.array.zoomlevel_pref_value);
+							pref.setEntries(R.array.zoomlevel_pref_title);
+							pref.setValue(""+json.optInt(MAXZOOM));
+							pref.setSummary(pref.getEntry());
 							prefscr.addPreference(pref);
 						}
 						{
@@ -295,6 +317,8 @@ public class MixedMapsPreference extends PreferenceActivity implements OnSharedP
 				json.put(MAPPROJECTION, 1);
 				json.put(ISOVERLAY, false);
 				json.put(ONLINECACHE, true);
+				json.put(MINZOOM, 0);
+				json.put(MAXZOOM, 19);
 			} catch (JSONException e1) {
 			}
 		}
@@ -387,6 +411,26 @@ public class MixedMapsPreference extends PreferenceActivity implements OnSharedP
 				try {
 					json.put(ONLINECACHE, sharedPreferences.getBoolean(key, false));
 					mMapHelper.PARAMS = json.toString();
+				} catch (Exception e) {
+				}
+				
+			} else if(key.endsWith("_minzoom")) {
+				final JSONObject json = getMapCustomParams(mMapHelper.PARAMS);
+				try {
+					json.put(MINZOOM, Integer.parseInt(sharedPreferences.getString(key, "1")));
+					mMapHelper.PARAMS = json.toString();
+					if(findPreference(key) != null)
+						findPreference(key).setSummary(((ListPreference)findPreference(key)).getEntry());
+				} catch (Exception e) {
+				}
+				
+			} else if(key.endsWith("_maxzoom")) {
+				final JSONObject json = getMapCustomParams(mMapHelper.PARAMS);
+				try {
+					json.put(MAXZOOM, Integer.parseInt(sharedPreferences.getString(key, "20")));
+					mMapHelper.PARAMS = json.toString();
+					if(findPreference(key) != null)
+						findPreference(key).setSummary(((ListPreference)findPreference(key)).getEntry());
 				} catch (Exception e) {
 				}
 				

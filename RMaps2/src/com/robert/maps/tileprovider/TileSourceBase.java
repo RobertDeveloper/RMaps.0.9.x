@@ -88,23 +88,20 @@ public class TileSourceBase {
 						}
 					} else if(c.getInt(2) == 2 || c.getInt(2) == 3) { // Custom source
 						final JSONObject json = MixedMapsPreference.getMapCustomParams(c.getString(3));
-						try {
-							aId = mixMapId;
-							this.ID = mixMapId;
-							this.NAME = c.getString(1);
-							this.BASEURL = json.getString(MixedMapsPreference.BASEURL);
-							this.PROJECTION = json.getInt(MixedMapsPreference.MAPPROJECTION);
-							this.LAYER = c.getInt(2) == 2 ? false : true;
-							this.MAP_TYPE = MIXMAP_CUSTOM;
-							this.URL_BUILDER_TYPE = 12;
-							this.ZOOM_MINLEVEL = 0;
-							this.ZOOM_MAXLEVEL = 19;
-							this.MAPTILE_SIZEPX = 256;
-							this.CACHE = EMPTY;
-							this.mOnlineMapCacheEnabled = json.optBoolean(MixedMapsPreference.ONLINECACHE, true);
-							return;
-						} catch (JSONException e) {
-						}
+						aId = mixMapId;
+						this.ID = mixMapId;
+						this.NAME = c.getString(1);
+						this.BASEURL = json.optString(MixedMapsPreference.BASEURL, "");
+						this.PROJECTION = json.optInt(MixedMapsPreference.MAPPROJECTION, 1);
+						this.LAYER = c.getInt(2) == 2 ? false : true;
+						this.MAP_TYPE = MIXMAP_CUSTOM;
+						this.URL_BUILDER_TYPE = 12;
+						this.ZOOM_MINLEVEL = json.optInt(MixedMapsPreference.MINZOOM, 1)-1;
+						this.ZOOM_MAXLEVEL = json.optInt(MixedMapsPreference.MAXZOOM, 20)-1;
+						this.MAPTILE_SIZEPX = 256;
+						this.CACHE = EMPTY;
+						this.mOnlineMapCacheEnabled = json.optBoolean(MixedMapsPreference.ONLINECACHE, true);
+						return;
 					}
 				}
 				c.close();
