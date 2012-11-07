@@ -47,7 +47,7 @@ public class MapDownloaderService extends Service {
 	private ExecutorService mThreadPool = Executors.newFixedThreadPool(THREADCOUNT, new SimpleThreadFactory("MapDownloaderService"));
 	private Handler mHandler = new DownloaderHanler();
 	final RemoteCallbackList<IDownloaderCallback> mCallbacks = new RemoteCallbackList<IDownloaderCallback>();
-	private int mTileCntTotal = 0, mTileCnt = 0;
+	private int mTileCntTotal = 0, mTileCnt = 0, mErrorCnt = 0;
 	private long mStartTime = 0;
 	
     private final IRemoteService.Stub mBinder = new IRemoteService.Stub() {
@@ -56,7 +56,7 @@ public class MapDownloaderService extends Service {
             	mCallbacks.register(cb);
 	            if(mStartTime > 0)
 					try {
-						cb.downloadStart(mTileCntTotal, mStartTime, mOfflineMapName);
+						cb.downloadStart(mTileCntTotal, mStartTime, mOfflineMapName, mCoordArr[0], mCoordArr[1], mCoordArr[2], mCoordArr[3]);
 					} catch (RemoteException e) {
 					}
             }
@@ -140,7 +140,7 @@ public class MapDownloaderService extends Service {
 		        final int N = mCallbacks.beginBroadcast();
 		        for (int i=0; i<N; i++) {
 					try {
-						mCallbacks.getBroadcastItem(i).downloadStart(mTileCntTotal, mStartTime, mOfflineMapName);
+						mCallbacks.getBroadcastItem(i).downloadStart(mTileCntTotal, mStartTime, mOfflineMapName, mCoordArr[0], mCoordArr[1], mCoordArr[2], mCoordArr[3]);
 					} catch (RemoteException e) {
 					}
 		        }
@@ -232,16 +232,24 @@ public class MapDownloaderService extends Service {
 					downloadDone();
 				break;
 			case R.id.tile_done:
+			case R.id.tile_error:
 				mTileCnt++;
+				if(msg.what == R.id.tile_error)
+					mErrorCnt++;
+				
 				mNotification.setLatestEventInfo(MapDownloaderService.this, getText(R.string.downloader_notif_title)
 						, getText(R.string.downloader_notif_text)+String.format(": %d%% (%d/%d)", (mTileCnt * 100 / mTileCntTotal), mTileCnt, mTileCntTotal)
 						, mContentIntent);
 				mNM.notify(R.id.downloader_service, mNotification);
 
 		        final int N = mCallbacks.beginBroadcast();
+		        final XYZ tileParam = mTileIterator.next();
 		        for (int i=0; i<N; i++) {
 					try {
-						mCallbacks.getBroadcastItem(i).downloadTileDone(mTileCnt);
+						if(tileParam == null)
+							mCallbacks.getBroadcastItem(i).downloadTileDone(mTileCnt, mErrorCnt, -1, -1, -1);
+						else
+							mCallbacks.getBroadcastItem(i).downloadTileDone(mTileCnt, mErrorCnt, tileParam.X, tileParam.Y, tileParam.Z);
 					} catch (RemoteException e) {
 					}
 		        }
@@ -295,19 +303,20 @@ public class MapDownloaderService extends Service {
 							mMapDatabase.putTile(tileParam.X, tileParam.Y, tileParam.Z, data);
 						}
 						
-						// SendMessageSuccess();
+						if(mHandler != null)
+							Message.obtain(mHandler, R.id.tile_done).sendToTarget();
 					} catch (Exception e) {
-						// SendMessageFail();
+						if(mHandler != null)
+							Message.obtain(mHandler, R.id.tile_error).sendToTarget();
 					} catch (OutOfMemoryError e) {
-						// SendMessageFail();
+						if(mHandler != null)
+							Message.obtain(mHandler, R.id.tile_error).sendToTarget();
 						System.gc();
 					} finally {
 						StreamUtils.closeStream(in);
 						StreamUtils.closeStream(out);
 					}
 					
-					if(mHandler != null)
-						Message.obtain(mHandler, R.id.tile_done).sendToTarget();
 				}
 			}
 			

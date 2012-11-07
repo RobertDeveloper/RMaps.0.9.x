@@ -241,6 +241,7 @@ public class MainActivity extends Activity {
 			}
 		} else if("SHOW_MAP_ID".equalsIgnoreCase(queryAction)) {
 			mMapId = queryIntent.getExtras().getString(MAPNAME);
+			queryIntent.setAction("");
 		}
 	}
 
@@ -581,6 +582,7 @@ public class MainActivity extends Activity {
 		mShowOverlay = uiState.getBoolean("ShowOverlay", true);
 		
 		setTileSource(mMapId, mOverlayId, mShowOverlay);
+		mMapId = null;
 		
  		mMap.getController().setZoom(uiState.getInt("ZoomLevel", 0));
  		setTitle();
