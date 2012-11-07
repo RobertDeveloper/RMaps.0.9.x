@@ -264,7 +264,7 @@ public class MapDownloaderService extends Service {
 				mNM.notify(R.id.downloader_service, mNotification);
 
 		        final int N = mCallbacks.beginBroadcast();
-		        final XYZ tileParam = mTileIterator.next();
+		        final XYZ tileParam = (XYZ) msg.obj;
 		        for (int i=0; i<N; i++) {
 					try {
 						if(tileParam == null)
@@ -330,13 +330,13 @@ public class MapDownloaderService extends Service {
 						}
 						
 						if(mHandler != null)
-							Message.obtain(mHandler, R.id.tile_done).sendToTarget();
+							Message.obtain(mHandler, R.id.tile_done, tileParam).sendToTarget();
 					} catch (Exception e) {
 						if(mHandler != null)
-							Message.obtain(mHandler, R.id.tile_error).sendToTarget();
+							Message.obtain(mHandler, R.id.tile_error, tileParam).sendToTarget();
 					} catch (OutOfMemoryError e) {
 						if(mHandler != null)
-							Message.obtain(mHandler, R.id.tile_error).sendToTarget();
+							Message.obtain(mHandler, R.id.tile_error, tileParam).sendToTarget();
 						System.gc();
 					} finally {
 						StreamUtils.closeStream(in);
