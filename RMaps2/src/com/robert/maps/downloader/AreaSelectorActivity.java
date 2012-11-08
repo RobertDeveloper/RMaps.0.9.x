@@ -1,6 +1,5 @@
 package com.robert.maps.downloader;
 
-import java.io.File;
 import java.io.InputStream;
 
 import javax.xml.parsers.SAXParser;
@@ -22,7 +21,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -34,7 +32,6 @@ import com.robert.maps.kml.XMLparser.PredefMapsParser;
 import com.robert.maps.tileprovider.TileSource;
 import com.robert.maps.tileprovider.TileSourceBase;
 import com.robert.maps.utils.RException;
-import com.robert.maps.utils.Ut;
 import com.robert.maps.view.IMoveListener;
 import com.robert.maps.view.MapView;
 import com.robert.maps.view.TileViewOverlay;
@@ -98,11 +95,9 @@ public class AreaSelectorActivity extends Activity {
 			SharedPreferences.Editor editor = uiState.edit();
 			editor.putString(MAPNAMEAREASELECTOR, intent.getStringExtra(MAPNAME));
 			editor.putInt("ZoomLevelAS", intent.getIntExtra("ZoomLevel", 0));
-			Ut.w("new = "+intent.getBooleanExtra("new", false));
 
 			if(intent.getBooleanExtra("new", false)) {
 				intent.putExtra("new", false);
-				Ut.w("new = "+intent.getBooleanExtra("new", false));
 				editor.putInt("LatitudeAS", intent.getIntExtra("Latitude", 0));
 				editor.putInt("LongitudeAS", intent.getIntExtra("Longitude", 0));
 				editor.putInt("LatitudeAS1", 0);
@@ -139,11 +134,9 @@ public class AreaSelectorActivity extends Activity {
 					j++;
 				}
 		}
-		Ut.w("j="+j);
 		mZoomArr = new int[j];
 		for(;j > 0; j--) {
 			mZoomArr[j-1] = zoomArr[j-1];
-			Ut.w("zoom"+zoomArr[j-1]);
 		}
 		
 		return mZoomArr;
@@ -180,7 +173,7 @@ public class AreaSelectorActivity extends Activity {
 		findViewById(R.id.start_download).setVisibility(View.GONE);
 		//findViewById(R.id.stop_download).setVisibility(View.VISIBLE);
 		
-		final Intent intent = new Intent("com.robert.maps.mapdownloader.start");
+		final Intent intent = new Intent("com.robert.maps.mapdownloader");
 		intent.putExtra("ZOOM", getZoomArr());
 		intent.putExtra("COORD", mAreaSelectorOverlay.getCoordArr());
 		intent.putExtra("MAPID", mTileSource.ID);
