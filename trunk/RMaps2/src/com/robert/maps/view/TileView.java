@@ -25,7 +25,6 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 
-import com.robert.maps.kml.Track.TrackPoint;
 import com.robert.maps.reflection.OnExGestureListener;
 import com.robert.maps.reflection.VerGestureDetector;
 import com.robert.maps.reflection.VerScaleGestureDetector;
@@ -81,7 +80,6 @@ public class TileView extends View {
 	
 	private class TouchListener implements OnExGestureListener {
 		public boolean onDown(MotionEvent e) {
-			Ut.d("onDown");
 			for (TileViewOverlay osmvo : mOverlays) {
 				if(osmvo.onDown(e, TileView.this))
 					break;
@@ -91,12 +89,10 @@ public class TileView extends View {
 		}
 
 		public boolean onSingleTapUp(MotionEvent e) {
-			Ut.d("onSingleTapUp");
 			return false;
 		}
 
 		public boolean onSingleTapConfirmed(MotionEvent e) {
-			Ut.d("onSingleTapConfirmed");
 			for (TileViewOverlay osmvo : mOverlays)
 				if (osmvo.onSingleTapUp(e, TileView.this)) {
 					invalidate();
@@ -224,12 +220,15 @@ public class TileView extends View {
 
 	@Override
 	public boolean onTouchEvent(final MotionEvent event) {
-		mScaleDetector.onTouchEvent(event);
+		boolean result = false;
 		
-		boolean result = mDetector.onTouchEvent(event);
-		if (!result) {
-			if (event.getAction() == MotionEvent.ACTION_UP) {
-				result = true;
+		if(!mDisableControl) {
+			mScaleDetector.onTouchEvent(event);
+			result = mDetector.onTouchEvent(event);
+			if (!result) {
+				if (event.getAction() == MotionEvent.ACTION_UP) {
+					result = true;
+				}
 			}
 		}
 		return result;
@@ -788,6 +787,7 @@ public class TileView extends View {
 	}
 
 	private IMoveListener mMoveListener;
+	private boolean mDisableControl;
 
 	// TODO След процедуры под вопросом о переделке
 	private Point getUpperLeftCornerOfCenterMapTileInScreen(final int[] centerMapTileCoords,
@@ -852,6 +852,10 @@ public class TileView extends View {
 
 	public void setMoveListener(IMoveListener moveListener) {
 		mMoveListener = moveListener;
+	}
+
+	public void setDisableControl(boolean b) {
+		mDisableControl = true;
 	}
 
 }

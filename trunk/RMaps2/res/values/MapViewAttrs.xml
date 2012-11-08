@@ -2,8 +2,9 @@
 <resources>
 
     <declare-styleable name="MapView">
-        <attr name="ScaleBarVisible" format="integer" /><attr name="SideInOutButtons" format="integer" />
-        
-    </declare-styleable>
+        <attr name="ScaleBarVisible" format="integer" />
+        <attr name="SideInOutButtons" format="integer" />
+        <attr name="DisableControl" format="boolean" />
+        </declare-styleable>
 
 </resources>
