@@ -8,10 +8,13 @@ import javax.xml.parsers.SAXParserFactory;
 import org.andnav.osm.util.GeoPoint;
 
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -32,6 +35,7 @@ import com.robert.maps.kml.XMLparser.PredefMapsParser;
 import com.robert.maps.tileprovider.TileSource;
 import com.robert.maps.tileprovider.TileSourceBase;
 import com.robert.maps.utils.RException;
+import com.robert.maps.utils.Ut;
 import com.robert.maps.view.IMoveListener;
 import com.robert.maps.view.MapView;
 import com.robert.maps.view.TileViewOverlay;
@@ -49,6 +53,26 @@ public class AreaSelectorActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+//		ServiceConnection connection = new ServiceConnection() {
+//			public void onServiceConnected(ComponentName className, IBinder service) {
+//				Ut.w("AreaSelectorActivity onServiceConnected");
+//			}
+//
+//			public void onServiceDisconnected(ComponentName className) {
+//			}
+//		};
+//		final boolean res = bindService(new Intent(IRemoteService.class.getName()), connection, 0); 
+//		unbindService(connection);
+//		final boolean res = MapDownloaderService.isInProgress();
+//		if(res) {
+//			
+//			//startActivity(new Intent(this, DownloaderActivity.class));
+//			Toast.makeText(this, "Downloading in progress...", Toast.LENGTH_LONG).show();
+//			finish();
+//			return;
+//		}
+			
 
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.area_selector);
@@ -305,12 +329,15 @@ public class AreaSelectorActivity extends Activity {
 
 	@Override
 	protected void onDestroy() {
-		for (TileViewOverlay osmvo : mMap.getOverlays())
-			osmvo.Free();
+		if(mMap != null) {
+			for (TileViewOverlay osmvo : mMap.getOverlays())
+				osmvo.Free();
+			mMap.setMoveListener(null);
+		}
 
-		mTileSource.Free();
+		if(mTileSource != null)
+			mTileSource.Free();
 		mTileSource = null;
-		mMap.setMoveListener(null);
 		
 		super.onDestroy();
 	}

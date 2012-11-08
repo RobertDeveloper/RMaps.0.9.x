@@ -75,18 +75,15 @@ public class MapDownloaderService extends Service {
 		super.onCreate();
 		
 		mNM = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
-		Ut.w("Service onCreate");
 	}
 
 	@Override
 	public void onStart(Intent intent, int startId) {
-		Ut.w("Service onStart");
 		handleCommand(intent);
 	}
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
-		Ut.w("Service onStartCommand");
 		handleCommand(intent);
 		return START_STICKY;
 	}
@@ -159,20 +156,13 @@ public class MapDownloaderService extends Service {
 
 	@Override
 	public void onDestroy() {
-		Ut.w("Service onDestroy");
 		if(mThreadPool != null) {
-			Ut.w("Service shutdown and wait");
 			mThreadPool.shutdown();
 			try {
 				if(!mThreadPool.awaitTermination(5L, TimeUnit.SECONDS)) {
-					Ut.w("Service shutdownNow");
 					mThreadPool.shutdownNow();
 				}
-				else
-					Ut.w("Service shutdown OK");					
 			} catch (InterruptedException e) {
-				Ut.w("Service shutdown error");
-				e.printStackTrace();
 			}
 		}
 		
@@ -220,7 +210,6 @@ public class MapDownloaderService extends Service {
 		// Send the notification.
 		// We use a string id because it is a unique number. We use it later to cancel.
 		mNM.notify(R.id.downloader_service, mNotification);
-		Ut.w("Service notify");
 	}
 	
 	private void downloadDone() {
@@ -301,7 +290,6 @@ public class MapDownloaderService extends Service {
 			boolean continueExecute = true;
 			
 			while (continueExecute && !mThreadPool.isShutdown()) {
-				Ut.w("Download continue "+mTileCnt+"...");
 				synchronized (mTileIterator) {
 					if (mTileIterator.hasNext()) {
 						tileParam = mTileIterator.next();
