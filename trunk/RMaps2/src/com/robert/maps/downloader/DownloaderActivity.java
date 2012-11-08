@@ -72,8 +72,8 @@ public class DownloaderActivity extends Activity {
 		findViewById(R.id.pause).setOnClickListener(new View.OnClickListener() {
 			
 			public void onClick(View v) {
-				final Intent intent = new Intent("com.robert.maps.mapdownloader.stop");
-				startService(intent);
+				final Intent intent = new Intent("com.robert.maps.mapdownloader");
+				stopService(intent);
 			}
 		});
 		
@@ -203,7 +203,6 @@ public class DownloaderActivity extends Activity {
 			setTitle();
 		}
 
-		Ut.w("bindService");
 		bindService(new Intent(IRemoteService.class.getName()), mConnection, 0);
 
 		super.onResume();

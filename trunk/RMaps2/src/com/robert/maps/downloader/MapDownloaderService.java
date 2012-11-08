@@ -75,33 +75,25 @@ public class MapDownloaderService extends Service {
 		super.onCreate();
 		
 		mNM = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
+		Ut.w("Service onCreate");
 	}
 
 	@Override
 	public void onStart(Intent intent, int startId) {
+		Ut.w("Service onStart");
 		handleCommand(intent);
 	}
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
+		Ut.w("Service onStartCommand");
 		handleCommand(intent);
 		return START_STICKY;
 	}
 
 	private void handleCommand(Intent intent) {
 		if(intent != null) {
-			if(intent.getAction().equalsIgnoreCase("com.robert.maps.mapdownloader.stop")) {
-				if(mThreadPool != null) {
-					mThreadPool.shutdown();
-					try {
-						if(!mThreadPool.awaitTermination(2L, TimeUnit.SECONDS))
-							mThreadPool.shutdownNow();
-					} catch (InterruptedException e) {
-					}
-				}
-				downloadDone();
-				
-			} else if(intent.getAction().equalsIgnoreCase("com.robert.maps.mapdownloader.start")) {
+			if(intent.getAction().equalsIgnoreCase("com.robert.maps.mapdownloader")) {
 				mZoomArr = intent.getIntArrayExtra("ZOOM");
 				mCoordArr = intent.getIntArrayExtra("COORD");
 				mMapID = intent.getStringExtra("MAPID");
@@ -137,14 +129,9 @@ public class MapDownloaderService extends Service {
 						}
 					}
 				}
-				//boolean fileDeleteSuccess = true;
-				//if(file.exists() && mOverwriteFile)
-				//	fileDeleteSuccess = file.delete();
+
 				try {
 					cacheDatabase.setFile(file.getAbsolutePath());
-//					if(!fileDeleteSuccess) {
-//						cacheDatabase.clearTiles();
-//					}
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -172,13 +159,47 @@ public class MapDownloaderService extends Service {
 
 	@Override
 	public void onDestroy() {
-		mThreadPool.shutdown();
+		Ut.w("Service onDestroy");
+		if(mThreadPool != null) {
+			Ut.w("Service shutdown and wait");
+			mThreadPool.shutdown();
+			try {
+				if(!mThreadPool.awaitTermination(5L, TimeUnit.SECONDS)) {
+					Ut.w("Service shutdownNow");
+					mThreadPool.shutdownNow();
+				}
+				else
+					Ut.w("Service shutdown OK");					
+			} catch (InterruptedException e) {
+				Ut.w("Service shutdown error");
+				e.printStackTrace();
+			}
+		}
+		
+		try {
+			TileProviderFileBase provider = new TileProviderFileBase(this);
+			provider.CommitIndex(Ut.FileName2ID("usermap_"+mOfflineMapName+".sqlitedb"), 0, 0, mMapDatabase.getMinZoom(), mMapDatabase.getMaxZoom());
+			provider.Free();
+		} catch (Exception e1) {
+		}
+
+		final int N = mCallbacks.beginBroadcast();
+        for (int i=0; i<N; i++) {
+			try {
+				mCallbacks.getBroadcastItem(i).downloadDone();
+			} catch (RemoteException e) {
+			}
+        }
+        mCallbacks.finishBroadcast();
+
 		if(mTileSource != null)
 			mTileSource.Free();
+		
 		if(mMapDatabase != null)
 			mMapDatabase.Free();
 		
 		mNM.cancel(R.id.downloader_service);
+		mNM = null;
 		
 		super.onDestroy();
 	}
@@ -199,20 +220,11 @@ public class MapDownloaderService extends Service {
 		// Send the notification.
 		// We use a string id because it is a unique number. We use it later to cancel.
 		mNM.notify(R.id.downloader_service, mNotification);
+		Ut.w("Service notify");
 	}
 	
 	private void downloadDone() {
-		TileProviderFileBase provider = new TileProviderFileBase(this);
-		provider.CommitIndex(Ut.FileName2ID("usermap_"+mOfflineMapName+".sqlitedb"), 0, 0, mMapDatabase.getMinZoom(), mMapDatabase.getMaxZoom());
-
-		final int N = mCallbacks.beginBroadcast();
-        for (int i=0; i<N; i++) {
-			try {
-				mCallbacks.getBroadcastItem(i).downloadDone();
-			} catch (RemoteException e) {
-			}
-        }
-        mCallbacks.finishBroadcast();
+		stopSelf();
 
 //		((NotificationManager)getSystemService(NOTIFICATION_SERVICE)).cancel(R.string.remote_service_started);
 //		
@@ -233,7 +245,6 @@ public class MapDownloaderService extends Service {
 //		// We use a string id because it is a unique number. We use it later to cancel.
 //		((NotificationManager)getSystemService(NOTIFICATION_SERVICE)).notify(R.string.auto_follow_enabled, notification);
 		
-		stopSelf();
 	}
 
 	@Override
@@ -261,7 +272,8 @@ public class MapDownloaderService extends Service {
 				mNotification.setLatestEventInfo(MapDownloaderService.this, getText(R.string.downloader_notif_title)
 						, getText(R.string.downloader_notif_text)+String.format(": %d%% (%d/%d)", (mTileCnt * 100 / mTileCntTotal), mTileCnt, mTileCntTotal)
 						, mContentIntent);
-				mNM.notify(R.id.downloader_service, mNotification);
+				if(mNM != null)
+					mNM.notify(R.id.downloader_service, mNotification);
 
 		        final int N = mCallbacks.beginBroadcast();
 		        final XYZ tileParam = (XYZ) msg.obj;
@@ -288,7 +300,8 @@ public class MapDownloaderService extends Service {
 			XYZ tileParam = null;
 			boolean continueExecute = true;
 			
-			while (continueExecute) {
+			while (continueExecute && !mThreadPool.isShutdown()) {
+				Ut.w("Download continue "+mTileCnt+"...");
 				synchronized (mTileIterator) {
 					if (mTileIterator.hasNext()) {
 						tileParam = mTileIterator.next();
@@ -303,9 +316,6 @@ public class MapDownloaderService extends Service {
 					tileParam.TILEURL = mTileSource.getTileURLGenerator().Get(tileParam.X, tileParam.Y, tileParam.Z);
 					InputStream in = null;
 					OutputStream out = null;
-					Ut.w("tileParam.TILEURL = "+tileParam.TILEURL);
-					Ut.w("x="+tileParam.X);
-					Ut.w("y="+tileParam.Y);
 					
 					try {
 						if(mOverwriteFile || mOverwriteTiles || !mOverwriteTiles && !mMapDatabase.existsTile(tileParam.X, tileParam.Y, tileParam.Z)) {

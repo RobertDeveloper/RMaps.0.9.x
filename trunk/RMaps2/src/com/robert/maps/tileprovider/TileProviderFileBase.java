@@ -99,6 +99,7 @@ public class TileProviderFileBase extends TileProviderBase {
 	}
 
 	public void CommitIndex(final String aCashTableName, long aSizeFile, long aLastModifiedFile, int zoomMinInCashFile, int zoomMaxInCashFile) {
+		this.mIndexDatabase.execSQL("CREATE TABLE IF NOT EXISTS ListCashTables (name VARCHAR(100), lastmodified LONG NOT NULL, size LONG NOT NULL, minzoom INTEGER NOT NULL, maxzoom INTEGER NOT NULL, PRIMARY KEY(name) );");
 		this.mIndexDatabase.delete("ListCashTables", "name = '" + aCashTableName + "' OR name = '" + aCashTableName.replace("usermap_", "cahs_") + "'", null);
 		final ContentValues cv = new ContentValues();
 		cv.put("name", aCashTableName);
