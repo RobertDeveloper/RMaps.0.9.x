@@ -85,6 +85,9 @@ public class MapView extends RelativeLayout {
 			scaleParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
 			addView(ivScaleBar, scaleParams);
 		}
+		if(a.getBoolean(R.styleable.MapView_DisableControl, false))
+			mTileView.setDisableControl(true);
+		
 
         a.recycle();
 	}

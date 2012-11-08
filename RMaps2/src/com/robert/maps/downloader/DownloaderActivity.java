@@ -154,6 +154,8 @@ public class DownloaderActivity extends Activity {
 				findViewById(R.id.pause).setVisibility(View.GONE);
 				mTextVwTileCnt.setText(Integer.toString(mTileCntTotal));
 				mTextVwTime.setText(Ut.formatTime(System.currentTimeMillis() - mStartTime));
+				mDownloadedAreaOverlay.downloadDone();
+				mMap.postInvalidate();
 				break;
 			case R.id.download_start:
 				Bundle b = (Bundle) msg.obj;

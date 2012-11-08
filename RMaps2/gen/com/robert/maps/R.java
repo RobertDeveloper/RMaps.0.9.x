@@ -38,6 +38,14 @@ public final class R {
         public static final int zoomlevel_pref_value=0x7f06000d;
     }
     public static final class attr {
+        /** <p>Must be a boolean value, either "<code>true</code>" or "<code>false</code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int DisableControl=0x7f010002;
         /** <p>Must be an integer value, such as "<code>100</code>".
 <p>This may also be a reference to a resource (in the form
 "<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
@@ -60,7 +68,8 @@ containing a value of this type.
         public static final int chart_graph_0=0x7f070004;
         public static final int chart_graph_1=0x7f070005;
         public static final int currenttrack=0x7f070001;
-        public static final int error_message_backgr=0x7f070006;
+        public static final int download_area=0x7f070006;
+        public static final int error_message_backgr=0x7f070007;
         public static final int poi_descr_text=0x7f070002;
         public static final int track=0x7f070000;
     }
@@ -148,7 +157,7 @@ containing a value of this type.
         public static final int add_ownsourcemap=0x7f080011;
         public static final int add_shadow_box=0x7f080096;
         public static final int add_yandex_bookmark=0x7f0800a3;
-        public static final int area_selector=0x7f0800b1;
+        public static final int area_selector=0x7f0800b7;
         public static final int avgpace_data=0x7f08007a;
         public static final int avgpace_unit=0x7f08007b;
         public static final int avgspeed_data=0x7f080076;
@@ -163,7 +172,7 @@ containing a value of this type.
         public static final int color=0x7f080092;
         public static final int color_picker_view=0x7f08002b;
         public static final int colorshadow=0x7f080099;
-        public static final int compass=0x7f0800b3;
+        public static final int compass=0x7f0800b2;
         public static final int coord=0x7f080056;
         public static final int data_header1=0x7f080005;
         public static final int data_header2=0x7f080008;
@@ -202,7 +211,7 @@ containing a value of this type.
         public static final int map=0x7f080019;
         public static final int map_area=0x7f080018;
         public static final int maps=0x7f08001c;
-        public static final int mapselector=0x7f0800b6;
+        public static final int mapselector=0x7f0800b5;
         public static final int maxele_data=0x7f08008e;
         public static final int maxele_unit=0x7f08008f;
         public static final int maxspeed_data=0x7f08007e;
@@ -217,7 +226,7 @@ containing a value of this type.
         public static final int menu_exporttogpxpoi=0x7f0800ae;
         public static final int menu_exporttokmlpoi=0x7f0800af;
         public static final int menu_gotopoi=0x7f0800a9;
-        public static final int menu_group_maps=0x7f0800b7;
+        public static final int menu_group_maps=0x7f0800b6;
         public static final int menu_hide=0x7f0800aa;
         public static final int menu_importpoi=0x7f0800bd;
         public static final int menu_show=0x7f0800ab;
@@ -231,7 +240,7 @@ containing a value of this type.
         public static final int moveavgspeed_unit=0x7f080087;
         public static final int movetime_data=0x7f080082;
         public static final int movetime_unit=0x7f080083;
-        public static final int mylocation=0x7f0800b5;
+        public static final int mylocation=0x7f0800b4;
         public static final int name=0x7f080022;
         public static final int new_color_panel=0x7f08002d;
         public static final int next=0x7f08001d;
@@ -244,7 +253,7 @@ containing a value of this type.
         public static final int pauseButton=0x7f080065;
         public static final int pic=0x7f080003;
         public static final int poi_title=0x7f080055;
-        public static final int poilist=0x7f0800b4;
+        public static final int poilist=0x7f0800b3;
         public static final int points_data=0x7f080072;
         public static final int points_unit=0x7f080073;
         public static final int progress=0x7f080030;
@@ -255,7 +264,7 @@ containing a value of this type.
         public static final int screen=0x7f080043;
         public static final int scrollView1=0x7f08001f;
         public static final int sdfg=0x7f080020;
-        public static final int search=0x7f0800b2;
+        public static final int search=0x7f0800b1;
         public static final int set_title=0x7f0800a0;
         public static final int settings=0x7f0800ba;
         public static final int settings_activity_closed=0x7f0800a4;
@@ -586,15 +595,31 @@ containing a value of this type.
            <colgroup align="left" />
            <colgroup align="left" />
            <tr><th>Attribute</th><th>Description</th></tr>
+           <tr><td><code>{@link #MapView_DisableControl com.robert.maps:DisableControl}</code></td><td></td></tr>
            <tr><td><code>{@link #MapView_ScaleBarVisible com.robert.maps:ScaleBarVisible}</code></td><td></td></tr>
            <tr><td><code>{@link #MapView_SideInOutButtons com.robert.maps:SideInOutButtons}</code></td><td></td></tr>
            </table>
+           @see #MapView_DisableControl
            @see #MapView_ScaleBarVisible
            @see #MapView_SideInOutButtons
          */
         public static final int[] MapView = {
-            0x7f010000, 0x7f010001
+            0x7f010000, 0x7f010001, 0x7f010002
         };
+        /**
+          <p>This symbol is the offset where the {@link com.robert.maps.R.attr#DisableControl}
+          attribute's value can be found in the {@link #MapView} array.
+
+
+          <p>Must be a boolean value, either "<code>true</code>" or "<code>false</code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          @attr name android:DisableControl
+        */
+        public static final int MapView_DisableControl = 2;
         /**
           <p>This symbol is the offset where the {@link com.robert.maps.R.attr#ScaleBarVisible}
           attribute's value can be found in the {@link #MapView} array.
