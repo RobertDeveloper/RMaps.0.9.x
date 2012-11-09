@@ -34,7 +34,7 @@ import com.robert.maps.utils.SimpleThreadFactory;
 import com.robert.maps.utils.Ut;
 
 public class MapDownloaderService extends Service {
-	private final int THREADCOUNT = 5;
+	private final int THREADCOUNT = 1;
 	
 	private NotificationManager mNM;
 	private Notification mNotification;
@@ -99,6 +99,8 @@ public class MapDownloaderService extends Service {
 			return;
 		}
 		
+		checkLimitation();
+		
 		mZoomArr = intent.getIntArrayExtra("ZOOM");
 		mCoordArr = intent.getIntArrayExtra("COORD");
 		mMapID = intent.getStringExtra("MAPID");
@@ -162,6 +164,30 @@ public class MapDownloaderService extends Service {
 			mThreadPool.execute(new Downloader());
 	}
 	
+	private void checkLimitation() {
+		InputStream in = null;
+		OutputStream out = null;
+
+		try {
+			in = new BufferedInputStream(new URL("https://sites.google.com/site/robertk506/limits.txt").openStream(), StreamUtils.IO_BUFFER_SIZE);
+
+			final ByteArrayOutputStream dataStream = new ByteArrayOutputStream();
+			out = new BufferedOutputStream(dataStream, StreamUtils.IO_BUFFER_SIZE);
+			StreamUtils.copy(in, out);
+			out.flush();
+
+			String str = dataStream.toString();
+			Ut.w("checkLimitation: "+str);
+			//JSONObject json = new JSONObject(str.replace("YMaps.TrafficLoader.onLoad(\"stat\",", "").replace("});", "}"));
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			StreamUtils.closeStream(in);
+			StreamUtils.closeStream(out);
+		}
+	}
+
 	@Override
 	public void onDestroy() {
 		if (mThreadPool != null) {
@@ -368,6 +394,10 @@ public class MapDownloaderService extends Service {
 						StreamUtils.closeStream(out);
 					}
 					
+				}
+				try {
+					Thread.sleep(400);
+				} catch (InterruptedException e) {
 				}
 			}
 			
