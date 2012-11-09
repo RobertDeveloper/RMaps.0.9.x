@@ -24,6 +24,7 @@ import android.os.IBinder;
 import android.os.Message;
 import android.os.RemoteCallbackList;
 import android.os.RemoteException;
+import android.widget.Toast;
 
 import com.robert.maps.R;
 import com.robert.maps.tileprovider.TileProviderFileBase;
@@ -34,132 +35,139 @@ import com.robert.maps.utils.Ut;
 
 public class MapDownloaderService extends Service {
 	private final int THREADCOUNT = 5;
-
-    private NotificationManager mNM;
-    private Notification mNotification;
-    private PendingIntent mContentIntent = null;
+	
+	private NotificationManager mNM;
+	private Notification mNotification;
+	private PendingIntent mContentIntent = null;
 	private int mZoomArr[];
 	private int mCoordArr[];
 	private String mMapID;
+	private int mZoom;
 	private String mOfflineMapName;
 	private boolean mOverwriteFile;
 	private boolean mOverwriteTiles;
 	private TileIterator mTileIterator;
 	private SQLiteMapDatabase mMapDatabase;
 	private TileSource mTileSource;
-	private ExecutorService mThreadPool = Executors.newFixedThreadPool(THREADCOUNT, new SimpleThreadFactory("MapDownloaderService"));
+	private ExecutorService mThreadPool = Executors.newFixedThreadPool(THREADCOUNT, new SimpleThreadFactory(
+			"MapDownloaderService"));
 	private Handler mHandler = new DownloaderHanler();
 	final RemoteCallbackList<IDownloaderCallback> mCallbacks = new RemoteCallbackList<IDownloaderCallback>();
 	private int mTileCntTotal = 0, mTileCnt = 0, mErrorCnt = 0;
 	private long mStartTime = 0;
 	
-    private final IRemoteService.Stub mBinder = new IRemoteService.Stub() {
-        public void registerCallback(IDownloaderCallback cb) {
-            if (cb != null) { 
-            	mCallbacks.register(cb);
-	            if(mStartTime > 0)
+	private final IRemoteService.Stub mBinder = new IRemoteService.Stub() {
+		public void registerCallback(IDownloaderCallback cb) {
+			if (cb != null) {
+				mCallbacks.register(cb);
+				if (mStartTime > 0)
 					try {
-						cb.downloadStart(mTileCntTotal, mStartTime, mOfflineMapName, mCoordArr[0], mCoordArr[1], mCoordArr[2], mCoordArr[3]);
+						cb.downloadStart(mTileCntTotal, mStartTime, mOfflineMapName, mMapID, mZoom, mCoordArr[0], mCoordArr[1],
+								mCoordArr[2], mCoordArr[3]);
 					} catch (RemoteException e) {
 					}
-            }
-        }
-        public void unregisterCallback(IDownloaderCallback cb) {
-            if (cb != null) mCallbacks.unregister(cb);
-        }
-    };
-
+			}
+		}
+		
+		public void unregisterCallback(IDownloaderCallback cb) {
+			if (cb != null)
+				mCallbacks.unregister(cb);
+		}
+	};
 	
 	@Override
 	public void onCreate() {
 		super.onCreate();
 		
-		mNM = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
+		mNM = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 	}
-
+	
 	@Override
 	public void onStart(Intent intent, int startId) {
 		handleCommand(intent);
 	}
-
+	
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		handleCommand(intent);
 		return START_STICKY;
 	}
-
+	
 	private void handleCommand(Intent intent) {
-		if(intent != null) {
-			if(intent.getAction().equalsIgnoreCase("com.robert.maps.mapdownloader")) {
-				mZoomArr = intent.getIntArrayExtra("ZOOM");
-				mCoordArr = intent.getIntArrayExtra("COORD");
-				mMapID = intent.getStringExtra("MAPID");
-				mOfflineMapName = intent.getStringExtra("OFFLINEMAPNAME");
-				mOverwriteFile = intent.getBooleanExtra("overwritefile", true);
-				mOverwriteTiles = intent.getBooleanExtra("overwritetiles", false);
+		if(mStartTime > 0) {
+			Toast.makeText(this, R.string.downloader_notif_text, Toast.LENGTH_LONG).show();
+			return;
+		}
 		
-				mContentIntent = PendingIntent.getActivity(this, 0, new Intent(this, DownloaderActivity.class)
-				.putExtra("MAPID", mMapID)
-				.putExtra("Latitude", mCoordArr[2] - mCoordArr[0])
-				.putExtra("Longitude", mCoordArr[3] - mCoordArr[1])
-				.putExtra("ZoomLevel", mZoomArr[0])
-				.putExtra("OFFLINEMAPNAME", mOfflineMapName)
-				, 0);
-				showNotification();
-				
-				try {
-					mTileSource = new TileSource(this, mMapID, true, false);
-				} catch (Exception e1) {
-					e1.printStackTrace();
-					return;
-				}
+		mZoomArr = intent.getIntArrayExtra("ZOOM");
+		mCoordArr = intent.getIntArrayExtra("COORD");
+		mMapID = intent.getStringExtra("MAPID");
+		mZoom = intent.getIntExtra("ZOOMCUR", 0);
+		mOfflineMapName = intent.getStringExtra("OFFLINEMAPNAME");
+		mOverwriteFile = intent.getBooleanExtra("overwritefile", true);
+		mOverwriteTiles = intent.getBooleanExtra("overwritetiles", false);
 		
-				final SQLiteMapDatabase cacheDatabase = new SQLiteMapDatabase();
-				final File folder = Ut.getRMapsMapsDir(this);
-				final File file = new File(folder.getAbsolutePath()+"/"+mOfflineMapName+".sqlitedb");
-				if(mOverwriteFile) {
-					File[] files = folder.listFiles();
-					if(files != null) {
-						for (int i = 0; i < files.length; i++) {
-							if(files[i].getName().startsWith(file.getName()))
-								files[i].delete();
-						}
-					}
-				}
-
-				try {
-					cacheDatabase.setFile(file.getAbsolutePath());
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-				mMapDatabase = cacheDatabase;
-				
-				mTileCnt = 0;
-				mTileCntTotal = getTileCount(mZoomArr, mCoordArr);
-				mTileIterator = new TileIterator(mZoomArr, mCoordArr);
-				mStartTime = System.currentTimeMillis();
+		mContentIntent = PendingIntent.getActivity(
+				this,
+				0,
+				new Intent(this, DownloaderActivity.class).putExtra("MAPID", mMapID)
+						.putExtra("Latitude", mCoordArr[2] - mCoordArr[0])
+						.putExtra("Longitude", mCoordArr[3] - mCoordArr[1]).putExtra("ZoomLevel", mZoomArr[0])
+						.putExtra("OFFLINEMAPNAME", mOfflineMapName), 0);
+		showNotification();
 		
-		        final int N = mCallbacks.beginBroadcast();
-		        for (int i=0; i<N; i++) {
-					try {
-						mCallbacks.getBroadcastItem(i).downloadStart(mTileCntTotal, mStartTime, mOfflineMapName, mCoordArr[0], mCoordArr[1], mCoordArr[2], mCoordArr[3]);
-					} catch (RemoteException e) {
-					}
-		        }
-		        mCallbacks.finishBroadcast();
-				
-				for(int i = 0; i < THREADCOUNT; i++)
-					mThreadPool.execute(new Downloader());
+		try {
+			mTileSource = new TileSource(this, mMapID, true, false);
+		} catch (Exception e1) {
+			e1.printStackTrace();
+			return;
+		}
+		
+		final SQLiteMapDatabase cacheDatabase = new SQLiteMapDatabase();
+		final File folder = Ut.getRMapsMapsDir(this);
+		final File file = new File(folder.getAbsolutePath() + "/" + mOfflineMapName + ".sqlitedb");
+		if (mOverwriteFile) {
+			File[] files = folder.listFiles();
+			if (files != null) {
+				for (int i = 0; i < files.length; i++) {
+					if (files[i].getName().startsWith(file.getName()))
+						files[i].delete();
+				}
 			}
 		}
+		
+		try {
+			cacheDatabase.setFile(file.getAbsolutePath());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		mMapDatabase = cacheDatabase;
+		
+		mTileCnt = 0;
+		mTileCntTotal = getTileCount(mZoomArr, mCoordArr);
+		mTileIterator = new TileIterator(mZoomArr, mCoordArr);
+		mStartTime = System.currentTimeMillis();
+		
+		final int N = mCallbacks.beginBroadcast();
+		for (int i = 0; i < N; i++) {
+			try {
+				mCallbacks.getBroadcastItem(i).downloadStart(mTileCntTotal, mStartTime, mOfflineMapName, mMapID, mZoom, mCoordArr[0],
+						mCoordArr[1], mCoordArr[2], mCoordArr[3]);
+			} catch (RemoteException e) {
+			}
+		}
+		mCallbacks.finishBroadcast();
+		
+		for (int i = 0; i < THREADCOUNT; i++)
+			mThreadPool.execute(new Downloader());
 	}
-
+	
 	@Override
 	public void onDestroy() {
-		if(mThreadPool != null) {
+		if (mThreadPool != null) {
 			mThreadPool.shutdown();
 			try {
-				if(!mThreadPool.awaitTermination(5L, TimeUnit.SECONDS)) {
+				if (!mThreadPool.awaitTermination(5L, TimeUnit.SECONDS)) {
 					mThreadPool.shutdownNow();
 				}
 			} catch (InterruptedException e) {
@@ -168,74 +176,89 @@ public class MapDownloaderService extends Service {
 		
 		try {
 			TileProviderFileBase provider = new TileProviderFileBase(this);
-			provider.CommitIndex(Ut.FileName2ID("usermap_"+mOfflineMapName+".sqlitedb"), 0, 0, mMapDatabase.getMinZoom(), mMapDatabase.getMaxZoom());
+			provider.CommitIndex(Ut.FileName2ID("usermap_" + mOfflineMapName + ".sqlitedb"), 0, 0,
+					mMapDatabase.getMinZoom(), mMapDatabase.getMaxZoom());
 			provider.Free();
 		} catch (Exception e1) {
 		}
-
+		
 		final int N = mCallbacks.beginBroadcast();
-        for (int i=0; i<N; i++) {
+		for (int i = 0; i < N; i++) {
 			try {
 				mCallbacks.getBroadcastItem(i).downloadDone();
 			} catch (RemoteException e) {
 			}
-        }
-        mCallbacks.finishBroadcast();
-
-		if(mTileSource != null)
+		}
+		mCallbacks.finishBroadcast();
+		
+		if (mTileSource != null)
 			mTileSource.Free();
 		
-		if(mMapDatabase != null)
+		if (mMapDatabase != null)
 			mMapDatabase.Free();
 		
 		mNM.cancel(R.id.downloader_service);
 		mNM = null;
 		
+		mStartTime = 0;
+		
 		super.onDestroy();
 	}
-
+	
 	private void showNotification() {
-		// In this sample, we'll use the same text for the ticker and the expanded notification
+		// In this sample, we'll use the same text for the ticker and the
+		// expanded notification
 		CharSequence text = getText(R.string.downloader_notif_ticket);
-
+		
 		// Set the icon, scrolling text and timestamp
 		mNotification = new Notification(R.drawable.r_download, text, System.currentTimeMillis());
 		mNotification.flags = mNotification.flags | Notification.FLAG_NO_CLEAR;
-
-		// The PendingIntent to launch our activity if the user selects this notification
-		//mContentIntent = PendingIntent.getActivity(this, 0, new Intent(this, MainActivity.class), 0);
+		
+		// The PendingIntent to launch our activity if the user selects this
+		// notification
+		// mContentIntent = PendingIntent.getActivity(this, 0, new Intent(this,
+		// MainActivity.class), 0);
 		// Set the info for the views that show in the notification panel.
-		mNotification.setLatestEventInfo(this, getText(R.string.downloader_notif_title), getText(R.string.downloader_notif_text), mContentIntent);
-
+		mNotification.setLatestEventInfo(this, getText(R.string.downloader_notif_title),
+				getText(R.string.downloader_notif_text), mContentIntent);
+		
 		// Send the notification.
-		// We use a string id because it is a unique number. We use it later to cancel.
+		// We use a string id because it is a unique number. We use it later to
+		// cancel.
 		mNM.notify(R.id.downloader_service, mNotification);
 	}
 	
 	private void downloadDone() {
 		stopSelf();
-
-//		((NotificationManager)getSystemService(NOTIFICATION_SERVICE)).cancel(R.string.remote_service_started);
-//		
-//		CharSequence text = getText(R.string.auto_follow_enabled);
-//
-//		// Set the icon, scrolling text and timestamp
-//		Notification notification = new Notification(R.drawable.track_writer_service, text, System.currentTimeMillis());
-//		//notification.flags = notification.flags | Notification.FLAG_NO_CLEAR;
-//
-//		// The PendingIntent to launch our activity if the user selects this notification
-//		PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
-//				new Intent(this, AreaSelectorActivity.class), 0);
-//
-//		// Set the info for the views that show in the notification panel.
-//		notification.setLatestEventInfo(this, getText(R.string.auto_follow_enabled), text, contentIntent);
-//
-//		// Send the notification.
-//		// We use a string id because it is a unique number. We use it later to cancel.
-//		((NotificationManager)getSystemService(NOTIFICATION_SERVICE)).notify(R.string.auto_follow_enabled, notification);
+		
+		// ((NotificationManager)getSystemService(NOTIFICATION_SERVICE)).cancel(R.string.remote_service_started);
+		//
+		// CharSequence text = getText(R.string.auto_follow_enabled);
+		//
+		// // Set the icon, scrolling text and timestamp
+		// Notification notification = new
+		// Notification(R.drawable.track_writer_service, text,
+		// System.currentTimeMillis());
+		// //notification.flags = notification.flags |
+		// Notification.FLAG_NO_CLEAR;
+		//
+		// // The PendingIntent to launch our activity if the user selects this
+		// notification
+		// PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
+		// new Intent(this, AreaSelectorActivity.class), 0);
+		//
+		// // Set the info for the views that show in the notification panel.
+		// notification.setLatestEventInfo(this,
+		// getText(R.string.auto_follow_enabled), text, contentIntent);
+		//
+		// // Send the notification.
+		// // We use a string id because it is a unique number. We use it later
+		// to cancel.
+		// ((NotificationManager)getSystemService(NOTIFICATION_SERVICE)).notify(R.string.auto_follow_enabled,
+		// notification);
 		
 	}
-
+	
 	@Override
 	public IBinder onBind(Intent intent) {
 		return mBinder;
@@ -243,41 +266,45 @@ public class MapDownloaderService extends Service {
 	
 	private class DownloaderHanler extends Handler {
 		private int doneCounter = 0;
-
+		
 		@Override
 		public void handleMessage(Message msg) {
 			switch (msg.what) {
 			case R.id.done:
 				doneCounter++;
-				if(doneCounter >= THREADCOUNT)
+				if (doneCounter >= THREADCOUNT)
 					downloadDone();
 				break;
 			case R.id.tile_done:
 			case R.id.tile_error:
 				mTileCnt++;
-				if(msg.what == R.id.tile_error)
+				if (msg.what == R.id.tile_error)
 					mErrorCnt++;
 				
-				mNotification.setLatestEventInfo(MapDownloaderService.this, getText(R.string.downloader_notif_title)
-						, getText(R.string.downloader_notif_text)+String.format(": %d%% (%d/%d)", (mTileCnt * 100 / mTileCntTotal), mTileCnt, mTileCntTotal)
-						, mContentIntent);
-				if(mNM != null)
+				mNotification.setLatestEventInfo(
+						MapDownloaderService.this,
+						getText(R.string.downloader_notif_title),
+						getText(R.string.downloader_notif_text)
+								+ String.format(": %d%% (%d/%d)", (mTileCnt * 100 / mTileCntTotal), mTileCnt,
+										mTileCntTotal), mContentIntent);
+				if (mNM != null)
 					mNM.notify(R.id.downloader_service, mNotification);
-
-		        final int N = mCallbacks.beginBroadcast();
-		        final XYZ tileParam = (XYZ) msg.obj;
-		        for (int i=0; i<N; i++) {
+				
+				final int N = mCallbacks.beginBroadcast();
+				final XYZ tileParam = (XYZ) msg.obj;
+				for (int i = 0; i < N; i++) {
 					try {
-						if(tileParam == null)
+						if (tileParam == null)
 							mCallbacks.getBroadcastItem(i).downloadTileDone(mTileCnt, mErrorCnt, -1, -1, -1);
 						else
-							mCallbacks.getBroadcastItem(i).downloadTileDone(mTileCnt, mErrorCnt, tileParam.X, tileParam.Y, tileParam.Z);
+							mCallbacks.getBroadcastItem(i).downloadTileDone(mTileCnt, mErrorCnt, tileParam.X,
+									tileParam.Y, tileParam.Z);
 					} catch (RemoteException e) {
 					}
-		        }
-		        mCallbacks.finishBroadcast();
-
-		        break;
+				}
+				mCallbacks.finishBroadcast();
+				
+				break;
 			}
 		}
 		
@@ -299,14 +326,14 @@ public class MapDownloaderService extends Service {
 					}
 				}
 				
-				
 				if (tileParam != null) {
 					tileParam.TILEURL = mTileSource.getTileURLGenerator().Get(tileParam.X, tileParam.Y, tileParam.Z);
 					InputStream in = null;
 					OutputStream out = null;
 					
 					try {
-						if(mOverwriteFile || mOverwriteTiles || !mOverwriteTiles && !mMapDatabase.existsTile(tileParam.X, tileParam.Y, tileParam.Z)) {
+						if (mOverwriteFile || mOverwriteTiles || !mOverwriteTiles
+								&& !mMapDatabase.existsTile(tileParam.X, tileParam.Y, tileParam.Z)) {
 							byte[] data = null;
 							
 							in = new BufferedInputStream(new URL(tileParam.TILEURL).openStream(),
@@ -320,20 +347,20 @@ public class MapDownloaderService extends Service {
 							data = dataStream.toByteArray();
 							
 							if (data != null) {
-								if(mOverwriteTiles)
+								if (mOverwriteTiles)
 									mMapDatabase.deleteTile(tileParam.X, tileParam.Y, tileParam.Z);
-	
+								
 								mMapDatabase.putTile(tileParam.X, tileParam.Y, tileParam.Z, data);
 							}
 						}
 						
-						if(mHandler != null)
+						if (mHandler != null)
 							Message.obtain(mHandler, R.id.tile_done, tileParam).sendToTarget();
 					} catch (Exception e) {
-						if(mHandler != null)
+						if (mHandler != null)
 							Message.obtain(mHandler, R.id.tile_error, tileParam).sendToTarget();
 					} catch (OutOfMemoryError e) {
-						if(mHandler != null)
+						if (mHandler != null)
 							Message.obtain(mHandler, R.id.tile_error, tileParam).sendToTarget();
 						System.gc();
 					} finally {
@@ -344,20 +371,22 @@ public class MapDownloaderService extends Service {
 				}
 			}
 			
-			if(mHandler != null)
+			if (mHandler != null)
 				Message.obtain(mHandler, R.id.done).sendToTarget();
 		}
-
+		
 	}
 	
 	private int getTileCount(int[] zArr, int[] coordArr) {
 		int xMin = 0, xMax = 0;
 		int yMin = 0, yMax = 0;
 		int cnt = 0;
-
-		for(int i = 0; i < zArr.length; i++) {
-			final int c0[] = Util.getMapTileFromCoordinates(coordArr[0], coordArr[1], zArr[i], null, mTileSource.PROJECTION);
-			final int c1[] = Util.getMapTileFromCoordinates(coordArr[2], coordArr[3], zArr[i], null, mTileSource.PROJECTION);
+		
+		for (int i = 0; i < zArr.length; i++) {
+			final int c0[] = Util.getMapTileFromCoordinates(coordArr[0], coordArr[1], zArr[i], null,
+					mTileSource.PROJECTION);
+			final int c1[] = Util.getMapTileFromCoordinates(coordArr[2], coordArr[3], zArr[i], null,
+					mTileSource.PROJECTION);
 			xMin = Math.min(c0[0], c1[0]);
 			xMax = Math.max(c0[0], c1[0]);
 			yMin = Math.min(c0[1], c1[1]);
@@ -380,20 +409,22 @@ public class MapDownloaderService extends Service {
 			y = 1;
 			coordArr = coordarr;
 		}
-
+		
 		public boolean hasNext() {
 			x++;
-			if(x > xMax) {
+			if (x > xMax) {
 				y++;
 				x = xMin;
-				if(y > yMax) {
+				if (y > yMax) {
 					zInd++;
 					y = yMin;
-					if(zInd > zArr.length - 1) {
+					if (zInd > zArr.length - 1) {
 						return false;
 					}
-					final int c0[] = Util.getMapTileFromCoordinates(coordArr[0], coordArr[1], zArr[zInd], null, mTileSource.PROJECTION);
-					final int c1[] = Util.getMapTileFromCoordinates(coordArr[2], coordArr[3], zArr[zInd], null, mTileSource.PROJECTION);
+					final int c0[] = Util.getMapTileFromCoordinates(coordArr[0], coordArr[1], zArr[zInd], null,
+							mTileSource.PROJECTION);
+					final int c1[] = Util.getMapTileFromCoordinates(coordArr[2], coordArr[3], zArr[zInd], null,
+							mTileSource.PROJECTION);
 					yMin = Math.min(c0[0], c1[0]);
 					yMax = Math.max(c0[0], c1[0]);
 					xMin = Math.min(c0[1], c1[1]);
@@ -405,7 +436,7 @@ public class MapDownloaderService extends Service {
 			
 			return true;
 		}
-
+		
 		public XYZ next() {
 			try {
 				return new XYZ(null, x, y, zArr[zInd]);
@@ -413,7 +444,7 @@ public class MapDownloaderService extends Service {
 				return null;
 			}
 		}
-
+		
 	}
 	
 	private class XYZ {

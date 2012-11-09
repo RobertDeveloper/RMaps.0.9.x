@@ -75,59 +75,59 @@ public class TileProviderInet extends TileProviderBase {
 		if(bmp != null)
 			return bmp;
 		
-		if (this.mPending.contains(tileurl))
-			return super.getTile(x, y, z);
-		
-		mPending.add(tileurl);
-		
-		mThreadPool.execute(new Runnable() {
-			public void run() {
-				InputStream in = null;
-				OutputStream out = null;
-
-				try {
-					Ut.i("Downloading Maptile from url: " + tileurl);
-
-					byte[] data = null;
-
-					if(mCacheProvider != null)
-						data = mCacheProvider.getTile(tileurl, x, y, z);
-
-					if(data == null) {
-						Ut.w("FROM INTERNET "+tileurl);
-						in = new BufferedInputStream(new URL(tileurl).openStream(), StreamUtils.IO_BUFFER_SIZE);
-
-						final ByteArrayOutputStream dataStream = new ByteArrayOutputStream();
-						out = new BufferedOutputStream(dataStream, StreamUtils.IO_BUFFER_SIZE);
-						StreamUtils.copy(in, out);
-						out.flush();
-
-						data = dataStream.toByteArray();
-
-						if(mCacheProvider != null)
-							mCacheProvider.putTile(tileurl, x, y, z, data);
-					}
-
-					if(data != null) {
-						final Bitmap bmp = BitmapFactory.decodeByteArray(data, 0, data.length);
-						mTileCache.putTile(tileurl, bmp);
-					}
-
+		if (!mThreadPool.isTerminated() && !mThreadPool.isShutdown()) {
+			if (this.mPending.contains(tileurl))
+				return super.getTile(x, y, z);
+			
+			mPending.add(tileurl);
+			
+			mThreadPool.execute(new Runnable() {
+				public void run() {
+					InputStream in = null;
+					OutputStream out = null;
 					
-					SendMessageSuccess();
-				} catch (Exception e) {
-					SendMessageFail();
-				} catch (OutOfMemoryError e) {
-					SendMessageFail();
-					System.gc();
-				} finally {
-					StreamUtils.closeStream(in);
-					StreamUtils.closeStream(out);
+					try {
+						Ut.i("Downloading Maptile from url: " + tileurl);
+						
+						byte[] data = null;
+						
+						if (mCacheProvider != null)
+							data = mCacheProvider.getTile(tileurl, x, y, z);
+						
+						if (data == null) {
+							Ut.w("FROM INTERNET " + tileurl);
+							in = new BufferedInputStream(new URL(tileurl).openStream(), StreamUtils.IO_BUFFER_SIZE);
+							
+							final ByteArrayOutputStream dataStream = new ByteArrayOutputStream();
+							out = new BufferedOutputStream(dataStream, StreamUtils.IO_BUFFER_SIZE);
+							StreamUtils.copy(in, out);
+							out.flush();
+							
+							data = dataStream.toByteArray();
+							
+							if (mCacheProvider != null)
+								mCacheProvider.putTile(tileurl, x, y, z, data);
+						}
+						
+						if (data != null) {
+							final Bitmap bmp = BitmapFactory.decodeByteArray(data, 0, data.length);
+							mTileCache.putTile(tileurl, bmp);
+						}
+						
+						SendMessageSuccess();
+					} catch (Exception e) {
+						SendMessageFail();
+					} catch (OutOfMemoryError e) {
+						SendMessageFail();
+						System.gc();
+					} finally {
+						StreamUtils.closeStream(in);
+						StreamUtils.closeStream(out);
+					}
+					mPending.remove(tileurl);
 				}
-				mPending.remove(tileurl);
-			}
-		});
-		
+			});
+		}
 		return mLoadingMapTile;
 	}
 

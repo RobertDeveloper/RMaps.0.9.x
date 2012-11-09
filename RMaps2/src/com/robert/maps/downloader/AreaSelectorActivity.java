@@ -8,13 +8,10 @@ import javax.xml.parsers.SAXParserFactory;
 import org.andnav.osm.util.GeoPoint;
 
 import android.app.Activity;
-import android.content.ComponentName;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -35,7 +32,6 @@ import com.robert.maps.kml.XMLparser.PredefMapsParser;
 import com.robert.maps.tileprovider.TileSource;
 import com.robert.maps.tileprovider.TileSourceBase;
 import com.robert.maps.utils.RException;
-import com.robert.maps.utils.Ut;
 import com.robert.maps.view.IMoveListener;
 import com.robert.maps.view.MapView;
 import com.robert.maps.view.TileViewOverlay;
@@ -49,30 +45,19 @@ public class AreaSelectorActivity extends Activity {
 	private TileSource mTileSource;
 	private MoveListener mMoveListener = new MoveListener();
 	private int[] mZoomArr = new int[0];
+//	ServiceConnection mConnection;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-//		ServiceConnection connection = new ServiceConnection() {
+//		mConnection = new ServiceConnection() {
 //			public void onServiceConnected(ComponentName className, IBinder service) {
-//				Ut.w("AreaSelectorActivity onServiceConnected");
+//				Toast.makeText(AreaSelectorActivity.this, R.string.downloader_notif_text, Toast.LENGTH_LONG).show();
+//				AreaSelectorActivity.this.finish();
 //			}
-//
-//			public void onServiceDisconnected(ComponentName className) {
-//			}
+//			public void onServiceDisconnected(ComponentName className) {}
 //		};
-//		final boolean res = bindService(new Intent(IRemoteService.class.getName()), connection, 0); 
-//		unbindService(connection);
-//		final boolean res = MapDownloaderService.isInProgress();
-//		if(res) {
-//			
-//			//startActivity(new Intent(this, DownloaderActivity.class));
-//			Toast.makeText(this, "Downloading in progress...", Toast.LENGTH_LONG).show();
-//			finish();
-//			return;
-//		}
-			
 
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.area_selector);
@@ -201,6 +186,7 @@ public class AreaSelectorActivity extends Activity {
 		intent.putExtra("ZOOM", getZoomArr());
 		intent.putExtra("COORD", mAreaSelectorOverlay.getCoordArr());
 		intent.putExtra("MAPID", mTileSource.ID);
+		intent.putExtra("ZOOMCUR", mMap.getZoomLevel());
 		intent.putExtra("overwritefile", ((CheckBox) findViewById(R.id.overwritefile)).isChecked());
 		intent.putExtra("overwritetiles", ((CheckBox) findViewById(R.id.overwritetiles)).isChecked());
 		final String filename = ((EditText) findViewById(R.id.name)).getText().toString();
@@ -259,6 +245,8 @@ public class AreaSelectorActivity extends Activity {
 
 	@Override
 	protected void onResume() {
+//		bindService(new Intent(IRemoteService.class.getName()), mConnection, 0); 
+		
 		final SharedPreferences uiState = getPreferences(Activity.MODE_PRIVATE);
 		
 		if(mTileSource != null)
@@ -299,6 +287,8 @@ public class AreaSelectorActivity extends Activity {
 
 	@Override
 	protected void onPause() {
+//		unbindService(mConnection);
+
 		SharedPreferences uiState = getPreferences(Activity.MODE_PRIVATE);
 		SharedPreferences.Editor editor = uiState.edit();
 		editor.putString(MAPNAMEAREASELECTOR, mTileSource.ID);

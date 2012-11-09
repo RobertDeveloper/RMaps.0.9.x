@@ -12,6 +12,7 @@ import android.graphics.Path;
 import android.graphics.Point;
 
 import com.robert.maps.R;
+import com.robert.maps.utils.Ut;
 import com.robert.maps.view.TileView;
 import com.robert.maps.view.TileViewOverlay;
 
