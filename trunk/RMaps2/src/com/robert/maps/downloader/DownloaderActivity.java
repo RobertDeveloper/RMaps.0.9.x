@@ -31,9 +31,15 @@ public class DownloaderActivity extends Activity {
 	private static final String CNT = "cnt";
 	private static final String ERRCNT = "errcnt";
 	private static final String TIME = "time";
+	private static final String MAPID = "mapid";
+	private static final String ZOOM = "zoom";
+	private static final String LAT = "lat";
+	private static final String LON = "lon";
 
 	private MapView mMap;
 	private TileSource mTileSource;
+	private String mMapID;
+	private GeoPoint mCenter;
 	private DownloadedAreaOverlay mDownloadedAreaOverlay;
 	private ServiceConnection mConnection;
 	IRemoteService mService = null;
@@ -51,15 +57,11 @@ public class DownloaderActivity extends Activity {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.downloaderactivity);
 
-		// final SharedPreferences pref =
-		// PreferenceManager.getDefaultSharedPreferences(this);
 		SharedPreferences uiState = getPreferences(Activity.MODE_PRIVATE);
 
 		mMap = (MapView) findViewById(R.id.map);
-		// mMap.setMoveListener(mMoveListener);
-		// mMap.displayZoomControls(Integer.parseInt(pref.getString("pref_zoomctrl",
-		// "1")));
-		mMap.getController().setCenter(new GeoPoint(uiState.getInt("Latitude", 0), uiState.getInt("Longitude", 0)));
+		mCenter = new GeoPoint(uiState.getInt("Latitude", 0), uiState.getInt("Longitude", 0));
+		mMap.getController().setCenter(mCenter);
 		mMap.setLongClickable(false);
 
 		mProgress = (ProgressBar) findViewById(R.id.progress);
@@ -124,10 +126,14 @@ public class DownloaderActivity extends Activity {
 			}
 		}
 
-		public void downloadStart(int tileCnt, long startTime, String fileName, int lat0, int lon0, int lat1, int lon1) throws RemoteException {
+		public void downloadStart(int tileCnt, long startTime, String fileName, String mapid, int zoom, int lat0, int lon0, int lat1, int lon1) throws RemoteException {
 			Bundle b = new Bundle();
 			b.putInt(CNT, tileCnt);
 			b.putLong(TIME, startTime);
+			b.putString(MAPID, mapid);
+			b.putInt(ZOOM, zoom);
+			b.putInt(LAT, lat0 + (lat1 - lat0) / 2);
+			b.putInt(LON, lon0 + (lon1 - lon0) / 2);
 			mFileName = fileName;
 			mDownloadedAreaOverlay.Init(DownloaderActivity.this, lat0, lon0, lat1, lon1);
 			mHandler.sendMessage(mHandler.obtainMessage(R.id.download_start, b));
@@ -143,7 +149,6 @@ public class DownloaderActivity extends Activity {
 
 	};
 
-	@SuppressLint("HandlerLeak")
 	private final Handler mHandler = new Handler() {
 		@Override
 		public void handleMessage(Message msg) {
@@ -161,11 +166,34 @@ public class DownloaderActivity extends Activity {
 				Bundle b = (Bundle) msg.obj;
 				mTileCntTotal = b.getInt(CNT);
 				mStartTime = b.getLong(TIME);
+				mMapID = b.getString(MAPID);
+				final int zoom =b.getInt(ZOOM);
+				final int lat =b.getInt(LAT);
+				final int lon =b.getInt(LON);
+				
 				setTitle();
 
 				mProgress.setMax(mTileCntTotal);
 				mTextVwTileCnt.setText(Integer.toString(mTileCntTotal));
 				mTextVwTime.setText("00:00");
+
+				boolean needChangeTileSource = true;
+				if (mTileSource != null) {
+					if(mMapID != mTileSource.ID)
+						mTileSource.Free();
+					else
+						needChangeTileSource = false;
+				}
+
+				if(needChangeTileSource) {
+					try {
+						mTileSource = new TileSource(DownloaderActivity.this, mMapID);
+					} catch (Exception e) {
+					}
+					mMap.setTileSource(mTileSource);
+				}
+				mMap.getController().setZoom(zoom);
+				mMap.getController().setCenter(new GeoPoint(lat, lon));
 
 				break;
 			case R.id.tile_done: 
@@ -186,6 +214,7 @@ public class DownloaderActivity extends Activity {
 			}
 		}
 	};
+	
 
 	protected void onResume() {
 		Intent intent = getIntent();
@@ -204,7 +233,6 @@ public class DownloaderActivity extends Activity {
 		}
 
 		bindService(new Intent(IRemoteService.class.getName()), mConnection, 0);
-
 		super.onResume();
 	}
 
@@ -212,6 +240,9 @@ public class DownloaderActivity extends Activity {
 	protected void onPause() {
 		unbindService(mConnection);
 		
+		if (mTileSource != null)
+			mTileSource.Free();
+
 		super.onPause();
 	}
 
