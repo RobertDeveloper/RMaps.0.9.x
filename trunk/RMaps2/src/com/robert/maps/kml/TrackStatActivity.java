@@ -10,7 +10,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.widget.TextView;
 
-import com.robert.maps.R;
+import com.robert.maps.applib.R;
 import com.robert.maps.kml.constants.PoiConstants;
 import com.robert.maps.utils.Units;
 

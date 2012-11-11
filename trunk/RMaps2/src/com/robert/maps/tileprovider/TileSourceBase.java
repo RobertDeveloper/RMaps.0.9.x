@@ -16,7 +16,7 @@ import android.preference.PreferenceManager;
 
 import com.robert.maps.MainPreferences;
 import com.robert.maps.MixedMapsPreference;
-import com.robert.maps.R;
+import com.robert.maps.applib.R;
 import com.robert.maps.kml.PoiManager;
 import com.robert.maps.kml.XMLparser.PredefMapsParser;
 import com.robert.maps.utils.RException;

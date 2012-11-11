@@ -35,7 +35,7 @@ import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Toast;
 
-import com.robert.maps.R;
+import com.robert.maps.applib.R;
 import com.robert.maps.kml.Track.TrackPoint;
 import com.robert.maps.kml.XMLparser.SimpleXML;
 import com.robert.maps.trackwriter.DatabaseHelper;
@@ -55,19 +55,16 @@ public class TrackListActivity extends ListActivity {
 
 		@Override
 		public void handleMessage(final Message msg) {
-			switch (msg.what) {
-			case R.id.about:
+			if(msg.what == R.id.about) {
 				FillData();
-				break;
-			case R.id.tracks:
+			} else if(msg.what == R.id.tracks) {
 				if(msg.arg1 == 0)
 					Toast.makeText(TrackListActivity.this, R.string.trackwriter_nothing, Toast.LENGTH_LONG).show();
 				else
 					Toast.makeText(TrackListActivity.this, R.string.trackwriter_saved, Toast.LENGTH_LONG).show();
 
 				FillData();
-				break;
-			case R.id.menu_exporttogpxpoi:
+			} else if(msg.what == R.id.menu_exporttogpxpoi) {
 				if (msg.arg1 == 0)
 					Toast
 							.makeText(TrackListActivity.this,
@@ -77,7 +74,6 @@ public class TrackListActivity extends ListActivity {
 					Toast.makeText(TrackListActivity.this,
 							getString(R.string.message_trackexported) + " " + (String) msg.obj,
 							Toast.LENGTH_LONG).show();
-				break;
 			}
 		}
 	}
@@ -266,8 +262,7 @@ public class TrackListActivity extends ListActivity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		super.onOptionsItemSelected(item);
 
-		switch(item.getItemId()){
-		case R.id.menu_importpoi:
+		if(item.getItemId() == R.id.menu_importpoi) {
 			startActivity((new Intent(this, ImportTrackActivity.class)));
 			return true;
 		}
@@ -293,27 +288,20 @@ public class TrackListActivity extends ListActivity {
 	public boolean onContextItemSelected(MenuItem item) {
 		int id = (int) ((AdapterView.AdapterContextMenuInfo)item.getMenuInfo()).id;
 
-		switch(item.getItemId()){
-		case R.id.menu_stat:
+		if(item.getItemId() == R.id.menu_stat) {
 			startActivity((new Intent(this, TrackStatActivity.class)).putExtra("id", id));
-			break;
-		case R.id.menu_editpoi:
+		} else if(item.getItemId() == R.id.menu_editpoi) {
 			startActivity((new Intent(this, TrackActivity.class)).putExtra("id", id));
-			break;
-		case R.id.menu_gotopoi:
+		} else if(item.getItemId() == R.id.menu_gotopoi) {
 			setResult(RESULT_OK, (new Intent()).putExtra("trackid", id));
 			finish();
-			break;
-		case R.id.menu_deletepoi:
+		} else if(item.getItemId() == R.id.menu_deletepoi) {
 			mPoiManager.deleteTrack(id);
 			FillData();
-	        break;
-		case R.id.menu_exporttogpxpoi:
+		} else if(item.getItemId() == R.id.menu_exporttogpxpoi) {
 			DoExportTrackGPX(id);
-	        break;
-		case R.id.menu_exporttokmlpoi:
+		} else if(item.getItemId() == R.id.menu_exporttokmlpoi) {
 			DoExportTrackKML(id);
-	        break;
 		}
 
 		return super.onContextItemSelected(item);

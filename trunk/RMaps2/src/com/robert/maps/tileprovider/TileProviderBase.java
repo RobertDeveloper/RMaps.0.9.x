@@ -9,7 +9,7 @@ import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.os.Message;
 
-import com.robert.maps.R;
+import com.robert.maps.applib.R;
 
 public class TileProviderBase {
 	protected Bitmap mLoadingMapTile;

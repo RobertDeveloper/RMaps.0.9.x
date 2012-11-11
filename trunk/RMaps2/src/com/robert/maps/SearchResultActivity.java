@@ -15,6 +15,7 @@ import android.app.SearchManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
+import com.robert.maps.applib.R;
 
 public class SearchResultActivity extends Activity {
 

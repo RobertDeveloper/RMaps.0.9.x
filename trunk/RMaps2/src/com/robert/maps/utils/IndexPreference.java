@@ -14,7 +14,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 
-import com.robert.maps.R;
+import com.robert.maps.applib.R;
 
 public class IndexPreference extends Preference {
     private Button btnClear;

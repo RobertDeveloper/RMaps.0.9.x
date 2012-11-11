@@ -30,6 +30,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 
+import com.robert.maps.applib.R;
 import com.robert.maps.kml.PoiManager;
 import com.robert.maps.kml.XMLparser.PredefMapsParser;
 import com.robert.maps.kml.constants.PoiConstants;
@@ -256,16 +257,13 @@ public class MixedMapsPreference extends PreferenceActivity implements OnSharedP
 
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
-		switch(item.getItemId()) {
-		case R.id.add_dualmap:
+		if(item.getItemId() == R.id.add_dualmap) {
 			mPoiManager.addMap(1, getMapPairParams("").toString());
 			loadMixedMaps();
-			break;
-		case R.id.add_ownsourcemap:
+		} else if(item.getItemId() == R.id.add_ownsourcemap) {
 			mPoiManager.addMap(2, getMapCustomParams("").toString());
 			loadMixedMaps();
-			break;
-		case R.id.menu_deletepoi:
+		} else if(item.getItemId() == R.id.menu_deletepoi) {
 			PreferenceGroup prefGroup = (PreferenceGroup) findPreference("pref_mixmaps_group");
 			final String key = prefGroup.getPreference(((AdapterView.AdapterContextMenuInfo)item.getMenuInfo()).position - 2).getKey();
 			final String params[] = key.split("_");
@@ -283,7 +281,6 @@ public class MixedMapsPreference extends PreferenceActivity implements OnSharedP
 			editor.commit();
 			
 			loadMixedMaps();
-			break;
 		}
 		return super.onContextItemSelected(item);
 	}

@@ -16,7 +16,7 @@ import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
 import android.widget.TextView;
 
-import com.robert.maps.R;
+import com.robert.maps.applib.R;
 import com.robert.maps.view.TileView;
 import com.robert.maps.view.TileViewOverlay;
 

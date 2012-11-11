@@ -19,7 +19,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.robert.maps.MainPreferences;
-import com.robert.maps.R;
+import com.robert.maps.applib.R;
 import com.robert.maps.tileprovider.TileSourceBase;
 import com.robert.maps.utils.OnlineCachePreference;
 

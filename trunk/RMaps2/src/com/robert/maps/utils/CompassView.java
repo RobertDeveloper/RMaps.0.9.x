@@ -5,7 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.view.View;
 
-import com.robert.maps.R;
+import com.robert.maps.applib.R;
 
 public class CompassView extends View {
 	private Drawable mCompass;

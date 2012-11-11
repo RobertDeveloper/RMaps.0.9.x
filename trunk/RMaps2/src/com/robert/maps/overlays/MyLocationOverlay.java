@@ -13,7 +13,7 @@ import android.graphics.Point;
 import android.location.Location;
 import android.preference.PreferenceManager;
 
-import com.robert.maps.R;
+import com.robert.maps.applib.R;
 import com.robert.maps.view.TileView;
 import com.robert.maps.view.TileView.OpenStreetMapViewProjection;
 import com.robert.maps.view.TileViewOverlay;

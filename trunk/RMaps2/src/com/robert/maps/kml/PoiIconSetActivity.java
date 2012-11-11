@@ -11,7 +11,7 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.AdapterView.OnItemClickListener;
 
-import com.robert.maps.R;
+import com.robert.maps.applib.R;
 
 public class PoiIconSetActivity extends Activity {
 	private int indx[] = {R.drawable.poi, R.drawable.poiblue, R.drawable.poigreen, R.drawable.poiwhite, R.drawable.poiyellow};

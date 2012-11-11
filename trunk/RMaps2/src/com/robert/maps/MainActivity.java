@@ -70,6 +70,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.apps.analytics.GoogleAnalyticsTracker;
+import com.robert.maps.applib.R;
 import com.robert.maps.downloader.AreaSelectorActivity;
 import com.robert.maps.kml.PoiActivity;
 import com.robert.maps.kml.PoiListActivity;
@@ -750,11 +751,10 @@ public class MainActivity extends Activity {
 		super.onOptionsItemSelected(item);
 		final GeoPoint point = mMap.getMapCenter();
 
-		switch (item.getItemId()) {
-		case (R.id.area_selector):
+		if(item.getItemId() == R.id.area_selector) {
 			startActivity(new Intent(this, AreaSelectorActivity.class).putExtra("new", true).putExtra(MAPNAME, mTileSource.ID).putExtra("Latitude", point.getLatitudeE6()).putExtra("Longitude", point.getLongitudeE6()).putExtra("ZoomLevel", mMap.getZoomLevel()));
 			return true;
-		case (R.id.gpsstatus):
+		} else if(item.getItemId() == R.id.gpsstatus) {
 			try {
 				startActivity(new Intent("com.eclipsim.gpsstatus.VIEW"));
 			} catch (ActivityNotFoundException e) {
@@ -769,24 +769,24 @@ public class MainActivity extends Activity {
 				}
 			}
 			return true;
-		case (R.id.poilist):
+		} else if (item.getItemId() == R.id.poilist) {
 			startActivityForResult((new Intent(this, PoiListActivity.class)).putExtra("lat", point.getLatitude()).putExtra("lon", point.getLongitude()).putExtra("title", "POI"), R.id.poilist);
 			return true;
-		case (R.id.tracks):
+		} else if (item.getItemId() == R.id.tracks) {
 			startActivityForResult(new Intent(this, TrackListActivity.class), R.id.tracks);
 			return true;
-		case (R.id.search):
+		} else if (item.getItemId() == R.id.search) {
 			onSearchRequested();
 			return true;
-		case (R.id.settings):
+		} else if (item.getItemId() == R.id.settings) {
 			startActivityForResult(new Intent(this, MainPreferences.class), R.id.settings_activity_closed);
 			return true;
-		case (R.id.about):
+		} else if (item.getItemId() == R.id.about) {
 			showDialog(R.id.about);
 			return true;
-		case (R.id.mapselector):
+		} else if (item.getItemId() == R.id.mapselector) {
 			return true;
-		case (R.id.compass):
+		} else if (item.getItemId() == R.id.compass) {
 			mCompassEnabled = !mCompassEnabled;
 			mCompassView.setVisibility(mCompassEnabled ? View.VISIBLE : View.INVISIBLE);
 			if(mCompassEnabled)
@@ -797,15 +797,15 @@ public class MainActivity extends Activity {
 				mMap.setBearing(0);
 			};
 			return true;
-		case (R.id.mylocation):
+		} else if (item.getItemId() == R.id.mylocation) {
 			setAutoFollow(true);
 			setLastKnownLocation();
 			return true;
-		case R.id.exit:
+		} else if (item.getItemId() == R.id.exit) {
 			onPause();
 			System.exit(10);
 			return true;
-		default:
+		} else {
 			
 			final String mapid = (String)item.getTitleCondensed();
 			setTileSource(mapid, "", true);
@@ -920,36 +920,30 @@ public class MainActivity extends Activity {
 	        setTitle();
 
 		} else {
-			switch (item.getItemId()) {
-			case R.id.hide_overlay:
+			if (item.getItemId() == R.id.hide_overlay) {
 				setTileSource(mTileSource.ID, mOverlayId, false);
 				
 				FillOverlays();
 		        setTitle();
-				break;
-			case R.id.menu_addpoi:
+			} else if (item.getItemId() == R.id.menu_addpoi) {
 				GeoPoint point = ((TileView.PoiMenuInfo) item.getMenuInfo()).EventGeoPoint;
 				startActivityForResult((new Intent(this, PoiActivity.class)).putExtra("lat", point.getLatitude()).putExtra("lon", point.getLongitude())
 						.putExtra("title", "POI"), R.id.menu_addpoi);
-				break;
-			case R.id.menu_editpoi:
+			} else if (item.getItemId() == R.id.menu_editpoi) {
 				startActivityForResult((new Intent(this, PoiActivity.class)).putExtra("pointid", mPoiOverlay.getPoiPoint(mMarkerIndex).getId()),
 						R.id.menu_editpoi);
 				mMap.postInvalidate();
-				break;
-			case R.id.menu_deletepoi:
+			} else if (item.getItemId() == R.id.menu_deletepoi) {
 				mPoiManager.deletePoi(mPoiOverlay.getPoiPoint(mMarkerIndex).getId());
 				mPoiOverlay.UpdateList();
 				mMap.postInvalidate();
-				break;
-			case R.id.menu_hide:
+			} else if (item.getItemId() == R.id.menu_hide) {
 				final PoiPoint poi = mPoiOverlay.getPoiPoint(mMarkerIndex);
 				poi.Hidden = true;
 				mPoiManager.updatePoi(poi);
 				mPoiOverlay.UpdateList();
 				mMap.postInvalidate();
-				break;
-			case R.id.menu_toradar:
+			} else if (item.getItemId() == R.id.menu_toradar) {
 				final PoiPoint poi1 = mPoiOverlay.getPoiPoint(mMarkerIndex);
 				try {
 					Intent i = new Intent("com.google.android.radar.SHOW_RADAR");
@@ -961,7 +955,6 @@ public class MainActivity extends Activity {
 				} catch (Exception e) {
 					Toast.makeText(this, R.string.message_noradar, Toast.LENGTH_LONG).show();
 				}
-				break;
 			}
 		}
 		return super.onContextItemSelected(item);
@@ -969,8 +962,7 @@ public class MainActivity extends Activity {
 
 	@Override
 	protected Dialog onCreateDialog(int id) {
-		switch (id) {
-		case R.id.add_yandex_bookmark:
+		if (id == R.id.add_yandex_bookmark) {
 			return new AlertDialog.Builder(this)
 				.setTitle(R.string.ya_dialog_title)
 				.setMessage(R.string.ya_dialog_message)
@@ -979,7 +971,7 @@ public class MainActivity extends Activity {
 							Browser.saveBookmark(MainActivity.this, "Мобильный Яндекс", "m.yandex.ru");
 						}
 				}).create();
-		case R.id.whatsnew:
+		} else if (id == R.id.whatsnew) {
 			return new AlertDialog.Builder(this) //.setIcon( R.drawable.alert_dialog_icon)
 					.setTitle(R.string.about_dialog_whats_new)
 					.setMessage(R.string.whats_new_dialog_text)
@@ -989,7 +981,7 @@ public class MainActivity extends Activity {
 							/* User clicked Cancel so do some stuff */
 						}
 					}).create();
-		case R.id.about:
+		} else if (id == R.id.about) {
 			return new AlertDialog.Builder(this) //.setIcon(R.drawable.alert_dialog_icon)
 					.setTitle(R.string.menu_about)
 					.setMessage(getText(R.string.app_name) + " v." + Ut.getAppVersion(this) + "\n\n"
@@ -1005,7 +997,7 @@ public class MainActivity extends Activity {
 							/* User clicked Cancel so do some stuff */
 						}
 					}).create();
-		case R.id.error:
+		} else if (id == R.id.error) {
 			return new AlertDialog.Builder(this) //.setIcon(R.drawable.alert_dialog_icon)
 			.setTitle(R.string.error_title)
 			.setMessage(getText(R.string.error_text))
@@ -1061,13 +1053,10 @@ public class MainActivity extends Activity {
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		switch(requestCode){
-		case R.id.menu_addpoi:
-		case R.id.menu_editpoi:
+		if (requestCode == R.id.menu_editpoi || requestCode == R.id.menu_addpoi) {
 			mPoiOverlay.UpdateList();
 			mMap.postInvalidate();
-			break;
-		case R.id.poilist:
+		} else if (requestCode == R.id.poilist) {
 			if(resultCode == RESULT_OK){
 				PoiPoint point = mPoiManager.getPoiPoint(data.getIntExtra("pointid", PoiPoint.EMPTY_ID()));
 				if(point != null){
@@ -1079,8 +1068,7 @@ public class MainActivity extends Activity {
 				mPoiOverlay.UpdateList();
 				mMap.postInvalidate();
 			}
-			break;
-		case R.id.tracks:
+		} else if (requestCode == R.id.tracks) {
 			if(resultCode == RESULT_OK){
 				Track track = mPoiManager.getTrack(data.getIntExtra("trackid", PoiPoint.EMPTY_ID()));
 				if(track != null){
@@ -1088,37 +1076,29 @@ public class MainActivity extends Activity {
 					mMap.getController().setCenter(track.getBeginGeoPoint());
 				}
 			}
-			break;
-		case R.id.settings_activity_closed:
+		} else if (requestCode == R.id.settings_activity_closed) {
 			finish();
 			startActivity(new Intent(this, this.getClass()));
-			break;
 		}
 
 		super.onActivityResult(requestCode, resultCode, data);
 	}
 
-	private class MainActivityCallbackHandler extends Handler{
+	private class MainActivityCallbackHandler extends Handler {
 		@Override
 		public void handleMessage(final Message msg) {
 			final int what = msg.what;
-			switch(what){
-				case Ut.MAPTILEFSLOADER_SUCCESS_ID:
-					mMap.postInvalidate();
-					break;
-				case R.id.user_moved_map:
-					//setAutoFollow(false);
-					break;
-				case R.id.set_title:
-					setTitle();
-					break;
-				case R.id.add_yandex_bookmark:
-					showDialog(R.id.add_yandex_bookmark);
-					break;
-				case Ut.ERROR_MESSAGE:
-					if(msg.obj != null)
-						Toast.makeText(MainActivity.this, msg.obj.toString(), Toast.LENGTH_LONG).show();
-					break;
+			if (what == Ut.MAPTILEFSLOADER_SUCCESS_ID) {
+				mMap.postInvalidate();
+			} else if (what == R.id.user_moved_map) {
+				// setAutoFollow(false);
+			} else if (what == R.id.set_title) {
+				setTitle();
+			} else if (what == R.id.add_yandex_bookmark) {
+				showDialog(R.id.add_yandex_bookmark);
+			} else if (what == Ut.ERROR_MESSAGE) {
+				if (msg.obj != null)
+					Toast.makeText(MainActivity.this, msg.obj.toString(), Toast.LENGTH_LONG).show();
 			}
 		}
 	}

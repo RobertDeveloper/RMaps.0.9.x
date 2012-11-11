@@ -1,6 +1,6 @@
 package com.robert.maps.kml;
 
-import com.robert.maps.R;
+import com.robert.maps.applib.R;
 import com.robert.maps.kml.constants.PoiConstants;
 
 public class PoiCategory implements PoiConstants {

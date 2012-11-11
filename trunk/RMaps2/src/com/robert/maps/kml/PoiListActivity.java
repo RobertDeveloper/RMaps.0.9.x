@@ -29,7 +29,7 @@ import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Toast;
 
-import com.robert.maps.R;
+import com.robert.maps.applib.R;
 import com.robert.maps.kml.Track.TrackPoint;
 import com.robert.maps.kml.XMLparser.SimpleXML;
 import com.robert.maps.kml.constants.PoiConstants;
@@ -84,8 +84,7 @@ public class PoiListActivity extends ListActivity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		super.onOptionsItemSelected(item);
 
-		switch(item.getItemId()){
-		case R.id.menu_addpoi:
+		if(item.getItemId() == R.id.menu_addpoi) {
 			final Intent PoiIntent = new Intent(this, PoiActivity.class); 
 	        Bundle extras = getIntent().getExtras();
 	        if(extras != null){
@@ -93,19 +92,19 @@ public class PoiListActivity extends ListActivity {
 	        }
 			startActivity(PoiIntent);
 			return true;
-		case R.id.menu_categorylist:
+		} else if(item.getItemId() == R.id.menu_categorylist) {
 			startActivity((new Intent(this, PoiCategoryListActivity.class)));
 			return true;
-		case R.id.menu_importpoi:
+		} else if(item.getItemId() == R.id.menu_importpoi) {
 			startActivity((new Intent(this, ImportPoiActivity.class)));
 			return true;
-		case R.id.menu_deleteall:
+		} else if(item.getItemId() == R.id.menu_deleteall) {
 			showDialog(R.id.menu_deleteall);
 			return true;
-		case R.id.menu_exportgpx:
+		} else if(item.getItemId() == R.id.menu_exportgpx) {
 			DoExportGpx();
 			return true;
-		case R.id.menu_exportkml:
+		} else if(item.getItemId() == R.id.menu_exportkml) {
 			DoExportKml();
 		}
 
@@ -247,8 +246,7 @@ public class PoiListActivity extends ListActivity {
 	
 	@Override
 	protected Dialog onCreateDialog(int id) {
-		switch (id) {
-		case R.id.menu_deleteall:
+		if(id == R.id.menu_deleteall) {
 			return new AlertDialog.Builder(this)
 				//.setIcon(R.drawable.alert_dialog_icon)
 				.setTitle(R.string.warning_delete_all_poi)
@@ -294,29 +292,23 @@ public class PoiListActivity extends ListActivity {
 		int pointid = (int) ((AdapterView.AdapterContextMenuInfo)item.getMenuInfo()).id;
 		PoiPoint poi = mPoiManager.getPoiPoint(pointid);
 
-		switch(item.getItemId()){
-		case R.id.menu_editpoi:
+		if(item.getItemId() == R.id.menu_editpoi) {
 			startActivity((new Intent(this, PoiActivity.class)).putExtra("pointid", pointid));
-			break;
-		case R.id.menu_gotopoi:
+		} else if(item.getItemId() == R.id.menu_gotopoi) {
 			setResult(RESULT_OK, (new Intent()).putExtra("pointid", pointid));
 			finish();
-			break;
-		case R.id.menu_deletepoi:
+		} else if(item.getItemId() == R.id.menu_deletepoi) {
 			mPoiManager.deletePoi(pointid);
 			FillData();
-	        break;
-		case R.id.menu_hide:
+		} else if(item.getItemId() == R.id.menu_hide) {
 			poi.Hidden = true;
 			mPoiManager.updatePoi(poi);
 			FillData();
-	        break;
-		case R.id.menu_show:
+		} else if(item.getItemId() == R.id.menu_show) {
 			poi.Hidden = false;
 			mPoiManager.updatePoi(poi);
 			FillData();
-	        break;
-		case R.id.menu_toradar:
+		} else if(item.getItemId() == R.id.menu_toradar) {
 			try {
 					Intent i = new Intent("com.google.android.radar.SHOW_RADAR");
 					i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
@@ -327,7 +319,6 @@ public class PoiListActivity extends ListActivity {
 				} catch (Exception e) {
 					Toast.makeText(this, R.string.message_noradar, Toast.LENGTH_LONG).show();
 				}
-			break;
 		}
 
 		return super.onContextItemSelected(item);

@@ -26,7 +26,7 @@ import android.os.RemoteCallbackList;
 import android.os.RemoteException;
 import android.widget.Toast;
 
-import com.robert.maps.R;
+import com.robert.maps.applib.R;
 import com.robert.maps.tileprovider.TileProviderFileBase;
 import com.robert.maps.tileprovider.TileSource;
 import com.robert.maps.utils.SQLiteMapDatabase;
@@ -295,14 +295,11 @@ public class MapDownloaderService extends Service {
 		
 		@Override
 		public void handleMessage(Message msg) {
-			switch (msg.what) {
-			case R.id.done:
+			if(msg.what == R.id.done) {
 				doneCounter++;
 				if (doneCounter >= THREADCOUNT)
 					downloadDone();
-				break;
-			case R.id.tile_done:
-			case R.id.tile_error:
+			} else if(msg.what == R.id.tile_done || msg.what == R.id.tile_error) {
 				mTileCnt++;
 				if (msg.what == R.id.tile_error)
 					mErrorCnt++;
@@ -329,8 +326,6 @@ public class MapDownloaderService extends Service {
 					}
 				}
 				mCallbacks.finishBroadcast();
-				
-				break;
 			}
 		}
 		

@@ -22,7 +22,7 @@ import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
 import android.widget.TextView;
 
-import com.robert.maps.R;
+import com.robert.maps.applib.R;
 import com.robert.maps.kml.PoiManager;
 import com.robert.maps.kml.PoiPoint;
 import com.robert.maps.utils.Ut;

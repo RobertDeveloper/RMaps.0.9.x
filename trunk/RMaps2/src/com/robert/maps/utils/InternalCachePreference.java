@@ -14,7 +14,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 
-import com.robert.maps.R;
+import com.robert.maps.applib.R;
 import com.robert.maps.tileprovider.FSCacheProvider;
 
 public class InternalCachePreference extends Preference {

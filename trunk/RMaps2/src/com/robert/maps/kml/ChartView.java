@@ -14,7 +14,7 @@ import android.location.Location;
 import android.util.AttributeSet;
 import android.view.View;
 
-import com.robert.maps.R;
+import com.robert.maps.applib.R;
 import com.robert.maps.kml.Track.TrackPoint;
 
 public class ChartView extends View {

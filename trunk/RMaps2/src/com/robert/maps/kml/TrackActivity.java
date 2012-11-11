@@ -14,7 +14,7 @@ import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.robert.maps.R;
+import com.robert.maps.applib.R;
 import com.robert.maps.kml.utils.TrackStyleDrawable;
 import com.robert.maps.kml.utils.TrackStylePickerDialog;
 import com.robert.maps.kml.utils.TrackStylePickerDialog.OnTrackStyleChangedListener;
