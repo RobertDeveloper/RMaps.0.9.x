@@ -1,6 +1,6 @@
 /*
  * This file is auto-generated.  DO NOT MODIFY.
- * Original file: C:\\Projects\\EclipseWorkspace\\RMaps\\src\\com\\robert\\maps\\trackwriter\\IRemoteService.aidl
+ * Original file: C:\\Projects\\eclipseworkspace\\RMaps.AppLib\\src\\com\\robert\\maps\\trackwriter\\IRemoteService.aidl
  */
 package com.robert.maps.trackwriter;
 public interface IRemoteService extends android.os.IInterface
