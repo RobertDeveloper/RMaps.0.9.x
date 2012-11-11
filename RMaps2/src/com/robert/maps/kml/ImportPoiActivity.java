@@ -29,7 +29,7 @@ import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.robert.maps.R;
+import com.robert.maps.applib.R;
 import com.robert.maps.kml.XMLparser.GpxPoiParser;
 import com.robert.maps.kml.XMLparser.KmlPoiParser;
 import com.robert.maps.utils.SimpleThreadFactory;
@@ -86,14 +86,12 @@ public class ImportPoiActivity extends Activity {
 
 	@Override
 	protected Dialog onCreateDialog(int id) {
-		switch (id) {
-		case R.id.dialog_wait: {
+		if(id == R.id.dialog_wait) {
 			dlgWait = new ProgressDialog(this);
 			dlgWait.setMessage("Please wait while loading...");
 			dlgWait.setIndeterminate(true);
 			dlgWait.setCancelable(false);
 			return dlgWait;
-		}
 		}
 		return null;
 	}
@@ -131,8 +129,7 @@ public class ImportPoiActivity extends Activity {
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 
-		switch (requestCode) {
-		case R.id.ImportBtn:
+		if(requestCode == R.id.ImportBtn) {
 			if (resultCode == RESULT_OK && data != null) {
 				// obtain the filename
 				String filename = Uri.decode(data.getDataString());
@@ -146,7 +143,6 @@ public class ImportPoiActivity extends Activity {
 				}
 
 			}
-			break;
 		}
 	}
 

@@ -10,7 +10,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDiskIOException;
 import android.database.sqlite.SQLiteException;
 
-import com.robert.maps.R;
+import com.robert.maps.applib.R;
 import com.robert.maps.tileprovider.TileSource;
 
 public class SQLiteMapDatabase implements ICacheProvider {

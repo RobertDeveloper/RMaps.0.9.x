@@ -18,7 +18,7 @@ import android.widget.CheckBox;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 
-import com.robert.maps.R;
+import com.robert.maps.applib.R;
 import com.robert.maps.tileprovider.TileSource;
 import com.robert.maps.utils.Ut;
 import com.robert.maps.view.MapView;

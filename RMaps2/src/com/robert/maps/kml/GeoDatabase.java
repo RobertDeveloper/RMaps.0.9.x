@@ -10,7 +10,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.widget.Toast;
 
-import com.robert.maps.R;
+import com.robert.maps.applib.R;
 import com.robert.maps.kml.constants.PoiConstants;
 import com.robert.maps.utils.RSQLiteOpenHelper;
 import com.robert.maps.utils.Ut;

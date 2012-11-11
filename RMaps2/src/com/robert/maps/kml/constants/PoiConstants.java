@@ -1,6 +1,6 @@
 package com.robert.maps.kml.constants;
 
-import com.robert.maps.R;
+import com.robert.maps.applib.R;
 
 public interface PoiConstants {
 	public static final int EMPTY_ID = -777;

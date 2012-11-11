@@ -13,7 +13,7 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.view.MotionEvent;
 
-import com.robert.maps.R;
+import com.robert.maps.applib.R;
 import com.robert.maps.utils.Ut;
 import com.robert.maps.view.TileView;
 import com.robert.maps.view.TileViewOverlay;

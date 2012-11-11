@@ -9,7 +9,7 @@ import android.os.Handler;
 import android.preference.PreferenceManager;
 
 import com.robert.maps.MainPreferences;
-import com.robert.maps.R;
+import com.robert.maps.applib.R;
 import com.robert.maps.utils.RException;
 import com.robert.maps.utils.Ut;
 

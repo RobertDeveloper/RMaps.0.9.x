@@ -26,7 +26,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.robert.maps.R;
+import com.robert.maps.applib.R;
 import com.robert.maps.kml.XMLparser.GpxTrackParser;
 import com.robert.maps.kml.XMLparser.KmlTrackParser;
 import com.robert.maps.utils.SimpleThreadFactory;
@@ -74,14 +74,12 @@ public class ImportTrackActivity extends Activity {
 
 	@Override
 	protected Dialog onCreateDialog(int id) {
-		switch (id) {
-		case R.id.dialog_wait: {
+		if(id == R.id.dialog_wait) {
 			dlgWait = new ProgressDialog(this);
 			dlgWait.setMessage("Please wait while loading...");
 			dlgWait.setIndeterminate(true);
 			dlgWait.setCancelable(false);
 			return dlgWait;
-		}
 		}
 		return null;
 	}
@@ -96,8 +94,7 @@ public class ImportTrackActivity extends Activity {
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 
-		switch (requestCode) {
-		case R.id.ImportBtn:
+		if(requestCode == R.id.ImportBtn) {
 			if (resultCode == RESULT_OK && data != null) {
 				// obtain the filename
 				String filename = Uri.decode(data.getDataString());
@@ -111,7 +108,6 @@ public class ImportTrackActivity extends Activity {
 				}
 
 			}
-			break;
 		}
 	}
 

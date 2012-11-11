@@ -25,7 +25,7 @@ import android.os.RemoteException;
 import android.preference.PreferenceManager;
 import android.widget.Toast;
 
-import com.robert.maps.R;
+import com.robert.maps.applib.R;
 import com.robert.maps.kml.TrackListActivity;
 import com.robert.maps.utils.Ut;
 

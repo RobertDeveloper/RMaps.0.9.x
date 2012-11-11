@@ -16,7 +16,7 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Message;
 
-import com.robert.maps.R;
+import com.robert.maps.applib.R;
 import com.robert.maps.utils.RException;
 import com.robert.maps.utils.SQLiteMapDatabase;
 import com.robert.maps.utils.SimpleThreadFactory;

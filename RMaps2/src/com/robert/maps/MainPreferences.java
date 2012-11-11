@@ -24,6 +24,7 @@ import android.preference.PreferenceGroup;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 
+import com.robert.maps.applib.R;
 import com.robert.maps.constants.PrefConstants;
 import com.robert.maps.kml.XMLparser.PredefMapsParser;
 import com.robert.maps.utils.Ut;

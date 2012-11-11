@@ -11,7 +11,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.preference.PreferenceManager;
 
-import com.robert.maps.R;
+import com.robert.maps.applib.R;
 import com.robert.maps.kml.Track.TrackPoint;
 import com.robert.maps.kml.constants.PoiConstants;
 

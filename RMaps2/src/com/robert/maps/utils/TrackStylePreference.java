@@ -12,7 +12,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-import com.robert.maps.R;
+import com.robert.maps.applib.R;
 import com.robert.maps.kml.Track;
 import com.robert.maps.kml.utils.TrackStyleDrawable;
 import com.robert.maps.kml.utils.TrackStylePickerDialog;

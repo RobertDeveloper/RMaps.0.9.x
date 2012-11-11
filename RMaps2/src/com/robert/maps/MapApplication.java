@@ -6,6 +6,7 @@ import android.app.Application;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.preference.PreferenceManager;
+import com.robert.maps.applib.R;
 
 public class MapApplication extends Application {
 	private Locale locale = null;

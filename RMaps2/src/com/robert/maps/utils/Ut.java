@@ -25,7 +25,7 @@ import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-import com.robert.maps.R;
+import com.robert.maps.applib.R;
 
 public class Ut implements OpenStreetMapConstants, OpenStreetMapViewConstants {
 	public static final int MAPTILEFSLOADER_SUCCESS_ID = 1000;

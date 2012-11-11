@@ -1,6 +1,6 @@
 package com.robert.maps.kml;
 
-import com.robert.maps.R;
+import com.robert.maps.applib.R;
 
 import android.app.ListActivity;
 import android.content.Intent;
@@ -64,8 +64,7 @@ public class PoiCategoryListActivity extends ListActivity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		super.onOptionsItemSelected(item);
 		
-		switch(item.getItemId()){
-		case R.id.menu_addpoi:
+		if(item.getItemId() == R.id.menu_addpoi) {
 			startActivity((new Intent(this, PoiCategoryActivity.class)));
 			return true;
 		}
@@ -94,24 +93,19 @@ public class PoiCategoryListActivity extends ListActivity {
 		int id = (int) ((AdapterView.AdapterContextMenuInfo)item.getMenuInfo()).id;
 		PoiCategory category = mPoiManager.getPoiCategory(id);
 		
-		switch(item.getItemId()){
-		case R.id.menu_editpoi:
+		if(item.getItemId() == R.id.menu_editpoi) {
 			startActivity((new Intent(this, PoiCategoryActivity.class)).putExtra("id", id));
-			break;
-		case R.id.menu_deletepoi:
+		} else if(item.getItemId() == R.id.menu_deletepoi) {
 			mPoiManager.deletePoiCategory(id);
 			FillData();
-	        break;
-		case R.id.menu_hide:
+		} else if(item.getItemId() == R.id.menu_hide) {
 			category.Hidden = true;
 			mPoiManager.updatePoiCategory(category);
 			FillData();
-	        break;
-		case R.id.menu_show:
+		} else if(item.getItemId() == R.id.menu_show) {
 			category.Hidden = false;
 			mPoiManager.updatePoiCategory(category);
 			FillData();
-	        break;
 		}
 		
 		return super.onContextItemSelected(item);

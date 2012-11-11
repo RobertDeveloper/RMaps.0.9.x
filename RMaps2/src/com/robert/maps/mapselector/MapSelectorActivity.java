@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.widget.ScrollView;
 
-import com.robert.maps.R;
+import com.robert.maps.applib.R;
 
 public class MapSelectorActivity extends Activity {
 	private ScrollView mScrollView; 

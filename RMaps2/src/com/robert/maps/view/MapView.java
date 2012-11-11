@@ -15,7 +15,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
-import com.robert.maps.R;
+import com.robert.maps.applib.R;
 import com.robert.maps.tileprovider.TileSource;
 import com.robert.maps.utils.ScaleBarDrawable;
 import com.robert.maps.utils.Ut;

@@ -21,7 +21,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.robert.maps.MainActivity;
-import com.robert.maps.R;
+import com.robert.maps.applib.R;
 import com.robert.maps.tileprovider.TileSource;
 import com.robert.maps.tileprovider.TileSourceBase;
 import com.robert.maps.utils.Ut;
@@ -152,8 +152,7 @@ public class DownloaderActivity extends Activity {
 	private final Handler mHandler = new Handler() {
 		@Override
 		public void handleMessage(Message msg) {
-			switch (msg.what) {
-			case R.id.done:
+			if(msg.what == R.id.done) {
 				findViewById(R.id.open).setVisibility(View.VISIBLE);
 				findViewById(R.id.progress).setVisibility(View.GONE);
 				findViewById(R.id.pause).setVisibility(View.GONE);
@@ -161,8 +160,7 @@ public class DownloaderActivity extends Activity {
 				mTextVwTime.setText(Ut.formatTime(System.currentTimeMillis() - mStartTime));
 				mDownloadedAreaOverlay.downloadDone();
 				mMap.postInvalidate();
-				break;
-			case R.id.download_start:
+			} else if(msg.what == R.id.download_start) {
 				Bundle b = (Bundle) msg.obj;
 				mTileCntTotal = b.getInt(CNT);
 				mStartTime = b.getLong(TIME);
@@ -195,8 +193,7 @@ public class DownloaderActivity extends Activity {
 				mMap.getController().setZoom(zoom);
 				mMap.getController().setCenter(new GeoPoint(lat, lon));
 
-				break;
-			case R.id.tile_done: 
+			} else if(msg.what == R.id.tile_done) { 
 				final int tileCnt = ((Bundle) msg.obj).getInt(CNT);
 				final int errorCnt = ((Bundle) msg.obj).getInt(ERRCNT);
 				mProgress.setProgress(tileCnt);
@@ -210,7 +207,6 @@ public class DownloaderActivity extends Activity {
 				else
 					mTextVwTime.setText(Ut.formatTime(time - mStartTime));
 				mMap.postInvalidate();
-				break;
 			}
 		}
 	};
