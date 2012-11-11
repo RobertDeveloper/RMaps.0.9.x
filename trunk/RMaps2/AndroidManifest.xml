@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.robert.maps"
+    package="com.robert.maps.applib"
     android:installLocation="auto"
     android:sharedUserId="@string/app_user_id"
     android:sharedUserLabel="@string/app_user_label"
@@ -10,16 +10,17 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
+        android:name="com.robert.maps.MapApplication"
         android:allowClearUserData="false"
         android:debuggable="true"
         android:icon="@drawable/icon"
-        android:label="@string/app_name" android:name="MapApplication">
+        android:label="@string/app_name" >
         <activity
-            android:name="MainActivity"
+            android:name="com.robert.maps.MainActivity"
             android:label="@string/app_name"
             android:launchMode="singleTop" >
             <intent-filter>
@@ -36,44 +37,48 @@
             <meta-data
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
+
             <intent-filter>
-                <action android:name="com.robert.maps.action.SHOW_POINTS"/>
-                <category android:name="android.intent.category.DEFAULT"/>
+                <action android:name="com.robert.maps.action.SHOW_POINTS" />
+
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
             <intent-filter>
-                <action android:name="android.intent.action.VIEW"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
-                <data android:scheme="geo"/>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="geo" />
             </intent-filter>
         </activity>
-        <activity android:name="MainPreferences" >
+        <activity android:name="com.robert.maps.MainPreferences" >
         </activity>
 
         <provider
-            android:name=".utils.SearchSuggestionsProvider"
+            android:name="com.robert.maps.utils.SearchSuggestionsProvider"
             android:authorities="com.robert.maps.SuggestionProvider" >
         </provider>
 
-        <activity android:name=".kml.PoiActivity" />
-        <activity android:name=".kml.PoiListActivity" />
-        <activity android:name=".kml.TrackListActivity" />
-        <activity android:name=".kml.PoiCategoryActivity" >
+        <activity android:name="com.robert.maps.kml.PoiActivity" />
+        <activity android:name="com.robert.maps.kml.PoiListActivity" />
+        <activity android:name="com.robert.maps.kml.TrackListActivity" />
+        <activity android:name="com.robert.maps.kml.PoiCategoryActivity" >
         </activity>
-        <activity android:name=".kml.PoiCategoryListActivity" >
+        <activity android:name="com.robert.maps.kml.PoiCategoryListActivity" >
         </activity>
-        <activity android:name=".kml.PoiIconSetActivity" >
+        <activity android:name="com.robert.maps.kml.PoiIconSetActivity" >
         </activity>
-        <activity android:name=".kml.ImportPoiActivity" />
-        <activity android:name=".kml.ImportTrackActivity" >
+        <activity android:name="com.robert.maps.kml.ImportPoiActivity" />
+        <activity android:name="com.robert.maps.kml.ImportTrackActivity" >
         </activity>
-        <activity android:name=".kml.TrackActivity" >
+        <activity android:name="com.robert.maps.kml.TrackActivity" >
         </activity>
-        <activity android:name=".kml.TrackStatActivity" >
+        <activity android:name="com.robert.maps.kml.TrackStatActivity" >
         </activity>
 
         <service
-            android:name=".trackwriter.TrackWriterService"
+            android:name="com.robert.maps.trackwriter.TrackWriterService"
             android:icon="@drawable/track_writer_service"
             android:process=":trackwriter" >
             <intent-filter>
@@ -84,20 +89,32 @@
 
         <activity android:name="org.openintents.filemanager.FileManagerActivity" >
         </activity>
-        <activity android:name=".downloader.AreaSelectorActivity" android:launchMode="singleInstance"></activity>
-        <service android:name=".downloader.MapDownloaderService" android:process=":mapdownloader" android:icon="@drawable/track_writer_service">
+        <activity
+            android:name="com.robert.maps.downloader.AreaSelectorActivity"
+            android:launchMode="singleInstance" >
+        </activity>
+
+        <service
+            android:name="com.robert.maps.downloader.MapDownloaderService"
+            android:icon="@drawable/track_writer_service"
+            android:process=":mapdownloader" >
             <intent-filter>
-                <action android:name="com.robert.maps.mapdownloader"/><action android:name="com.robert.maps.downloader.IRemoteService"/>
-                
+                <action android:name="com.robert.maps.mapdownloader" />
+                <action android:name="com.robert.maps.downloader.IRemoteService" />
             </intent-filter>
         </service>
-        <activity android:name="MixedMapsPreference"></activity>
-        <activity android:name=".downloader.DownloaderActivity"></activity>
+
+        <activity android:name="com.robert.maps.MixedMapsPreference" >
+        </activity>
+        <activity android:name="com.robert.maps.downloader.DownloaderActivity" >
+        </activity>
     </application>
 
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
-    <uses-sdk android:minSdkVersion="3" android:targetSdkVersion="8"/>
+    <uses-sdk
+        android:minSdkVersion="3"
+        android:targetSdkVersion="8" />
 
     <supports-screens
         android:anyDensity="true"
