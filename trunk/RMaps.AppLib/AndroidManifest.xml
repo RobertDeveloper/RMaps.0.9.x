@@ -14,7 +14,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
-        android:name="com.robert.maps.MapApplication"
+        android:name=".MapApplication"
         android:allowClearUserData="false"
         android:debuggable="true"
         android:icon="@drawable/icon"
@@ -56,7 +56,7 @@
         </activity>
 
         <provider
-            android:name="com.robert.maps.utils.SearchSuggestionsProvider"
+            android:name=".applib.utils.SearchSuggestionsProvider"
             android:authorities="com.robert.maps.SuggestionProvider" >
         </provider>
 
@@ -95,7 +95,7 @@
         </activity>
 
         <service
-            android:name="com.robert.maps.downloader.MapDownloaderService"
+            android:name=".applib.downloader.MapDownloaderService"
             android:icon="@drawable/track_writer_service"
             android:process=":mapdownloader" >
             <intent-filter>
@@ -106,7 +106,7 @@
 
         <activity android:name="com.robert.maps.MixedMapsPreference" >
         </activity>
-        <activity android:name="com.robert.maps.downloader.DownloaderActivity" >
+        <activity android:name=".applib.downloader.DownloaderActivity" >
         </activity>
     </application>
 
