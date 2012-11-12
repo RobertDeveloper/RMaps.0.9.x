@@ -110,12 +110,16 @@ public class Ut implements OpenStreetMapConstants, OpenStreetMapViewConstants {
 		PackageInfo pi;
 		String res = "";
 		try {
-			pi = ctx.getPackageManager().getPackageInfo("com.robert.maps", 0);
+			pi = ctx.getPackageManager().getPackageInfo(ctx.getPackageName(), 0);
 			res = pi.versionName;
 		} catch (NameNotFoundException e) {
 		}
 
 		return res;
+	}
+
+	public static String getPackVersion(Context ctx) {
+		return ctx.getPackageName().endsWith("ext") ? "Ext" : "Free";
 	}
 
 	public static void dd(String str){
@@ -324,8 +328,6 @@ public class Ut implements OpenStreetMapConstants, OpenStreetMapViewConstants {
 	    private static int TOP = 8;
 	    private static int BOTTOM = 4;
 	    private static int LEFT = 1;
-	 
-	    private int x1, x2, y1, y2;
 	 
 	    public static int ComputeOutCode (int x, int y, int xmin, int ymin, int xmax, int ymax)
 	    {

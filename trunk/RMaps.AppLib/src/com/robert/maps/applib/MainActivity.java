@@ -208,7 +208,7 @@ public class MainActivity extends Activity {
 			getWindowManager().getDefaultDisplay().getMetrics(metrics);
 			
 			mTracker.setCustomVar(1, "Build", Ut.getAppVersion(this), 1);
-			mTracker.setCustomVar(2, "Ver", "Free", 1);
+			mTracker.setCustomVar(2, "Ver", Ut.getPackVersion(this), 1);
 			mTracker.setCustomVar(3, "DisplaySize", ""+Math.min(metrics.widthPixels, metrics.heightPixels)+"x"+Math.max(metrics.widthPixels, metrics.heightPixels), 1);
 			mTracker.setCustomVar(4, "DisplayDensity", ""+(int)(160*metrics.density), 1);
 			mTracker.setCustomVar(5, "APILevel", Build.VERSION.SDK, 1);
