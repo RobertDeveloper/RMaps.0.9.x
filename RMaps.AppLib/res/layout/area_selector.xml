@@ -19,11 +19,11 @@
             android:layout_height="wrap_content"
             android:layout_weight="1" >
 
-            <com.robert.maps.view.MapView
+            <com.robert.maps.applib.view.MapView
                 android:id="@+id/map"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" >
-            </com.robert.maps.view.MapView>
+            </com.robert.maps.applib.view.MapView>
         </RelativeLayout>
 
         <LinearLayout
