@@ -68,7 +68,7 @@
 
         <provider
             android:name=".applib.utils.SearchSuggestionsProvider"
-            android:authorities="com.robert.maps.SuggestionProvider" >
+            android:authorities="com.robert.maps.SuggestionProvider">
         </provider>
 
         <activity android:name=".applib.kml.PoiActivity" />
