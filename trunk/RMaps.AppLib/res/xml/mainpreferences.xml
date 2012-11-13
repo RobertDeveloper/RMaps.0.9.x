@@ -172,8 +172,8 @@
             android:key="pref_crosshair"
             android:summary="@string/pref_crosshair_summary"
             android:title="@string/pref_crosshair" >
-        </CheckBoxPreference><com.robert.maps.utils.TrackStylePreference android:key="pref_track_style" android:summary="@string/pref_track_style_summary" android:title="@string/pref_track_style" android:defaultValue='{"color":-5937666,"shadowradius":0,"width":10,"color_shadow":-5937666}' />
-        <com.robert.maps.utils.TrackStylePreference android:key="pref_track_style_current" android:summary="@string/pref_track_style_summary" android:title="@string/pref_track_style_current" android:defaultValue='{"color":-5937666,"shadowradius":0,"width":10,"color_shadow":-5937666}' />
+        </CheckBoxPreference><com.robert.maps.applib.utils.TrackStylePreference android:key="pref_track_style" android:summary="@string/pref_track_style_summary" android:title="@string/pref_track_style" android:defaultValue='{"color":-5937666,"shadowradius":0,"width":10,"color_shadow":-5937666}' />
+        <com.robert.maps.applib.utils.TrackStylePreference android:key="pref_track_style_current" android:summary="@string/pref_track_style_summary" android:title="@string/pref_track_style_current" android:defaultValue='{"color":-5937666,"shadowradius":0,"width":10,"color_shadow":-5937666}' />
         
         
         </PreferenceCategory>
@@ -211,12 +211,12 @@
             android:title="@string/pref_turnoffautoreindex" >
         </CheckBoxPreference>
 
-        <com.robert.maps.utils.InternalCachePreference
+        <com.robert.maps.applib.utils.InternalCachePreference
             android:key="pref_internalcache"
             android:summary="@string/pref_internalcache_summary"
             android:title="@string/pref_internalcache_title" />
 
-        <com.robert.maps.utils.IndexPreference
+        <com.robert.maps.applib.utils.IndexPreference
             android:key="pref_index"
             android:summary="@string/pref_index_summary"
             android:title="@string/pref_index_title" />
