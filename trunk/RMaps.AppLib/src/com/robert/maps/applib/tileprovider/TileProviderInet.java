@@ -131,4 +131,9 @@ public class TileProviderInet extends TileProviderBase {
 		return mLoadingMapTile;
 	}
 
+	@Override
+	public double getTileLength() {
+		return mCacheProvider.getTileLenght();
+	}
+
 }

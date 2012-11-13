@@ -7,10 +7,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteDiskIOException;
 import android.database.sqlite.SQLiteException;
 
-import com.robert.maps.applib.R;
 import com.robert.maps.applib.tileprovider.TileSource;
 
 public class SQLiteMapDatabase implements ICacheProvider {
@@ -20,6 +18,7 @@ public class SQLiteMapDatabase implements ICacheProvider {
 	private static final String SQL_SELECT_MAXZOOM = "SELECT 17-maxzoom AS ret FROM info";
 	private static final String SQL_SELECT_IMAGE = "SELECT image as ret FROM tiles WHERE s = 0 AND x = ? AND y = ? AND z = ?";
 	private static final String SQL_DROP_tiles = "DROP TABLE IF EXISTS tiles";
+	private static final String SQL_tiles_count = "SELECT COUNT(*) cnt FROM tiles";
 	private static final String RET = "ret";
 	private static final long MAX_DATABASE_SIZE = 1945 * 1024 * 1024; // 1.9GB
 	private static final String JOURNAL = "-journal";
@@ -313,6 +312,24 @@ public class SQLiteMapDatabase implements ICacheProvider {
 				mDatabase[i].execSQL(SQL_CREATE_tiles);
 			}
 		}
+	}
+
+	@Override
+	public double getTileLenght() {
+		double ret = 0L;
+		if(mDatabase[0] != null) {
+			final Cursor c = mDatabase[0].rawQuery(SQL_tiles_count, null); 
+			if(c != null) {
+				if(c.moveToFirst()) {
+					if(c.getInt(0) > 0) {
+						final File file = new File(mDatabase[0].getPath()); 
+						ret = file.length()/c.getInt(0);
+					};
+				};
+				c.close();
+			}
+		}
+		return ret;
 	}
 
 }

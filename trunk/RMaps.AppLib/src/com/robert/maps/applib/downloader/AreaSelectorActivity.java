@@ -6,6 +6,7 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.andnav.osm.util.GeoPoint;
+import org.andnav.osm.views.util.Util;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -29,9 +30,11 @@ import android.widget.Toast;
 import com.robert.maps.applib.R;
 import com.robert.maps.applib.kml.PoiManager;
 import com.robert.maps.applib.kml.XMLparser.PredefMapsParser;
+import com.robert.maps.applib.tileprovider.TileProviderInet;
 import com.robert.maps.applib.tileprovider.TileSource;
 import com.robert.maps.applib.tileprovider.TileSourceBase;
 import com.robert.maps.applib.utils.RException;
+import com.robert.maps.applib.utils.Ut;
 import com.robert.maps.applib.view.IMoveListener;
 import com.robert.maps.applib.view.MapView;
 import com.robert.maps.applib.view.TileViewOverlay;
@@ -155,10 +158,22 @@ public class AreaSelectorActivity extends Activity {
 		LinearLayout ll1 = (LinearLayout) findViewById(R.id.LayerArea1);
 		LinearLayout ll2 = (LinearLayout) findViewById(R.id.LayerArea2);
 		CheckBox cb;
+		final double tileLength = ((TileProviderInet) mTileSource.getTileProvider()).getTileLength();
+		final int[] coordArr = mAreaSelectorOverlay.getCoordArr();
+		
 		for(int i = mTileSource.ZOOM_MINLEVEL; i <= mTileSource.ZOOM_MAXLEVEL; i++) {
+			final int c0[] = Util.getMapTileFromCoordinates(coordArr[0], coordArr[1], i, null, mTileSource.PROJECTION);
+			final int c1[] = Util.getMapTileFromCoordinates(coordArr[2], coordArr[3], i, null, mTileSource.PROJECTION);
+			final int yMin = Math.min(c0[0], c1[0]);
+			final int yMax = Math.max(c0[0], c1[0]);
+			final int xMin = Math.min(c0[1], c1[1]);
+			final int xMax = Math.max(c0[1], c1[1]);
+			final int tileCnt = (yMax - yMin + 1) * (xMax - xMin + 1);
+
 			cb = new CheckBox(this);
 			cb.setTag("Layer"+i);
-			cb.setText("Zoom "+(i+1));
+			cb.setText("Zoom "+(i+1)+"\n"+tileCnt+" tiles, ~"+Ut.formatSize(tileCnt * tileLength));
+			cb.setTextAppearance(this, android.R.style.TextAppearance_Small);
 			
 			if(i + 1 > (int)((mTileSource.ZOOM_MAXLEVEL - mTileSource.ZOOM_MINLEVEL + 1) / 2.0 + 0.5))
 				ll2.addView(cb);

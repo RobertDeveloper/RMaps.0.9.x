@@ -223,5 +223,10 @@ public class FSCacheProvider implements ICacheProvider {
 
 	}
 
+	@Override
+	public double getTileLenght() {
+		return 0;
+	}
+
 	
 }

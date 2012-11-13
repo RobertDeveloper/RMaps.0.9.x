@@ -181,4 +181,5 @@ public class TileProviderSQLITEDB extends TileProviderFileBase {
 		return mLoadingMapTile;
 	}
 
+
 }
