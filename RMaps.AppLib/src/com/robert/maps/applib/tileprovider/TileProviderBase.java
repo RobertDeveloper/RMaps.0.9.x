@@ -86,5 +86,9 @@ public class TileProviderBase {
 			mLoadingMapTile.recycle();
 		mLoadingMapTile = aLoadingMapTile;
 	}
+	
+	public double getTileLength() {
+		return 0;
+	}
 
 }

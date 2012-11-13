@@ -439,4 +439,12 @@ public class Ut implements OpenStreetMapConstants, OpenStreetMapViewConstants {
 	public static CharSequence formatTime(long time) {
 		return String.format("%tM:%tM:%tS", time / 60, time, time);
 	}
+	
+	public static String formatSize(double size) {
+		if(size / 1024 > 1024)
+			return String.format("%.1f MB", size / 1024 / 1024);
+		else
+			return String.format("%.1f KB", size / 1024);
+				
+	}
 }
