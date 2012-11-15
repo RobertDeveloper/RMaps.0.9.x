@@ -50,20 +50,21 @@ public class TrackListActivity extends ListActivity {
 	private boolean mNeedTracksStatUpdate = false;
     private ExecutorService mThreadExecutor = null;
     private int mUnits = 0;
+	private String mSortOrder;
 
 	private class SimpleInvalidationHandler extends Handler {
 
 		@Override
 		public void handleMessage(final Message msg) {
 			if(msg.what == R.id.about) {
-				FillData();
+				((SimpleCursorAdapter) getListAdapter()).getCursor().requery();
 			} else if(msg.what == R.id.tracks) {
 				if(msg.arg1 == 0)
 					Toast.makeText(TrackListActivity.this, R.string.trackwriter_nothing, Toast.LENGTH_LONG).show();
 				else
 					Toast.makeText(TrackListActivity.this, R.string.trackwriter_saved, Toast.LENGTH_LONG).show();
 
-				FillData();
+				((SimpleCursorAdapter) getListAdapter()).getCursor().requery();
 			} else if(msg.what == R.id.menu_exporttogpxpoi) {
 				if (msg.arg1 == 0)
 					Toast
@@ -85,6 +86,7 @@ public class TrackListActivity extends ListActivity {
 		this.setContentView(R.layout.track_list);
         registerForContextMenu(getListView());
         mPoiManager = new PoiManager(this);
+        mSortOrder = "trackid DESC";
 
         mHandler = new SimpleInvalidationHandler();
 
@@ -168,13 +170,25 @@ public class TrackListActivity extends ListActivity {
 	}
 
 	@Override
+	protected void onPause() {
+		SharedPreferences uiState = getPreferences(Activity.MODE_PRIVATE);
+		SharedPreferences.Editor editor = uiState.edit();
+		editor.putString("sortOrder", mSortOrder);
+		editor.commit();
+		super.onPause();
+	}
+
+	@Override
 	protected void onResume() {
+		final SharedPreferences uiState = getPreferences(Activity.MODE_PRIVATE);
+		mSortOrder = uiState.getString("sortOrder", mSortOrder);
+		
 		FillData();
 		super.onResume();
 	}
 
 	private void FillData() {
-		Cursor c = mPoiManager.getGeoDatabase().getTrackListCursor(mUnits == 0 ? getResources().getString(R.string.km) : getResources().getString(R.string.ml));
+		Cursor c = mPoiManager.getGeoDatabase().getTrackListCursor(mUnits == 0 ? getResources().getString(R.string.km) : getResources().getString(R.string.ml), mSortOrder);
 		
 		if(mNeedTracksStatUpdate){
 			mNeedTracksStatUpdate = false;
@@ -201,7 +215,7 @@ public class TrackListActivity extends ListActivity {
 	}
 	
 	private SimpleCursorAdapter.ViewBinder mViewBinder  = new CheckBoxViewBinder();
-	
+
 	private class CheckBoxViewBinder implements SimpleCursorAdapter.ViewBinder {
 		private static final String SHOW = "show";
 
@@ -265,6 +279,36 @@ public class TrackListActivity extends ListActivity {
 		if(item.getItemId() == R.id.menu_importpoi) {
 			startActivity((new Intent(this, ImportTrackActivity.class)));
 			return true;
+		} else if(item.getItemId() == R.id.menu_sort_name) {
+			if(mSortOrder.contains("tracks.name")) {
+				if(mSortOrder.contains("asc"))
+					mSortOrder = "tracks.name desc";
+				else
+					mSortOrder = "tracks.name asc";
+			} else {
+				mSortOrder = "tracks.name asc";
+			}
+			((SimpleCursorAdapter) getListAdapter()).changeCursor(mPoiManager.getGeoDatabase().getTrackListCursor(mUnits == 0 ? getResources().getString(R.string.km) : getResources().getString(R.string.ml), mSortOrder));
+		} else if(item.getItemId() == R.id.menu_sort_category) {
+			if(mSortOrder.contains("activity.name")) {
+				if(mSortOrder.contains("asc"))
+					mSortOrder = "activity.name desc";
+				else
+					mSortOrder = "activity.name asc";
+			} else {
+				mSortOrder = "activity.name asc";
+			}
+			((SimpleCursorAdapter) getListAdapter()).changeCursor(mPoiManager.getGeoDatabase().getTrackListCursor(mUnits == 0 ? getResources().getString(R.string.km) : getResources().getString(R.string.ml), mSortOrder));
+		} else if(item.getItemId() == R.id.menu_sort_date) {
+			if(mSortOrder.contains("date")) {
+				if(mSortOrder.contains("asc"))
+					mSortOrder = "date desc";
+				else
+					mSortOrder = "date asc";
+			} else {
+				mSortOrder = "date asc";
+			}
+			((SimpleCursorAdapter) getListAdapter()).changeCursor(mPoiManager.getGeoDatabase().getTrackListCursor(mUnits == 0 ? getResources().getString(R.string.km) : getResources().getString(R.string.ml), mSortOrder));
 		}
 
 		return true;
@@ -297,7 +341,7 @@ public class TrackListActivity extends ListActivity {
 			finish();
 		} else if(item.getItemId() == R.id.menu_deletepoi) {
 			mPoiManager.deleteTrack(id);
-			FillData();
+			((SimpleCursorAdapter) getListAdapter()).getCursor().requery();
 		} else if(item.getItemId() == R.id.menu_exporttogpxpoi) {
 			DoExportTrackGPX(id);
 		} else if(item.getItemId() == R.id.menu_exporttokmlpoi) {

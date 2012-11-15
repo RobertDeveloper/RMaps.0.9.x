@@ -73,9 +73,13 @@ public class GeoDatabase implements PoiConstants{
 	}
 
 	public Cursor getPoiListCursor() {
+		return getPoiListCursor("lat, lon");
+	}
+
+	public Cursor getPoiListCursor(String sortColNames) {
 		if (isDatabaseReady()) {
 			// не менять порядок полей
-			return mDatabase.rawQuery(STAT_GET_POI_LIST, null);
+			return mDatabase.rawQuery(STAT_GET_POI_LIST+sortColNames, null);
 		}
 
 		return null;
@@ -313,11 +317,15 @@ public class GeoDatabase implements PoiConstants{
 		mDatabase.setTransactionSuccessful();
 		mDatabase.endTransaction();
 	}
-
+	
 	public Cursor getTrackListCursor(final String units) {
+		return getTrackListCursor(units, "trackid DESC");
+	}
+	
+	public Cursor getTrackListCursor(final String units, final String sortColNames) {
 		if (isDatabaseReady()) {
 			// не менять порядок полей
-			return mDatabase.rawQuery(String.format(STAT_getTrackList, units), null);
+			return mDatabase.rawQuery(String.format(STAT_getTrackList+sortColNames, units), null);
 		}
 
 		return null;

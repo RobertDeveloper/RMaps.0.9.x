@@ -216,5 +216,10 @@ How to and FAQ you can find on http://robertdeveloper.blogspot.com/\n</string>
     <string name="downloader_notif_text">Downloading in progress</string>
     <string name="pref_minzoom">Min zoom</string>
     <string name="pref_maxzoom">Max zoom</string>
+    <string name="menu_sort">Sort</string>
+    <string name="menu_sort_name">By name</string>
+    <string name="menu_sort_category">By category</string>
+    <string name="menu_sort_coord">By coordinates</string>
+    <string name="menu_sort_date">By date</string>
     
 </resources>
