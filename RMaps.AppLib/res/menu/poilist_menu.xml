@@ -6,7 +6,13 @@
         android:icon="@android:drawable/ic_menu_add"
         android:title="@string/menu_addpoi">
     </item>
-    <item
+    <item android:id="@+id/menu_sort" android:title="@string/menu_sort" android:icon="@android:drawable/ic_menu_sort_alphabetically">
+        <menu>
+            <item android:id="@+id/menu_sort_name" android:title="@string/menu_sort_name"/>
+            <item android:id="@+id/menu_sort_category" android:title="@string/menu_sort_category"/>
+            <item android:id="@+id/menu_sort_coord" android:title="@string/menu_sort_coord"/>
+        </menu>
+    </item><item
         android:id="@+id/menu_categorylist"
         android:icon="@drawable/ic_menu_archive"
         android:title="@string/menu_categorylist">
@@ -31,5 +37,6 @@
         android:icon="@android:drawable/ic_menu_upload"
         android:title="@string/menu_exporttogpx">
     </item>
+    
 
 </menu>

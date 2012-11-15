@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu
   xmlns:android="http://schemas.android.com/apk/res/android">
-	<item
-		android:id="@+id/menu_importpoi"
-		android:icon="@drawable/ric_menu_attachment"
-		android:title="@string/menu_import">
-	</item>
+	<item android:id="@+id/menu_importpoi" android:icon="@drawable/ric_menu_attachment" android:title="@string/menu_import">
+	</item><item android:id="@+id/menu_sort" android:title="@string/menu_sort" android:icon="@android:drawable/ic_menu_sort_alphabetically">
+        <menu>
+            <item android:id="@+id/menu_sort_name" android:title="@string/menu_sort_name" />
+            <item android:id="@+id/menu_sort_category" android:title="@string/menu_sort_category" />
+            <item android:id="@+id/menu_sort_date" android:title="@string/menu_sort_date" />
+        </menu>
+    </item>
 </menu>

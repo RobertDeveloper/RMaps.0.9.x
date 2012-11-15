@@ -5,18 +5,18 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.text.SimpleDateFormat;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Message;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
@@ -30,7 +30,6 @@ import android.widget.SimpleCursorAdapter;
 import android.widget.Toast;
 
 import com.robert.maps.applib.R;
-import com.robert.maps.applib.kml.Track.TrackPoint;
 import com.robert.maps.applib.kml.XMLparser.SimpleXML;
 import com.robert.maps.applib.kml.constants.PoiConstants;
 import com.robert.maps.applib.utils.Ut;
@@ -38,6 +37,7 @@ import com.robert.maps.applib.utils.Ut;
 public class PoiListActivity extends ListActivity {
 	private PoiManager mPoiManager;
 	private ProgressDialog dlgWait;
+	private String mSortOrder;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +45,7 @@ public class PoiListActivity extends ListActivity {
 		setContentView(R.layout.poi_list);
         registerForContextMenu(getListView());
         mPoiManager = new PoiManager(this);
+		mSortOrder = "lat asc, lon asc";
 	}
 
 	@Override
@@ -54,13 +55,25 @@ public class PoiListActivity extends ListActivity {
 	}
 
 	@Override
+	protected void onPause() {
+		SharedPreferences uiState = getPreferences(Activity.MODE_PRIVATE);
+		SharedPreferences.Editor editor = uiState.edit();
+		editor.putString("sortOrder", mSortOrder);
+		editor.commit();
+		super.onPause();
+	}
+
+	@Override
 	protected void onResume() {
+		final SharedPreferences uiState = getPreferences(Activity.MODE_PRIVATE);
+		mSortOrder = uiState.getString("sortOrder", mSortOrder);
+		
 		FillData();
 		super.onResume();
 	}
 
 	private void FillData() {
-		Cursor c = mPoiManager.getGeoDatabase().getPoiListCursor();
+		Cursor c = mPoiManager.getGeoDatabase().getPoiListCursor(mSortOrder);
         startManagingCursor(c);
 
         ListAdapter adapter = new SimpleCursorAdapter(this,
@@ -106,6 +119,39 @@ public class PoiListActivity extends ListActivity {
 			return true;
 		} else if(item.getItemId() == R.id.menu_exportkml) {
 			DoExportKml();
+			
+		} else if(item.getItemId() == R.id.menu_sort_name) {
+			if(mSortOrder.contains("points.name")) {
+				if(mSortOrder.contains("asc"))
+					mSortOrder = "points.name desc";
+				else
+					mSortOrder = "points.name asc";
+			} else {
+				mSortOrder = "points.name asc";
+			}
+			((SimpleCursorAdapter) getListAdapter()).changeCursor(mPoiManager.getGeoDatabase().getPoiListCursor(mSortOrder));
+			
+		} else if(item.getItemId() == R.id.menu_sort_category) {
+			if(mSortOrder.contains("category.name")) {
+				if(mSortOrder.contains("asc"))
+					mSortOrder = "category.name desc";
+				else
+					mSortOrder = "category.name asc";
+			} else {
+				mSortOrder = "category.name asc";
+			}
+			((SimpleCursorAdapter) getListAdapter()).changeCursor(mPoiManager.getGeoDatabase().getPoiListCursor(mSortOrder));
+			
+		} else if(item.getItemId() == R.id.menu_sort_coord) {
+			if(mSortOrder.contains("lat")) {
+				if(mSortOrder.contains("asc"))
+					mSortOrder = "lat desc, lon desc";
+				else
+					mSortOrder = "lat asc, lon asc";
+			} else {
+				mSortOrder = "lat, lon asc";
+			}
+			((SimpleCursorAdapter) getListAdapter()).changeCursor(mPoiManager.getGeoDatabase().getPoiListCursor(mSortOrder));
 		}
 
 		return true;
@@ -254,7 +300,7 @@ public class PoiListActivity extends ListActivity {
 							new DialogInterface.OnClickListener() {
 								public void onClick(DialogInterface dialog, int whichButton) {
 									mPoiManager.DeleteAllPoi();
-									FillData();
+									((SimpleCursorAdapter) getListAdapter()).getCursor().requery();
 								}
 							}).setNegativeButton(android.R.string.no,
 							new DialogInterface.OnClickListener() {
@@ -299,15 +345,15 @@ public class PoiListActivity extends ListActivity {
 			finish();
 		} else if(item.getItemId() == R.id.menu_deletepoi) {
 			mPoiManager.deletePoi(pointid);
-			FillData();
+			((SimpleCursorAdapter) getListAdapter()).getCursor().requery();
 		} else if(item.getItemId() == R.id.menu_hide) {
 			poi.Hidden = true;
 			mPoiManager.updatePoi(poi);
-			FillData();
+			((SimpleCursorAdapter) getListAdapter()).getCursor().requery();
 		} else if(item.getItemId() == R.id.menu_show) {
 			poi.Hidden = false;
 			mPoiManager.updatePoi(poi);
-			FillData();
+			((SimpleCursorAdapter) getListAdapter()).getCursor().requery();
 		} else if(item.getItemId() == R.id.menu_toradar) {
 			try {
 					Intent i = new Intent("com.google.android.radar.SHOW_RADAR");
