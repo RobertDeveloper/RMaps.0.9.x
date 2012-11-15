@@ -314,7 +314,6 @@ public class SQLiteMapDatabase implements ICacheProvider {
 		}
 	}
 
-	@Override
 	public double getTileLenght() {
 		double ret = 0L;
 		if(mDatabase[0] != null) {
