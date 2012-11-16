@@ -1,6 +1,11 @@
 package com.robert.maps.applib.utils;
 
 import java.io.File;
+import java.util.Locale;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -13,15 +18,20 @@ import com.robert.maps.applib.tileprovider.TileSource;
 
 public class SQLiteMapDatabase implements ICacheProvider {
 	private static final String SQL_CREATE_tiles = "CREATE TABLE IF NOT EXISTS tiles (x int, y int, z int, s int, image blob, PRIMARY KEY (x,y,z,s));";
-	private static final String SQL_CREATE_info = "CREATE TABLE IF NOT EXISTS info (maxzoom Int, minzoom Int);";
+	private static final String SQL_CREATE_info = "CREATE TABLE IF NOT EXISTS info (id Int, maxzoom Int, minzoom Int, params VARCHAR, PRIMARY KEY (id));";
 	private static final String SQL_SELECT_MINZOOM = "SELECT 17-minzoom AS ret FROM info";
 	private static final String SQL_SELECT_MAXZOOM = "SELECT 17-maxzoom AS ret FROM info";
+	private static final String SQL_SELECT_PARAMS = "SELECT params FROM info";
 	private static final String SQL_SELECT_IMAGE = "SELECT image as ret FROM tiles WHERE s = 0 AND x = ? AND y = ? AND z = ?";
 	private static final String SQL_DROP_tiles = "DROP TABLE IF EXISTS tiles";
+	private static final String SQL_DROP_info = "DROP TABLE IF EXISTS info";
 	private static final String SQL_tiles_count = "SELECT COUNT(*) cnt FROM tiles";
 	private static final String RET = "ret";
+	private static final String PARAMS = "params";
+	private static final String INFO = "info";
 	private static final long MAX_DATABASE_SIZE = 1945 * 1024 * 1024; // 1.9GB
 	private static final String JOURNAL = "-journal";
+	private static final String SQLITEDB = "sqlitedb";
 
 	private SQLiteDatabase[] mDatabase = new SQLiteDatabase[0];
 	private SQLiteDatabase mDatabaseWritable;
@@ -34,7 +44,7 @@ public class SQLiteMapDatabase implements ICacheProvider {
 			if (mDatabase[i] != null)
 				mDatabase[i].close();
 		
-		RException aException = null;
+		//RException aException = null;
 		
 		mBaseFile = new File(aFileName);
 		final File folder = mBaseFile.getParentFile();
@@ -109,17 +119,23 @@ public class SQLiteMapDatabase implements ICacheProvider {
 
 	protected class CashDatabaseHelper extends RSQLiteOpenHelper {
 		public CashDatabaseHelper(final Context context, final String name) {
-			super(context, name, null, 3);
+			super(context, name, null, 5);
 		}
 
 		@Override
 		public void onCreate(SQLiteDatabase db) {
 			db.execSQL(SQL_CREATE_tiles);
 			db.execSQL(SQL_CREATE_info);
+			db.execSQL(SQL_INIT_INFO);
 		}
 
 		@Override
 		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+			if(oldVersion < 5) {
+				db.execSQL(SQL_DROP_info);
+				db.execSQL(SQL_CREATE_info);
+				db.execSQL(SQL_INIT_INFO);
+			}
 		}
 
 	}
@@ -129,16 +145,15 @@ public class SQLiteMapDatabase implements ICacheProvider {
 		tileSource.ZOOM_MAXLEVEL = getMaxZoom();
 	}
 	
-	private static final String SQL_UPDZOOM_DROP = "DROP TABLE IF EXISTS info";
-	private static final String SQL_UPDZOOM_CREATE = "CREATE TABLE info As SELECT 0 As minzoom, 0 As maxzoom;";
+	private static final String SQL_INIT_INFO = "INSERT OR IGNORE INTO info (id, minzoom, maxzoom) SELECT 0, 0, 0;";
 	private static final String SQL_UPDZOOM_UPDMIN = "UPDATE info SET minzoom = (SELECT DISTINCT z FROM tiles ORDER BY z ASC LIMIT 1);";
 	private static final String SQL_UPDZOOM_UPDMAX = "UPDATE info SET maxzoom = (SELECT DISTINCT z FROM tiles ORDER BY z DESC LIMIT 1);";
 
 	public synchronized void updateMinMaxZoom() throws SQLiteException {
 		for(int i = 0; i < mDatabase.length; i++)
 			if(mDatabase[i] != null){
-				this.mDatabase[i].execSQL(SQL_UPDZOOM_DROP);
-				this.mDatabase[i].execSQL(SQL_UPDZOOM_CREATE);
+				this.mDatabase[i].execSQL(SQL_CREATE_info);
+				this.mDatabase[i].execSQL(SQL_INIT_INFO);
 				this.mDatabase[i].execSQL(SQL_UPDZOOM_UPDMIN);
 				this.mDatabase[i].execSQL(SQL_UPDZOOM_UPDMAX);
 			}
@@ -150,7 +165,7 @@ public class SQLiteMapDatabase implements ICacheProvider {
 			cv.put("x", aX);
 			cv.put("y", aY);
 			cv.put("z", 17 - aZ);
-			cv.put("s", 0);
+			cv.put("s", System.currentTimeMillis() / 1000);
 			cv.put("image", aData);
 			try {
 				this.mDatabaseWritable.insertOrThrow(TILES, null, cv);
@@ -329,6 +344,71 @@ public class SQLiteMapDatabase implements ICacheProvider {
 			}
 		}
 		return ret;
+	}
+	
+	public JSONObject getParams() {
+		JSONObject json = null;
+		
+		for (int i = 0; i < mDatabase.length; i++) {
+			if(mDatabase[i].getPath().toLowerCase(Locale.US).endsWith(SQLITEDB)) {
+				Cursor c = this.mDatabase[i].rawQuery(SQL_SELECT_PARAMS, null);
+				if(c != null) {
+					if(c.moveToFirst()) {
+						try {
+							json = new JSONObject(c.getString(0));
+						} catch (JSONException e) {
+						}
+						c.close();
+						break;
+					}
+					c.close();
+				}
+			}
+		}
+		
+		if(json == null)
+			json = new JSONObject();
+		
+		return json;
+	}
+	
+	public static final String MAPID = "mapid";
+	public static final String MAPNAME = "mapname";
+	public static final String ZOOM = "zoom";
+	public static final String COORDS = "coords";
+	public static final String ZOOMS = "zooms";
+
+	public void setParams(String mapID, String mapName, int[] coordArr, int[] zoomArr, int zoom) {
+		final JSONObject json = getParams();
+		try {
+			json.put(MAPID, mapID);
+			json.put(MAPNAME, mapName);
+			json.put(ZOOM, zoom);
+			{
+				final JSONArray jarr = new JSONArray();
+				for(int i = 0; i < coordArr.length; i++)
+					jarr.put(coordArr[i]);
+				json.put(COORDS, jarr);
+			}
+			{
+				final JSONArray jarr = new JSONArray();
+				for(int i = 0; i < zoomArr.length; i++)
+					jarr.put(zoomArr[i]);
+				json.put(ZOOMS, jarr);
+			}
+			
+		} catch (JSONException e) {
+		}
+		
+		for (int i = 0; i < mDatabase.length; i++) {
+			if(mDatabase[i].getPath().toLowerCase(Locale.US).endsWith(SQLITEDB)) {
+				final ContentValues cv = new ContentValues();
+				cv.put(PARAMS, json.toString());
+				this.mDatabase[i].update(INFO, cv, null, null);
+				break;
+			}
+		}
+		
 	}
 
 }

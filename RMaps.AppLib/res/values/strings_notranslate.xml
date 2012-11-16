@@ -20,5 +20,6 @@
     <string name="ya_dialog_message">В знак уважения и благодарности фирме Яндекс за предоставленную информацию о пробках предлагаю Вам добавить закладку на страницу Мобильный Яндекс. Это сообщение ни к чему Вас не обязывает и больше появляться не будет.</string>
     <string name="ya_dialog_button_caption">OK</string>
     <string name="menu_gpsstatus">GPS Status</string>
-
+    <string name="mymap">MyMapFileName</string>
+    
 </resources>

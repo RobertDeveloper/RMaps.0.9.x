@@ -2,16 +2,16 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" xmlns:app="http://schemas.android.com/apk/res/com.robert.maps.applib">
+    android:orientation="vertical" >
 
     <include layout="@layout/main_title" />
 
     <RelativeLayout
         android:id="@+id/map_area"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="0dip"
         android:layout_weight="1" >
-
+
         <com.robert.maps.applib.view.MapView
             android:id="@+id/map"
             android:layout_width="wrap_content"
@@ -19,9 +19,7 @@
             android:clickable="false"
             android:focusable="false"
             android:focusableInTouchMode="false"
-            android:longClickable="false"
-             >
-
+            android:longClickable="false" >
         </com.robert.maps.applib.view.MapView>
     </RelativeLayout>
 
@@ -63,20 +61,20 @@
         android:layout_marginBottom="2dp"
         android:layout_marginLeft="4dp"
         android:layout_marginTop="6dp" >
-
+
         <Button
             android:id="@+id/pause"
             style="buttonStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Pause" />
+            android:text="@string/stop" />
 
         <Button
             android:id="@+id/open"
             style="buttonStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Open"
+            android:text="@string/open"
             android:visibility="gone" />
     </LinearLayout>
 

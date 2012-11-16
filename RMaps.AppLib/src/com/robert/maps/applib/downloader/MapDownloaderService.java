@@ -219,11 +219,13 @@ public class MapDownloaderService extends Service {
 		}
 		mCallbacks.finishBroadcast();
 		
+		if (mMapDatabase != null) {
+			mMapDatabase.setParams(mMapID, mTileSource.NAME, mCoordArr, mZoomArr, mZoom);
+			mMapDatabase.Free();
+		}
+		
 		if (mTileSource != null)
 			mTileSource.Free();
-		
-		if (mMapDatabase != null)
-			mMapDatabase.Free();
 		
 		mNM.cancel(R.id.downloader_service);
 		mNM = null;
@@ -392,10 +394,10 @@ public class MapDownloaderService extends Service {
 					}
 					
 				}
-				try {
-					Thread.sleep(400);
-				} catch (InterruptedException e) {
-				}
+//				try {
+//					Thread.sleep(400);
+//				} catch (InterruptedException e) {
+//				}
 			}
 			
 			if (mHandler != null)
