@@ -14,6 +14,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.TypedValue;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.KeyEvent;
@@ -172,10 +173,11 @@ public class AreaSelectorActivity extends Activity {
 
 			cb = new CheckBox(this);
 			cb.setTag("Layer"+i);
+			//cb.setTextAppearance(this, android.R.attr.textAppearanceSmall);
+			cb.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
 			cb.setText("Zoom "+(i+1)+"\n"+tileCnt+" tiles, ~"+Ut.formatSize(tileCnt * tileLength));
-			cb.setTextAppearance(this, android.R.style.TextAppearance_Small);
 			
-			if(i + 1 > (int)((mTileSource.ZOOM_MAXLEVEL - mTileSource.ZOOM_MINLEVEL + 1) / 2.0 + 0.5))
+			if(i - mTileSource.ZOOM_MINLEVEL + 1 > (int)((mTileSource.ZOOM_MAXLEVEL - mTileSource.ZOOM_MINLEVEL + 1) / 2.0 + 0.5))
 				ll2.addView(cb);
 			else
 				ll1.addView(cb);
@@ -194,11 +196,17 @@ public class AreaSelectorActivity extends Activity {
 	}
 
 	private void startDownLoad() {
+		getZoomArr();
+		
+		if(mZoomArr.length == 0) {
+			Toast.makeText(this, R.string.select_zoom, Toast.LENGTH_LONG).show();
+			return;
+		}
+			
 		findViewById(R.id.start_download).setVisibility(View.GONE);
-		//findViewById(R.id.stop_download).setVisibility(View.VISIBLE);
 		
 		final Intent intent = new Intent("com.robert.maps.mapdownloader");
-		intent.putExtra("ZOOM", getZoomArr());
+		intent.putExtra("ZOOM", mZoomArr);
 		intent.putExtra("COORD", mAreaSelectorOverlay.getCoordArr());
 		intent.putExtra("MAPID", mTileSource.ID);
 		intent.putExtra("ZOOMCUR", mMap.getZoomLevel());
@@ -210,7 +218,7 @@ public class AreaSelectorActivity extends Activity {
 			return;
 		}
 		intent.putExtra("OFFLINEMAPNAME", filename);
-			
+		
 		startService(intent);
 		
 		final GeoPoint point = mMap.getMapCenter();
@@ -295,6 +303,9 @@ public class AreaSelectorActivity extends Activity {
 		}
 		if(uiState.getBoolean("step2", false)) {
 			doNext();
+		} else {
+			findViewById(R.id.step1).setVisibility(View.VISIBLE);
+			findViewById(R.id.step2).setVisibility(View.GONE);
 		}
  		
 		super.onResume();
