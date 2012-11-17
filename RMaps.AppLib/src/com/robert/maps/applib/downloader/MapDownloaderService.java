@@ -27,8 +27,6 @@ import android.os.RemoteException;
 import android.widget.Toast;
 
 import com.robert.maps.applib.R;
-import com.robert.maps.applib.downloader.IDownloaderCallback;
-import com.robert.maps.applib.downloader.IRemoteService;
 import com.robert.maps.applib.tileprovider.TileProviderFileBase;
 import com.robert.maps.applib.tileprovider.TileSource;
 import com.robert.maps.applib.utils.SQLiteMapDatabase;
@@ -167,27 +165,27 @@ public class MapDownloaderService extends Service {
 	}
 	
 	private void checkLimitation() {
-		InputStream in = null;
-		OutputStream out = null;
-
-		try {
-			in = new BufferedInputStream(new URL("https://sites.google.com/site/robertk506/limits.txt").openStream(), StreamUtils.IO_BUFFER_SIZE);
-
-			final ByteArrayOutputStream dataStream = new ByteArrayOutputStream();
-			out = new BufferedOutputStream(dataStream, StreamUtils.IO_BUFFER_SIZE);
-			StreamUtils.copy(in, out);
-			out.flush();
-
-			String str = dataStream.toString();
-			Ut.w("checkLimitation: "+str);
-			//JSONObject json = new JSONObject(str.replace("YMaps.TrafficLoader.onLoad(\"stat\",", "").replace("});", "}"));
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			StreamUtils.closeStream(in);
-			StreamUtils.closeStream(out);
-		}
+//		InputStream in = null;
+//		OutputStream out = null;
+//
+//		try {
+//			in = new BufferedInputStream(new URL("https://sites.google.com/site/robertk506/limits.txt").openStream(), StreamUtils.IO_BUFFER_SIZE);
+//
+//			final ByteArrayOutputStream dataStream = new ByteArrayOutputStream();
+//			out = new BufferedOutputStream(dataStream, StreamUtils.IO_BUFFER_SIZE);
+//			StreamUtils.copy(in, out);
+//			out.flush();
+//
+//			String str = dataStream.toString();
+//			Ut.w("checkLimitation: "+str);
+//			//JSONObject json = new JSONObject(str.replace("YMaps.TrafficLoader.onLoad(\"stat\",", "").replace("});", "}"));
+//
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		} finally {
+//			StreamUtils.closeStream(in);
+//			StreamUtils.closeStream(out);
+//		}
 	}
 
 	@Override

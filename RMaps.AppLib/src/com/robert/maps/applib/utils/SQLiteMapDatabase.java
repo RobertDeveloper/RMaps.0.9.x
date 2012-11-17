@@ -22,13 +22,12 @@ public class SQLiteMapDatabase implements ICacheProvider {
 	private static final String SQL_SELECT_MINZOOM = "SELECT 17-minzoom AS ret FROM info";
 	private static final String SQL_SELECT_MAXZOOM = "SELECT 17-maxzoom AS ret FROM info";
 	private static final String SQL_SELECT_PARAMS = "SELECT params FROM info";
-	private static final String SQL_SELECT_IMAGE = "SELECT image as ret FROM tiles WHERE s = 0 AND x = ? AND y = ? AND z = ?";
+	private static final String SQL_UPDATE_PARAMS = "UPDATE info SET params = ?";
+	private static final String SQL_SELECT_IMAGE = "SELECT image as ret FROM tiles WHERE x = ? AND y = ? AND z = ?";
 	private static final String SQL_DROP_tiles = "DROP TABLE IF EXISTS tiles";
 	private static final String SQL_DROP_info = "DROP TABLE IF EXISTS info";
 	private static final String SQL_tiles_count = "SELECT COUNT(*) cnt FROM tiles";
 	private static final String RET = "ret";
-	private static final String PARAMS = "params";
-	private static final String INFO = "info";
 	private static final long MAX_DATABASE_SIZE = 1945 * 1024 * 1024; // 1.9GB
 	private static final String JOURNAL = "-journal";
 	private static final String SQLITEDB = "sqlitedb";
@@ -355,8 +354,9 @@ public class SQLiteMapDatabase implements ICacheProvider {
 				if(c != null) {
 					if(c.moveToFirst()) {
 						try {
-							json = new JSONObject(c.getString(0));
-						} catch (JSONException e) {
+							if(c.getString(0) != null)
+								json = new JSONObject(c.getString(0));
+						} catch (Exception e) {
 						}
 						c.close();
 						break;
@@ -399,12 +399,11 @@ public class SQLiteMapDatabase implements ICacheProvider {
 			
 		} catch (JSONException e) {
 		}
-		
 		for (int i = 0; i < mDatabase.length; i++) {
 			if(mDatabase[i].getPath().toLowerCase(Locale.US).endsWith(SQLITEDB)) {
-				final ContentValues cv = new ContentValues();
-				cv.put(PARAMS, json.toString());
-				this.mDatabase[i].update(INFO, cv, null, null);
+				
+				final String[] arg = {json.toString()};
+				this.mDatabase[i].execSQL(SQL_UPDATE_PARAMS, arg);
 				break;
 			}
 		}
