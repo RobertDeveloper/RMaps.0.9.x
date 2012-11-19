@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">RMaps.Donation</string>
+    <string name="app_user_id"></string>
+    <string name="app_user_label">Robert.Developer</string>
+    <string name="donation_descr">Thank you for your donation.</string>
+	<string name="donation_descr2">I very glad that my app are useful for you. In the future I plan to add to this app some features that extend RMaps functionality. Stay tuned.</string>
+	<string name="start">Start RMaps</string>
+    <string name="message_noapp">RMaps not found. Please install it!</string>
 </resources>
