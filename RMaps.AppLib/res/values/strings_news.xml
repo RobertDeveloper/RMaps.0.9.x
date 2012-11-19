@@ -6,6 +6,7 @@
 \n
 v.0.9.0\n
 + Tile downloader\n
++ Sort POI, tracks\n
 \n
 v.0.8.12\n
 + New overlay feature (add overlay layer above map by one touch, create your own map+overlay pairs, flexibility overlay button on the map)\n

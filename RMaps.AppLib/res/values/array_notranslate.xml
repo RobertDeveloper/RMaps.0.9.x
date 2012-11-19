@@ -253,6 +253,7 @@
         <item>Český</item>
         <item>Japanese</item>
         <item>Italian</item>
+        <item>Deutsch</item>
         <item>Chinese Simplified</item>
         <item>Chinese Traditional</item>
     </string-array>
@@ -264,6 +265,7 @@
         <item>cs</item>
         <item>ja</item>
         <item>it</item>
+        <item>de</item>
         <item>zh_CN</item>
         <item>zh_TW</item>
     </string-array>
