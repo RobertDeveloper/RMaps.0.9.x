@@ -980,7 +980,18 @@ public class MainActivity extends Activity {
 
 							/* User clicked Cancel so do some stuff */
 						}
-					}).create();
+					})
+					.setPositiveButton(R.string.donation, new DialogInterface.OnClickListener() {
+						
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							try {
+								startActivity(new Intent(Intent.ACTION_VIEW).setData(Uri.parse("market://search?q=pname:com.robert.maps.ext")));
+							} catch (Exception e1) {
+							}
+						}
+					})
+					.create();
 		} else if (id == R.id.about) {
 			return new AlertDialog.Builder(this) //.setIcon(R.drawable.alert_dialog_icon)
 					.setTitle(R.string.menu_about)

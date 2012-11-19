@@ -427,7 +427,7 @@ public final class R {
 		public static final int SelectFile = 0x7f0a006f;
 		public static final int menu_sort_category = 0x7f0a00c9;
 		public static final int pref_zoomctrl = 0x7f0a0002;
-		public static final int mymap = 0x7f0a00eb;
+		public static final int mymap = 0x7f0a00ec;
 		public static final int prefcat_main_look = 0x7f0a0027;
 		public static final int FileName = 0x7f0a006d;
 		public static final int pref_mixmap_map = 0x7f0a00bb;
@@ -546,6 +546,7 @@ public final class R {
 		public static final int error = 0x7f0a0000;
 		public static final int menu_exporttogpx = 0x7f0a0084;
 		public static final int pref_keepscreenon = 0x7f0a0017;
+		public static final int donation = 0x7f0a00eb;
 		public static final int pref_dir_main = 0x7f0a0090;
 		public static final int mercator_ellipsoid = 0x7f0a00e9;
 		public static final int pref_internalcache_title = 0x7f0a0031;
