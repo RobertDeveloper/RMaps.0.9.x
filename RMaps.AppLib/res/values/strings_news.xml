@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="whats_new_dialog_text">
+<b>Do you like RMaps?\n
+Buy RMaps.Donation on Google Play Store</b>\n
 \n
-<b>Do you want to help me translate the app interface? Write me to email robertk506@gmail.com</b>\n
+Do you want to help me translate the app interface? Write me to email robertk506@gmail.com\n
 \n
 v.0.9.0\n
 + Tile downloader\n

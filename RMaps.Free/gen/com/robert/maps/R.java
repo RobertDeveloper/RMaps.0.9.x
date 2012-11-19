@@ -385,6 +385,7 @@ containing a value of this type.
         public static final int clear=0x7f0a00cc;
         public static final int dialog_color_picker=0x7f0a00a4;
         public static final int distance=0x7f0a0099;
+        public static final int donation=0x7f0a00eb;
         public static final int downloader_notif_text=0x7f0a00c4;
         public static final int downloader_notif_ticket=0x7f0a00c2;
         public static final int downloader_notif_title=0x7f0a00c3;
@@ -462,7 +463,7 @@ containing a value of this type.
         public static final int ml=0x7f0a00e7;
         public static final int mnm=0x7f0a00db;
         public static final int moving_time=0x7f0a009d;
-        public static final int mymap=0x7f0a00eb;
+        public static final int mymap=0x7f0a00ec;
         public static final int next=0x7f0a00cd;
         public static final int no_inet_conn=0x7f0a0051;
         public static final int no_items=0x7f0a0052;
