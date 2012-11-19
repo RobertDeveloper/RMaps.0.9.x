@@ -84,8 +84,7 @@
   <string name="message_geodata_notavailable">Данные на SD карте недоступны. Операция не может быть выполнена.</string>
   <string name="no_inet_conn">Нет соединения с интернетом...</string>
   <string name="no_items">По вашему запросу ничего не найдено</string>
-  <string name="about_dialog_text">
-©2009 Robert.Developer\n
+  <string name="about_dialog_text">©2009 Robert.Developer\n
   Osmdroid by Nicolas Gramlich\n
   App icon by Everaldo Coelho\n
 При участии\n
@@ -96,8 +95,7 @@ All rights reserved\n
 \n
 Вопросы и предложения направляйте по электрической почте robertk506@gmail.com\n
 \n
-Как сделать офф-лайн карту и прочее можно почитать здесь http://robertdeveloper.blogspot.com/\n
-</string>
+Как сделать офф-лайн карту и прочее можно почитать здесь http://robertdeveloper.blogspot.com/\n</string>
   <string name="about_dialog_whats_new">Что нового</string>
   <string name="about_dialog_close">Закрыть</string>
   <string name="search_label">Адрес:</string>
@@ -207,4 +205,28 @@ All rights reserved\n
   <string name="pref_overlay_button_visibility_summary">Когда показывать или скрывать кнопку слоев</string>
   <string name="pref_overlay_button_behavior">Поведение кнопки слоев</string>
   <string name="pref_overlay_button_behavior_summary">Действия кнопки по касанию и долгому касанию</string>
+  <string name="pref_custommap_dialogmessage">Для примера:\n
+http://c.tile.openstreetmap.org/{z}/{x}/{y}.png\n
+В дополнение к очевидным {z}, {x}, {y} вы можете использовать параметр {galileo} для Google карт.\n
+Пишите мне на почту, если вы хотели бы дополнить список параметров.\n</string>
+  <string name="downloader_notif_ticket">Загрузка...</string>
+  <string name="downloader_notif_title">RMaps загрузчик тайлов</string>
+  <string name="downloader_notif_text">Выполняется загрузка</string>
+  <string name="pref_minzoom">Минимальный масштаб</string>
+  <string name="pref_maxzoom">Максимальный масштаб</string>
+  <string name="menu_sort">Сортировка</string>
+  <string name="menu_sort_name">По наименованию</string>
+  <string name="menu_sort_category">По категориям</string>
+  <string name="menu_sort_coord">По координатам</string>
+  <string name="menu_sort_date">По дате</string>
+  <string name="clear">Очистить</string>
+  <string name="next">Далее</string>
+  <string name="file_name">Имя файла:</string>
+  <string name="overwrite_existing_file">Перезаписать существующий файл</string>
+  <string name="overwrite_existing_tiles">Перезаписать существующие тайлы в файле</string>
+  <string name="back">Назад</string>
+  <string name="start_download">Начать загрузку</string>
+  <string name="stop">Остановить</string>
+  <string name="open">Открыть карту</string>
+  <string name="select_zoom">Укажите загружаемый масштаб сначала...</string>
 </resources>
