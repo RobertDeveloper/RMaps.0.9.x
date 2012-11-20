@@ -86,16 +86,19 @@
   <string name="no_items">La tua ricerca non ha trovato risultati</string>
   <string name="about_dialog_text">©2009 Robert.Developer\n
 Osmdroid by Nicolas Gramlich\n
-App icon by Everaldo Coelho\n
-With the assistance of\n
+Icona App by Everaldo Coelho\n
+Con  the l\'assistenza di\n
 Dmytro Sandu\n
 Snake Joe\n
 Christoffer Blindheim\n
-All rights reserved\n
+Translators\n
+Vitek Fedra CZ\n
+Tutti i diritti riservati\n
 \n
-Questions, sentences mail to robertk506@gmail.com\n
+Inviate domande,richieste mail a robertk506@gmail.com\n
 \n
-How to and FAQ you can find on http://robertdeveloper.blogspot.com/\n</string>
+Manuale e FAQ su http://robertdeveloper.blogspot.com/\n
+</string>
   <string name="about_dialog_whats_new">Novità…</string>
   <string name="about_dialog_close">Chiudi</string>
   <string name="search_label">Indirizzo:</string>
@@ -205,4 +208,30 @@ How to and FAQ you can find on http://robertdeveloper.blogspot.com/\n</string>
   <string name="pref_overlay_button_visibility_summary">Quando mostrare o nascondere il pulsante di sovrapposizione</string>
   <string name="pref_overlay_button_behavior">Comportamento del pulsante di sovrapposizione</string>
   <string name="pref_overlay_button_behavior_summary">Cosa fare con un tap e con un tap prolungato</string>
+  <string name="pref_custommap_dialogmessage">Per esempio:\n
+http://c.tile.openstreetmap.org/{z}/{x}/{y}.png\n
+Oltre all\'ovvio {z}, {x}, {y} è possibile usare {galileo} per Google maps\n
+Scrivetemi una email se avete bisogno di estendere la lista dei parametri.\n
+
+</string>
+  <string name="downloader_notif_ticket">Download iniziato…</string>
+  <string name="downloader_notif_title">RMaps scaricatore di tile</string>
+  <string name="downloader_notif_text">Download in corso</string>
+  <string name="pref_minzoom">Zoom minimo</string>
+  <string name="pref_maxzoom">Zoom massimo</string>
+  <string name="menu_sort">Ordina</string>
+  <string name="menu_sort_name">Per nome</string>
+  <string name="menu_sort_category">Per categoria</string>
+  <string name="menu_sort_coord">Per coordinate</string>
+  <string name="menu_sort_date">Per data</string>
+  <string name="clear">Azzera</string>
+  <string name="next">Prossimo</string>
+  <string name="file_name">Nome file:</string>
+  <string name="overwrite_existing_file">Sovrascrivi file esistente</string>
+  <string name="overwrite_existing_tiles">Sovrascrivi tiles esistenti nel file</string>
+  <string name="back">Indietro</string>
+  <string name="start_download">Inizia download</string>
+  <string name="stop">Stop</string>
+  <string name="open">Apri mappa</string>
+  <string name="select_zoom">Scegliere prima lo zoom…</string>
 </resources>
