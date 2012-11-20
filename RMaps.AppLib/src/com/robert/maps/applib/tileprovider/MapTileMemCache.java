@@ -2,6 +2,7 @@ package com.robert.maps.applib.tileprovider;
 
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.Map.Entry;
 
 import android.graphics.Bitmap;
 
@@ -70,5 +71,19 @@ public class MapTileMemCache {
 			hardCache.putAll(mHardCachedTiles);
 			mHardCachedTiles = hardCache;
 		}
+	}
+
+	public void Free() {
+		Iterator<Entry<String, Bitmap>> it = mHardCachedTiles.entrySet().iterator();
+		while(it.hasNext()) {
+			final Bitmap bmpHard = it.next().getValue();
+			if(bmpHard != null){
+				if(!bmpHard.isRecycled()) {
+					bmpHard.recycle();
+				}
+			}
+		}
+		mHardCachedTiles.clear();
+		mSize = 0;
 	}
 }
