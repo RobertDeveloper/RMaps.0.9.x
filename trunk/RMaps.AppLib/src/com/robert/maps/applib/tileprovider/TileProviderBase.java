@@ -31,6 +31,8 @@ public class TileProviderBase {
 		if(mLoadingMapTile != null)
 			mLoadingMapTile.recycle();
 		mCallbackHandler = null;
+		if(mTileCache != null)
+			mTileCache.Free();
 	}
 
 	protected void finalize() throws Throwable {
