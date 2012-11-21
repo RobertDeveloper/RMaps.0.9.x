@@ -124,6 +124,7 @@ public class SQLiteMapDatabase implements ICacheProvider {
 		@Override
 		public void onCreate(SQLiteDatabase db) {
 			db.execSQL(SQL_CREATE_tiles);
+			db.execSQL(SQL_DROP_info);
 			db.execSQL(SQL_CREATE_info);
 			db.execSQL(SQL_INIT_INFO);
 		}
@@ -152,7 +153,12 @@ public class SQLiteMapDatabase implements ICacheProvider {
 		for(int i = 0; i < mDatabase.length; i++)
 			if(mDatabase[i] != null){
 				this.mDatabase[i].execSQL(SQL_CREATE_info);
-				this.mDatabase[i].execSQL(SQL_INIT_INFO);
+				try {
+					this.mDatabase[i].execSQL(SQL_INIT_INFO);
+				} catch (SQLException e) {
+					this.mDatabase[i].execSQL(SQL_DROP_info);
+					this.mDatabase[i].execSQL(SQL_CREATE_info);
+				}
 				this.mDatabase[i].execSQL(SQL_UPDZOOM_UPDMIN);
 				this.mDatabase[i].execSQL(SQL_UPDZOOM_UPDMAX);
 			}
@@ -261,22 +267,30 @@ public class SQLiteMapDatabase implements ICacheProvider {
 	public synchronized int getMinZoom() {
 		int ret = 22, zoom;
 		
+		Ut.d("getMinZoom:");
+		Ut.d("mDatabase.length = "+mDatabase.length);
 		for(int i = 0; i < mDatabase.length; i++) {
+			Ut.d("mDatabase[i] != null = "+(mDatabase[i] != null));
 			if(mDatabase[i] != null){
 				try {
 					zoom = (int) this.mDatabase[i].compileStatement(SQL_SELECT_MAXZOOM).simpleQueryForLong();
+					Ut.d("Found zoom = "+zoom);
 					if(zoom < ret)
 						ret = zoom;
+					Ut.d("Found ret = "+ret);
 				} catch (SQLException e) {
+					e.printStackTrace();
 				}
 			}
 		}
 		
+		Ut.d("Total ret = "+ret);
 		return ret;
 	}
 
 	@Override
 	protected void finalize() throws Throwable {
+		Ut.d("SQLiteMapDatabase.finalize");
 		for(int i = 0; i < mDatabase.length; i++) {
 			if(mDatabase[i] != null)
 				mDatabase[i].close();
@@ -285,6 +299,7 @@ public class SQLiteMapDatabase implements ICacheProvider {
 	}
 
 	public synchronized void freeDatabases() {
+		Ut.d("SQLiteMapDatabase.freeDatabases");
 		for (int i = 0; i < mDatabase.length; i++) {
 			if (mDatabase[i] != null)
 				if (mDatabase[i].isOpen()) {
