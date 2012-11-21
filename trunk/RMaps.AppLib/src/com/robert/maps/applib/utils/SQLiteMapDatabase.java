@@ -242,48 +242,34 @@ public class SQLiteMapDatabase implements ICacheProvider {
 	}
 
 	public synchronized int getMaxZoom() {
-		int ret = 0;
+		int ret = 0, zoom;
 		
-		try {
-			for(int i = 0; i < mDatabase.length; i++) {
-				if(mDatabase[i] != null){
-					final Cursor c = this.mDatabase[i].rawQuery(SQL_SELECT_MINZOOM, null);
-					if (c != null) {
-						if (c.moveToFirst()) {
-							final int zoom = c.getInt(c.getColumnIndexOrThrow(RET));
-							if(zoom > ret)
-								ret = zoom;
-						}
-						c.close();
-					}
-				};
+		for(int i = 0; i < mDatabase.length; i++) {
+			if(mDatabase[i] != null){
+				try {
+					zoom = (int) this.mDatabase[i].compileStatement(SQL_SELECT_MINZOOM).simpleQueryForLong();
+					if(zoom > ret)
+						ret = zoom;
+				} catch (SQLException e) {
+				}
 			};
-		} catch (IllegalArgumentException e) {
-			e.printStackTrace();
-		}
+		};
 		
 		return ret;
 	}
 
 	public synchronized int getMinZoom() {
-		int ret = 22;
+		int ret = 22, zoom;
 		
-		try {
-			for(int i = 0; i < mDatabase.length; i++) {
-				if(mDatabase[i] != null){
-					final Cursor c = this.mDatabase[i].rawQuery(SQL_SELECT_MAXZOOM, null);
-					if (c != null) {
-						if (c.moveToFirst()) {
-							final int zoom = c.getInt(c.getColumnIndexOrThrow(RET));
-							if(zoom < ret)
-								ret = zoom;
-						}
-						c.close();
-					}
+		for(int i = 0; i < mDatabase.length; i++) {
+			if(mDatabase[i] != null){
+				try {
+					zoom = (int) this.mDatabase[i].compileStatement(SQL_SELECT_MAXZOOM).simpleQueryForLong();
+					if(zoom < ret)
+						ret = zoom;
+				} catch (SQLException e) {
 				}
 			}
-		} catch (IllegalArgumentException e) {
-			e.printStackTrace();
 		}
 		
 		return ret;
@@ -331,16 +317,11 @@ public class SQLiteMapDatabase implements ICacheProvider {
 	public double getTileLenght() {
 		double ret = 0L;
 		if(mDatabase[0] != null) {
-			final Cursor c = mDatabase[0].rawQuery(SQL_tiles_count, null); 
-			if(c != null) {
-				if(c.moveToFirst()) {
-					if(c.getInt(0) > 0) {
-						final File file = new File(mDatabase[0].getPath()); 
-						ret = file.length()/c.getInt(0);
-					};
-				};
-				c.close();
-			}
+			final long cnt = mDatabase[0].compileStatement(SQL_tiles_count).simpleQueryForLong(); 
+			if(cnt > 0) {
+				final File file = new File(mDatabase[0].getPath()); 
+				ret = file.length()/cnt;
+			};
 		}
 		return ret;
 	}
@@ -349,21 +330,15 @@ public class SQLiteMapDatabase implements ICacheProvider {
 		JSONObject json = null;
 		
 		for (int i = 0; i < mDatabase.length; i++) {
-			if(mDatabase[i].getPath().toLowerCase(Locale.US).endsWith(SQLITEDB)) {
-				Cursor c = this.mDatabase[i].rawQuery(SQL_SELECT_PARAMS, null);
-				if(c != null) {
-					if(c.moveToFirst()) {
-						try {
-							if(c.getString(0) != null)
-								json = new JSONObject(c.getString(0));
-						} catch (Exception e) {
-						}
-						c.close();
+			if(mDatabase[i] != null)
+				if(mDatabase[i].getPath().toLowerCase(Locale.US).endsWith(SQLITEDB)) {
+					try {
+						final String val = this.mDatabase[i].compileStatement(SQL_SELECT_PARAMS).simpleQueryForString();
+						json = new JSONObject(val);
 						break;
+					} catch (Exception e) {
 					}
-					c.close();
 				}
-			}
 		}
 		
 		if(json == null)
@@ -400,12 +375,13 @@ public class SQLiteMapDatabase implements ICacheProvider {
 		} catch (JSONException e) {
 		}
 		for (int i = 0; i < mDatabase.length; i++) {
-			if(mDatabase[i].getPath().toLowerCase(Locale.US).endsWith(SQLITEDB)) {
-				
-				final String[] arg = {json.toString()};
-				this.mDatabase[i].execSQL(SQL_UPDATE_PARAMS, arg);
-				break;
-			}
+			if(mDatabase[i] != null)
+				if(mDatabase[i].getPath().toLowerCase(Locale.US).endsWith(SQLITEDB)) {
+					
+					final String[] arg = {json.toString()};
+					this.mDatabase[i].execSQL(SQL_UPDATE_PARAMS, arg);
+					break;
+				}
 		}
 		
 	}
