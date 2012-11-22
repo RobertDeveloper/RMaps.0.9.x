@@ -7,7 +7,7 @@ import java.util.Iterator;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.database.sqlite.SQLiteException;
@@ -80,6 +80,12 @@ public class TileProviderSQLITEDB extends TileProviderFileBase {
 							try {
 								bmp = BitmapFactory.decodeByteArray(data, 0, data.length);
 								mTileCache.putTile(xyz.TILEURL, bmp);
+//								final Bitmap tmp = BitmapFactory.decodeByteArray(data, 0, data.length);
+//								if(tmp != null) {
+//									bmp = Bitmap.createScaledBitmap(tmp, 512, 512, true);
+//									tmp.recycle();
+//									mTileCache.putTile(xyz.TILEURL, bmp);
+//								}
 							} catch (Throwable e) {
 								e.printStackTrace();
 							}

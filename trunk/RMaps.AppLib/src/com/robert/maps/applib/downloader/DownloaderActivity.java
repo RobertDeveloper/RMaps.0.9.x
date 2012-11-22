@@ -1,8 +1,9 @@
 package com.robert.maps.applib.downloader;
 
+import java.io.File;
+
 import org.andnav.osm.util.GeoPoint;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Intent;
@@ -22,8 +23,6 @@ import android.widget.TextView;
 
 import com.robert.maps.applib.MainActivity;
 import com.robert.maps.applib.R;
-import com.robert.maps.applib.downloader.IDownloaderCallback;
-import com.robert.maps.applib.downloader.IRemoteService;
 import com.robert.maps.applib.tileprovider.TileSource;
 import com.robert.maps.applib.tileprovider.TileSourceBase;
 import com.robert.maps.applib.utils.Ut;
