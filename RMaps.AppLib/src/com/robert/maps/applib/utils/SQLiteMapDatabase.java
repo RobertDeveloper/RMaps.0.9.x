@@ -148,16 +148,19 @@ public class SQLiteMapDatabase implements ICacheProvider {
 	private static final String SQL_INIT_INFO = "INSERT OR IGNORE INTO info (id, minzoom, maxzoom) SELECT 0, 0, 0;";
 	private static final String SQL_UPDZOOM_UPDMIN = "UPDATE info SET minzoom = (SELECT DISTINCT z FROM tiles ORDER BY z ASC LIMIT 1);";
 	private static final String SQL_UPDZOOM_UPDMAX = "UPDATE info SET maxzoom = (SELECT DISTINCT z FROM tiles ORDER BY z DESC LIMIT 1);";
-
+	private static final String SQL_INFO_TEST = "SELECT id FROM info LIMIT 1";
+	
 	public synchronized void updateMinMaxZoom() throws SQLiteException {
 		for(int i = 0; i < mDatabase.length; i++)
 			if(mDatabase[i] != null){
-				this.mDatabase[i].execSQL(SQL_CREATE_info);
 				try {
+					this.mDatabase[i].execSQL(SQL_CREATE_info);
+					final long l = this.mDatabase[i].compileStatement(SQL_INFO_TEST).simpleQueryForLong();
 					this.mDatabase[i].execSQL(SQL_INIT_INFO);
 				} catch (SQLException e) {
 					this.mDatabase[i].execSQL(SQL_DROP_info);
 					this.mDatabase[i].execSQL(SQL_CREATE_info);
+					this.mDatabase[i].execSQL(SQL_INIT_INFO);
 				}
 				this.mDatabase[i].execSQL(SQL_UPDZOOM_UPDMIN);
 				this.mDatabase[i].execSQL(SQL_UPDZOOM_UPDMAX);
