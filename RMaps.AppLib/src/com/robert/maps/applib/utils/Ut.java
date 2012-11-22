@@ -1,9 +1,12 @@
 package com.robert.maps.applib.utils;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -121,6 +124,18 @@ public class Ut implements OpenStreetMapConstants, OpenStreetMapViewConstants {
 	public static String getPackVersion(Context ctx) {
 		return ctx.getPackageName().endsWith("ext") ? "Ext" : "Free";
 	}
+	
+	public static void toLogFile(String str) {
+//	    PrintWriter pw;
+//		try {
+//			pw = new PrintWriter(new File(Environment.getExternalStorageDirectory().getPath()+"/rmaps.log"));
+//			pw.println(str);
+//			pw.flush();
+//			pw.close();
+//		} catch (FileNotFoundException e) {
+//		}     
+		
+	}
 
 	public static void dd(String str){
 		Log.d(DEBUGTAG, str);
@@ -129,19 +144,23 @@ public class Ut implements OpenStreetMapConstants, OpenStreetMapViewConstants {
 	public static void e(String str){
 		if(DEBUGMODE)
 			Log.e(DEBUGTAG, str);
+		toLogFile(str);
 	}
 	public static void i(String str){
 		if(DEBUGMODE)
 			Log.i(DEBUGTAG, str);
+		toLogFile(str);
 	}
 	public static void w(String str){
 		if(DEBUGMODE)
 			Log.w(DEBUGTAG, str);
+		toLogFile(str);
 	}
 
 	public static void d(String str){
 		if(DEBUGMODE)
 			Log.d(DEBUGTAG, str);
+		toLogFile(str);
 	}
 
 	public static String FileName2ID(String name) {

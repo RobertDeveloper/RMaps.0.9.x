@@ -18,8 +18,8 @@ public class TileProviderFileBase extends TileProviderBase {
 	private static final String DELETE_FROM_ListCashTables = "DELETE FROM 'ListCashTables' WHERE name LIKE ('%sqlitedb')";
 	private static final String INDEX_DB = "/index.db";
 	
-	public TileProviderFileBase(Context ctx) {
-		super(ctx);
+	public TileProviderFileBase(Context ctx, int tileSize) {
+		super(ctx, tileSize);
 		this.mIndexDatabase = getIndexDatabase(ctx);
 	}
 	

@@ -33,8 +33,8 @@ public class TileProviderMNM extends TileProviderFileBase {
 	private ProgressDialog mProgressDialog;
 	private boolean mStopIndexing;
 
-	public TileProviderMNM(Context ctx, final String filename, final String mapid, MapTileMemCache aTileCache) {
-		super(ctx);
+	public TileProviderMNM(Context ctx, final String filename, final String mapid, MapTileMemCache aTileCache, int tileSize) {
+		super(ctx, tileSize);
 		mTileURLGenerator = new TileURLGeneratorTAR(filename);
 		mTileCache = aTileCache == null ? new MapTileMemCache() : aTileCache;
 		mMapFile = new File(filename);
@@ -240,7 +240,7 @@ public class TileProviderMNM extends TileProviderFileBase {
 	
 						final byte[] data = dataStream.toByteArray();
 						final Bitmap bmp = BitmapFactory.decodeByteArray(data, 0, data.length);
-						mTileCache.putTile(tileurl, bmp);
+						mTileCache.putTile(tileurl, scaleTile(bmp));
 	
 						SendMessageSuccess();
 					}

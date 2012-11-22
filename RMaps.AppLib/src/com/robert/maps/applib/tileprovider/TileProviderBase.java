@@ -17,11 +17,29 @@ public class TileProviderBase {
 	protected HashSet<String> mPending = new HashSet<String>();
 	protected MapTileMemCache mTileCache;
 	protected Handler mCallbackHandler;
+	protected int mTileSize;
 
 	
-	public TileProviderBase(Context ctx) {
+	public TileProviderBase(Context ctx, int tileSize) {
 		super();
-		mLoadingMapTile = BitmapFactory.decodeResource(ctx.getResources(), R.drawable.maptile_loading);
+		mTileSize = tileSize;
+		mLoadingMapTile = scaleTile(BitmapFactory.decodeResource(ctx.getResources(), R.drawable.maptile_loading));
+	}
+	
+	protected Bitmap scaleTile(Bitmap bmp) {
+		if(bmp == null) {
+			return null;
+		} else if(mTileSize == bmp.getHeight()) {
+			return bmp;
+		} else {
+			try {
+				return Bitmap.createScaledBitmap(bmp, mTileSize, mTileSize, true);
+			} catch (OutOfMemoryError e) {
+				return null;
+			} catch (Exception e) {
+				return null;
+			}
+		}
 	}
 	
 	public void Free() {

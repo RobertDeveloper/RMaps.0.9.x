@@ -19,8 +19,6 @@ import com.robert.maps.applib.tileprovider.TileSource;
 public class SQLiteMapDatabase implements ICacheProvider {
 	private static final String SQL_CREATE_tiles = "CREATE TABLE IF NOT EXISTS tiles (x int, y int, z int, s int, image blob, PRIMARY KEY (x,y,z,s));";
 	private static final String SQL_CREATE_info = "CREATE TABLE IF NOT EXISTS info (maxzoom Int, minzoom Int, params VARCHAR);";
-	private static final String SQL_SELECT_MINZOOM = "SELECT 17-minzoom AS ret FROM info";
-	private static final String SQL_SELECT_MAXZOOM = "SELECT 17-maxzoom AS ret FROM info";
 	private static final String SQL_SELECT_PARAMS = "SELECT * FROM info";
 	private static final String SQL_UPDATE_PARAMS = "UPDATE info SET params = ?";
 	private static final String SQL_SELECT_IMAGE = "SELECT image as ret FROM tiles WHERE x = ? AND y = ? AND z = ?";
@@ -30,6 +28,8 @@ public class SQLiteMapDatabase implements ICacheProvider {
 	private static final String SQL_INIT_INFO = "INSERT OR IGNORE INTO info (rowid, minzoom, maxzoom) SELECT 1, 0, 0;";
 	private static final String SQL_UPDZOOM_UPDMIN = "UPDATE info SET minzoom = (SELECT DISTINCT z FROM tiles ORDER BY z ASC LIMIT 1);";
 	private static final String SQL_UPDZOOM_UPDMAX = "UPDATE info SET maxzoom = (SELECT DISTINCT z FROM tiles ORDER BY z DESC LIMIT 1);";
+	private static final String SQL_GET_MINZOOM = "SELECT DISTINCT z FROM tiles ORDER BY z ASC LIMIT 1;";
+	private static final String SQL_GET_MAXZOOM = "SELECT DISTINCT z FROM tiles ORDER BY z DESC LIMIT 1;";
 	
 	private static final String RET = "ret";
 	private static final long MAX_DATABASE_SIZE = 1945 * 1024 * 1024; // 1.9GB
@@ -44,6 +44,7 @@ public class SQLiteMapDatabase implements ICacheProvider {
 	private int mCurrentIndex = 0;
 	private File mBaseFile = null;
 	private int mBaseFileIndex = 0;
+	private int[] mMinMaxZoom = null;
 	
 	public String getID(String pref) {
 		return Ut.FileName2ID(pref+mBaseFile.getName());
@@ -129,23 +130,17 @@ public class SQLiteMapDatabase implements ICacheProvider {
 
 	protected class CashDatabaseHelper extends RSQLiteOpenHelper {
 		public CashDatabaseHelper(final Context context, final String name) {
-			super(context, name, null, 5);
+			super(context, name, null, 3);
 		}
 
 		@Override
 		public void onCreate(SQLiteDatabase db) {
 			db.execSQL(SQL_CREATE_tiles);
 			db.execSQL(SQL_CREATE_info);
-			db.execSQL(SQL_INIT_INFO);
 		}
 
 		@Override
 		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-			if(oldVersion < 5) {
-				db.execSQL(SQL_DROP_info);
-				db.execSQL(SQL_CREATE_info);
-				db.execSQL(SQL_INIT_INFO);
-			}
 		}
 
 	}
@@ -155,14 +150,42 @@ public class SQLiteMapDatabase implements ICacheProvider {
 		tileSource.ZOOM_MAXLEVEL = getMaxZoom();
 	}
 	
-	public synchronized void updateMinMaxZoom() throws SQLiteException {
+	public synchronized void updateMinMaxZoom() {
+		if(mMinMaxZoom == null)
+			mMinMaxZoom = new int[2];
+		mMinMaxZoom[0] = 22; //min
+		mMinMaxZoom[1] = 0; //max
+		int zoom;
+		
 		for(int i = 0; i < mDatabase.length; i++)
-			if(mDatabase[i] != null){
-				this.mDatabase[i].execSQL(SQL_CREATE_info);
-				this.mDatabase[i].execSQL(SQL_INIT_INFO);
-				this.mDatabase[i].execSQL(SQL_UPDZOOM_UPDMIN);
-				this.mDatabase[i].execSQL(SQL_UPDZOOM_UPDMAX);
+			if(mDatabase[i] != null) {
+				try {
+					zoom = (int) this.mDatabase[i].compileStatement(SQL_GET_MINZOOM).simpleQueryForLong();
+					if(zoom < mMinMaxZoom[0])
+						mMinMaxZoom[0] = zoom;
+				} catch (SQLException e) {
+				}
+				try {
+					zoom = (int) this.mDatabase[i].compileStatement(SQL_GET_MAXZOOM).simpleQueryForLong();
+					if(zoom > mMinMaxZoom[1])
+						mMinMaxZoom[1] = zoom;
+				} catch (SQLException e) {
+				}
 			}
+	}
+
+	public synchronized int getMaxZoom() {
+		if(mMinMaxZoom == null)
+			updateMinMaxZoom();
+		
+		return mMinMaxZoom[1];
+	}
+
+	public synchronized int getMinZoom() {
+		if(mMinMaxZoom == null)
+			updateMinMaxZoom();
+		
+		return mMinMaxZoom[0];
 	}
 
 	public synchronized void putTile(final int aX, final int aY, final int aZ, final byte[] aData) throws RException {
@@ -242,41 +265,6 @@ public class SQLiteMapDatabase implements ICacheProvider {
 			}
 			if(ret) break;
 		}
-		return ret;
-	}
-
-	public synchronized int getMaxZoom() {
-		int ret = 0, zoom;
-		
-		for(int i = 0; i < mDatabase.length; i++) {
-			if(mDatabase[i] != null){
-				try {
-					zoom = (int) this.mDatabase[i].compileStatement(SQL_SELECT_MINZOOM).simpleQueryForLong();
-					if(zoom > ret)
-						ret = zoom;
-				} catch (SQLException e) {
-				}
-			};
-		};
-		
-		return ret;
-	}
-
-	public synchronized int getMinZoom() {
-		int ret = 22, zoom;
-		
-		for(int i = 0; i < mDatabase.length; i++) {
-			if(mDatabase[i] != null){
-				try {
-					zoom = (int) this.mDatabase[i].compileStatement(SQL_SELECT_MAXZOOM).simpleQueryForLong();
-					if(zoom < ret)
-						ret = zoom;
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-		
 		return ret;
 	}
 
