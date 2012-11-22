@@ -28,13 +28,13 @@ public class TileProviderInet extends TileProviderBase {
 	private ICacheProvider mCacheProvider = null;
 	private ExecutorService mThreadPool = Executors.newFixedThreadPool(5, new SimpleThreadFactory("TileProviderInet"));
 
-	public TileProviderInet(Context ctx, TileURLGeneratorBase gen, final String cacheDatabaseName, MapTileMemCache aTileCache, final Bitmap aLoadingMapTile) throws SQLiteException, RException {
-		this(ctx, gen, cacheDatabaseName, aTileCache);
+	public TileProviderInet(Context ctx, TileURLGeneratorBase gen, final String cacheDatabaseName, MapTileMemCache aTileCache, final Bitmap aLoadingMapTile, int tileSize) throws SQLiteException, RException {
+		this(ctx, gen, cacheDatabaseName, aTileCache, tileSize);
 		mLoadingMapTile = aLoadingMapTile;
 	}
 	
-	public TileProviderInet(Context ctx, TileURLGeneratorBase gen, final String cacheDatabaseName, MapTileMemCache aTileCache) throws SQLiteException, RException {
-		super(ctx);
+	public TileProviderInet(Context ctx, TileURLGeneratorBase gen, final String cacheDatabaseName, MapTileMemCache aTileCache, int tileSize) throws SQLiteException, RException {
+		super(ctx, tileSize);
 		mTileURLGenerator = gen;
 		if(aTileCache == null)
 			mTileCache = new MapTileMemCache();
@@ -111,7 +111,7 @@ public class TileProviderInet extends TileProviderBase {
 						
 						if (data != null) {
 							final Bitmap bmp = BitmapFactory.decodeByteArray(data, 0, data.length);
-							mTileCache.putTile(tileurl, bmp);
+							mTileCache.putTile(tileurl, scaleTile(bmp));
 						}
 						
 						SendMessageSuccess();
