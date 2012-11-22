@@ -202,7 +202,7 @@ public class MapDownloaderService extends Service {
 		
 		try {
 			TileProviderFileBase provider = new TileProviderFileBase(this);
-			provider.CommitIndex(Ut.FileName2ID("usermap_" + mOfflineMapName + ".sqlitedb"), 0, 0,
+			provider.CommitIndex(mMapDatabase.getID("usermap_"), 0, 0,
 					mMapDatabase.getMinZoom(), mMapDatabase.getMaxZoom());
 			provider.Free();
 		} catch (Exception e1) {

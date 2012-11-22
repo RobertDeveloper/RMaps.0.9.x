@@ -1,5 +1,6 @@
 package com.robert.maps.applib.downloader;
 
+import java.io.File;
 import java.io.InputStream;
 
 import javax.xml.parsers.SAXParser;
@@ -212,11 +213,25 @@ public class AreaSelectorActivity extends Activity {
 		intent.putExtra("ZOOMCUR", mMap.getZoomLevel());
 		intent.putExtra("overwritefile", ((CheckBox) findViewById(R.id.overwritefile)).isChecked());
 		intent.putExtra("overwritetiles", ((CheckBox) findViewById(R.id.overwritetiles)).isChecked());
-		final String filename = ((EditText) findViewById(R.id.name)).getText().toString();
+		String filename = ((EditText) findViewById(R.id.name)).getText().toString();
 		if(filename.equalsIgnoreCase("")) {
 			Toast.makeText(this, "Invalid file name", Toast.LENGTH_LONG).show();
 			return;
 		}
+
+		final File folder = Ut.getRMapsMapsDir(this);
+		if(folder != null) {
+			File[] files = folder.listFiles();
+			if(files != null) {
+				for(int i = 0; i < files.length; i++) {
+					if(files[i].getName().equalsIgnoreCase(filename+".sqlitedb")) {
+						filename = files[i].getName().substring(0, files[i].getName().length() - 9);
+						break;
+					}
+				}
+			}
+		}
+		
 		intent.putExtra("OFFLINEMAPNAME", filename);
 		
 		startService(intent);
