@@ -27,8 +27,8 @@ public class TileProviderSQLITEDB extends TileProviderFileBase {
 	private String mMapID;
 	private ProgressDialog mProgressDialog;
 
-	public TileProviderSQLITEDB(Context ctx, final String filename, final String mapid, MapTileMemCache aTileCache, int tileSize) throws SQLiteException, RException {
-		super(ctx, tileSize);
+	public TileProviderSQLITEDB(Context ctx, final String filename, final String mapid, MapTileMemCache aTileCache) throws SQLiteException, RException {
+		super(ctx);
 		mTileURLGenerator = new TileURLGeneratorBase(filename);
 		mTileCache = aTileCache == null ? new MapTileMemCache() : aTileCache;
 		mUserMapDatabase = new SQLiteMapDatabase();
@@ -78,13 +78,7 @@ public class TileProviderSQLITEDB extends TileProviderFileBase {
 						if (data != null) {
 							try {
 								bmp = BitmapFactory.decodeByteArray(data, 0, data.length);
-								mTileCache.putTile(xyz.TILEURL, scaleTile(bmp));
-//								final Bitmap tmp = BitmapFactory.decodeByteArray(data, 0, data.length);
-//								if(tmp != null) {
-//									bmp = Bitmap.createScaledBitmap(tmp, 512, 512, true);
-//									tmp.recycle();
-//									mTileCache.putTile(xyz.TILEURL, bmp);
-//								}
+								mTileCache.putTile(xyz.TILEURL, bmp);
 							} catch (Throwable e) {
 								e.printStackTrace();
 							}

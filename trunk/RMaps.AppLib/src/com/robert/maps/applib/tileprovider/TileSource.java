@@ -41,7 +41,7 @@ public class TileSource extends TileSourceBase {
 				final TileURLGeneratorBase layerURLGenerator = initTileURLGenerator(mTileSourceOverlay, pref);
 				final TileProviderBase layerProvider = initTileProvider(ctx, mTileSourceOverlay, layerURLGenerator, null);
 				
-				mTileProvider = new TileProviderDual(ctx, this.ID, provider, layerProvider, tileCache, MAPTILE_SIZEPX);
+				mTileProvider = new TileProviderDual(ctx, this.ID, provider, layerProvider, tileCache);
 			} else {
 				mTileProvider = aNeedTileProvider ? initTileProvider(ctx, this, mTileURLGenerator, null) : null;
 			}
@@ -68,7 +68,7 @@ public class TileSource extends TileSourceBase {
 		final TileURLGeneratorBase layerURLGenerator = initTileURLGenerator(mTileSourceOverlay, pref);
 		final TileProviderBase layerProvider = initTileProvider(ctx, mTileSourceOverlay, layerURLGenerator, null);
 		
-		mTileProvider = new TileProviderDual(ctx, this.ID, provider, layerProvider, tileCache, MAPTILE_SIZEPX);
+		mTileProvider = new TileProviderDual(ctx, this.ID, provider, layerProvider, tileCache);
 		
 	}
 	
@@ -86,28 +86,28 @@ public class TileSource extends TileSourceBase {
 		switch(tileSource.TILE_SOURCE_TYPE) {
 		case 0:
 			if(tileSource.LAYER)
-				provider = new TileProviderInet(ctx, aTileURLGenerator, CacheDatabaseName(tileSource), aTileCache, null, MAPTILE_SIZEPX);
+				provider = new TileProviderInet(ctx, aTileURLGenerator, CacheDatabaseName(tileSource), aTileCache, null);
 			else
-				provider = new TileProviderInet(ctx, aTileURLGenerator, CacheDatabaseName(tileSource), aTileCache, MAPTILE_SIZEPX);
+				provider = new TileProviderInet(ctx, aTileURLGenerator, CacheDatabaseName(tileSource), aTileCache);
 			break;
 		case 3:
-			provider = new TileProviderMNM(ctx, tileSource.BASEURL, tileSource.ID, aTileCache, MAPTILE_SIZEPX);
+			provider = new TileProviderMNM(ctx, tileSource.BASEURL, tileSource.ID, aTileCache);
 			provider.updateMapParams(this);
 			break;
 		case 4:
-			provider = new TileProviderTAR(ctx, tileSource.BASEURL, tileSource.ID, aTileCache, MAPTILE_SIZEPX);
+			provider = new TileProviderTAR(ctx, tileSource.BASEURL, tileSource.ID, aTileCache);
 			provider.updateMapParams(this);
 			break;
 		case 5:
-			provider = new TileProviderSQLITEDB(ctx, tileSource.BASEURL, tileSource.ID, aTileCache, MAPTILE_SIZEPX);
+			provider = new TileProviderSQLITEDB(ctx, tileSource.BASEURL, tileSource.ID, aTileCache);
 			provider.updateMapParams(this);
 			break;
 		case 6:
-			provider = new TileProviderBase(ctx, MAPTILE_SIZEPX);
+			provider = new TileProviderBase(ctx);
 			provider.setLoadingMapTile(BitmapFactory.decodeResource(ctx.getResources(), R.drawable.r_blank));
 			break;
 		default:
-			provider = new TileProviderBase(ctx, MAPTILE_SIZEPX);
+			provider = new TileProviderBase(ctx);
 		}
 			
 		return provider;
