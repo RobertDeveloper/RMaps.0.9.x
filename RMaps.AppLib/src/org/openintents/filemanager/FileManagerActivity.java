@@ -24,11 +24,11 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.openintents.filemanager.intents.FileManagerIntents;
 import org.openintents.filemanager.util.FileUtils;
 
 import android.app.ListActivity;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -48,8 +48,8 @@ public class FileManagerActivity extends ListActivity {
 	private int mState;
 
 	private static final int STATE_BROWSE = 1;
-//	private static final int STATE_PICK_FILE = 2;
-//	private static final int STATE_PICK_DIRECTORY = 3;
+	private static final int STATE_PICK_FILE = 2;
+	private static final int STATE_PICK_DIRECTORY = 3;
 
 	private static final String BUNDLE_CURRENT_DIRECTORY = "current_directory";
 	private static final String BUNDLE_CONTEXT_FILE = "context_file";
@@ -127,14 +127,14 @@ public class FileManagerActivity extends ListActivity {
 //          mEditFilename = (EditText) findViewById(R.id.filename);
 //
 //
-//          mButtonPick = (Button) findViewById(R.id.button_pick);
-//
-//          mButtonPick.setOnClickListener(new View.OnClickListener() {
-//
-//				public void onClick(View arg0) {
-//					pickFileOrDirectory();
-//				}
-//          });
+          mButtonPick = (Button) findViewById(R.id.button_pick);
+
+          mButtonPick.setOnClickListener(new View.OnClickListener() {
+
+				public void onClick(View arg0) {
+					pickFileOrDirectory();
+				}
+          });
 
           // Initialize only when necessary:
           mDirectoryInput = null;
@@ -151,25 +151,26 @@ public class FileManagerActivity extends ListActivity {
         	  browseto = new File(mSdCardPath);
           }
 
-//          if (action != null) {
-//        	  if (action.equals(FileManagerIntents.ACTION_PICK_FILE)) {
-//        		  mState = STATE_PICK_FILE;
-//        	  } else if (action.equals(FileManagerIntents.ACTION_PICK_DIRECTORY)) {
-//        		  mState = STATE_PICK_DIRECTORY;
-//
-//        		  // Remove edit text and make button fill whole line
+          if (action != null) {
+        	  if (action.equals(FileManagerIntents.ACTION_PICK_FILE)) {
+        		  mState = STATE_PICK_FILE;
+        		  mButtonPick.setVisibility(View.GONE);
+        	  } else if (action.equals(FileManagerIntents.ACTION_PICK_DIRECTORY)) {
+        		  mState = STATE_PICK_DIRECTORY;
+
+        		  // Remove edit text and make button fill whole line
 //        		  mEditFilename.setVisibility(View.GONE);
 //        		  mButtonPick.setLayoutParams(new LinearLayout.LayoutParams(
 //        				  LinearLayout.LayoutParams.FILL_PARENT,
 //        				  LinearLayout.LayoutParams.WRAP_CONTENT));
-//        	  }
-//          }
-//
-//          if (mState == STATE_BROWSE) {
-//        	  // Remove edit text and button.
-//        	  mEditFilename.setVisibility(View.GONE);
-//        	  mButtonPick.setVisibility(View.GONE);
-//          }
+        	  }
+          }
+
+          if (mState == STATE_BROWSE) {
+        	  // Remove edit text and button.
+        	  //mEditFilename.setVisibility(View.GONE);
+        	  mButtonPick.setVisibility(View.GONE);
+          }
 
           // Set current directory and file based on intent data.
     	  File file = FileUtils.getFile(intent.getData());
@@ -386,18 +387,18 @@ public class FileManagerActivity extends ListActivity {
 	}
 
 	private void pickFileOrDirectory() {
-//		File file = null;
-//		if (mState == STATE_PICK_FILE) {
-//			String filename = mEditFilename.getText().toString();
-//			file = FileUtils.getFile(currentDirectory.getAbsolutePath(), filename);
-//		} else if (mState == STATE_PICK_DIRECTORY) {
-//			file = currentDirectory;
-//		}
-//
-//    	Intent intent = getIntent();
-//    	intent.setData(FileUtils.getUri(file));
-//    	setResult(RESULT_OK, intent);
-//    	finish();
+		File file = null;
+		if (mState == STATE_PICK_FILE) {
+			String filename = mEditFilename.getText().toString();
+			file = FileUtils.getFile(currentDirectory.getAbsolutePath(), filename);
+		} else if (mState == STATE_PICK_DIRECTORY) {
+			file = currentDirectory;
+		}
+
+    	Intent intent = getIntent();
+    	intent.setData(FileUtils.getUri(file));
+    	setResult(RESULT_OK, intent);
+    	finish();
      }
 
 	/**
@@ -645,7 +646,7 @@ public class FileManagerActivity extends ListActivity {
 
 					browseTo(clickedFile);
 				}
-				else{
+				else if(mState == STATE_BROWSE || mState == STATE_PICK_FILE) {
 			    	Intent intent = getIntent();
 			    	intent.setData(FileUtils.getUri(clickedFile));
 			    	setResult(RESULT_OK, intent);
