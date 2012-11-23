@@ -50,6 +50,7 @@ public class MixedMapsPreference extends PreferenceActivity implements OnSharedP
 	public static final String ONLINECACHE = "onlinecache";
 	public static final String MINZOOM = "minzoom";
 	public static final String MAXZOOM = "maxzoom";
+	public static final String STRETCH = "stretch";
 	
 	
 	private PoiManager mPoiManager;
@@ -143,6 +144,17 @@ public class MixedMapsPreference extends PreferenceActivity implements OnSharedP
 							pref.setSummary(getString(R.string.pref_usermap_overlay_summary));
 							pref.setDefaultValue(false);
 							prefscr.addPreference(pref);
+						}
+						{
+							final ListPreference pref = new ListPreference(this);
+							pref.setKey(PREF_MIXMAPS_ + c.getInt(idMapid) + "_stretch");
+							pref.setDefaultValue("1");
+							pref.setTitle(R.string.pref_stretchtile);
+							pref.setSummary(R.string.pref_stretchtile_summary);
+							pref.setEntries(R.array.googlescale_pref_title);
+							pref.setEntryValues(R.array.googlescale_pref_values);
+							prefscr.addPreference(pref);
+
 						}
 						{
 							final ListPreference pref = new ListPreference(this);
@@ -316,6 +328,7 @@ public class MixedMapsPreference extends PreferenceActivity implements OnSharedP
 				json.put(ONLINECACHE, true);
 				json.put(MINZOOM, 0);
 				json.put(MAXZOOM, 19);
+				json.put(STRETCH, 1.0f);
 			} catch (JSONException e1) {
 			}
 		}
@@ -391,6 +404,16 @@ public class MixedMapsPreference extends PreferenceActivity implements OnSharedP
 					mMapHelper.PARAMS = json.toString();
 					if(findPreference(key) != null)
 						findPreference(key).setSummary(((ListPreference)findPreference(key)).getEntry());
+				} catch (Exception e) {
+				}
+				
+			} else if(key.endsWith("_stretch")) {
+				final JSONObject json = getMapCustomParams(mMapHelper.PARAMS);
+				try {
+					json.put(STRETCH, Double.parseDouble(sharedPreferences.getString(key, "")));
+					mMapHelper.PARAMS = json.toString();
+//					if(findPreference(key) != null)
+//						findPreference(key).setSummary(((ListPreference)findPreference(key)).getEntry());
 				} catch (Exception e) {
 				}
 				

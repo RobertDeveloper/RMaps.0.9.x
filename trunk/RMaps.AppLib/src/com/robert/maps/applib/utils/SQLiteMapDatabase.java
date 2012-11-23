@@ -28,8 +28,8 @@ public class SQLiteMapDatabase implements ICacheProvider {
 	private static final String SQL_INIT_INFO = "INSERT OR IGNORE INTO info (rowid, minzoom, maxzoom) SELECT 1, 0, 0;";
 	private static final String SQL_UPDZOOM_UPDMIN = "UPDATE info SET minzoom = (SELECT DISTINCT z FROM tiles ORDER BY z ASC LIMIT 1);";
 	private static final String SQL_UPDZOOM_UPDMAX = "UPDATE info SET maxzoom = (SELECT DISTINCT z FROM tiles ORDER BY z DESC LIMIT 1);";
-	private static final String SQL_GET_MINZOOM = "SELECT DISTINCT z FROM tiles ORDER BY z ASC LIMIT 1;";
-	private static final String SQL_GET_MAXZOOM = "SELECT DISTINCT z FROM tiles ORDER BY z DESC LIMIT 1;";
+	private static final String SQL_GET_MINZOOM = "SELECT DISTINCT 17 - z FROM tiles ORDER BY z DESC LIMIT 1;";
+	private static final String SQL_GET_MAXZOOM = "SELECT DISTINCT 17 - z FROM tiles ORDER BY z ASC LIMIT 1;";
 	
 	private static final String RET = "ret";
 	private static final long MAX_DATABASE_SIZE = 1945 * 1024 * 1024; // 1.9GB

@@ -188,6 +188,17 @@ public class PredefMapsParser extends DefaultHandler {
 					prefscr.addPreference(pref);
 				}
 				{
+					final ListPreference pref = new ListPreference(mPrefActivity);
+					pref.setKey(MainPreferences.PREF_PREDEFMAPS_ + attributes.getValue(ID) + "_stretch");
+					pref.setDefaultValue("1");
+					pref.setTitle(R.string.pref_stretchtile);
+					pref.setSummary(R.string.pref_stretchtile_summary);
+					pref.setEntries(R.array.googlescale_pref_title);
+					pref.setEntryValues(R.array.googlescale_pref_values);
+					prefscr.addPreference(pref);
+
+				}
+				{
 					final Preference pref = new Preference(mPrefActivity);
 					pref.setTitle(R.string.pref_usermap_projection);
 					switch(Integer.parseInt(attributes.getValue(PROJECTION))) {
