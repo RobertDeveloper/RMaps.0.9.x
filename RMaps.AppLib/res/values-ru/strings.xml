@@ -229,4 +229,6 @@ http://c.tile.openstreetmap.org/{z}/{x}/{y}.png\n
   <string name="stop">Остановить</string>
   <string name="open">Открыть карту</string>
   <string name="select_zoom">Укажите загружаемый масштаб сначала...</string>
+    <string name="pref_stretchtile">Увеличить карту</string>
+    <string name="pref_stretchtile_summary">Растягивать тайлы и увеличить изображение карты на указанный коэффициент</string>
 </resources>

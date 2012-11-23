@@ -13,8 +13,8 @@ public class TileProviderDual extends TileProviderBase {
 	TileProviderBase mTileProviderLayer;
 	Paint mPaint;
 
-	public TileProviderDual(Context ctx, String aName, TileProviderBase aTileProviderMap, TileProviderBase aTileProviderLayer, MapTileMemCache aTileCache, int tileSize) {
-		super(ctx, tileSize);
+	public TileProviderDual(Context ctx, String aName, TileProviderBase aTileProviderMap, TileProviderBase aTileProviderLayer, MapTileMemCache aTileCache) {
+		super(ctx);
 		mTileCache = aTileCache;
 		mTileProviderMap = aTileProviderMap;
 		mTileProviderLayer = aTileProviderLayer;
