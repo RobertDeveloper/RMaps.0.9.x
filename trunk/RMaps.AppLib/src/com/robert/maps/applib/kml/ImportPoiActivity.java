@@ -10,6 +10,7 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.openintents.filemanager.FileManagerActivity;
+import org.openintents.filemanager.intents.FileManagerIntents;
 import org.openintents.filemanager.util.FileUtils;
 import org.xml.sax.SAXException;
 
@@ -98,6 +99,7 @@ public class ImportPoiActivity extends Activity {
 
 	protected void doSelectFile() {
 		Intent intent = new Intent(this, FileManagerActivity.class);
+		intent.setAction(FileManagerIntents.ACTION_PICK_FILE);
 		intent.setData(Uri.parse(mFileName.getText().toString()));
 		startActivityForResult(intent, R.id.ImportBtn);
 /*

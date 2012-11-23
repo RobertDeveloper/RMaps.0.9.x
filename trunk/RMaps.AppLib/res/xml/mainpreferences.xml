@@ -5,26 +5,26 @@
         android:key="pref_dir"
         android:summary="@string/pref_dir_summary"
         android:title="@string/pref_dir" >
-        <EditTextPreference
+        <Preference
             android:dialogTitle="@string/pref_dir_main"
             android:key="pref_dir_main"
             android:title="@string/pref_dir_main" >
-        </EditTextPreference>
-        <EditTextPreference
+        </Preference>
+        <Preference
             android:dialogTitle="@string/pref_dir_maps"
             android:key="pref_dir_maps"
             android:title="@string/pref_dir_maps" >
-        </EditTextPreference>
-        <EditTextPreference
+        </Preference>
+        <Preference
             android:dialogTitle="@string/pref_dir_import"
             android:key="pref_dir_import"
             android:title="@string/pref_dir_import" >
-        </EditTextPreference>
-        <EditTextPreference
+        </Preference>
+        <Preference
             android:dialogTitle="@string/pref_dir_export"
             android:key="pref_dir_export"
             android:title="@string/pref_dir_export" >
-        </EditTextPreference>
+        </Preference>
     </PreferenceScreen>
 
     <PreferenceCategory android:title="@string/prefcat_main_maps" >

@@ -18,6 +18,7 @@
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
+
 	<TextView android:id="@+id/path"
 	    style="?android:attr/listSeparatorTextViewStyle"
 	    android:layout_width="fill_parent"
@@ -59,4 +60,14 @@
         </LinearLayout>
 
     </FrameLayout>
+
+    <Button
+        android:id="@+id/button_pick"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:minWidth="64dip"
+        android:text="@android:string/ok" />
+
 </LinearLayout>

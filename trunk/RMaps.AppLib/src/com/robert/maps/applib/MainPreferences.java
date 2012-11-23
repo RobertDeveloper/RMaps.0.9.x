@@ -10,21 +10,25 @@ import java.util.Locale;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import org.openintents.filemanager.FileManagerActivity;
+import org.openintents.filemanager.intents.FileManagerIntents;
+
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.res.Configuration;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.EditTextPreference;
 import android.preference.ListPreference;
+import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceGroup;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 
-import com.robert.maps.applib.R;
 import com.robert.maps.applib.constants.PrefConstants;
 import com.robert.maps.applib.kml.XMLparser.PredefMapsParser;
 import com.robert.maps.applib.utils.Ut;
@@ -55,6 +59,36 @@ public class MainPreferences extends PreferenceActivity implements OnSharedPrefe
 		findPreference("pref_main_usermaps").setSummary("Maps from "+aPref.getString("pref_dir_maps", Ut.getExternalStorageDirectory()+"/rmaps/maps/"));
 		findPreference("pref_dir_import").setSummary(aPref.getString("pref_dir_import", Ut.getExternalStorageDirectory()+"/rmaps/import/"));
 		findPreference("pref_dir_export").setSummary(aPref.getString("pref_dir_export", Ut.getExternalStorageDirectory()+"/rmaps/export/"));
+		
+		findPreference("pref_dir_main").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+			@Override
+			public boolean onPreferenceClick(Preference preference) {
+				pickDir(R.string.pref_dir_main, Uri.parse(aPref.getString("pref_dir_main", Ut.getExternalStorageDirectory()+"/rmaps/")));
+				return false;
+			}
+		});
+		findPreference("pref_dir_maps").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+			@Override
+			public boolean onPreferenceClick(Preference preference) {
+				pickDir(R.string.pref_dir_maps, Uri.parse(aPref.getString("pref_dir_maps", Ut.getExternalStorageDirectory()+"/rmaps/maps/")));
+				return false;
+			}
+		});
+		findPreference("pref_dir_import").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+			@Override
+			public boolean onPreferenceClick(Preference preference) {
+				pickDir(R.string.pref_dir_import, Uri.parse(aPref.getString("pref_dir_import", Ut.getExternalStorageDirectory()+"/rmaps/import/")));
+				return false;
+			}
+		});
+		findPreference("pref_dir_export").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+			@Override
+			public boolean onPreferenceClick(Preference preference) {
+				pickDir(R.string.pref_dir_export, Uri.parse(aPref.getString("pref_dir_export", Ut.getExternalStorageDirectory()+"/rmaps/export/")));
+				return false;
+			}
+		});
+		
 
 		final PreferenceGroup prefMapsgroup = (PreferenceGroup) findPreference("pref_predefmaps_mapsgroup");
 		final PreferenceGroup prefOverlaysgroup = (PreferenceGroup) findPreference("pref_predefmaps_overlaysgroup");
@@ -76,6 +110,53 @@ public class MainPreferences extends PreferenceActivity implements OnSharedPrefe
 		
 		findPreference("pref_main_mixmaps").setIntent(new Intent(getApplicationContext(), MixedMapsPreference.class));
 		
+	}
+	
+	private void pickDir(int id, Uri uri) {
+		Intent intent = new Intent(MainPreferences.this, FileManagerActivity.class);
+		intent.setAction(FileManagerIntents.ACTION_PICK_DIRECTORY);
+		intent.setData(uri);
+		startActivityForResult(intent, id);
+	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+
+		if(requestCode == R.string.pref_dir_main 
+				|| requestCode == R.string.pref_dir_maps
+				|| requestCode == R.string.pref_dir_import
+				|| requestCode == R.string.pref_dir_export) {
+			if (resultCode == RESULT_OK && data != null) {
+				// obtain the filename
+				String filename = Uri.decode(data.getDataString());
+				if (filename != null) {
+					// Get rid of URI prefix:
+					if (filename.startsWith("file://")) {
+						filename = filename.substring(7);
+					}
+
+					String prefName = "";
+					if(requestCode == R.string.pref_dir_main) {
+						prefName = "pref_dir_main";
+					} else if(requestCode == R.string.pref_dir_maps) {
+						prefName = "pref_dir_maps";
+					} else if(requestCode == R.string.pref_dir_import) {
+						prefName = "pref_dir_import";
+					} else if(requestCode == R.string.pref_dir_export) {
+						prefName = "pref_dir_export";
+					}
+
+					final SharedPreferences aPref = PreferenceManager.getDefaultSharedPreferences(this);
+					final Editor editor = aPref.edit();
+					editor.putString(prefName, filename);
+					editor.commit();
+					
+					onSharedPreferenceChanged(aPref, prefName);
+				}
+
+			}
+		}
 	}
 
 	private void LoadUserMaps(final File folder) {
