@@ -235,4 +235,9 @@ How to and FAQ you can find on http://robertdeveloper.blogspot.com/\n</string>
     <string name="select_zoom">Select zoom first&#8230;</string>
     <string name="pref_stretchtile">Tiles stretch factor</string>
     <string name="pref_stretchtile_summary">Stretch tiles picture and enlarge the maps image</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="question_delete">Do you realy want to delete %s?</string>
+    <string name="poi">POI</string>
+    <string name="track">track</string>
 </resources>

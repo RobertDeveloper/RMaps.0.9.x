@@ -335,7 +335,7 @@ public class PoiListActivity extends ListActivity {
 
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
-		int pointid = (int) ((AdapterView.AdapterContextMenuInfo)item.getMenuInfo()).id;
+		final int pointid = (int) ((AdapterView.AdapterContextMenuInfo)item.getMenuInfo()).id;
 		PoiPoint poi = mPoiManager.getPoiPoint(pointid);
 
 		if(item.getItemId() == R.id.menu_editpoi) {
@@ -344,8 +344,17 @@ public class PoiListActivity extends ListActivity {
 			setResult(RESULT_OK, (new Intent()).putExtra("pointid", pointid));
 			finish();
 		} else if(item.getItemId() == R.id.menu_deletepoi) {
-			mPoiManager.deletePoi(pointid);
-			((SimpleCursorAdapter) getListAdapter()).getCursor().requery();
+			new AlertDialog.Builder(this) 
+			.setTitle(R.string.app_name)
+			.setMessage(getResources().getString(R.string.question_delete, getText(R.string.poi)) )
+			.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int whichButton) {
+
+					mPoiManager.deletePoi(pointid);
+					((SimpleCursorAdapter) getListAdapter()).getCursor().requery();
+				}
+			}).setNegativeButton(R.string.no, null).create().show();
+			
 		} else if(item.getItemId() == R.id.menu_hide) {
 			poi.Hidden = true;
 			mPoiManager.updatePoi(poi);
