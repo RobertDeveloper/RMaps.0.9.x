@@ -39,6 +39,7 @@ public class TileSourceBase {
 	protected static final String TRAFFIC_ = "_traffic";
 	protected static final String MIXMAP_ = "mixmap_";
 	protected static final String GOOGLESCALE_ = "_googlescale";
+	protected static final String STRETCH_ = "_stretch";
 	protected static final String STRING_1 = "1";
 	protected static final String UNDERLINE = "_";
 	
@@ -98,7 +99,8 @@ public class TileSourceBase {
 						this.URL_BUILDER_TYPE = 12;
 						this.ZOOM_MINLEVEL = json.optInt(MixedMapsPreference.MINZOOM, 1)-1;
 						this.ZOOM_MAXLEVEL = json.optInt(MixedMapsPreference.MAXZOOM, 20)-1;
-						this.MAPTILE_SIZEPX = 256;
+						this.MAPTILE_SIZE_FACTOR = json.optDouble(MixedMapsPreference.STRETCH, 1.0f);
+						this.MAPTILE_SIZEPX = (int) (256 * this.MAPTILE_SIZE_FACTOR);
 						this.CACHE = EMPTY;
 						this.mOnlineMapCacheEnabled = json.optBoolean(MixedMapsPreference.ONLINECACHE, true);
 						return;
@@ -120,6 +122,7 @@ public class TileSourceBase {
 			this.BASEURL = pref.getString(prefix + BASEURL_, NO_BASEURL);
 			this.ZOOM_MINLEVEL = 0;
 			this.ZOOM_MAXLEVEL = 24;
+			this.MAPTILE_SIZE_FACTOR = Double.parseDouble(pref.getString(prefix + STRETCH_, STRING_1)); 
 			this.MAPTILE_SIZEPX = (int) (256 * MAPTILE_SIZE_FACTOR);
 			this.URL_BUILDER_TYPE = 0;
 			if (aId.toLowerCase().endsWith(SQLITEDB)) {
@@ -146,7 +149,9 @@ public class TileSourceBase {
 				if(parser != null){
 					final InputStream in = ctx.getResources().openRawResource(R.raw.predefmaps);
 					parser.parse(in, new PredefMapsParser(this, aId));
-					this.MAPTILE_SIZEPX = (int) (this.MAPTILE_SIZEPX * MAPTILE_SIZE_FACTOR);
+					
+					this.MAPTILE_SIZE_FACTOR = Double.parseDouble(pref.getString(MainPreferences.PREF_PREDEFMAPS_ + this.ID + STRETCH_, STRING_1));
+					this.MAPTILE_SIZEPX = (int) (this.MAPTILE_SIZEPX * this.MAPTILE_SIZE_FACTOR);
 					if(this.GOOGLESCALE) {
 						final double GOOGLESCALE_SIZE_FACTOR = Double.parseDouble(pref.getString(MainPreferences.PREF_PREDEFMAPS_ + this.ID + GOOGLESCALE_, STRING_1));
 						this.MAPTILE_SIZEPX = (int) (this.MAPTILE_SIZEPX * GOOGLESCALE_SIZE_FACTOR);

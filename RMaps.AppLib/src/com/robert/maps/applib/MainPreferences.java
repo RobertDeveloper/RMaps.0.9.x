@@ -149,6 +149,16 @@ public class MainPreferences extends PreferenceActivity implements OnSharedPrefe
 						pref.setDefaultValue(false);
 						prefscr.addPreference(pref);
 					}
+					{
+						final ListPreference pref = new ListPreference(this);
+						pref.setKey(PREF_USERMAPS_ + name + "_stretch");
+						pref.setDefaultValue("1");
+						pref.setTitle(R.string.pref_stretchtile);
+						pref.setSummary(R.string.pref_stretchtile_summary);
+						pref.setEntries(R.array.googlescale_pref_title);
+						pref.setEntryValues(R.array.googlescale_pref_values);
+						prefscr.addPreference(pref);
+					}
 
 					prefscr.setTitle(prefscr.getSharedPreferences().getString(PREF_USERMAPS_ + name + "_name",
 							files[i].getName()));
