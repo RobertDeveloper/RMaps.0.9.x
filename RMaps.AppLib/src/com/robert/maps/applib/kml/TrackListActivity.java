@@ -11,8 +11,10 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -330,7 +332,7 @@ public class TrackListActivity extends ListActivity {
 
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
-		int id = (int) ((AdapterView.AdapterContextMenuInfo)item.getMenuInfo()).id;
+		final int id = (int) ((AdapterView.AdapterContextMenuInfo)item.getMenuInfo()).id;
 
 		if(item.getItemId() == R.id.menu_stat) {
 			startActivity((new Intent(this, TrackStatActivity.class)).putExtra("id", id));
@@ -340,8 +342,17 @@ public class TrackListActivity extends ListActivity {
 			setResult(RESULT_OK, (new Intent()).putExtra("trackid", id));
 			finish();
 		} else if(item.getItemId() == R.id.menu_deletepoi) {
-			mPoiManager.deleteTrack(id);
-			((SimpleCursorAdapter) getListAdapter()).getCursor().requery();
+			new AlertDialog.Builder(this) 
+			.setTitle(R.string.app_name)
+			.setMessage(getResources().getString(R.string.question_delete, getText(R.string.track)) )
+			.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int whichButton) {
+
+					mPoiManager.deleteTrack(id);
+					((SimpleCursorAdapter) getListAdapter()).getCursor().requery();
+				}
+			}).setNegativeButton(R.string.no, null).create().show();
+
 		} else if(item.getItemId() == R.id.menu_exporttogpxpoi) {
 			DoExportTrackGPX(id);
 		} else if(item.getItemId() == R.id.menu_exporttokmlpoi) {
