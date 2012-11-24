@@ -21,7 +21,6 @@
     <string name="btn_clear_cache_title">Borrar caché</string>
     <string name="pref_units">Unidades</string>
     <string name="app_name">RMaps</string>
-    <string name="unknown">Desconocido</string>
     <string name="menu_settings">Ajustes</string>
     <string name="menu_exit">Salir</string>
     <string name="menu_mylocation">Mi ubicación</string>

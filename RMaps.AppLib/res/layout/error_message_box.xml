@@ -2,8 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/error_message_backgr" >
-
+    android:background="@color/error_message_backgr">
+
     <LinearLayout
         android:id="@+id/message"
         android:layout_width="fill_parent"
@@ -31,7 +31,7 @@
             android:textColor="@android:color/white"
             android:visibility="gone" />
     </LinearLayout>
-
+
     <ImageView
         android:id="@+id/btn"
         android:layout_width="wrap_content"

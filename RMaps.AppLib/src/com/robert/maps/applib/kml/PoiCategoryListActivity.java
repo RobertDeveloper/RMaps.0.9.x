@@ -1,20 +1,22 @@
 package com.robert.maps.applib.kml;
 
-import com.robert.maps.applib.R;
-
 import android.app.ListActivity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.AdapterView;
+import android.widget.CheckBox;
 import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
+
+import com.robert.maps.applib.R;
 
 public class PoiCategoryListActivity extends ListActivity {
 	private PoiManager mPoiManager;
@@ -45,9 +47,36 @@ public class PoiCategoryListActivity extends ListActivity {
 
         ListAdapter adapter = new SimpleCursorAdapter(this,
                 R.layout.poicategorylist_item, c, 
-                        new String[] { "name", "iconid"}, 
-                        new int[] { R.id.title1, R.id.pic });
+                        new String[] { "name", "iconid", "hidden"}, 
+                        new int[] { R.id.title1, R.id.pic, R.id.checkbox });
+        ((SimpleCursorAdapter) adapter).setViewBinder(mViewBinder);
         setListAdapter(adapter);
+	}
+
+	private SimpleCursorAdapter.ViewBinder mViewBinder  = new CheckBoxViewBinder();
+
+	private class CheckBoxViewBinder implements SimpleCursorAdapter.ViewBinder {
+		private static final String HIDDEN = "hidden";
+
+		public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
+			if(cursor.getColumnName(columnIndex).equalsIgnoreCase(HIDDEN)) {
+				((CheckBox)view.findViewById(R.id.checkbox)).setChecked(cursor.getInt(columnIndex) == 1);
+				return true;
+			}
+			return false;
+		}
+		
+	}
+
+	@Override
+	protected void onListItemClick(ListView l, View v, int position, long id) {
+		super.onListItemClick(l, v, position, id);
+
+		mPoiManager.getGeoDatabase().setCategoryHidden((int)id);
+
+//		final CheckBox ch = (CheckBox) v.findViewById(R.id.checkbox);
+//		ch.setChecked(!ch.isChecked());
+		((SimpleCursorAdapter) getListAdapter()).getCursor().requery();
 	}
 
 	@Override
