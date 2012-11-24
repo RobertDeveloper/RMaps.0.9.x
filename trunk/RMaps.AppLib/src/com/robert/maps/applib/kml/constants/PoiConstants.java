@@ -56,7 +56,7 @@ public interface PoiConstants {
 		+ " AND poi.lon BETWEEN @2 AND @3"
 		+ " AND poi.lat BETWEEN @4 AND @5"
 		+ " ORDER BY lat, lon";
-	public static final String STAT_PoiCategoryList = "SELECT name, iconid, categoryid _id FROM category ORDER BY name";
+	public static final String STAT_PoiCategoryList = "SELECT name, iconid, categoryid _id, hidden FROM category ORDER BY name";
 	public static final String STAT_ActivityList = "SELECT name, activityid _id FROM activity ORDER BY activityid";
 	public static final String STAT_getPoi = "SELECT lat, lon, name, descr, pointid, alt, hidden, categoryid, pointsourceid, iconid FROM points WHERE pointid = @1";
 	public static final String STAT_deletePoi = "DELETE FROM points WHERE pointid = @1";
@@ -68,6 +68,7 @@ public interface PoiConstants {
 	public static final String STAT_getTrack = "SELECT name, descr, show, cnt, distance, duration, categoryid, activity, date, style FROM tracks WHERE trackid = @1";
 	public static final String STAT_getTrackPoints = "SELECT lat, lon, alt, speed, date FROM trackpoints WHERE trackid = @1 ORDER BY id";
 	public static final String STAT_setTrackChecked_1 = "UPDATE tracks SET show = 1 - show * 1 WHERE trackid = @1";
+	public static final String STAT_setCategoryHidden = "UPDATE category SET hidden = 1 - hidden * 1 WHERE categoryid = @1";
 	public static final String STAT_setTrackChecked_2 = "UPDATE tracks SET show = 0 WHERE trackid <> @1";
 	public static final String STAT_deleteTrack_1 = "DELETE FROM trackpoints WHERE trackid = @1";
 	public static final String STAT_deleteTrack_2 = "DELETE FROM tracks WHERE trackid = @1";

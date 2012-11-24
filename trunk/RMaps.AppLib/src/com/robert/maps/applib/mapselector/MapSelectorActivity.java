@@ -13,8 +13,8 @@ public class MapSelectorActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.mapselector);
+		//mScrollView = (ScrollView) findViewById(R.id.GridInt);
 		
-		mScrollView = (ScrollView) findViewById(R.id.GridInt);
 	}
 	
 }
