@@ -21,6 +21,12 @@ import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceGroup;
 import android.preference.PreferenceManager;
+import android.view.ContextMenu;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ContextMenu.ContextMenuInfo;
+import android.widget.AdapterView;
 
 import com.robert.maps.applib.constants.PrefConstants;
 import com.robert.maps.applib.kml.XMLparser.PredefMapsParser;
@@ -34,6 +40,7 @@ public class MainPreferences extends PreferenceActivity implements OnSharedPrefe
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		registerForContextMenu(getListView());
 
 		final SharedPreferences aPref = PreferenceManager.getDefaultSharedPreferences(this);
 		
@@ -252,5 +259,5 @@ public class MainPreferences extends PreferenceActivity implements OnSharedPrefe
 				
 		}
 	}
-
+	
 }

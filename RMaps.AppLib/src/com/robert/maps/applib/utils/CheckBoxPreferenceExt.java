@@ -45,6 +45,7 @@ public class CheckBoxPreferenceExt extends Preference implements CompoundButton.
         }
 
         view.setOnClickListener(this);
+        view.setLongClickable(true);
         
 		return view;
 	}
