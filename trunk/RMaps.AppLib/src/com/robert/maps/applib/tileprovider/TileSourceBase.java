@@ -15,10 +15,10 @@ import android.database.sqlite.SQLiteException;
 import android.preference.PreferenceManager;
 
 import com.robert.maps.applib.MainPreferences;
-import com.robert.maps.applib.MixedMapsPreference;
 import com.robert.maps.applib.R;
 import com.robert.maps.applib.kml.PoiManager;
 import com.robert.maps.applib.kml.XMLparser.PredefMapsParser;
+import com.robert.maps.applib.preference.MixedMapsPreference;
 import com.robert.maps.applib.utils.RException;
 
 public class TileSourceBase {
