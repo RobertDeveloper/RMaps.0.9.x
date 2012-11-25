@@ -10,6 +10,7 @@ import org.andnav.osm.views.util.Util;
 import org.andnav.osm.views.util.constants.OpenStreetMapViewConstants;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -20,6 +21,7 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.Handler;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -42,6 +44,7 @@ public class TileView extends View {
 	final Paint mPaint = new Paint();
 	final Matrix mMatrixBearing = new Matrix();
 	final Rect mRectDraw = new Rect();
+	final boolean mDrawTileGrid;
 	
 	private boolean mStopProcessing;
 	
@@ -202,6 +205,9 @@ public class TileView extends View {
 
 		mPaint.setFilterBitmap(true);
 		mPaint.setAntiAlias(true);
+		
+		final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
+		mDrawTileGrid = pref.getBoolean("pref_drawtilegrid", false);
 
 		setFocusable(true);
 		setFocusableInTouchMode(true);
@@ -311,7 +317,7 @@ public class TileView extends View {
 								if (!currentMapTile.isRecycled())
 									c.drawBitmap(currentMapTile, null, mRectDraw, mPaint);
 
-								if (OpenStreetMapViewConstants.DEBUGMODE) {
+								if (mDrawTileGrid || OpenStreetMapViewConstants.DEBUGMODE) {
 									c.drawLine(tileLeft, tileTop, tileLeft + tileSizePx, tileTop, mPaint);
 									c.drawLine(tileLeft, tileTop, tileLeft, tileTop + tileSizePx, mPaint);
 									c.drawText("y x = " + mapTileCoords[LATITUDE] + " " + mapTileCoords[LONGITUDE] + " zoom " + mZoom + " ", tileLeft + 5,

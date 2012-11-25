@@ -240,4 +240,6 @@ How to and FAQ you can find on http://robertdeveloper.blogspot.com/\n</string>
     <string name="question_delete">Do you realy want to delete %s?</string>
     <string name="poi">POI</string>
     <string name="track">track</string>
+    <string name="pref_drawtilegrid">Tile grid</string>
+    <string name="pref_drawtilegrid_summary">Show tiles grid with info</string>
 </resources>

@@ -9,8 +9,15 @@ import android.preference.EditTextPreference;
 import android.preference.ListPreference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceCategory;
+import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 
 import com.robert.maps.applib.R;
+import com.robert.maps.applib.utils.Ut;
 
 public class UserMapsPrefActivity extends PreferenceActivity implements OnSharedPreferenceChangeListener {
 	private String mKey;
@@ -122,5 +129,6 @@ public class UserMapsPrefActivity extends PreferenceActivity implements OnShared
 		
 		getPreferenceScreen().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
 	}
+
 	
 }
