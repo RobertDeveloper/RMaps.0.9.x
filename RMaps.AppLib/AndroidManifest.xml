@@ -104,10 +104,14 @@
             </intent-filter>
         </service>
 
-        <activity android:name="com.robert.maps.MixedMapsPreference" >
+        
+        <activity android:name=".downloader.DownloaderActivity" >
+        </activity><activity android:name=".preference.MixedMapsPreference">
         </activity>
-        <activity android:name=".applib.downloader.DownloaderActivity" >
-        </activity>
+        <activity android:name=".preference.UserMapsPrefActivity"></activity>
+        <activity android:name=".preference.PredefMapsPrefActivity"></activity>
+        <activity android:name=".preference.CustomMapsPrefActivity"></activity>
+        <activity android:name=".preference.PairMapsPrefActivity"></activity>
     </application>
 
     <uses-permission android:name="android.permission.WAKE_LOCK" />

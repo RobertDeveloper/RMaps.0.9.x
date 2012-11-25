@@ -24,6 +24,7 @@ public interface PoiConstants {
 	public static final String HIDDEN = "hidden";
 	public static final String ICONID = "iconid";
 	public static final String MINZOOM = "minzoom";
+	public static final String MAXZOOM = "maxzoom";
 	public static final String SHOW = "show";
 	public static final String TRACKID = "trackid";
 	public static final String SPEED = "speed";

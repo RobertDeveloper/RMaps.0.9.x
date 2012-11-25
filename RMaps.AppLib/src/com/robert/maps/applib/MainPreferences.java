@@ -1,6 +1,3 @@
-/**
- *
- */
 package com.robert.maps.applib;
 
 import java.io.File;
@@ -20,17 +17,16 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.CheckBoxPreference;
-import android.preference.EditTextPreference;
-import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceGroup;
 import android.preference.PreferenceManager;
-import android.preference.PreferenceScreen;
 
 import com.robert.maps.applib.constants.PrefConstants;
 import com.robert.maps.applib.kml.XMLparser.PredefMapsParser;
+import com.robert.maps.applib.preference.MixedMapsPreference;
+import com.robert.maps.applib.preference.UserMapsPrefActivity;
+import com.robert.maps.applib.utils.CheckBoxPreferenceExt;
 import com.robert.maps.applib.utils.Ut;
 
 public class MainPreferences extends PreferenceActivity implements OnSharedPreferenceChangeListener, PrefConstants {
@@ -110,6 +106,7 @@ public class MainPreferences extends PreferenceActivity implements OnSharedPrefe
 		
 		findPreference("pref_main_mixmaps").setIntent(new Intent(getApplicationContext(), MixedMapsPreference.class));
 		
+		getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
 	}
 	
 	private void pickDir(int id, Uri uri) {
@@ -177,100 +174,32 @@ public class MainPreferences extends PreferenceActivity implements OnSharedPrefe
 					
 					prefEditor.putString(PREF_USERMAPS_ + name + "_baseurl", files[i].getAbsolutePath());
 
-					final PreferenceScreen prefscr = getPreferenceManager().createPreferenceScreen(this);
-					prefscr.setKey(PREF_USERMAPS_ + name);
-					{
-						final CheckBoxPreference pref = new CheckBoxPreference(this);
-						pref.setKey(PREF_USERMAPS_ + name + "_enabled");
-						pref.setTitle(getString(R.string.pref_usermap_enabled));
-						pref.setSummary(getString(R.string.pref_usermap_enabled_summary));
-						pref.setDefaultValue(false);
-						prefscr.addPreference(pref);
-					}
-					{
-						final EditTextPreference pref = new EditTextPreference(this);
-						pref.setKey(PREF_USERMAPS_ + name + "_name");
-						pref.setTitle(getString(R.string.pref_usermap_name));
-						pref.setSummary(files[i].getName());
-						pref.setDefaultValue(files[i].getName());
-						prefscr.addPreference(pref);
-					}
-					{
-						final EditTextPreference pref = new EditTextPreference(this);
-						pref.setKey(PREF_USERMAPS_ + name + "_baseurl");
-						pref.setTitle(getString(R.string.pref_usermap_baseurl));
-						pref.setSummary(files[i].getAbsolutePath());
-						pref.setDefaultValue(files[i].getAbsolutePath());
-						pref.setEnabled(false);
-						prefscr.addPreference(pref);
-					}
-					{
-						final ListPreference pref = new ListPreference(this);
-						pref.setKey(PREF_USERMAPS_ + name + "_projection");
-						pref.setTitle(getString(R.string.pref_usermap_projection));
-						pref.setEntries(R.array.projection_title);
-						pref.setEntryValues(R.array.projection_value);
-						pref.setDefaultValue("1");
-						prefscr.addPreference(pref);
-						pref.setSummary(pref.getEntry());
-					}
-					{
-						final CheckBoxPreference pref = new CheckBoxPreference(this);
-						pref.setKey(PREF_USERMAPS_ + name + "_traffic");
-						pref.setTitle(getString(R.string.pref_usermap_traffic));
-						pref.setSummary(getString(R.string.pref_usermap_traffic_summary));
-						pref.setDefaultValue(false);
-						prefscr.addPreference(pref);
-					}
-					{
-						final CheckBoxPreference pref = new CheckBoxPreference(this);
-						pref.setKey(PREF_USERMAPS_ + name + "_isoverlay");
-						pref.setTitle(getString(R.string.pref_usermap_overlay));
-						pref.setSummary(getString(R.string.pref_usermap_overlay_summary));
-						pref.setDefaultValue(false);
-						prefscr.addPreference(pref);
-					}
-					{
-						final ListPreference pref = new ListPreference(this);
-						pref.setKey(PREF_USERMAPS_ + name + "_stretch");
-						pref.setDefaultValue("1");
-						pref.setTitle(R.string.pref_stretchtile);
-						pref.setSummary(R.string.pref_stretchtile_summary);
-						pref.setEntries(R.array.googlescale_pref_title);
-						pref.setEntryValues(R.array.googlescale_pref_values);
-						prefscr.addPreference(pref);
-					}
+					final CheckBoxPreferenceExt pref = new CheckBoxPreferenceExt(this, PREF_USERMAPS_ + name + "_enabled", false);
+					pref.setKey(PREF_USERMAPS_ + name);
+					pref.setTitle(aPref.getString(PREF_USERMAPS_ + name + "_name", files[i].getName()));
+					pref.setSummary(files[i].getAbsolutePath());
+					pref.setIntent(new Intent(this, UserMapsPrefActivity.class)
+						.putExtra("Key", PREF_USERMAPS_ + name)
+						.putExtra("Name", files[i].getName())
+						.putExtra("AbsolutePath", files[i].getAbsolutePath())
+						);
+					prefUserMapsgroup.addPreference(pref);
 
-					prefscr.setTitle(prefscr.getSharedPreferences().getString(PREF_USERMAPS_ + name + "_name",
-							files[i].getName()));
-					if (prefscr.getSharedPreferences().getBoolean(PREF_USERMAPS_ + name + "_enabled", false))
-						prefscr.setSummary("Enabled  " + files[i].getAbsolutePath());
-					else
-						prefscr.setSummary("Disabled  " + files[i].getAbsolutePath());
-					prefUserMapsgroup.addPreference(prefscr);
 				}
 			}
 		
 		prefEditor.commit();
 	}
 
-	@Override
-    protected void onResume() {
-        super.onResume();
-
-        // Set up a listener whenever a key changes
-        getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
-    }
-
     @Override
-    protected void onPause() {
-        super.onPause();
-
-        // Unregister the listener whenever a key changes
+    protected void onDestroy() {
         getPreferenceScreen().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
+
+        super.onDestroy();
     }
 
 	public void onSharedPreferenceChanged(SharedPreferences aPref, String aKey) {
+		Ut.w(aKey);
 
 		if(aKey.equalsIgnoreCase("pref_dir_maps")){
 			findPreference("pref_main_usermaps").setSummary("Maps from "+aPref.getString("pref_dir_maps", Ut.getExternalStorageDirectory()+"/rmaps/maps/"));
@@ -310,21 +239,18 @@ public class MainPreferences extends PreferenceActivity implements OnSharedPrefe
             Intent myIntent = new Intent(MainPreferences.this, MainPreferences.class);
             startActivity(myIntent);
 		}
-		else if (Ut.equalsIgnoreCase(aKey, 0, 14, PREF_USERMAPS_))
-			if (aKey.endsWith("name") && findPreference(aKey) != null) {
-				findPreference(aKey).setSummary(aPref.getString(aKey, ""));
+		else if (Ut.equalsIgnoreCase(aKey, 0, 14, PREF_USERMAPS_)) {
+			if (aKey.endsWith("name") && findPreference(aKey.replace("_name", "")) != null) {
 				findPreference(aKey.replace("_name", "")).setTitle(aPref.getString(aKey, ""));
-			} else if (aKey.endsWith("enabled") && findPreference(aKey.replace("_enabled", "")) != null) {
-				if (aPref.getBoolean(aKey, false))
-					findPreference(aKey.replace("_enabled", "")).setSummary(
-							"Enabled  " + aPref.getString(aKey.replace("_enabled", "_baseurl"), ""));
-				else
-					findPreference(aKey.replace("_enabled", "")).setSummary(
-							"Disabled  " + aPref.getString(aKey.replace("_enabled", "_baseurl"), ""));
-			} else if (aKey.endsWith("projection") && findPreference(aKey) != null) {
-				ListPreference pref = (ListPreference) findPreference(aKey);
-				findPreference(aKey).setSummary(pref.getEntry());
+			} else if (aKey.endsWith("_enabled") && findPreference(aKey.replace("_enabled", "")) != null) {
+				((CheckBoxPreferenceExt) findPreference(aKey.replace("_enabled", ""))).setChecked(aPref.getBoolean(aKey, true));
 			}
+		} else if (Ut.equalsIgnoreCase(aKey, 0, 16, PREF_PREDEFMAPS_)) {
+			final Preference pref = findPreference(aKey+"_screen");
+			if(pref != null && pref instanceof CheckBoxPreferenceExt)
+				((CheckBoxPreferenceExt) pref).setChecked(aPref.getBoolean(aKey, true));
+				
+		}
 	}
 
 }

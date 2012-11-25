@@ -7,6 +7,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
@@ -20,7 +21,9 @@ import android.view.MenuItem;
 
 import com.robert.maps.applib.MainPreferences;
 import com.robert.maps.applib.R;
+import com.robert.maps.applib.preference.PredefMapsPrefActivity;
 import com.robert.maps.applib.tileprovider.TileSourceBase;
+import com.robert.maps.applib.utils.CheckBoxPreferenceExt;
 import com.robert.maps.applib.utils.OnlineCachePreference;
 
 public class PredefMapsParser extends DefaultHandler {
@@ -159,78 +162,23 @@ public class PredefMapsParser extends DefaultHandler {
 			else if(mPrefMapsgroup != null && mPrefOverlaysgroup != null) {
 				final int i = attributes.getIndex(LAYER);
 				final PreferenceGroup prefGroup = (i == -1 || !attributes.getValue(LAYER).equalsIgnoreCase(TRUE)) ? mPrefMapsgroup : mPrefOverlaysgroup;
-					
-				final PreferenceScreen prefscr = ((PreferenceActivity) mPrefActivity).getPreferenceManager().createPreferenceScreen(mPrefActivity);
-				prefscr.setKey(MainPreferences.PREF_PREDEFMAPS_ + attributes.getValue(ID) + "_screen");
-				//PREF_USERMAPS_ + name);
-				{
-					final CheckBoxPreference pref = new CheckBoxPreference(mPrefActivity);
-					pref.setKey(MainPreferences.PREF_PREDEFMAPS_ + attributes.getValue(ID));
-					pref.setTitle(mPrefActivity.getString(R.string.pref_usermap_enabled));
-					pref.setSummary(mPrefActivity.getString(R.string.pref_usermap_enabled_summary));
-					pref.setDefaultValue(true);
-					prefscr.addPreference(pref);
-				}
-				{
-					final OnlineCachePreference pref = new OnlineCachePreference(mPrefActivity, attributes.getValue(ID));
-					pref.setKey(MainPreferences.PREF_PREDEFMAPS_ + attributes.getValue(ID) + "_clearcache");
-					prefscr.addPreference(pref);
-				}
-				final int j = attributes.getIndex(GOOGLESCALE);
-				if(j > -1 && attributes.getValue(GOOGLESCALE).equalsIgnoreCase(TRUE)) {
-					final ListPreference pref = new ListPreference(mPrefActivity);
-					pref.setKey(MainPreferences.PREF_PREDEFMAPS_ + attributes.getValue(ID) + "_googlescale");
-					pref.setDefaultValue("1");
-					pref.setTitle(R.string.pref_googlescale);
-					pref.setSummary(R.string.pref_googlescale_summary);
-					pref.setEntries(R.array.googlescale_pref_title);
-					pref.setEntryValues(R.array.googlescale_pref_values);
-					prefscr.addPreference(pref);
-				}
-				{
-					final ListPreference pref = new ListPreference(mPrefActivity);
-					pref.setKey(MainPreferences.PREF_PREDEFMAPS_ + attributes.getValue(ID) + "_stretch");
-					pref.setDefaultValue("1");
-					pref.setTitle(R.string.pref_stretchtile);
-					pref.setSummary(R.string.pref_stretchtile_summary);
-					pref.setEntries(R.array.googlescale_pref_title);
-					pref.setEntryValues(R.array.googlescale_pref_values);
-					prefscr.addPreference(pref);
 
-				}
-				{
-					final Preference pref = new Preference(mPrefActivity);
-					pref.setTitle(R.string.pref_usermap_projection);
-					switch(Integer.parseInt(attributes.getValue(PROJECTION))) {
-					case 1:
-						pref.setSummary(R.string.mercator_spheroid);
-						break;
-					case 2:
-						pref.setSummary(R.string.mercator_ellipsoid);
-						break;
-					case 3:
-						pref.setSummary(R.string.osgb36);
-						break;
-					}
-					prefscr.addPreference(pref);
-				}
-				{
-					final Preference pref = new Preference(mPrefActivity);
-					pref.setTitle(R.string.pref_tile_size);
-					int size = Integer.parseInt(attributes.getValue(MAPTILE_SIZEPX));
+				final CheckBoxPreferenceExt pref = new CheckBoxPreferenceExt(mPrefActivity, MainPreferences.PREF_PREDEFMAPS_ + attributes.getValue(ID));
+				pref.setKey(MainPreferences.PREF_PREDEFMAPS_ + attributes.getValue(ID) + "_screen");
+				final Intent intent = new Intent(mPrefActivity, PredefMapsPrefActivity.class)
+					.putExtra("Key", MainPreferences.PREF_PREDEFMAPS_ + attributes.getValue(ID))
+					.putExtra(ID, attributes.getValue(ID))
+					.putExtra(NAME, attributes.getValue(NAME))
+					.putExtra(PROJECTION, Integer.parseInt(attributes.getValue(PROJECTION)))
+					.putExtra(MAPTILE_SIZEPX, Integer.parseInt(attributes.getValue(MAPTILE_SIZEPX)));
+				final int j = attributes.getIndex(GOOGLESCALE);
+				if(j > -1 && attributes.getValue(GOOGLESCALE).equalsIgnoreCase(TRUE));
+					intent.putExtra(GOOGLESCALE, true);
 					
-					((PreferenceActivity) mPrefActivity).getPreferenceManager();
-					final SharedPreferences sharpref = PreferenceManager.getDefaultSharedPreferences(mPrefActivity);
-					final double GOOGLESCALE_SIZE_FACTOR = Double.parseDouble(sharpref.getString(MainPreferences.PREF_PREDEFMAPS_ + attributes.getValue(ID) + "_googlescale", "1"));
-					size = (int) (size * GOOGLESCALE_SIZE_FACTOR);
-					
-					pref.setSummary(String.format("%d x %d px", size, size));
-					prefscr.addPreference(pref);
-				}
-				
-				prefscr.setTitle(attributes.getValue(NAME));
-				prefscr.setSummary(attributes.getValue(DESCR));
-				prefGroup.addPreference(prefscr);
+				pref.setIntent(intent);
+				pref.setTitle(attributes.getValue(NAME));
+				pref.setSummary(attributes.getValue(DESCR));
+				prefGroup.addPreference(pref);
 			}
 			else if(mID != null) {
 				final int i = attributes.getIndex(LAYER);

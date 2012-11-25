@@ -85,6 +85,7 @@ import com.robert.maps.applib.overlays.PoiOverlay;
 import com.robert.maps.applib.overlays.SearchResultOverlay;
 import com.robert.maps.applib.overlays.TrackOverlay;
 import com.robert.maps.applib.overlays.YandexTrafficOverlay;
+import com.robert.maps.applib.preference.MixedMapsPreference;
 import com.robert.maps.applib.tileprovider.TileSource;
 import com.robert.maps.applib.tileprovider.TileSourceBase;
 import com.robert.maps.applib.utils.CompassView;
