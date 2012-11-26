@@ -11,4 +11,7 @@
     <color name="download_area">#ff333333</color>
     
     <color name="error_message_backgr">#FF3333</color>
+    <color name="line_to_gps">#FF3333</color>
+    <color name="map_label_back">#000000</color>
+    <color name="map_label_text">#FFFFFF</color>
 </resources>

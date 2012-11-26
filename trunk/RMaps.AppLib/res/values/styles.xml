@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
     <style name="stat_title">
         <item name="android:textSize">12.7dp</item>
         <item name="android:typeface">sans</item>
@@ -87,6 +87,18 @@
         <item name="android:shadowDx">1.5</item>
         <item name="android:shadowDy">1.5</item>
         <item name="android:shadowRadius">1.5</item>
+    </style>
+    <style name="label_white">
+        <item name="android:textSize">10dp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:typeface">sans</item>
+        <item name="android:textColor">#ffffffff</item>
+        <item name="android:shadowColor">#ff000000</item>
+        <item name="android:shadowDx">0.0</item>
+        <item name="android:shadowDy">-1.0</item>
+        <item name="android:shadowRadius">1.0</item>
+        <item name="android:background">@drawable/rect</item>
+        <item name="android:padding">2dp</item>
     </style>
     
 </resources>
