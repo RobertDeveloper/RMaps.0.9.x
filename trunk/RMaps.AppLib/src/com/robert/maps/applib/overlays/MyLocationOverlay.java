@@ -10,10 +10,12 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Point;
-import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.preference.PreferenceManager;
+import android.view.LayoutInflater;
+import android.widget.RelativeLayout;
+import android.widget.RelativeLayout.LayoutParams;
+import android.widget.TextView;
 
 import com.robert.maps.applib.R;
 import com.robert.maps.applib.utils.Ut;
@@ -49,7 +51,7 @@ public class MyLocationOverlay extends TileViewOverlay {
 	private int METER_IN_PIXEL = 156412;
 	private Paint mPaintAccurasyFill;
 	private Paint mPaintAccurasyBorder;
-	private Paint mPaintLineToGPS, mPaintMapLabelText, mPaintMapLabelBack;
+	private Paint mPaintLineToGPS;
 	private boolean mNeedCrosshair;
 	private final Paint mPaintCross = new Paint();
 	private final static int mCrossSize = 7;
@@ -57,6 +59,7 @@ public class MyLocationOverlay extends TileViewOverlay {
 
 	private boolean mLineToGPS;
 	private int mUnits;
+	private TextView mLabelVw;
 
 	// ===========================================================
 	// Constructors
@@ -77,18 +80,19 @@ public class MyLocationOverlay extends TileViewOverlay {
 		
 		mPaintLineToGPS = new Paint(mPaintAccurasyFill);
 		mPaintLineToGPS.setColor(ctx.getResources().getColor(R.color.line_to_gps));
-		mPaintMapLabelText = new Paint(mPaintAccurasyFill);
-		mPaintMapLabelText.setColor(ctx.getResources().getColor(R.color.map_label_text));
-		mPaintMapLabelBack = new Paint(mPaintAccurasyFill);
-		mPaintMapLabelBack.setColor(ctx.getResources().getColor(R.color.map_label_back));
 		
 		mPaintCross.setAntiAlias(true);
 
 		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(ctx);
 		mPrefAccuracy = Integer.parseInt(pref.getString("pref_accuracy", "1").replace("\"", ""));
 		mNeedCrosshair = pref.getBoolean("pref_crosshair", true);
-		mLineToGPS = true;
+		mLineToGPS = pref.getBoolean("pref_line_gps", false);
 		mUnits = Integer.parseInt(pref.getString("pref_units", "0"));
+		
+		if(mLineToGPS) {
+			mLabelVw = (TextView) LayoutInflater.from(ctx).inflate(R.layout.label_map, null);
+			mLabelVw.setLayoutParams(new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+		}
 	}
 
 	// ===========================================================
@@ -174,16 +178,14 @@ public class MyLocationOverlay extends TileViewOverlay {
 				final GeoPoint geo = pj.fromPixels(osmv.getWidth() / 2, osmv.getHeight() / 2);
 				final float dist = this.mLocation.distanceTo(geo);
 				final String lbl = Ut.formatDistance(mCtx, dist, mUnits); 
-				final Rect r = new Rect();
-				mPaintMapLabelText.getTextBounds(lbl, 0, lbl.length()-1, r);
-				final Drawable d = mCtx.getResources().getDrawable(R.drawable.rect);
-				final int pad = mCtx.getResources().getDimensionPixelSize(R.dimen.label_map_padding);
-				d.setBounds(r.left, r.top, r.right+pad, r.bottom+pad);
+				
+				mLabelVw.setText(lbl);
+				mLabelVw.measure(0, 0);
+				mLabelVw.layout(0, 0, mLabelVw.getMeasuredWidth(), mLabelVw.getMeasuredHeight());
 				c.save();
-				c.translate(osmv.getWidth() / 2, osmv.getHeight() / 2);
-				d.draw(c);
+				c.translate(osmv.getWidth() / 2 - (screenCoords.x < osmv.getWidth() / 2 ? 0 : mLabelVw.getMeasuredWidth()), osmv.getHeight() / 2);
+				mLabelVw.draw(c);
 				c.restore();
-				c.drawText(lbl, osmv.getWidth() / 2, osmv.getHeight() / 2, mPaintMapLabelText);
 			}
 
 			c.save();

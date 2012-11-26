@@ -242,4 +242,6 @@ How to and FAQ you can find on http://robertdeveloper.blogspot.com/\n</string>
     <string name="track">track</string>
     <string name="pref_drawtilegrid">Tile grid</string>
     <string name="pref_drawtilegrid_summary">Show tiles grid with info</string>
+    <string name="pref_line_gps">Line to GPS</string>
+    <string name="pref_line_gps_summary">Show line between current GPS location and center of screen</string>
 </resources>
