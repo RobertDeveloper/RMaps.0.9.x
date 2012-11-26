@@ -455,6 +455,21 @@ public class Ut implements OpenStreetMapConstants, OpenStreetMapViewConstants {
 	 
 	}
 
+	public static String formatDistance(Context ctx, float dist, int units) {
+		if(units == 0) {
+			if(dist < 1000)
+				return String.format("%.0f %s", dist, ctx.getResources().getString(R.string.m));
+			else if(dist/1000 < 100)
+				return String.format("%.1f %s", dist/1000, ctx.getResources().getString(R.string.km));
+			else
+				return String.format("%.0f %s", dist/1000, ctx.getResources().getString(R.string.km));
+		} else {
+			
+		}
+		//final float dist2 = (units == 0 ? dist : dist / 1.609344f);
+		return "";
+	}
+	
 	public static CharSequence formatTime(long time) {
 		return String.format("%tM:%tM:%tS", time / 60, time, time);
 	}

@@ -13,6 +13,7 @@
     <string name="minkm">min/km</string>
     <string name="m">m</string>
     <string name="ml">ml</string>
+    <string name="ft">ft</string>
     <string name="mercator_spheroid">Mercator Spheroid</string>
     <string name="mercator_ellipsoid">Mercator Ellipsoid</string>
     <string name="osgb36">OSGB 36 British national grid reference system</string>
