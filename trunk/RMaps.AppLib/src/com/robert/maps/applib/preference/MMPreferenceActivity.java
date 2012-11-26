@@ -38,6 +38,12 @@ public class MMPreferenceActivity extends PreferenceActivity implements PoiConst
 		mMapHelper = new MapHelper();
 	}
 	
+	@Override
+	protected void onDestroy() {
+		mPoiManager.FreeDatabases();
+		super.onDestroy();
+	}
+
 	protected class MapHelper {
 		public long ID;
 		public String NAME;
