@@ -8,9 +8,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteException;
 import android.os.Bundle;
-import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceGroup;
 import android.preference.PreferenceManager;
@@ -22,9 +20,7 @@ import android.view.View;
 import android.widget.AdapterView;
 
 import com.robert.maps.applib.R;
-import com.robert.maps.applib.tileprovider.TileSourceBase;
 import com.robert.maps.applib.utils.CheckBoxPreferenceExt;
-import com.robert.maps.applib.utils.RException;
 
 public class MixedMapsPreference extends MMPreferenceActivity implements OnSharedPreferenceChangeListener {
 	
@@ -203,48 +199,6 @@ public class MixedMapsPreference extends MMPreferenceActivity implements OnShare
 					pref.setChecked(sharedPreferences.getBoolean(key, true));
 			}
 			
-			final String params[] = key.split("_");
-			mMapHelper.getMap(Long.parseLong(params[2]));
-			if(key.endsWith("_name")) {
-				mMapHelper.NAME = sharedPreferences.getString(key, "");
-				if(findPreference(key) != null)
-					findPreference(key).setSummary(mMapHelper.NAME);
-				if(findPreference(PREF_MIXMAPS_+mMapHelper.ID) != null)
-					findPreference(PREF_MIXMAPS_+mMapHelper.ID).setTitle(mMapHelper.NAME);
-			} else if(key.endsWith(MAPID)) {
-				final JSONObject json = getMapPairParams(mMapHelper.PARAMS);
-				try {
-					json.put(MAPID, sharedPreferences.getString(key, ""));
-					
-					try {
-						final TileSourceBase tileSouce = new TileSourceBase(this, sharedPreferences.getString(key, ""));
-						json.put(MAPPROJECTION, tileSouce.PROJECTION);
-						if(tileSouce.PROJECTION != json.optInt(OVERLAYPROJECTION)) {
-							json.put(OVERLAYID, "");
-							json.put(OVERLAYPROJECTION, tileSouce.PROJECTION);
-							final String overlaykey = key.replace(MAPID, OVERLAYID);
-							final ListPreference pref = (ListPreference) findPreference(overlaykey);
-							pref.setSummary("");
-							
-							final String[][] listOverlays = getMaps(false, true, tileSouce.PROJECTION);
-							if(listOverlays != null) {
-								pref.setEntryValues(listOverlays[0]);
-								pref.setEntries(listOverlays[1]);
-							}
-	
-						}
-					} catch (SQLiteException e) {
-					} catch (RException e) {
-					}
-					
-					mMapHelper.PARAMS = json.toString();
-					if(findPreference(key) != null)
-						findPreference(key).setSummary(((ListPreference)findPreference(key)).getEntry());
-				} catch (Exception e) {
-				}
-				
-			}
-			mMapHelper.updateMap();
 		}
 	}
 	

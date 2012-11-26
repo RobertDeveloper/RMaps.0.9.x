@@ -39,7 +39,7 @@ public class CheckBoxPreferenceExt extends Preference implements CompoundButton.
 		
         View checkboxView = view.findViewById(android.R.id.checkbox);
         if (checkboxView != null && checkboxView instanceof Checkable) {
-        	mCheckBox = (Checkable) checkboxView;
+        	checkboxView.setClickable(true);
             ((Checkable) checkboxView).setChecked(mChecked);
             ((CheckBox) checkboxView).setOnCheckedChangeListener(this);
         }
