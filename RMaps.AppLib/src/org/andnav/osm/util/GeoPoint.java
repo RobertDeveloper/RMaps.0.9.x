@@ -1,6 +1,8 @@
 // Created by plusminus on 21:28:12 - 25.09.2008
 package org.andnav.osm.util;
 
+import java.util.Locale;
+
 import org.andnav.osm.util.constants.GeoConstants;
 import org.andnav.osm.views.util.constants.MathConstants;
 
@@ -112,7 +114,8 @@ public class GeoPoint implements MathConstants, GeoConstants{
 	}
 
 	public String toDoubleString() {
-		return new StringBuilder().append(this.mLatitudeE6 / 1E6).append(",").append(this.mLongitudeE6  / 1E6).toString();
+		return String.format(Locale.UK, "%f,%f", this.mLatitudeE6 / 1E6, this.mLongitudeE6  / 1E6);
+		//return new StringBuilder().append(this.mLatitudeE6 / 1E6).append(",").append(this.mLongitudeE6  / 1E6).toString();
 	}
 
 	@Override

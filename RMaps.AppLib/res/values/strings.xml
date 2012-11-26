@@ -244,4 +244,5 @@ How to and FAQ you can find on http://robertdeveloper.blogspot.com/\n</string>
     <string name="pref_drawtilegrid_summary">Show tiles grid with info</string>
     <string name="pref_line_gps">Line to GPS</string>
     <string name="pref_line_gps_summary">Show line between current GPS location and center of screen</string>
+    <string name="menu_share">Share</string>
 </resources>
