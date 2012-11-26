@@ -328,6 +328,7 @@ public class PoiListActivity extends ListActivity {
 		else
 			menu.add(0, R.id.menu_hide, 0, getText(R.string.menu_hide));
 		menu.add(0, R.id.menu_deletepoi, 0, getText(R.string.menu_delete));
+		menu.add(0, R.id.menu_share, 0, getText(R.string.menu_share));
 		menu.add(0, R.id.menu_toradar, 0, getText(R.string.menu_toradar));
 
 		super.onCreateContextMenu(menu, v, menuInfo);
@@ -363,6 +364,18 @@ public class PoiListActivity extends ListActivity {
 			poi.Hidden = false;
 			mPoiManager.updatePoi(poi);
 			((SimpleCursorAdapter) getListAdapter()).getCursor().requery();
+		} else if(item.getItemId() == R.id.menu_share) {
+			try {
+				Intent intent1 = new Intent(Intent.ACTION_SEND); 
+				intent1.setType("text/plain"); 
+				intent1.putExtra(Intent.EXTRA_TEXT, new StringBuilder()
+				.append(poi.Title)
+				.append("\nhttp://maps.google.com/?q=")
+				.append(poi.GeoPoint.toDoubleString())
+				.toString()); 
+				startActivity(Intent.createChooser(intent1, getText(R.string.menu_share)));
+			} catch (Exception e) {
+			} 
 		} else if(item.getItemId() == R.id.menu_toradar) {
 			try {
 					Intent i = new Intent("com.google.android.radar.SHOW_RADAR");

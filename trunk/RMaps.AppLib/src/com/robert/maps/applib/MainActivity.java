@@ -66,6 +66,7 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -897,6 +898,7 @@ public class MainActivity extends Activity {
 			menu.add(0, R.id.menu_editpoi, 0, getText(R.string.menu_edit));
 			menu.add(0, R.id.menu_hide, 0, getText(R.string.menu_hide));
 			menu.add(0, R.id.menu_deletepoi, 0, getText(R.string.menu_delete));
+			menu.add(0, R.id.menu_share, 0, getText(R.string.menu_share));
 			menu.add(0, R.id.menu_toradar, 0, getText(R.string.menu_toradar));
 		} else {
 			menu.add(0, R.id.menu_addpoi, 0, getText(R.string.menu_addpoi));
@@ -935,15 +937,37 @@ public class MainActivity extends Activity {
 						R.id.menu_editpoi);
 				mMap.postInvalidate();
 			} else if (item.getItemId() == R.id.menu_deletepoi) {
-				mPoiManager.deletePoi(mPoiOverlay.getPoiPoint(mMarkerIndex).getId());
-				mPoiOverlay.UpdateList();
-				mMap.postInvalidate();
+				final int pointid = mPoiOverlay.getPoiPoint(mMarkerIndex).getId();
+				new AlertDialog.Builder(this) 
+				.setTitle(R.string.app_name)
+				.setMessage(getResources().getString(R.string.question_delete, getText(R.string.poi)) )
+				.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int whichButton) {
+
+						mPoiManager.deletePoi(pointid);
+						mPoiOverlay.UpdateList();
+						mMap.postInvalidate();
+					}
+				}).setNegativeButton(R.string.no, null).create().show();
 			} else if (item.getItemId() == R.id.menu_hide) {
 				final PoiPoint poi = mPoiOverlay.getPoiPoint(mMarkerIndex);
 				poi.Hidden = true;
 				mPoiManager.updatePoi(poi);
 				mPoiOverlay.UpdateList();
 				mMap.postInvalidate();
+			} else if (item.getItemId() == R.id.menu_share) {
+				try {
+					final PoiPoint poi = mPoiOverlay.getPoiPoint(mMarkerIndex);
+					Intent intent1 = new Intent(Intent.ACTION_SEND); 
+					intent1.setType("text/plain"); 
+					intent1.putExtra(Intent.EXTRA_TEXT, new StringBuilder()
+					.append(poi.Title)
+					.append("\nhttp://maps.google.com/?q=")
+					.append(poi.GeoPoint.toDoubleString())
+					.toString()); 
+					startActivity(Intent.createChooser(intent1, getText(R.string.menu_share)));
+				} catch (Exception e) {
+				} 
 			} else if (item.getItemId() == R.id.menu_toradar) {
 				final PoiPoint poi1 = mPoiOverlay.getPoiPoint(mMarkerIndex);
 				try {
