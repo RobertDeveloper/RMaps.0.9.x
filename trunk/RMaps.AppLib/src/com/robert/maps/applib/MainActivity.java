@@ -776,14 +776,7 @@ public class MainActivity extends Activity {
 			startActivityForResult(new Intent(this, TrackListActivity.class), R.id.tracks);
 			return true;
 		} else if (item.getItemId() == R.id.search) {
-			Intent intent = new Intent(this, OffsetActivity.class);
-			intent.putExtra("MAPID", mTileSource.ID);
-			intent.putExtra("ZoomLevel", mMap.getZoomLevel());
-			intent.putExtra("Latitude", point.getLatitudeE6());
-			intent.putExtra("Longitude", point.getLongitudeE6());
-			startActivity(intent);
-			
-			//onSearchRequested();
+			onSearchRequested();
 			return true;
 		} else if (item.getItemId() == R.id.settings) {
 			startActivityForResult(new Intent(this, MainPreferences.class), R.id.settings_activity_closed);
@@ -815,7 +808,6 @@ public class MainActivity extends Activity {
 		} else {
 			
 			final String mapid = (String)item.getTitleCondensed();
-			Ut.w("mapid="+mapid);
 			setTileSource(mapid, "", true);
 			
 			if(mTileSource.MAP_TYPE == TileSource.PREDEF_ONLINE) {

@@ -30,7 +30,7 @@ import com.robert.maps.applib.view.IMoveListener;
 import com.robert.maps.applib.view.MapView;
 
 public class OffsetActivity extends Activity {
-	private static final String OFFSET_TEXT = "%s: %.6f, %.6f";
+	private static final String OFFSET_TEXT = "%s: %d m, %d m";
 	private MapView mMap;
 	private TileSource mTileSource;
 	private MyLocationOverlay mMyLocationOverlay;
@@ -41,6 +41,7 @@ public class OffsetActivity extends Activity {
 	private MoveListener mMoveListener = new MoveListener();
 	private double mOffsetLat, mOffsetLon;
 	private CharSequence mGpsStatusName;
+	private GeoPoint mGeo0 = new GeoPoint(0, 0);
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -124,7 +125,9 @@ public class OffsetActivity extends Activity {
 	}
 
 	private void setOffsetText() {
-		((TextView) findViewById(R.id.textOffset)).setText(String.format(OFFSET_TEXT, getResources().getString(R.string.offset_text), mOffsetLat, mOffsetLon));
+		final int lat = (mOffsetLat < 0 ? -1 : 1) * mGeo0.distanceTo(new GeoPoint((int) (1E6 * mOffsetLat), 0));
+		final int lon = (mOffsetLon < 0 ? -1 : 1) * mGeo0.distanceTo(new GeoPoint(0, (int) (1E6 * mOffsetLon)));
+		((TextView) findViewById(R.id.textOffset)).setText(String.format(OFFSET_TEXT, getResources().getString(R.string.offset_text), lat, lon));
 	}
 
 	private class MoveListener implements IMoveListener {

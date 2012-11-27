@@ -246,9 +246,11 @@ How to and FAQ you can find on http://robertdeveloper.blogspot.com/\n</string>
     <string name="pref_line_gps_summary">Show line between current GPS location and center of screen</string>
     <string name="menu_share">Share</string>
     <string name="PoiAlt">Altitude</string>
-    <string name="offset_info">Move the map with one finger to change the offset.  Use two fingers to move the map.</string>
+    <string name="offset_info">Use one finger to change the offset.  Use two fingers to move the map.</string>
     <string name="offset_text">Offset</string>
     <string name="offset_button_open_map">Set offset on the map</string>
     <string name="pref_mapoffset">Map offset</string>
-    <string name="pref_mapoffset_summary">Map offset by latitude and longitude in degrees</string>
+    <string name="pref_mapoffset_summary">Map offset by latitude and longitude in meters</string>
+    <string name="offsetNS">North/South offset, meter</string>
+    <string name="offsetEW">East/West offset, meter</string>
 </resources>

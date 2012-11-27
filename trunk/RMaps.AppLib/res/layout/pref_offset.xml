@@ -10,7 +10,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingLeft="5dp"
-        android:text="@string/PoiLat"
+        android:text="@string/offsetNS"
         android:textAppearance="?android:attr/textAppearance" />
 
     <EditText
@@ -29,7 +29,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingLeft="5dp"
-        android:text="@string/PoiLon"
+        android:text="@string/offsetEW"
         android:textAppearance="?android:attr/textAppearance" />
 
     <EditText
@@ -39,37 +39,6 @@
         android:ems="10"
         android:inputType="numberSigned|numberDecimal"
         android:text="@+id/Lon" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp" >
-
-        <Button
-            android:id="@android:id/copy"
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@android:string/copy" />
-
-        <Button
-            android:id="@android:id/paste"
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@android:string/paste" />
-
-        <Button
-            android:id="@+id/clear"
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/clear" />
-
-    </LinearLayout>
 
     <Button
         android:id="@+id/map"
