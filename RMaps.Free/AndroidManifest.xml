@@ -123,6 +123,7 @@
         <activity android:name=".applib.preference.UserMapsPrefActivity"></activity>
         <activity android:name=".applib.preference.CustomMapsPrefActivity"></activity>
         <activity android:name=".applib.preference.PairMapsPrefActivity"></activity>
+        <activity android:name=".applib.preference.OffsetActivity"></activity>
 </application>
 
 </manifest>

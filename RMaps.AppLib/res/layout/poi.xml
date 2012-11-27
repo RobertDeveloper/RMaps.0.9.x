@@ -68,7 +68,7 @@
 			android:layout_height="wrap_content"></TextView>
 
 		<EditText
-		    android:id="@+id/alt"
+		    android:id="@+id/Alt"
 		    android:layout_width="fill_parent"
 		    android:layout_height="wrap_content"
 		    android:inputType="numberSigned|numberDecimal"

@@ -9,6 +9,7 @@ import org.andnav.osm.util.MyMath;
 import org.andnav.osm.views.util.Util;
 import org.andnav.osm.views.util.constants.OpenStreetMapViewConstants;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -28,6 +29,7 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import com.robert.maps.applib.reflection.OnExGestureListener;
+import com.robert.maps.applib.reflection.RGestureHelper;
 import com.robert.maps.applib.reflection.VerGestureDetector;
 import com.robert.maps.applib.reflection.VerScaleGestureDetector;
 import com.robert.maps.applib.tileprovider.MessageHandlerConstants;
@@ -47,13 +49,13 @@ public class TileView extends View {
 	final boolean mDrawTileGrid;
 	
 	private boolean mStopProcessing;
+	private boolean mSetOffsetMode;
 	
 	public double mTouchScale = 1;
 	
 	private TileSource mTileSource;
 	private TileMapHandler mTileMapHandler = new TileMapHandler();
 	protected final List<TileViewOverlay> mOverlays = new ArrayList<TileViewOverlay>();
-	OnExGestureListener sdf;
 	
 	private GestureDetector mDetector = VerGestureDetector.newInstance().getGestureDetector(getContext(), new TouchListener()); 
 	private VerScaleGestureDetector mScaleDetector = VerScaleGestureDetector.newInstance(getContext(), new ScaleListener());
@@ -129,7 +131,13 @@ public class TileView extends View {
 					- (int) (Math.sin(Math.toRadians(aRotateToAngle)) * (distanceX / mTouchScale));
 			final GeoPoint newCenter = TileView.this.getProjection().fromPixels(viewWidth_2 + TouchMapOffsetX,
 					viewHeight_2 + TouchMapOffsetY);
-			TileView.this.setMapCenter(newCenter);
+			if(mSetOffsetMode && ((RGestureHelper) mDetector).getPointerCount(e2) == 1) {
+				mOffsetLat = mOffsetLat + (newCenter.getLatitudeE6() - mLatitudeE6) / 1E6;
+				mOffsetLon = mOffsetLon + (newCenter.getLongitudeE6() - mLongitudeE6) / 1E6;
+				TileView.this.postInvalidate();
+			} else {
+				TileView.this.setMapCenter(newCenter);
+			}
 			
 			if (mMoveListener != null)
 				mMoveListener.onMoveDetected();
@@ -208,12 +216,16 @@ public class TileView extends View {
 		
 		final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
 		mDrawTileGrid = pref.getBoolean("pref_drawtilegrid", false);
+		
+		mSetOffsetMode = false;
 
 		setFocusable(true);
 		setFocusableInTouchMode(true);
 	}
 	
 	public PoiMenuInfo mPoiMenuInfo = new PoiMenuInfo(-1);
+	private double mOffsetLat;
+	private double mOffsetLon;
 	
 	public class PoiMenuInfo implements ContextMenuInfo {
 		public int MarkerIndex;
@@ -253,7 +265,7 @@ public class TileView extends View {
 		if (mTileSource != null) {
 			final int tileSizePxNotScale = mTileSource.getTileSizePx(mZoom);
 			final int tileSizePx = (int) (tileSizePxNotScale * mTouchScale);
-			final int[] centerMapTileCoords = Util.getMapTileFromCoordinates(this.mLatitudeE6, this.mLongitudeE6, mZoom, null, mTileSource.PROJECTION);
+			final int[] centerMapTileCoords = Util.getMapTileFromCoordinates(this.mLatitudeE6 + (int)(1E6 * mOffsetLat), this.mLongitudeE6 + (int)(1E6 * mOffsetLon), mZoom, null, mTileSource.PROJECTION);
 
 			/*
 			 * Calculate the Latitude/Longitude on the left-upper ScreenCoords
@@ -271,7 +283,7 @@ public class TileView extends View {
 //					+ tileSizePxNotScale;
 
 			final Point upperLeftCornerOfCenterMapTile = getUpperLeftCornerOfCenterMapTileInScreen(
-					centerMapTileCoords, tileSizePx, null);
+					centerMapTileCoords, tileSizePx, mOffsetLat, mOffsetLon, null);
 			final int centerMapTileScreenLeft = upperLeftCornerOfCenterMapTile.x;
 			final int centerMapTileScreenTop = upperLeftCornerOfCenterMapTile.y;
 
@@ -353,6 +365,8 @@ public class TileView extends View {
 			mTileSource.Free();
 		mTileSource = tilesource;
 		mTileSource.setHandler(mTileMapHandler);
+		mOffsetLat = mTileSource.OFFSET_LAT;
+		mOffsetLon = mTileSource.OFFSET_LON;
 		setZoomLevel(getZoomLevel());
 		invalidate();
 	}
@@ -796,8 +810,10 @@ public class TileView extends View {
 	private boolean mDisableControl;
 
 	// TODO След процедуры под вопросом о переделке
-	private Point getUpperLeftCornerOfCenterMapTileInScreen(final int[] centerMapTileCoords,
-			final int tileSizePx, final Point reuse) {
+	private Point getUpperLeftCornerOfCenterMapTileInScreen(final int[] centerMapTileCoords, final int tileSizePx, final Point reuse) {
+		return getUpperLeftCornerOfCenterMapTileInScreen(centerMapTileCoords, tileSizePx, 0, 0, reuse);
+	}
+	private Point getUpperLeftCornerOfCenterMapTileInScreen(final int[] centerMapTileCoords, final int tileSizePx, final double offsetLat, final double offsetLon, final Point reuse) {
 		final Point out = (reuse != null) ? reuse : new Point();
 
 		final int viewWidth = this.getWidth();
@@ -814,7 +830,7 @@ public class TileView extends View {
 				this.mZoom, mTileSource.PROJECTION);
 		final float[] relativePositionInCenterMapTile = bb
 				.getRelativePositionOfGeoPointInBoundingBoxWithLinearInterpolation(
-						this.mLatitudeE6, this.mLongitudeE6, null);
+						this.mLatitudeE6 + (int)(1E6 * offsetLat), this.mLongitudeE6 + (int)(1E6 * offsetLon), null);
 
 		final int centerMapTileScreenLeft = viewWidth_2
 				- (int) (0.5f + (relativePositionInCenterMapTile[LONGITUDE] * tileSizePx));
@@ -864,4 +880,12 @@ public class TileView extends View {
 		mDisableControl = true;
 	}
 
+	public double[] getCurrentOffset() {
+		final double[] offset = {mOffsetLat, mOffsetLon};
+		return offset;
+	}
+
+	public void setOffsetMode(boolean mode) {
+		mSetOffsetMode = mode;
+	}
 }

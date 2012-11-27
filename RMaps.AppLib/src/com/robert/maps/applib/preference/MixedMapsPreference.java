@@ -67,7 +67,7 @@ public class MixedMapsPreference extends MMPreferenceActivity implements OnShare
 						pref.setSummary(R.string.menu_add_ownsourcemap);
 						pref.setIntent(new Intent(this, CustomMapsPrefActivity.class)
 							.putExtra("Key", PREF_MIXMAPS_ + c.getInt(idMapid))
-							.putExtra(MAPID, c.getInt(idMapid))
+							.putExtra(MAPID, "mixmap_"+c.getInt(idMapid))
 							.putExtra(NAME, c.getString(idName))
 							.putExtra(BASEURL, json.optString(BASEURL))
 							.putExtra(MAPPROJECTION, json.optString(MAPPROJECTION))

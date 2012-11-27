@@ -20,6 +20,7 @@ import com.robert.maps.applib.kml.PoiManager;
 import com.robert.maps.applib.kml.XMLparser.PredefMapsParser;
 import com.robert.maps.applib.preference.MixedMapsPreference;
 import com.robert.maps.applib.utils.RException;
+import com.robert.maps.applib.utils.Ut;
 
 public class TileSourceBase {
 
@@ -28,7 +29,7 @@ public class TileSourceBase {
 	protected static final String EN = "en";
 	protected static final String PREF_ONLINECACHE = "pref_onlinecache";
 	protected static final String PREF_GOOGLELANG = "pref_googlelanguagecode";
-	protected static final String USERMAP_ = "usermap_";
+	public static final String USERMAP_ = "usermap_";
 	public static final String PREF_USERMAP_ = "pref_usermaps_";
 	protected static final String NAME_ = "_name";
 	protected static final String BASEURL_ = "_baseurl";
@@ -40,6 +41,8 @@ public class TileSourceBase {
 	protected static final String MIXMAP_ = "mixmap_";
 	protected static final String GOOGLESCALE_ = "_googlescale";
 	protected static final String STRETCH_ = "_stretch";
+	public static final String OFFSETLAT_ = "_offsetlat";
+	public static final String OFFSETLON_ = "_offsetlon";
 	protected static final String STRING_1 = "1";
 	protected static final String UNDERLINE = "_";
 	
@@ -57,7 +60,8 @@ public class TileSourceBase {
 	PROJECTION; // 1-меркатор на сфероид, 2- на эллипсоид, 3- OSGB 36 British national grid reference system
 	public boolean LAYER, mOnlineMapCacheEnabled, GOOGLESCALE;
 	public double MAPTILE_SIZE_FACTOR = 1;
-
+	public double OFFSET_LAT = 0, OFFSET_LON = 0;
+	
 	public TileSourceBase(Context ctx, String aId) throws SQLiteException, RException {
 		if (aId.equalsIgnoreCase(EMPTY))
 			aId = MAPNIK;
@@ -66,6 +70,9 @@ public class TileSourceBase {
 		mOnlineMapCacheEnabled = pref.getBoolean(PREF_ONLINECACHE, true);
 		GOOGLE_LANG_CODE = pref.getString(PREF_GOOGLELANG, EN);
 		this.OVERLAYID = EMPTY;
+		this.OFFSET_LAT = pref.getFloat(aId+OFFSETLAT_, 0);
+		this.OFFSET_LON = pref.getFloat(aId+OFFSETLON_, 0);
+		Ut.w(aId+OFFSETLAT_);
 		String mixMapName = EMPTY;
 		String mixMapId = EMPTY;
 
