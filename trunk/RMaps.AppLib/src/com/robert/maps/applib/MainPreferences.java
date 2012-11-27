@@ -32,6 +32,7 @@ import com.robert.maps.applib.constants.PrefConstants;
 import com.robert.maps.applib.kml.XMLparser.PredefMapsParser;
 import com.robert.maps.applib.preference.MixedMapsPreference;
 import com.robert.maps.applib.preference.UserMapsPrefActivity;
+import com.robert.maps.applib.tileprovider.TileSourceBase;
 import com.robert.maps.applib.utils.CheckBoxPreferenceExt;
 import com.robert.maps.applib.utils.Ut;
 
@@ -187,6 +188,7 @@ public class MainPreferences extends PreferenceActivity implements OnSharedPrefe
 					pref.setSummary(files[i].getAbsolutePath());
 					pref.setIntent(new Intent(this, UserMapsPrefActivity.class)
 						.putExtra("Key", PREF_USERMAPS_ + name)
+						.putExtra("ID", TileSourceBase.USERMAP_ + name)
 						.putExtra("Name", files[i].getName())
 						.putExtra("AbsolutePath", files[i].getAbsolutePath())
 						);

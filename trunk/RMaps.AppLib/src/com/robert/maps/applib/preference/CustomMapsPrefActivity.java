@@ -120,8 +120,15 @@ public class CustomMapsPrefActivity extends MMPreferenceActivity implements OnSh
 			prefscr.addPreference(pref);
 		}
 		{
-			final OnlineCachePreference pref = new OnlineCachePreference(this, "mixmap_"+bundle.getInt(MAPID));
+			final OnlineCachePreference pref = new OnlineCachePreference(this, bundle.getString(MAPID));
 			pref.setKey(mKey + "_clearcache");
+			prefscr.addPreference(pref);
+		}
+		{
+			final OffsetPreference pref = new OffsetPreference(this, bundle.getString(MAPID));
+			pref.setKey(bundle.getString(MAPID) + "_offset");
+			pref.setTitle(R.string.pref_mapoffset);
+			pref.setSummary(R.string.pref_mapoffset_summary);
 			prefscr.addPreference(pref);
 		}
 		

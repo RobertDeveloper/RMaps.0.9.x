@@ -4,7 +4,7 @@ import android.content.Context;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 
-public class RGestureDetectorCupcake extends GestureDetector {
+public class RGestureDetectorCupcake extends GestureDetector implements RGestureHelper {
 	OnExGestureListener mListener;
 
 	public RGestureDetectorCupcake(Context context, OnExGestureListener listener) {
@@ -22,6 +22,11 @@ public class RGestureDetectorCupcake extends GestureDetector {
         }
 
         return super.onTouchEvent(ev);
+	}
+
+	@Override
+	public int getPointerCount(MotionEvent e) {
+		return 1;
 	}
 	
 }

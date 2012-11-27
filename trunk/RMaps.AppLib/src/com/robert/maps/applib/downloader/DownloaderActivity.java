@@ -1,7 +1,5 @@
 package com.robert.maps.applib.downloader;
 
-import java.io.File;
-
 import org.andnav.osm.util.GeoPoint;
 
 import android.app.Activity;

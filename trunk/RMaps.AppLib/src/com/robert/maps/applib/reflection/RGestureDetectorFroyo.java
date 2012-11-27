@@ -6,7 +6,7 @@ import android.os.Handler;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 
-public class RGestureDetectorFroyo extends GestureDetector {
+public class RGestureDetectorFroyo extends GestureDetector implements RGestureHelper {
 	OnExGestureListener mListener;
 
 	@SuppressLint("NewApi")
@@ -25,6 +25,12 @@ public class RGestureDetectorFroyo extends GestureDetector {
         }
 
         return super.onTouchEvent(ev);
+	}
+
+	@SuppressLint("NewApi")
+	@Override
+	public int getPointerCount(MotionEvent e) {
+		return e.getPointerCount();
 	}
 	
 }

@@ -9,15 +9,8 @@ import android.preference.EditTextPreference;
 import android.preference.ListPreference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceCategory;
-import android.view.ContextMenu;
-import android.view.ContextMenu.ContextMenuInfo;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
 
 import com.robert.maps.applib.R;
-import com.robert.maps.applib.utils.Ut;
 
 public class UserMapsPrefActivity extends PreferenceActivity implements OnSharedPreferenceChangeListener {
 	private String mKey;
@@ -100,6 +93,13 @@ public class UserMapsPrefActivity extends PreferenceActivity implements OnShared
 			pref.setSummary(R.string.pref_stretchtile_summary);
 			pref.setEntries(R.array.googlescale_pref_title);
 			pref.setEntryValues(R.array.googlescale_pref_values);
+			prefscr.addPreference(pref);
+		}
+		{
+			final OffsetPreference pref = new OffsetPreference(this, bundle.getString("ID"));
+			pref.setKey(bundle.getString("ID") + "_offset");
+			pref.setTitle(R.string.pref_mapoffset);
+			pref.setSummary(R.string.pref_mapoffset_summary);
 			prefscr.addPreference(pref);
 		}
 	}

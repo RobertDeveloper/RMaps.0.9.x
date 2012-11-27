@@ -102,6 +102,13 @@ public class PredefMapsPrefActivity extends PreferenceActivity {
 			pref.setSummary(String.format("%d x %d px", size, size));
 			prefscr.addPreference(pref);
 		}
+		{
+			final OffsetPreference pref = new OffsetPreference(this, bundle.getString(ID));
+			pref.setKey(bundle.getString(ID) + "_offset");
+			pref.setTitle(R.string.pref_mapoffset);
+			pref.setSummary(R.string.pref_mapoffset_summary);
+			prefscr.addPreference(pref);
+		}
 	}
 	
 }

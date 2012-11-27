@@ -27,7 +27,7 @@ public abstract class VerGestureDetector {
 		public RGestureDetectorCupcake getGestureDetector(Context context, OnExGestureListener listener) {
 			return new RGestureDetectorCupcake(context, listener);
 		}
-    	
+
     }
 
     private static class FroyoDetector extends VerGestureDetector {
@@ -37,6 +37,6 @@ public abstract class VerGestureDetector {
 		public RGestureDetectorFroyo getGestureDetector(Context context, OnExGestureListener listener) {
 			return new RGestureDetectorFroyo(context, listener, null, false);
 		}
-    	
+
     }
 }

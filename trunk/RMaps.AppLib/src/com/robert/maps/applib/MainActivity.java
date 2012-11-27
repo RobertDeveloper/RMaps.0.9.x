@@ -46,7 +46,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.PowerManager;
-import android.os.Process;
 import android.preference.PreferenceManager;
 import android.provider.Browser;
 import android.provider.SearchRecentSuggestions;
@@ -66,12 +65,10 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.apps.analytics.GoogleAnalyticsTracker;
-import com.robert.maps.applib.R;
 import com.robert.maps.applib.downloader.AreaSelectorActivity;
 import com.robert.maps.applib.kml.PoiActivity;
 import com.robert.maps.applib.kml.PoiListActivity;
@@ -87,6 +84,7 @@ import com.robert.maps.applib.overlays.SearchResultOverlay;
 import com.robert.maps.applib.overlays.TrackOverlay;
 import com.robert.maps.applib.overlays.YandexTrafficOverlay;
 import com.robert.maps.applib.preference.MixedMapsPreference;
+import com.robert.maps.applib.preference.OffsetActivity;
 import com.robert.maps.applib.tileprovider.TileSource;
 import com.robert.maps.applib.tileprovider.TileSourceBase;
 import com.robert.maps.applib.utils.CompassView;
@@ -778,7 +776,14 @@ public class MainActivity extends Activity {
 			startActivityForResult(new Intent(this, TrackListActivity.class), R.id.tracks);
 			return true;
 		} else if (item.getItemId() == R.id.search) {
-			onSearchRequested();
+			Intent intent = new Intent(this, OffsetActivity.class);
+			intent.putExtra("MAPID", mTileSource.ID);
+			intent.putExtra("ZoomLevel", mMap.getZoomLevel());
+			intent.putExtra("Latitude", point.getLatitudeE6());
+			intent.putExtra("Longitude", point.getLongitudeE6());
+			startActivity(intent);
+			
+			//onSearchRequested();
 			return true;
 		} else if (item.getItemId() == R.id.settings) {
 			startActivityForResult(new Intent(this, MainPreferences.class), R.id.settings_activity_closed);
@@ -810,6 +815,7 @@ public class MainActivity extends Activity {
 		} else {
 			
 			final String mapid = (String)item.getTitleCondensed();
+			Ut.w("mapid="+mapid);
 			setTileSource(mapid, "", true);
 			
 			if(mTileSource.MAP_TYPE == TileSource.PREDEF_ONLINE) {
