@@ -98,7 +98,7 @@ public class PoiManager implements PoiConstants {
 						.getString(3), new GeoPoint(
 						(int) (1E6 * c.getDouble(0)), (int) (1E6 * c
 								.getDouble(1))), c.getInt(9), c.getInt(7), c
-						.getInt(5), c.getInt(8), c.getInt(6));
+						.getDouble(5), c.getInt(8), c.getInt(6));
 			c.close();
 		}
 

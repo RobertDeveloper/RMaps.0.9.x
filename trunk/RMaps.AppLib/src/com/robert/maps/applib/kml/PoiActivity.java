@@ -19,7 +19,7 @@ import com.robert.maps.applib.R;
 import com.robert.maps.applib.utils.Ut;
 
 public class PoiActivity extends Activity {
-	EditText mTitle, mLat, mLon, mDescr;
+	EditText mTitle, mLat, mLon, mDescr, mAlt;
 	Spinner mSpinner;
 	CheckBox mHidden;
 	private PoiPoint mPoiPoint;
@@ -38,6 +38,7 @@ public class PoiActivity extends Activity {
 		mTitle = (EditText) findViewById(R.id.Title);
 		mLat = (EditText) findViewById(R.id.Lat);
 		mLon = (EditText) findViewById(R.id.Lon);
+		mAlt = (EditText) findViewById(R.id.Alt);
 		mDescr = (EditText) findViewById(R.id.Descr);
 		mHidden = (CheckBox) findViewById(R.id.Hidden);
 
@@ -62,6 +63,7 @@ public class PoiActivity extends Activity {
 			mSpinner.setSelection(0);
 			mLat.setText(Ut.formatGeoCoord(extras.getDouble("lat")));
 			mLon.setText(Ut.formatGeoCoord(extras.getDouble("lon")));
+			mAlt.setText(Double.toString(extras.getDouble("alt", 0.0)));
 			mDescr.setText(extras.getString("descr"));
 			mHidden.setChecked(false);
         }else{
@@ -79,6 +81,7 @@ public class PoiActivity extends Activity {
         	}
          	mLat.setText(Ut.formatGeoCoord(mPoiPoint.GeoPoint.getLatitude()));
         	mLon.setText(Ut.formatGeoCoord(mPoiPoint.GeoPoint.getLongitude()));
+        	mAlt.setText(Double.toString(mPoiPoint.Alt));
         	mDescr.setText(mPoiPoint.Descr);
         	mHidden.setChecked(mPoiPoint.Hidden);
         }
@@ -120,6 +123,10 @@ public class PoiActivity extends Activity {
 		mPoiPoint.Descr = mDescr.getText().toString();
 		mPoiPoint.GeoPoint = GeoPoint.from2DoubleString(mLat.getText().toString(), mLon.getText().toString());
 		mPoiPoint.Hidden = mHidden.isChecked();
+		try {
+			mPoiPoint.Alt = Double.parseDouble(mAlt.getText().toString());
+		} catch (NumberFormatException e) {
+		}
 		
 		mPoiManager.updatePoi(mPoiPoint);
 		finish();

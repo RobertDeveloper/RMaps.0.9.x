@@ -38,22 +38,45 @@
 			android:textAppearance="?android:attr/textAppearance"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"></TextView>
+
 		<EditText
-			android:text="@+id/Lat"
-			android:layout_height="wrap_content"
-			android:layout_width="fill_parent"
-			android:id="@+id/Lat"></EditText>
+		    android:id="@+id/Lat"
+		    android:layout_width="fill_parent"
+		    android:layout_height="wrap_content"
+		    android:inputType="numberSigned|numberDecimal"
+		    android:text="@+id/Lat" >
+</EditText>
 		<TextView
 			android:text="@string/PoiLon"
 			android:id="@+id/TextLon"
 			android:textAppearance="?android:attr/textAppearance"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"></TextView>
+
 		<EditText
-			android:text="@+id/Lon"
-			android:layout_height="wrap_content"
-			android:layout_width="fill_parent"
-			android:id="@+id/Lon"></EditText>
+		    android:id="@+id/Lon"
+		    android:layout_width="fill_parent"
+		    android:layout_height="wrap_content"
+		    android:inputType="numberSigned|numberDecimal"
+		    android:text="@+id/Lon" >
+</EditText>
+		<TextView
+			android:text="@string/PoiAlt"
+			android:id="@+id/TextAlt"
+			android:textAppearance="?android:attr/textAppearance"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"></TextView>
+
+		<EditText
+		    android:id="@+id/alt"
+		    android:layout_width="fill_parent"
+		    android:layout_height="wrap_content"
+		    android:inputType="numberSigned|numberDecimal"
+		    android:text="@+id/Alt" >
+
+</EditText>
+		
+
 		<TextView
 			android:text="@string/PoiDescr"
 			android:id="@+id/TextDescr"
