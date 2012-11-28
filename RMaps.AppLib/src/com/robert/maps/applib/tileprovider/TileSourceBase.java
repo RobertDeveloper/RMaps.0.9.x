@@ -72,7 +72,6 @@ public class TileSourceBase {
 		this.OVERLAYID = EMPTY;
 		this.OFFSET_LAT = pref.getFloat(aId+OFFSETLAT_, 0);
 		this.OFFSET_LON = pref.getFloat(aId+OFFSETLON_, 0);
-		Ut.w(aId+OFFSETLAT_);
 		String mixMapName = EMPTY;
 		String mixMapId = EMPTY;
 
@@ -174,5 +173,8 @@ public class TileSourceBase {
 			this.NAME = mixMapName;
 			this.ID = mixMapId;
 		}
+		
+		if(MAPID == null)
+			throw new RException(R.string.error_illegalmapid, aId);
 	}
 }
