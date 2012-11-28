@@ -81,10 +81,10 @@ import com.robert.maps.applib.overlays.CurrentTrackOverlay;
 import com.robert.maps.applib.overlays.MyLocationOverlay;
 import com.robert.maps.applib.overlays.PoiOverlay;
 import com.robert.maps.applib.overlays.SearchResultOverlay;
+import com.robert.maps.applib.overlays.TileOverlay;
 import com.robert.maps.applib.overlays.TrackOverlay;
 import com.robert.maps.applib.overlays.YandexTrafficOverlay;
 import com.robert.maps.applib.preference.MixedMapsPreference;
-import com.robert.maps.applib.preference.OffsetActivity;
 import com.robert.maps.applib.tileprovider.TileSource;
 import com.robert.maps.applib.tileprovider.TileSourceBase;
 import com.robert.maps.applib.utils.CompassView;
@@ -114,6 +114,7 @@ public class MainActivity extends Activity {
 	
 	// Overlays
 	private YandexTrafficOverlay mYandexTrafficOverlay = null;
+	private TileOverlay mTileOverlay = null;
 	private boolean mShowOverlay = false;
 	private String mMapId = null;
 	private String mOverlayId = "";
@@ -471,6 +472,9 @@ public class MainActivity extends Activity {
 	
 	private void FillOverlays() {
 		this.mMap.getOverlays().clear();
+		
+		if(mTileOverlay != null)
+			this.mMap.getOverlays().add(mTileOverlay);
 
 		if(mTileSource == null) {
 		} else if(mTileSource.YANDEX_TRAFFIC_ON == 1 && mShowOverlay && mYandexTrafficOverlay == null) {
@@ -664,6 +668,9 @@ public class MainActivity extends Activity {
 		mTileSource = null;
 		mPoiManager.FreeDatabases();
 		
+		if(mTileOverlay != null)
+			mTileOverlay.Free();
+		
 		mLocationListener.getLocationManager().removeUpdates(mLocationListener);
 		if(mNetListener != null)
 			mLocationListener.getLocationManager().removeUpdates(mNetListener);
@@ -835,7 +842,29 @@ public class MainActivity extends Activity {
 			mOverlayId = overlayId;
 			mShowOverlay = true;
 			try {
-				mTileSource = new TileSource(this, mapId, overlayId);
+				final TileSourceBase tsMap = new TileSourceBase(this, mapId);
+				final TileSourceBase tsOverlay = new TileSourceBase(this, overlayId);
+				
+				if(tsMap.PROJECTION != tsOverlay.PROJECTION
+						|| tsMap.OFFSET_LAT != tsOverlay.OFFSET_LAT
+						|| tsMap.OFFSET_LON != tsOverlay.OFFSET_LON
+						) {
+					mTileSource = new TileSource(this, mapId);
+					
+					if(mTileOverlay == null)
+						mTileOverlay = new TileOverlay(mMap.getTileView(), true);
+					final TileSource tileSource = new TileSource(this, overlayId);
+					mTileOverlay.setTileSource(tileSource);
+					
+				} else {
+					mTileSource = new TileSource(this, mapId, overlayId);
+					
+					if(mTileOverlay != null) {
+						mTileOverlay.Free();
+						mTileOverlay = null;
+					}
+				}
+				
 			} catch (SQLiteException e) {
 				mTileSource = null;
 			} catch (RException e) {
@@ -843,6 +872,11 @@ public class MainActivity extends Activity {
 				addMessage(e);
 			}
 		} else {
+			if(mTileOverlay != null) {
+				mTileOverlay.Free();
+				mTileOverlay = null;
+			}
+			
 			try {
 				mTileSource = new TileSource(this, mapId, aShowOverlay);
 				mShowOverlay = aShowOverlay;
@@ -865,6 +899,7 @@ public class MainActivity extends Activity {
 			}
 		
 		mMap.setTileSource(mTileSource);
+		FillOverlays();
 		
 		if(mPrefOverlayButtonVisibility == 2)
 			mOverlayView.setVisibility(mTileSource.MAP_TYPE == TileSourceBase.MIXMAP_PAIR || mTileSource.YANDEX_TRAFFIC_ON == 1 ? View.VISIBLE : View.GONE);
