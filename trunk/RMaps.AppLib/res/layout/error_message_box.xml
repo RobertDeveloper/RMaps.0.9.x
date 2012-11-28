@@ -20,6 +20,7 @@
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="@android:color/white"
             android:textColorHint="@android:color/white"
+            android:textSize="15sp"
             android:textStyle="bold" />
 
         <TextView
@@ -36,6 +37,7 @@
         android:id="@+id/btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
         android:clickable="true"
         android:src="@drawable/r_close" />
 

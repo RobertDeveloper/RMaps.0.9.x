@@ -848,13 +848,21 @@ public class MainActivity extends Activity {
 				mShowOverlay = aShowOverlay;
 				if(mapId != lastMapID)
 					mOverlayId = "";
-			} catch (SQLiteException e) {
-				mTileSource = null;
 			} catch (RException e) {
 				mTileSource = null;
 				addMessage(e);
+			} catch (Exception e) {
+				mTileSource = null;
+				addMessage(new RException(R.string.error_other, e.getMessage()));
 			}
 		}
+		
+		if(mTileSource == null)
+			try {
+				mTileSource = new TileSource(this, TileSource.MAPNIK);
+			} catch (SQLiteException e) {
+			} catch (RException e) {
+			}
 		
 		mMap.setTileSource(mTileSource);
 		
@@ -868,26 +876,27 @@ public class MainActivity extends Activity {
 		if(msgbox == null) {
 			msgbox = (LinearLayout) LayoutInflater.from(this).inflate(R.layout.error_message_box, (ViewGroup) findViewById(R.id.message_list));
 			msgbox.setId(e.getID());
-		}
-		msgbox.setVisibility(View.VISIBLE);
+			msgbox.setVisibility(View.VISIBLE);
+			msgbox.findViewById(R.id.message).setOnClickListener(new OnClickListener() {
+				
+				public void onClick(View v) {
+					if (v.findViewById(R.id.descr).getVisibility() == View.GONE)
+						v.findViewById(R.id.descr).setVisibility(View.VISIBLE);
+					else
+						v.findViewById(R.id.descr).setVisibility(View.GONE);
+				}
+			});
+			msgbox.findViewById(R.id.btn).setTag(Integer.valueOf(e.getID()));
+			msgbox.findViewById(R.id.btn).setOnClickListener(new OnClickListener() {
+				
+				public void onClick(View v) {
+					final int id = (Integer)v.getTag();
+					findViewById(id).setVisibility(View.GONE);
+				}
+			});
+		};
+
 		((TextView) msgbox.findViewById(R.id.descr)).setText(e.getStringRes(this));
-		msgbox.findViewById(R.id.message).setOnClickListener(new OnClickListener() {
-
-			public void onClick(View v) {
-				if (v.findViewById(R.id.descr).getVisibility() == View.GONE)
-					v.findViewById(R.id.descr).setVisibility(View.VISIBLE);
-				else
-					v.findViewById(R.id.descr).setVisibility(View.GONE);
-			}
-		});
-		msgbox.findViewById(R.id.btn).setTag(Integer.valueOf(e.getID()));
-		msgbox.findViewById(R.id.btn).setOnClickListener(new OnClickListener() {
-
-			public void onClick(View v) {
-				final int id = (Integer)v.getTag();
-				findViewById(id).setVisibility(View.GONE);
-			}
-		});
 	}
 
 	@Override

@@ -2,6 +2,8 @@ package com.robert.maps.applib.utils;
 
 import android.content.Context;
 
+import com.robert.maps.applib.R;
+
 public class RException extends Exception {
 
 	private static final long serialVersionUID = -8636414892868856061L;
@@ -15,7 +17,7 @@ public class RException extends Exception {
     
     public RException(final int aStringResID, String error) {
         super(error);
-        mStringResID = aStringResID;
+        mStringResID = aStringResID == 0 ? R.string.error_other : aStringResID;
     }
     
     public String getStringRes(Context context) {
