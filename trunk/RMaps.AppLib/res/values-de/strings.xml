@@ -5,7 +5,7 @@
   <string name="pref_zoomctrl_summary">Position der Schaltflächen auf dem Bildschirm</string>
   <string name="pref_zoomctrl">Zoom-Tasten</string>
   <string name="pref_screen_orientation">Bildschirmausrichtung</string>
-  <string name="pref_screen_orientation_summary">Wählen Sie die Bildschirmausrichtung</string>
+  <string name="pref_screen_orientation_summary">Wähle die Bildschirmausrichtung</string>
   <string name="pref_googlelanguagecode_summary">Lokalisierung der Googlekarte</string>
   <string name="pref_googlelanguagecode">Google Maps Sprachencode</string>
   <string name="pref_hidepoi_summary">Keine POI-Symbole auf der Karte anzeigen</string>
@@ -30,7 +30,7 @@
   <string name="pref_showstatusbar_summary">Ausblenden der Statusanzeige im Kartenmodus</string>
   <string name="pref_showstatusbar">Statusanzeige anzeigen</string>
   <string name="pref_turnoffautoreindex">Automatische Re-Indizierung ausschalten</string>
-  <string name="pref_turnoffautoreindex_summary">Ausschalten der Prüfung von Größe und Tageszeit der Kartendateien</string>
+  <string name="pref_turnoffautoreindex_summary">Ausschalten der Prüfung von Größe und Datum der Kartendateien</string>
   <string name="pref_gpsfastupdate">Schnelle Aktualisierung der GPS Daten</string>
   <string name="pref_gpsfastupdate_summary">Langsame Aktualisierung schont theoretisch die Batterie</string>
   <string name="pref_usermap_enabled">Aktivierte Karte</string>
@@ -86,19 +86,21 @@
   <string name="no_items">Deine Suche stimmte mit keinem Element überein</string>
   <string name="about_dialog_text">©2009 Robert.Developer\n
 Osmdroid von Nicolas Gramlich\n
-App Icon von Everaldo Coelho\n
-Mit Unterstützung von\n
+App-Symbol von Everaldo Coelho\n
+Mit Hilfe von\n
 Dmytro Sandu\n
 Snake Joe\n
 Christoffer Blindheim\n
 Übersetzer\n
 Vitek Fedra CZ\n
+Blast IT\n
+Mike DE\n
 Alle Rechte vorbehalten\n
 \n
-Fragen, Mails an robertk506@gmail.com\n
+Fragen, Anregungen an robertk506@gmail.com\n
 \n
-Kurzanleitung und FAQ kannst Du hier finden bei http://robertdeveloper.blogspot.com/\n
-    Verberge Kontext 
+Problemlösungen und FAQ kannst Du bei http://robertdeveloper.blogspot.com/ finden\n
+    Verstecke Kontext 
     Über_Dialog_Text
 
 </string>
@@ -144,7 +146,7 @@ Kurzanleitung und FAQ kannst Du hier finden bei http://robertdeveloper.blogspot.
   <string name="trackwriter_saved">Pfad gespeichert</string>
   <string name="pref_trackwriter_mindistance_summary">Kleinster Abstand zwischen zwei Aufzeichnungen Deiner Position</string>
   <string name="pref_trackwriter_mindistance">Min. Abstand zwischen Punkten</string>
-  <string name="pref_trackwriter_mintime_summary">Kleinstes Zeitintervall zwischen zwei Aufnahmen Ihrer Position</string>
+  <string name="pref_trackwriter_mintime_summary">Kleinstes Zeitintervall zwischen zwei Aufnahmen Deiner Position</string>
   <string name="pref_trackwriter_mintime">Min. Zeit zwischen Punkten</string>
   <string name="prefcat_main_trackwriter">Pfad-Schreiber</string>
   <string name="menu_toradar">Zum Radar</string>
@@ -235,4 +237,25 @@ Schreib mir eine E-Mail, wenn Du diese Parameterliste erweitern möchtest.\n</st
   <string name="stop">Stop</string>
   <string name="open">Karte laden</string>
   <string name="select_zoom">Wähle zuerst den Zoom ...</string>
+  <string name="pref_stretchtile">Streckfaktor der Kacheln</string>
+  <string name="pref_stretchtile_summary">Strecke Kachelbild und vergrößere die Karte</string>
+  <string name="yes">Ja</string>
+  <string name="no">Nein</string>
+  <string name="question_delete">Möchtest Du wirklich %s löschen ?</string>
+  <string name="poi">POI</string>
+  <string name="track">Pfad</string>
+  <string name="pref_drawtilegrid">Kachel-Raster</string>
+  <string name="pref_drawtilegrid_summary">Zeige Kachel-Raster mit Infos </string>
+  <string name="pref_line_gps">Linie nach GPS</string>
+  <string name="pref_line_gps_summary">Zeige Linie zwischen GPS-Position und Bildschirmzentrum</string>
+  <string name="menu_share">Teile</string>
+  <string name="PoiAlt">Höhe</string>
+  <string name="offset_info">Benutze einen Finger, um den Versatz zu ändern. Benutze zwei Finger, um die Karte zu bewegen.</string>
+  <string name="offset_text">Versatz</string>
+  <string name="offset_button_open_map">Wähle den Kartenversatz</string>
+  <string name="pref_mapoffset">Kartenversatz</string>
+  <string name="pref_mapoffset_summary">Kartenversatz von Breite und Länge in Metern</string>
+  <string name="offsetNS">Nord/Süd-Versatz, Meter</string>
+  <string name="offsetEW">Ost/West-Versatz, Meter</string>
+  <string name="error_illegalmapid">Illegale Karten-ID \'%s\'. Empfehlenswert, Indexdaten in Settings zu löschen. </string>
 </resources>
