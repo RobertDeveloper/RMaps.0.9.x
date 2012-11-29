@@ -631,7 +631,7 @@ public class MainActivity extends Activity {
 		SharedPreferences uiState = getPreferences(Activity.MODE_PRIVATE);
 		SharedPreferences.Editor editor = uiState.edit();
 		editor.putString("MapName", mTileSource.ID);
-		editor.putString("OverlayID", mTileSource.getOverlayName());
+		editor.putString("OverlayID", mTileOverlay == null ? mTileSource.getOverlayName() : mTileOverlay.getTileSource().ID);
 		editor.putBoolean("ShowOverlay", mShowOverlay);
 		editor.putInt("Latitude", point.getLatitudeE6());
 		editor.putInt("Longitude", point.getLongitudeE6());
@@ -842,28 +842,7 @@ public class MainActivity extends Activity {
 			mOverlayId = overlayId;
 			mShowOverlay = true;
 			try {
-				final TileSourceBase tsMap = new TileSourceBase(this, mapId);
-				final TileSourceBase tsOverlay = new TileSourceBase(this, overlayId);
-				
-				if(tsMap.PROJECTION != tsOverlay.PROJECTION
-						|| tsMap.OFFSET_LAT != tsOverlay.OFFSET_LAT
-						|| tsMap.OFFSET_LON != tsOverlay.OFFSET_LON
-						) {
-					mTileSource = new TileSource(this, mapId);
-					
-					if(mTileOverlay == null)
-						mTileOverlay = new TileOverlay(mMap.getTileView(), true);
-					final TileSource tileSource = new TileSource(this, overlayId);
-					mTileOverlay.setTileSource(tileSource);
-					
-				} else {
-					mTileSource = new TileSource(this, mapId, overlayId);
-					
-					if(mTileOverlay != null) {
-						mTileOverlay.Free();
-						mTileOverlay = null;
-					}
-				}
+				mTileSource = new TileSource(this, mapId, overlayId);
 				
 			} catch (SQLiteException e) {
 				mTileSource = null;
@@ -879,6 +858,7 @@ public class MainActivity extends Activity {
 			
 			try {
 				mTileSource = new TileSource(this, mapId, aShowOverlay);
+				
 				mShowOverlay = aShowOverlay;
 				if(mapId != lastMapID)
 					mOverlayId = "";
@@ -891,12 +871,23 @@ public class MainActivity extends Activity {
 			}
 		}
 		
-		if(mTileSource == null)
+		if(mTileSource != null) {
+			final TileSource tileSource = mTileSource.getTileSourceForTileOverlay();
+			if(tileSource != null) {
+				if(mTileOverlay == null)
+					mTileOverlay = new TileOverlay(mMap.getTileView(), true);
+				mTileOverlay.setTileSource(tileSource);
+			} else if(mTileOverlay != null) {
+				mTileOverlay.Free();
+				mTileOverlay = null;
+			}
+		} else {
 			try {
 				mTileSource = new TileSource(this, TileSource.MAPNIK);
 			} catch (SQLiteException e) {
 			} catch (RException e) {
 			}
+		}
 		
 		mMap.setTileSource(mTileSource);
 		FillOverlays();
