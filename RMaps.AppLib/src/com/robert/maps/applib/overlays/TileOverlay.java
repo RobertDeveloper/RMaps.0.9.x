@@ -53,6 +53,10 @@ public class TileOverlay extends TileViewOverlay implements OpenStreetMapConstan
 		mOffsetLon = mTileSource.OFFSET_LON;
 	}
 	
+	public TileSource getTileSource() {
+		return mTileSource;
+	}
+	
 	public void setMoveListener(IMoveListener moveListener) {
 		mMoveListener = moveListener;
 	}

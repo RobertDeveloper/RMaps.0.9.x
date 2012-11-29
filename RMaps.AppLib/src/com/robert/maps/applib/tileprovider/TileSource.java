@@ -16,7 +16,8 @@ import com.robert.maps.applib.utils.Ut;
 public class TileSource extends TileSourceBase {
 	private TileProviderBase mTileProvider;
 	private TileURLGeneratorBase mTileURLGenerator;
-	private TileSourceBase mTileSourceOverlay;
+	private TileSourceBase mTileSourceBaseOverlay;
+	private TileSource mTileSourceForTileOverlay;
 	
 	public TileSource(Context ctx, String aId) throws SQLiteException, RException {
 		this(ctx, aId, true, true);
@@ -28,56 +29,99 @@ public class TileSource extends TileSourceBase {
 	
 	public TileSource(Context ctx, String aId, boolean aShowOverlay, boolean aNeedTileProvider) throws SQLiteException, RException {
 		super(ctx, aId);
+		final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(ctx);
 		
 		if(MAP_TYPE == MIXMAP_PAIR) {
-			final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(ctx);
 
 			final MapTileMemCache tileCache = new MapTileMemCache();
 			mTileURLGenerator = initTileURLGenerator(this, pref);
 			final TileProviderBase provider = initTileProvider(ctx, this, mTileURLGenerator, null);
 			
 			if(aShowOverlay) {
-				mTileSourceOverlay = new TileSourceBase(ctx, OVERLAYID);
-				final TileURLGeneratorBase layerURLGenerator = initTileURLGenerator(mTileSourceOverlay, pref);
-				final TileProviderBase layerProvider = initTileProvider(ctx, mTileSourceOverlay, layerURLGenerator, null);
+				final TileSourceBase tileSourceBase = new TileSourceBase(ctx, OVERLAYID);
 				
-				mTileProvider = new TileProviderDual(ctx, this.ID, provider, layerProvider, tileCache);
+				if (this.PROJECTION == tileSourceBase.PROJECTION
+						&& (int) (1E6 * this.OFFSET_LAT) == (int) (1E6 * tileSourceBase.OFFSET_LAT)
+						&& (int) (1E6 * this.OFFSET_LON) == (int) (1E6 * tileSourceBase.OFFSET_LON)
+						) {
+					mTileSourceBaseOverlay = tileSourceBase;
+					final TileURLGeneratorBase layerURLGenerator = initTileURLGenerator(mTileSourceBaseOverlay, pref);
+					final TileProviderBase layerProvider = initTileProvider(ctx, mTileSourceBaseOverlay, layerURLGenerator, null);
+					
+					mTileProvider = new TileProviderDual(ctx, this.ID, provider, layerProvider, tileCache);
+				} else {
+					mTileURLGenerator = initTileURLGenerator(this, pref);
+					mTileProvider = initTileProvider(ctx, this, mTileURLGenerator, null);
+					mTileSourceBaseOverlay = null;
+					
+					mTileSourceForTileOverlay = new TileSource(ctx, OVERLAYID);
+				}
 			} else {
 				mTileProvider = aNeedTileProvider ? initTileProvider(ctx, this, mTileURLGenerator, null) : null;
 			}
 
 		} else {
-			final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(ctx);
 			mTileURLGenerator = initTileURLGenerator(this, pref);
 			mTileProvider = aNeedTileProvider ? initTileProvider(ctx, this, mTileURLGenerator, null) : null;
-			mTileSourceOverlay = null;
+			mTileSourceBaseOverlay = null;
 		}
 		
 	}
 	
 	public TileSource(Context ctx, String aId, String aLayerId) throws SQLiteException, RException {
 		super(ctx, aId);
-		
 		final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(ctx);
+		
+		final TileSourceBase tileSourceBase = new TileSourceBase(ctx, aLayerId);
+		
+		if (this.PROJECTION == tileSourceBase.PROJECTION
+				&& (int) (1E6 * this.OFFSET_LAT) == (int) (1E6 * tileSourceBase.OFFSET_LAT)
+				&& (int) (1E6 * this.OFFSET_LON) == (int) (1E6 * tileSourceBase.OFFSET_LON)
+				) {
+			final MapTileMemCache tileCache = new MapTileMemCache();
+			mTileURLGenerator = initTileURLGenerator(this, pref);
+			final TileProviderBase provider = initTileProvider(ctx, this, mTileURLGenerator, null);
+			
+			mTileSourceBaseOverlay = tileSourceBase;
+			final TileURLGeneratorBase layerURLGenerator = initTileURLGenerator(mTileSourceBaseOverlay, pref);
+			final TileProviderBase layerProvider = initTileProvider(ctx, mTileSourceBaseOverlay, layerURLGenerator, null);
+			
+			mTileProvider = new TileProviderDual(ctx, this.ID, provider, layerProvider, tileCache);
+		} else {
+			mTileURLGenerator = initTileURLGenerator(this, pref);
+			mTileProvider = initTileProvider(ctx, this, mTileURLGenerator, null);
+			mTileSourceBaseOverlay = null;
+			
+			mTileSourceForTileOverlay = new TileSource(ctx, aLayerId);
+		}
+		
 
-		final MapTileMemCache tileCache = new MapTileMemCache();
-		mTileURLGenerator = initTileURLGenerator(this, pref);
-		final TileProviderBase provider = initTileProvider(ctx, this, mTileURLGenerator, null);
-		
-		mTileSourceOverlay = new TileSourceBase(ctx, aLayerId);
-		final TileURLGeneratorBase layerURLGenerator = initTileURLGenerator(mTileSourceOverlay, pref);
-		final TileProviderBase layerProvider = initTileProvider(ctx, mTileSourceOverlay, layerURLGenerator, null);
-		
-		mTileProvider = new TileProviderDual(ctx, this.ID, provider, layerProvider, tileCache);
-		
+//		final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(ctx);
+//
+//		final MapTileMemCache tileCache = new MapTileMemCache();
+//		mTileURLGenerator = initTileURLGenerator(this, pref);
+//		final TileProviderBase provider = initTileProvider(ctx, this, mTileURLGenerator, null);
+//		
+//		mTileSourceOverlay = new TileSourceBase(ctx, aLayerId);
+//		final TileURLGeneratorBase layerURLGenerator = initTileURLGenerator(mTileSourceOverlay, pref);
+//		final TileProviderBase layerProvider = initTileProvider(ctx, mTileSourceOverlay, layerURLGenerator, null);
+//		
+//		mTileProvider = new TileProviderDual(ctx, this.ID, provider, layerProvider, tileCache);
+
 	}
 	
-	public TileSourceBase getTileSourceOverlay() {
-		return mTileSourceOverlay;
+	public TileSource getTileSourceForTileOverlay() {
+		final TileSource tileSource = mTileSourceForTileOverlay;
+		mTileSourceForTileOverlay = null;
+		return tileSource;
+	}
+	
+	public TileSourceBase getTileSourceBaseOverlay() {
+		return mTileSourceBaseOverlay;
 	}
 	
 	public String getOverlayName() {
-		return mTileSourceOverlay == null ? "" : mTileSourceOverlay.ID;
+		return mTileSourceBaseOverlay == null ? "" : mTileSourceBaseOverlay.ID;
 	}
 	
 	private TileProviderBase initTileProvider(Context ctx, TileSourceBase tileSource, TileURLGeneratorBase aTileURLGenerator, MapTileMemCache aTileCache) throws SQLiteException, RException {
