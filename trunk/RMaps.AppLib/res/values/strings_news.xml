@@ -8,7 +8,15 @@ Do you want to help me translate the app interface? Write me to email robertk506
 \n
 v.0.9.1\n
 + BING maps (Roag, Aerial , Hydrid)\n
-- Offline maps bug fix
++ USA Topo maps, ArcGIS USA maps, USGS Topo maps\n
++ Improve usability of POI category list\n
++ Improve usability of maps list in settings\n
++ Line between current GPS location and center of screen\n
++ Share POI function\n
++ Altitude field in POI activity\n
++ Map offset function (useful for chinese users)\n
++ Stretch factor of map, ability to enlarge picture of any map\n
+- Offline maps bug fix\n
 \n
 v.0.9.0\n
 + Tile downloader\n

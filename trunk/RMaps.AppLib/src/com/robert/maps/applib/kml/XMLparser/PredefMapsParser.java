@@ -153,7 +153,9 @@ public class PredefMapsParser extends DefaultHandler {
 				
 				if(mSharedPreferences.getBoolean(MainPreferences.PREF_PREDEFMAPS_+attributes.getValue(ID), true)) {
 					final boolean isLayer = !(i == -1 || !attributes.getValue(LAYER).equalsIgnoreCase(TRUE));
-					if(mNeedOverlays && isLayer && !timeDependent && (mNeedProjection == 0 || mNeedProjection == Integer.parseInt(attributes.getValue(PROJECTION))) || !mNeedOverlays && !isLayer) {
+					if(mNeedOverlays && isLayer && !timeDependent 
+							//&& (mNeedProjection == 0 || mNeedProjection == Integer.parseInt(attributes.getValue(PROJECTION))) 
+							|| !mNeedOverlays && !isLayer) {
 						final MenuItem item = mSubmenu.add(R.id.isoverlay, Menu.NONE, Menu.NONE, attributes.getValue(NAME));
 						item.setTitleCondensed(attributes.getValue(ID));
 					}
