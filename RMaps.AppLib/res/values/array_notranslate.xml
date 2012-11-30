@@ -14,10 +14,12 @@
     <string-array name="projection_title">
         <item>Mercator (spheroid - like Google.Map)</item>
         <item>Mercator (ellipsoid - like Yandex.Map)</item>
+        <item>OSGB 36 British national grid reference system</item>
     </string-array>
     <string-array name="projection_value">
         <item>1</item>
         <item>2</item>
+        <item>3</item>
     </string-array>
     <string-array name="accuracy_pref_value">
         <item>1</item>
