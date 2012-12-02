@@ -9,13 +9,7 @@ import org.xml.sax.helpers.DefaultHandler;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.preference.CheckBoxPreference;
-import android.preference.ListPreference;
-import android.preference.Preference;
-import android.preference.PreferenceActivity;
 import android.preference.PreferenceGroup;
-import android.preference.PreferenceManager;
-import android.preference.PreferenceScreen;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -24,7 +18,6 @@ import com.robert.maps.applib.R;
 import com.robert.maps.applib.preference.PredefMapsPrefActivity;
 import com.robert.maps.applib.tileprovider.TileSourceBase;
 import com.robert.maps.applib.utils.CheckBoxPreferenceExt;
-import com.robert.maps.applib.utils.OnlineCachePreference;
 
 public class PredefMapsParser extends DefaultHandler {
 	private final TileSourceBase mRendererInfo;
@@ -129,6 +122,10 @@ public class PredefMapsParser extends DefaultHandler {
 					mRendererInfo.TILE_SOURCE_TYPE = Integer.parseInt(attributes.getValue(TILE_SOURCE_TYPE));
 					mRendererInfo.PROJECTION = Integer.parseInt(attributes.getValue(PROJECTION));
 					mRendererInfo.YANDEX_TRAFFIC_ON = Integer.parseInt(attributes.getValue(YANDEX_TRAFFIC_ON));
+					
+					mRendererInfo.TIMEDEPENDENT = false;
+					if(attributes.getIndex(TIMEDEPENDENT)>-1)
+						mRendererInfo.TIMEDEPENDENT = Boolean.parseBoolean(attributes.getValue(TIMEDEPENDENT));
 
 					mRendererInfo.LAYER = false;
 					if(attributes.getIndex(LAYER)>-1)
@@ -174,7 +171,7 @@ public class PredefMapsParser extends DefaultHandler {
 					.putExtra(PROJECTION, Integer.parseInt(attributes.getValue(PROJECTION)))
 					.putExtra(MAPTILE_SIZEPX, Integer.parseInt(attributes.getValue(MAPTILE_SIZEPX)));
 				final int j = attributes.getIndex(GOOGLESCALE);
-				if(j > -1 && attributes.getValue(GOOGLESCALE).equalsIgnoreCase(TRUE));
+				if(j > -1 && attributes.getValue(GOOGLESCALE).equalsIgnoreCase(TRUE))
 					intent.putExtra(GOOGLESCALE, true);
 					
 				pref.setIntent(intent);

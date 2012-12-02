@@ -213,6 +213,8 @@ public class TileSource extends TileSourceBase {
 	private String CacheDatabaseName(TileSourceBase aTileSource) {
 		if(!aTileSource.mOnlineMapCacheEnabled && !aTileSource.LAYER) // Cache Enabled?
 			return null;
+		if(aTileSource.TIMEDEPENDENT)
+			return null;
 		if(aTileSource.CACHE.trim().equalsIgnoreCase(""))
 			return aTileSource.ID;
 		else
