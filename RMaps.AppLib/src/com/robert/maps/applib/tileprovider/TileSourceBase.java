@@ -1,6 +1,7 @@
 package com.robert.maps.applib.tileprovider;
 
 import java.io.InputStream;
+import java.util.Locale;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -20,7 +21,6 @@ import com.robert.maps.applib.kml.PoiManager;
 import com.robert.maps.applib.kml.XMLparser.PredefMapsParser;
 import com.robert.maps.applib.preference.MixedMapsPreference;
 import com.robert.maps.applib.utils.RException;
-import com.robert.maps.applib.utils.Ut;
 
 public class TileSourceBase {
 
@@ -58,7 +58,7 @@ public class TileSourceBase {
 	YANDEX_TRAFFIC_ON,
 	MAP_TYPE,
 	PROJECTION; // 1-меркатор на сфероид, 2- на эллипсоид, 3- OSGB 36 British national grid reference system
-	public boolean LAYER, mOnlineMapCacheEnabled, GOOGLESCALE;
+	public boolean LAYER, mOnlineMapCacheEnabled, GOOGLESCALE = false, TIMEDEPENDENT = false;
 	public double MAPTILE_SIZE_FACTOR = 1;
 	public double OFFSET_LAT = 0, OFFSET_LON = 0;
 	
@@ -131,11 +131,11 @@ public class TileSourceBase {
 			this.MAPTILE_SIZE_FACTOR = Double.parseDouble(pref.getString(prefix + STRETCH_, STRING_1)); 
 			this.MAPTILE_SIZEPX = (int) (256 * MAPTILE_SIZE_FACTOR);
 			this.URL_BUILDER_TYPE = 0;
-			if (aId.toLowerCase().endsWith(SQLITEDB)) {
+			if (aId.toLowerCase(Locale.UK).endsWith(SQLITEDB)) {
 				this.TILE_SOURCE_TYPE = 5;
 				this.IMAGE_FILENAMEENDING = EMPTY;
 			}
-			else if (aId.toLowerCase().endsWith(MNM)) {
+			else if (aId.toLowerCase(Locale.UK).endsWith(MNM)) {
 				this.TILE_SOURCE_TYPE = 3;
 				this.IMAGE_FILENAMEENDING = EMPTY;
 			} else {
