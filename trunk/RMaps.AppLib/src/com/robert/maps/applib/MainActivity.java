@@ -78,6 +78,7 @@ import com.robert.maps.applib.kml.Track;
 import com.robert.maps.applib.kml.TrackListActivity;
 import com.robert.maps.applib.kml.XMLparser.PredefMapsParser;
 import com.robert.maps.applib.overlays.CurrentTrackOverlay;
+import com.robert.maps.applib.overlays.MeasureOverlay;
 import com.robert.maps.applib.overlays.MyLocationOverlay;
 import com.robert.maps.applib.overlays.PoiOverlay;
 import com.robert.maps.applib.overlays.SearchResultOverlay;
@@ -123,6 +124,7 @@ public class MainActivity extends Activity {
 	private TrackOverlay mTrackOverlay;
 	private CurrentTrackOverlay mCurrentTrackOverlay;
 	private SearchResultOverlay mSearchResultOverlay;
+	private MeasureOverlay mMeasureOverlay;
 
 	private int mMarkerIndex;
 	private boolean mAutoFollow = true;
@@ -182,6 +184,7 @@ public class MainActivity extends Activity {
         this.mMyLocationOverlay = new MyLocationOverlay(this);
         this.mSearchResultOverlay = new SearchResultOverlay(this);
         mSearchResultOverlay.fromPref(uiState);
+        mMeasureOverlay = new MeasureOverlay(this);
         FillOverlays();
 		
 		mDrivingDirectionUp = pref.getBoolean("pref_drivingdirectionup", true);
@@ -472,6 +475,8 @@ public class MainActivity extends Activity {
 	
 	private void FillOverlays() {
 		this.mMap.getOverlays().clear();
+		
+		this.mMap.getOverlays().add(mMeasureOverlay);
 		
 		if(mTileOverlay != null)
 			this.mMap.getOverlays().add(mTileOverlay);
