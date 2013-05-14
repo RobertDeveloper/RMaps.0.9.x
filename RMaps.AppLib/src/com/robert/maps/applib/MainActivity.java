@@ -184,7 +184,7 @@ public class MainActivity extends Activity {
         this.mMyLocationOverlay = new MyLocationOverlay(this);
         this.mSearchResultOverlay = new SearchResultOverlay(this);
         mSearchResultOverlay.fromPref(uiState);
-        mMeasureOverlay = new MeasureOverlay(this);
+        mMeasureOverlay = new MeasureOverlay(this, findViewById(R.id.bottom));
         FillOverlays();
 		
 		mDrivingDirectionUp = pref.getBoolean("pref_drivingdirectionup", true);

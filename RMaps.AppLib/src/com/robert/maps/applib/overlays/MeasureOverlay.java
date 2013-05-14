@@ -14,7 +14,14 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Paint.Style;
 import android.preference.PreferenceManager;
+import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.View.OnClickListener;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.robert.maps.applib.R;
@@ -31,8 +38,9 @@ public class MeasureOverlay extends TileViewOverlay {
 	private float mDistance;
 	private Context mCtx;
 	private int mUnits;
+	private LinearLayout msgbox = null;
 	
-	public MeasureOverlay(Context ctx) {
+	public MeasureOverlay(Context ctx, View bottomView) {
 		super();
 		
 		mCtx = ctx;
@@ -46,6 +54,11 @@ public class MeasureOverlay extends TileViewOverlay {
 
 		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(ctx);
 		mUnits = Integer.parseInt(pref.getString("pref_units", "0"));
+		
+		msgbox = (LinearLayout) LayoutInflater.from(mCtx).inflate(R.layout.error_message_box, (ViewGroup) bottomView);
+		//msgbox.setId(e.getID());
+		msgbox.setVisibility(View.VISIBLE);
+		//msgbox.findViewById(R.id.message).setOnClickListener(new OnClickListener() {
 	}
 
 	private Bitmap getPic(TileView tileView) {
@@ -98,9 +111,25 @@ public class MeasureOverlay extends TileViewOverlay {
 		point.add(g);
 		
 		final String lbl = Ut.formatDistance(mCtx, mDistance, mUnits);
-		Toast.makeText(mCtx, lbl, Toast.LENGTH_SHORT).show();
+		//Toast.makeText(mCtx, lbl, Toast.LENGTH_SHORT).show();
+		((TextView) msgbox.findViewById(R.id.descr)).setText(lbl);
 
 		return true;
 	}
 	
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event, TileView mapView) {
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			Ut.dd("KEYCODE_BACK");
+			
+			if(point.size() > 0)
+				point.remove(point.size() - 1);
+			
+			mapView.invalidate();
+			return true;
+			}
+
+		return super.onKeyDown(keyCode, event, mapView);
+	}
+
 }

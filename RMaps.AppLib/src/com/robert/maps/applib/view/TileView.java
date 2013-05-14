@@ -19,6 +19,7 @@ import android.graphics.Rect;
 import android.preference.PreferenceManager;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.GestureDetector;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -217,6 +218,15 @@ public class TileView extends View {
 			super();
 			MarkerIndex = markerIndex;
 		}
+	}
+
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		for (TileViewOverlay osmvo : mOverlays) {
+			if(osmvo.onKeyDown(keyCode, event, TileView.this))
+				return true;
+		}
+		return super.onKeyDown(keyCode, event);
 	}
 
 	@Override
