@@ -254,4 +254,5 @@ How to and FAQ you can find on http://robertdeveloper.blogspot.com/\n</string>
     <string name="offsetNS">North/South offset, meter</string>
     <string name="offsetEW">East/West offset, meter</string>
     <string name="error_illegalmapid">Illegal map ID \'%s\'. Recommended clearing index data in settings.</string>
+    <string name="menu_measure">Measure</string>
 </resources>

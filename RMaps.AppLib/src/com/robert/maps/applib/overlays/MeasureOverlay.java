@@ -55,10 +55,9 @@ public class MeasureOverlay extends TileViewOverlay {
 		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(ctx);
 		mUnits = Integer.parseInt(pref.getString("pref_units", "0"));
 		
-		msgbox = (LinearLayout) LayoutInflater.from(mCtx).inflate(R.layout.error_message_box, (ViewGroup) bottomView);
-		//msgbox.setId(e.getID());
+		msgbox = (LinearLayout) LayoutInflater.from(mCtx).inflate(R.layout.measure_info_box, (ViewGroup) bottomView);
 		msgbox.setVisibility(View.VISIBLE);
-		//msgbox.findViewById(R.id.message).setOnClickListener(new OnClickListener() {
+		((TextView) msgbox.findViewById(R.id.value)).setText("0");
 	}
 
 	private Bitmap getPic(TileView tileView) {
@@ -112,7 +111,7 @@ public class MeasureOverlay extends TileViewOverlay {
 		
 		final String lbl = Ut.formatDistance(mCtx, mDistance, mUnits);
 		//Toast.makeText(mCtx, lbl, Toast.LENGTH_SHORT).show();
-		((TextView) msgbox.findViewById(R.id.descr)).setText(lbl);
+		((TextView) msgbox.findViewById(R.id.value)).setText(lbl);
 
 		return true;
 	}
