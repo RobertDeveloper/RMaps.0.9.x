@@ -184,7 +184,6 @@ public class MainActivity extends Activity {
         this.mMyLocationOverlay = new MyLocationOverlay(this);
         this.mSearchResultOverlay = new SearchResultOverlay(this);
         mSearchResultOverlay.fromPref(uiState);
-        mMeasureOverlay = new MeasureOverlay(this, findViewById(R.id.bottom));
         FillOverlays();
 		
 		mDrivingDirectionUp = pref.getBoolean("pref_drivingdirectionup", true);
@@ -476,7 +475,8 @@ public class MainActivity extends Activity {
 	private void FillOverlays() {
 		this.mMap.getOverlays().clear();
 		
-		this.mMap.getOverlays().add(mMeasureOverlay);
+		if(mMeasureOverlay != null)
+			this.mMap.getOverlays().add(mMeasureOverlay);
 		
 		if(mTileOverlay != null)
 			this.mMap.getOverlays().add(mTileOverlay);
@@ -766,6 +766,9 @@ public class MainActivity extends Activity {
 		if(item.getItemId() == R.id.area_selector) {
 			startActivity(new Intent(this, AreaSelectorActivity.class).putExtra("new", true).putExtra(MAPNAME, mTileSource.ID).putExtra("Latitude", point.getLatitudeE6()).putExtra("Longitude", point.getLongitudeE6()).putExtra("ZoomLevel", mMap.getZoomLevel()));
 			return true;
+		} else if(item.getItemId() == R.id.measure) {
+			MeasureStart();
+			return true;
 		} else if(item.getItemId() == R.id.gpsstatus) {
 			try {
 				startActivity(new Intent("com.eclipsim.gpsstatus.VIEW"));
@@ -834,6 +837,23 @@ public class MainActivity extends Activity {
 			return true;
 		}
 
+	}
+
+	private void MeasureStart() {
+		if(mMeasureOverlay == null)
+	        mMeasureOverlay = new MeasureOverlay(this, findViewById(R.id.bottom_area));
+			
+		findViewById(R.id.bottom_area).findViewById(R.id.close).setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				mMeasureOverlay = null;
+				((ViewGroup) findViewById(R.id.bottom_area)).removeAllViews();
+				FillOverlays();
+			}
+		});
+		
+		FillOverlays();
 	}
 
 	private void setTileSource(String aMapId, String aOverlayId, boolean aShowOverlay) {
