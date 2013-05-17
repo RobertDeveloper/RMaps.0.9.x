@@ -61,6 +61,19 @@ public class MyLocationOverlay extends TileViewOverlay {
 	private int mUnits;
 	private TextView mLabelVw;
 
+	private int mZoomLevel;
+
+    private static final int SCALE[][] = {{25000000,15000000,8000000,4000000,2000000,1000000,500000,250000,100000,50000,25000,15000,8000,4000,2000,1000,500,250,100,50}
+    ,{15000,8000,4000,2000,1000,500,250,100,50,25,15,8,4,2,1,3000,1500,500,250,100}};
+    private static int EQUATOR_M = 40075676;
+    private static int EQUATOR_ML = 24902;
+    private static int EQUATOR_FT = 131481877;
+
+    private double mTouchScale;
+	private int mWidth;
+	private int mWidth2;
+	private String mDist;
+
 	// ===========================================================
 	// Constructors
 	// ===========================================================
@@ -82,6 +95,7 @@ public class MyLocationOverlay extends TileViewOverlay {
 		mPaintLineToGPS.setColor(ctx.getResources().getColor(R.color.line_to_gps));
 		
 		mPaintCross.setAntiAlias(true);
+		mPaintCross.setStyle(Paint.Style.STROKE);
 
 		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(ctx);
 		mPrefAccuracy = Integer.parseInt(pref.getString("pref_accuracy", "1").replace("\"", ""));
@@ -165,6 +179,34 @@ public class MyLocationOverlay extends TileViewOverlay {
 			pj.toPixels(this.mLocation, screenCoords);
 			
 
+	        if(mZoomLevel != osmv.getZoomLevel() || mTouchScale != osmv.mTouchScale){
+	        	mZoomLevel = osmv.getZoomLevel();
+	        	mTouchScale = osmv.mTouchScale;
+
+				final int dist = SCALE[mUnits][Math.max(0, Math.min(19, mZoomLevel + 1 + (int)(mTouchScale > 1 ? Math.round(mTouchScale)-1 : -Math.round(1/mTouchScale)+1)))];
+	    		if(mUnits == 0){
+		    		mWidth = (int) ((double)dist*mTouchScale*256*(1<<(mZoomLevel + 1))/EQUATOR_M);
+
+		    		if(dist > 999)
+		    			mDist = ""+(dist/1000)+" km";
+		    		else
+		    			mDist = ""+dist+" m";
+	    		} else if(mZoomLevel < 15){
+		    		mWidth = (int) ((double)dist*mTouchScale*256*2*(1<<(mZoomLevel + 1))/EQUATOR_ML);
+		    		mDist = ""+dist+" ml";
+	    		} else {
+		    		mWidth = (int) ((double)dist*mTouchScale*256*2*(1<<(mZoomLevel + 1))/EQUATOR_FT);
+		    		mDist = ""+dist+" ft";
+	    		}
+
+	    		mWidth2 = (int) mWidth / 2;
+	        }
+	        
+	        c.drawCircle(screenCoords.x, screenCoords.y, mWidth, this.mPaintCross);
+	        c.drawCircle(screenCoords.x, screenCoords.y, mWidth * 2, this.mPaintCross);
+	        c.drawCircle(screenCoords.x, screenCoords.y, mWidth * 3, this.mPaintCross);
+	        c.drawCircle(screenCoords.x, screenCoords.y, mWidth * 4, this.mPaintCross);
+			
 			if (mPrefAccuracy != 0
 					&& mSpeed <= 0.278
 					&& ((mAccuracy > 0 && mPrefAccuracy == 1) || (mPrefAccuracy > 1 && mAccuracy >= mPrefAccuracy))) {
@@ -204,12 +246,14 @@ public class MyLocationOverlay extends TileViewOverlay {
 
 		}
 		
+		final int x = osmv.getWidth() / 2;
+		final int y = osmv.getHeight() / 2;
+
 		if(mNeedCrosshair){
-			final int x = osmv.getWidth() / 2;
-			final int y = osmv.getHeight() / 2;
 			c.drawLine(x - mCrossSize, y, x + mCrossSize, y, this.mPaintCross);
 			c.drawLine(x, y - mCrossSize, x, y + mCrossSize, this.mPaintCross);
 		}
+		
 	}
 
 }
