@@ -171,6 +171,31 @@ public class TrackListActivity extends ListActivity {
 		});
 	}
 
+	private void doJoinTracks() {
+		dlgWait = Ut.ShowWaitDialog(this, 0);
+		if(mThreadExecutor == null)
+			mThreadExecutor = Executors.newSingleThreadExecutor(new SimpleThreadFactory("doSaveTrack"));
+		
+		this.mThreadExecutor.execute(new Runnable() {
+			public void run() {
+				int res = -1;
+				try {
+					res = (int)mPoiManager.getGeoDatabase().JoinTracks();
+				} catch (Exception e) {
+				};
+					
+				if(res > 0){
+					Track tr = mPoiManager.getTrack(res);
+					tr.CalculateStat();
+					mPoiManager.updateTrack(tr);
+				}
+				
+				dlgWait.dismiss();
+				Message.obtain(mHandler, R.id.tracks, res, 0).sendToTarget();
+			}
+		});
+	}
+
 	@Override
 	protected void onPause() {
 		SharedPreferences uiState = getPreferences(Activity.MODE_PRIVATE);
@@ -311,6 +336,8 @@ public class TrackListActivity extends ListActivity {
 				mSortOrder = "date asc";
 			}
 			((SimpleCursorAdapter) getListAdapter()).changeCursor(mPoiManager.getGeoDatabase().getTrackListCursor(mUnits == 0 ? getResources().getString(R.string.km) : getResources().getString(R.string.ml), mSortOrder));
+		} else if(item.getItemId() == R.id.menu_join) {
+			doJoinTracks();
 		}
 
 		return true;
