@@ -440,6 +440,27 @@ public class GeoDatabase implements PoiConstants{
 		}
 	}
 
+	public long JoinTracks() {
+		final ContentValues cv = new ContentValues();
+		cv.put(NAME, TRACK);
+		cv.put(SHOW, 0);
+		cv.put(ACTIVITY, 0);
+		cv.put(CATEGORYID, 0);
+		final long newId = mDatabase.insert(TRACKS, null, cv);
+		
+		mDatabase.execSQL(String.format("INSERT INTO 'trackpoints' (trackid, lat, lon, alt, speed, date) SELECT %d, lat, lon, alt, speed, date FROM 'trackpoints' WHERE trackid IN (SELECT trackid FROM 'tracks' WHERE show = 1) ORDER BY date", newId));
+		final String[] args = {Long.toString(newId)};
+		final Cursor c = mDatabase.rawQuery("SELECT MIN(date) FROM 'trackpoints' WHERE trackid = @1", args);
+		cv.put(NAME, TRACK+ONE_SPACE+newId);
+		if (c.moveToFirst()) {
+			cv.put(DATE, c.getDouble(0));
+		}
+		final String[] args2 = {Long.toString(newId)};
+		mDatabase.update(TRACKS, cv, UPDATE_TRACKS, args2);
+		
+		return newId;
+	}
+	
 	public int saveTrackFromWriter(final SQLiteDatabase db){
 		int res = 0;
 		if (isDatabaseReady()) {
@@ -537,5 +558,5 @@ public class GeoDatabase implements PoiConstants{
 			mDatabase.delete(MAPS, UPDATE_MAPS, args);
 		}
 	}
-	
+
 }

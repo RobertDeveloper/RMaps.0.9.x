@@ -273,6 +273,6 @@ public class PoiManager implements PoiConstants {
 	public long addMap(int type, String params) {
 		return mGeoDatabase.addMap(type, params);
 	}
-	
+
 
 }

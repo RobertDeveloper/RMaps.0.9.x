@@ -9,4 +9,5 @@
             <item android:id="@+id/menu_sort_date" android:title="@string/menu_sort_date" />
         </menu>
     </item>
+	<item android:id="@+id/menu_join" android:title="@string/menu_join" android:icon="@android:drawable/ic_menu_add"></item>
 </menu>
