@@ -11,18 +11,16 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.Point;
 import android.graphics.Paint.Style;
+import android.graphics.Point;
 import android.preference.PreferenceManager;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.View.OnClickListener;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.robert.maps.applib.R;
 import com.robert.maps.applib.utils.Ut;
@@ -35,7 +33,7 @@ public class MeasureOverlay extends TileViewOverlay {
 	private ArrayList<GeoPoint> point = new ArrayList<GeoPoint>();
 	//private int mPointHolded = -1;
 	private Bitmap mCornerMarker = null;
-	private float mDistance;
+	private float mDistance = 0;
 	private Context mCtx;
 	private int mUnits;
 	private LinearLayout msgbox = null;
@@ -57,7 +55,7 @@ public class MeasureOverlay extends TileViewOverlay {
 		
 		msgbox = (LinearLayout) LayoutInflater.from(mCtx).inflate(R.layout.measure_info_box, (ViewGroup) bottomView);
 		msgbox.setVisibility(View.VISIBLE);
-		((TextView) msgbox.findViewById(R.id.value)).setText("0");
+		ShowDistance();
 	}
 
 	private Bitmap getPic(TileView tileView) {
@@ -65,6 +63,11 @@ public class MeasureOverlay extends TileViewOverlay {
 			mCornerMarker = BitmapFactory.decodeResource(tileView.getContext().getResources(), R.drawable.person);
 		
 		return mCornerMarker;
+	}
+	
+	private void ShowDistance() {
+		final String lbl = Ut.formatDistance(mCtx, mDistance, mUnits);
+		((TextView) msgbox.findViewById(R.id.value)).setText(lbl);
 	}
 	
 	@Override
@@ -109,9 +112,7 @@ public class MeasureOverlay extends TileViewOverlay {
 		
 		point.add(g);
 		
-		final String lbl = Ut.formatDistance(mCtx, mDistance, mUnits);
-		//Toast.makeText(mCtx, lbl, Toast.LENGTH_SHORT).show();
-		((TextView) msgbox.findViewById(R.id.value)).setText(lbl);
+		ShowDistance();
 
 		return true;
 	}
@@ -129,6 +130,23 @@ public class MeasureOverlay extends TileViewOverlay {
 			}
 
 		return super.onKeyDown(keyCode, event, mapView);
+	}
+
+	public void Clear() {
+		point.clear();
+		mDistance = 0;
+		ShowDistance();
+	}
+
+	public void Undo() {
+		if(point.size() > 2) {
+			mDistance -= point.get(point.size() - 1).distanceTo(point.get(point.size() - 2));
+			point.remove(point.size() - 1);
+		} else if(point.size() > 0) {
+			mDistance = 0;
+			point.remove(point.size() - 1);
+		}
+		ShowDistance();
 	}
 
 }
