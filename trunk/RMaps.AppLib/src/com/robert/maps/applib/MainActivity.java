@@ -843,13 +843,31 @@ public class MainActivity extends Activity {
 		if(mMeasureOverlay == null)
 	        mMeasureOverlay = new MeasureOverlay(this, findViewById(R.id.bottom_area));
 			
-		findViewById(R.id.bottom_area).findViewById(R.id.close).setOnClickListener(new View.OnClickListener() {
+		final View viewBottomArea = findViewById(R.id.bottom_area);
+		viewBottomArea.findViewById(R.id.close).setOnClickListener(new View.OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
 				mMeasureOverlay = null;
 				((ViewGroup) findViewById(R.id.bottom_area)).removeAllViews();
 				FillOverlays();
+			}
+		});
+		
+		final View viewMenuButton = viewBottomArea.findViewById(R.id.menu);
+		viewMenuButton.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				v.showContextMenu();
+			}
+		});
+		viewMenuButton.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
+			
+			@Override
+			public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
+				menu.add(Menu.NONE, R.id.menu_undo, Menu.NONE, R.string.menu_undo);
+				menu.add(Menu.NONE, R.id.clear, Menu.NONE, R.string.clear);
 			}
 		});
 		
@@ -982,7 +1000,13 @@ public class MainActivity extends Activity {
 	        setTitle();
 
 		} else {
-			if (item.getItemId() == R.id.hide_overlay) {
+			if(item.getItemId() == R.id.clear) {
+				mMeasureOverlay.Clear();
+				mMap.postInvalidate();
+			} else if (item.getItemId() == R.id.menu_undo) {
+				mMeasureOverlay.Undo();
+				mMap.postInvalidate();
+			} else if (item.getItemId() == R.id.hide_overlay) {
 				setTileSource(mTileSource.ID, mOverlayId, false);
 				
 				FillOverlays();
