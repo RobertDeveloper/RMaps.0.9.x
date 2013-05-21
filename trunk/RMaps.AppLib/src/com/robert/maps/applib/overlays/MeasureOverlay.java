@@ -120,10 +120,7 @@ public class MeasureOverlay extends TileViewOverlay {
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event, TileView mapView) {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
-			Ut.dd("KEYCODE_BACK");
-			
-			if(point.size() > 0)
-				point.remove(point.size() - 1);
+			Undo();
 			
 			mapView.invalidate();
 			return true;
