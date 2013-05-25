@@ -68,7 +68,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.apps.analytics.GoogleAnalyticsTracker;
 import com.robert.maps.applib.downloader.AreaSelectorActivity;
 import com.robert.maps.applib.kml.PoiActivity;
 import com.robert.maps.applib.kml.PoiListActivity;
@@ -138,7 +137,7 @@ public class MainActivity extends Activity {
 	private int mPrefOverlayButtonBehavior;
 	private int mPrefOverlayButtonVisibility;
 	
-	private GoogleAnalyticsTracker mTracker;
+	//private GoogleAnalyticsTracker mTracker;
 	private ImageView mOverlayView;
 	
 	@Override
@@ -148,8 +147,8 @@ public class MainActivity extends Activity {
         if(!OpenStreetMapViewConstants.DEBUGMODE)
         	CrashReportHandler.attach(this);
 
-		mTracker = GoogleAnalyticsTracker.getInstance();
-		mTracker.startNewSession("UA-10715419-3", 20, this);
+        //mTracker = GoogleAnalyticsTracker.getInstance();
+        //mTracker.startNewSession("UA-10715419-3", 20, this);
 
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		CreateContentView();
@@ -210,12 +209,12 @@ public class MainActivity extends Activity {
 			DisplayMetrics metrics = new DisplayMetrics();
 			getWindowManager().getDefaultDisplay().getMetrics(metrics);
 			
-			mTracker.setCustomVar(1, "Build", Ut.getAppVersion(this), 1);
-			mTracker.setCustomVar(2, "Ver", Ut.getPackVersion(this), 1);
-			mTracker.setCustomVar(3, "DisplaySize", ""+Math.min(metrics.widthPixels, metrics.heightPixels)+"x"+Math.max(metrics.widthPixels, metrics.heightPixels), 1);
-			mTracker.setCustomVar(4, "DisplayDensity", ""+(int)(160*metrics.density), 1);
-			mTracker.setCustomVar(5, "APILevel", Build.VERSION.SDK, 1);
-			mTracker.trackPageView("/InstallApp");
+			//mTracker.setCustomVar(1, "Build", Ut.getAppVersion(this), 1);
+			//mTracker.setCustomVar(2, "Ver", Ut.getPackVersion(this), 1);
+			//mTracker.setCustomVar(3, "DisplaySize", ""+Math.min(metrics.widthPixels, metrics.heightPixels)+"x"+Math.max(metrics.widthPixels, metrics.heightPixels), 1);
+			//mTracker.setCustomVar(4, "DisplayDensity", ""+(int)(160*metrics.density), 1);
+			//mTracker.setCustomVar(5, "APILevel", Build.VERSION.SDK, 1);
+			//mTracker.trackPageView("/InstallApp");
 			
 			showDialog(R.id.whatsnew);
 		}
@@ -691,7 +690,7 @@ public class MainActivity extends Activity {
 			mTileSource.Free();
 		mTileSource = null;
 		mMap.setMoveListener(null);
-		mTracker.stopSession();
+		//mTracker.stopSession();
 		
 		super.onDestroy();
 	}
@@ -825,10 +824,10 @@ public class MainActivity extends Activity {
 			final String mapid = (String)item.getTitleCondensed();
 			setTileSource(mapid, "", true);
 			
-			if(mTileSource.MAP_TYPE == TileSource.PREDEF_ONLINE) {
-				mTracker.setCustomVar(1, "MAP", mapid);
-				mTracker.trackPageView("/maps");
-			}
+			//if(mTileSource.MAP_TYPE == TileSource.PREDEF_ONLINE) {
+			//	mTracker.setCustomVar(1, "MAP", mapid);
+			//	mTracker.trackPageView("/maps");
+			//}
 			
 			FillOverlays();
 
@@ -990,10 +989,10 @@ public class MainActivity extends Activity {
 			final String overlayid = (String)item.getTitleCondensed();
 			setTileSource(mTileSource.ID, overlayid, true);
 			
-			if(mTileSource.MAP_TYPE == TileSource.PREDEF_ONLINE) {
-				mTracker.setCustomVar(1, "OVERLAY", overlayid);
-				mTracker.trackPageView("/overlays");
-			}
+			//if(mTileSource.MAP_TYPE == TileSource.PREDEF_ONLINE) {
+			//	mTracker.setCustomVar(1, "OVERLAY", overlayid);
+			//	mTracker.trackPageView("/overlays");
+			//}
 			
 			FillOverlays();
 
