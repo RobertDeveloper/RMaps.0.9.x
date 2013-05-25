@@ -456,18 +456,36 @@ public class Ut implements OpenStreetMapConstants, OpenStreetMapViewConstants {
 	}
 
 	public static String formatDistance(Context ctx, float dist, int units) {
+		final String[] str = formatDistance2(ctx, dist, units);
+		return str[0]+" "+str[1];
+	}
+
+	public static String[] formatDistance2(Context ctx, float dist, int units) {
+		final String[] str = new String[2];
 		if(units == 0) {
-			if(dist < 1000)
-				return String.format("%.0f %s", dist, ctx.getResources().getString(R.string.m));
-			else if(dist/1000 < 100)
-				return String.format("%.1f %s", dist/1000, ctx.getResources().getString(R.string.km));
-			else
-				return String.format("%.0f %s", dist/1000, ctx.getResources().getString(R.string.km));
+			if(dist < 1000) {
+				str[0] = String.format("%.0f", dist);
+				str[1] = ctx.getResources().getString(R.string.m);
+			} else if(dist/1000 < 100) {
+				str[0] = String.format("%.1f", dist/1000);
+				str[1] = ctx.getResources().getString(R.string.km);
+			} else {
+				str[0] = String.format("%.0f", dist/1000);
+				str[1] = ctx.getResources().getString(R.string.km);
+			}
 		} else {
-			
+			if(dist < 5280) {
+				str[0] = String.format("%.0f", dist);
+				str[1] = ctx.getResources().getString(R.string.ft);
+			} else if(dist/5280 < 100) {
+				str[0] = String.format("%.1f", dist/5280);
+				str[1] = ctx.getResources().getString(R.string.ml);
+			} else {
+				str[0] = String.format("%.0f", dist/5280);
+				str[1] = ctx.getResources().getString(R.string.ml);
+			}
 		}
-		//final float dist2 = (units == 0 ? dist : dist / 1.609344f);
-		return "";
+		return str;
 	}
 	
 	public static CharSequence formatTime(long time) {
