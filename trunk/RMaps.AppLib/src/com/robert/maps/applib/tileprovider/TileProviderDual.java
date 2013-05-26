@@ -114,14 +114,18 @@ public class TileProviderDual extends TileProviderBase {
 
 	@Override
 	public boolean needIndex(String aCashTableName, long aSizeFile, long aLastModifiedFile, boolean aBlockIndexing) {
-		// TODO Auto-generated method stub
 		return super.needIndex(aCashTableName, aSizeFile, aLastModifiedFile, aBlockIndexing);
 	}
 
 	@Override
 	public void Index() {
-		// TODO Auto-generated method stub
 		super.Index();
+	}
+
+	@Override
+	public void removeTileFromCashe(int x, int y, int z) {
+		mTileProviderMap.removeTileFromCashe(x, y, z);
+		mTileProviderLayer.removeTileFromCashe(x, y, z);
 	}
 
 }

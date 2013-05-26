@@ -48,6 +48,9 @@ public class TileProviderBase {
 			mTileCache.removeTile(aTileURLString);
 	}
 	
+	public void removeTileFromCashe(final int x, final int y, final int z) {
+	}
+	
 	protected void SendMessageSuccess() {
 		if(mCallbackHandler != null)
 			Message.obtain(mCallbackHandler, MessageHandlerConstants.MAPTILEFSLOADER_SUCCESS_ID).sendToTarget();

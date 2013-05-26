@@ -68,6 +68,16 @@ public class TileProviderInet extends TileProviderBase {
 	}
 
 	@Override
+	public void removeTileFromCashe(int x, int y, int z) {
+		final String tileurl = mTileURLGenerator.Get(x, y, z);
+		
+		mCacheProvider.deleteTile(tileurl, x, y, z);
+		removeTile(tileurl);
+		
+		super.removeTileFromCashe(x, y, z);
+	}
+
+	@Override
 	public Bitmap getTile(final int x, final int y, final int z) {
 		final String tileurl = mTileURLGenerator.Get(x, y, z);
 		

@@ -35,7 +35,7 @@ public class SQLiteMapDatabase implements ICacheProvider {
 	private static final long MAX_DATABASE_SIZE = 1945 * 1024 * 1024; // 1.9GB
 	private static final String JOURNAL = "-journal";
 	private static final String SQLITEDB = "sqlitedb";
-	private static final String SQL_DELTILE_WHERE = "s = 0 AND x = ? AND y = ? AND z = ?";
+	private static final String SQL_DELTILE_WHERE = "x = ? AND y = ? AND z = ?";
 	private static final String TILES = "tiles";
 	private static final String PARAMS = "params";
 
@@ -243,7 +243,8 @@ public class SQLiteMapDatabase implements ICacheProvider {
 		return ret;
 	}
 	
-	public synchronized void deleteTile(final int aX, final int aY, final int aZ) {
+	@Override
+	public synchronized void deleteTile(String aURLstring, int aX, int aY, int aZ) {
 		final String[] args = {""+aX, ""+aY, ""+(17 - aZ)};
 		for(int i = 0; i < mDatabase.length; i++) {
 			if(mDatabase[i] != null)

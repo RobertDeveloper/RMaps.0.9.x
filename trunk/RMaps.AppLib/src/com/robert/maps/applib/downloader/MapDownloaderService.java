@@ -371,7 +371,7 @@ public class MapDownloaderService extends Service {
 							
 							if (data != null) {
 								if (mOverwriteTiles)
-									mMapDatabase.deleteTile(tileParam.X, tileParam.Y, tileParam.Z);
+									mMapDatabase.deleteTile(tileParam.TILEURL, tileParam.X, tileParam.Y, tileParam.Z);
 								
 								mMapDatabase.putTile(tileParam.X, tileParam.Y, tileParam.Z, data);
 							}

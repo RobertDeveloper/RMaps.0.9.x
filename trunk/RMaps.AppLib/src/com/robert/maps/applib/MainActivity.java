@@ -765,6 +765,10 @@ public class MainActivity extends Activity {
 		if(item.getItemId() == R.id.area_selector) {
 			startActivity(new Intent(this, AreaSelectorActivity.class).putExtra("new", true).putExtra(MAPNAME, mTileSource.ID).putExtra("Latitude", point.getLatitudeE6()).putExtra("Longitude", point.getLongitudeE6()).putExtra("ZoomLevel", mMap.getZoomLevel()));
 			return true;
+		} else if(item.getItemId() == R.id.reload) {
+			mTileSource.setReloadTileMode(true);
+			mMap.postInvalidate();
+			return true;
 		} else if(item.getItemId() == R.id.measure) {
 			MeasureStart();
 			return true;
