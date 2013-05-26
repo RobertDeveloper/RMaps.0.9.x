@@ -710,6 +710,11 @@ public class MainActivity extends Activity {
 		Menu submenu = menu.findItem(R.id.mapselector).getSubMenu();
 		submenu.clear();
 		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+		
+		if(mTileSource.MAP_TYPE == TileSourceBase.PREDEF_ONLINE || mTileSource.MAP_TYPE == TileSourceBase.MIXMAP_CUSTOM)
+			menu.findItem(R.id.reload).setVisible(true);
+		else
+			menu.findItem(R.id.reload).setVisible(false);
 
 		File folder = Ut.getRMapsMapsDir(this);
 		if (folder.exists()) {
@@ -1348,17 +1353,19 @@ public class MainActivity extends Activity {
 		}
 
 		public void onSensorChanged(SensorEvent event) {
-			if (iOrientation < 0)
+			if (iOrientation < 0) {
 				iOrientation = ((WindowManager) getSystemService(Context.WINDOW_SERVICE))
 						.getDefaultDisplay().getOrientation();
+			}
 
-			mCompassView.setAzimuth(event.values[0] + 0 * iOrientation);
+			Ut.dd("iOrientation="+iOrientation+" Azimuth="+event.values[0]);
+			mCompassView.setAzimuth(event.values[0] + 90 * iOrientation);
 			mCompassView.invalidate();
 
 			if (mCompassEnabled)
 				if (mNorthDirectionUp)
 					if (mDrivingDirectionUp == false || mLastSpeed == 0) {
-						mMap.setBearing(updateBearing(event.values[0]) + 0 * iOrientation);
+						mMap.setBearing(updateBearing(event.values[0]) + 90 * iOrientation);
 						mMap.invalidate();
 					}
 		}
