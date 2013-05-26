@@ -227,5 +227,11 @@ public class FSCacheProvider implements ICacheProvider {
 		return 0;
 	}
 
+	@Override
+	public void deleteTile(String aURLstring, int aX, int aY, int aZ) {
+		// TODO Auto-generated method stub
+		
+	}
+
 	
 }

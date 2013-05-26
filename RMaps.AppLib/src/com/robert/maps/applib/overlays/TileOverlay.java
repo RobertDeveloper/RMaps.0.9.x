@@ -137,6 +137,7 @@ public class TileOverlay extends TileViewOverlay implements OpenStreetMapConstan
 			}
 			
 			mTileSource.getTileProvider().ResizeCashe(tilecnt);
+			mTileSource.setReloadTileMode(false);
 		}
 	}
 

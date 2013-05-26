@@ -237,7 +237,7 @@ How to and FAQ you can find on http://robertdeveloper.blogspot.com/\n</string>
     <string name="pref_stretchtile_summary">Stretch tiles picture and enlarge the maps image</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
-    <string name="question_delete">Do you realy want to delete %s?</string>
+    <string name="question_delete">Do you really want to delete %s?</string>
     <string name="poi">POI</string>
     <string name="track">track</string>
     <string name="pref_drawtilegrid">Tile grid</string>
@@ -257,4 +257,5 @@ How to and FAQ you can find on http://robertdeveloper.blogspot.com/\n</string>
     <string name="menu_measure">Measure</string>
     <string name="menu_join">Join tracks</string>
     <string name="menu_undo">Undo</string>
+    <string name="menu_reload">Reload screen tiles</string>
 </resources>
