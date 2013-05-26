@@ -81,9 +81,13 @@ public class TileProviderInet extends TileProviderBase {
 	public Bitmap getTile(final int x, final int y, final int z) {
 		final String tileurl = mTileURLGenerator.Get(x, y, z);
 		
-		final Bitmap bmp = mTileCache.getMapTile(tileurl);
-		if(bmp != null)
-			return bmp;
+		if(mReloadTileMode)
+			mTileCache.removeTile(tileurl);
+		else {
+			final Bitmap bmp = mTileCache.getMapTile(tileurl);
+			if(bmp != null)
+				return bmp;
+		}
 		
 		if (!mThreadPool.isTerminated() && !mThreadPool.isShutdown()) {
 			if (this.mPending.contains(tileurl))
@@ -101,8 +105,12 @@ public class TileProviderInet extends TileProviderBase {
 						
 						byte[] data = null;
 						
-						if (mCacheProvider != null)
-							data = mCacheProvider.getTile(tileurl, x, y, z);
+						if (mCacheProvider != null) {
+							if(mReloadTileMode)
+								mCacheProvider.deleteTile(tileurl, x, y, z);
+							else
+								data = mCacheProvider.getTile(tileurl, x, y, z);
+						}
 						
 						if (data == null) {
 							Ut.w("FROM INTERNET " + tileurl);

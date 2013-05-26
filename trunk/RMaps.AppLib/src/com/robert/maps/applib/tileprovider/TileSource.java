@@ -18,7 +18,6 @@ public class TileSource extends TileSourceBase {
 	private TileURLGeneratorBase mTileURLGenerator;
 	private TileSourceBase mTileSourceBaseOverlay;
 	private TileSource mTileSourceForTileOverlay;
-	private boolean mReloadTileMode = false;
 	
 	public TileSource(Context ctx, String aId) throws SQLiteException, RException {
 		this(ctx, aId, true, true);
@@ -223,13 +222,10 @@ public class TileSource extends TileSourceBase {
 	}
 	
 	public void setReloadTileMode(boolean reloadTileMode) {
-		mReloadTileMode = reloadTileMode;
+		mTileProvider.mReloadTileMode = reloadTileMode;
 	}
 
 	public Bitmap getTile(final int x, final int y, final int z) {
-		if(mReloadTileMode)
-			mTileProvider.removeTileFromCashe(x, y, z);
-		
 		return mTileProvider.getTile(x, y, z);
 	}
 

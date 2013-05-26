@@ -17,6 +17,7 @@ public class TileProviderBase {
 	protected HashSet<String> mPending = new HashSet<String>();
 	protected MapTileMemCache mTileCache;
 	protected Handler mCallbackHandler;
+	protected boolean mReloadTileMode = false;
 
 	
 	public TileProviderBase(Context ctx) {
