@@ -1,5 +1,9 @@
 package com.robert.maps.applib.tileprovider;
 
+import org.andnav.osm.util.BoundingBoxE6;
+import org.andnav.osm.util.GeoPoint;
+import org.andnav.osm.views.util.Util;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteException;
@@ -272,6 +276,16 @@ public class TileSource extends TileSourceBase {
 
 	public void postIndex() {
 		mTileProvider.updateMapParams(this);
+	}
+
+	public GeoPoint findTheMap(int zoomLevel) {
+		if(mTileProvider instanceof TileProviderSQLITEDB) {
+			final int[] coord = ((TileProviderSQLITEDB) mTileProvider).findTheMap(zoomLevel);
+			final BoundingBoxE6 bb = Util.getBoundingBoxFromMapTile(coord, zoomLevel, PROJECTION);
+			return new GeoPoint(bb.getLatNorthE6(), bb.getLonEastE6());
+		}
+		
+		return null;
 	}
 
 }

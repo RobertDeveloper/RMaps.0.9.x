@@ -765,10 +765,16 @@ public class MainActivity extends Activity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		super.onOptionsItemSelected(item);
+
 		final GeoPoint point = mMap.getMapCenter();
 
 		if(item.getItemId() == R.id.area_selector) {
 			startActivity(new Intent(this, AreaSelectorActivity.class).putExtra("new", true).putExtra(MAPNAME, mTileSource.ID).putExtra("Latitude", point.getLatitudeE6()).putExtra("Longitude", point.getLongitudeE6()).putExtra("ZoomLevel", mMap.getZoomLevel()));
+			return true;
+		} else if(item.getItemId() == R.id.tools) {
+			return true;
+		} else if(item.getItemId() == R.id.findthemap) {
+			doFindTheMap();
 			return true;
 		} else if(item.getItemId() == R.id.reload) {
 			mTileSource.setReloadTileMode(true);
@@ -845,6 +851,12 @@ public class MainActivity extends Activity {
 			return true;
 		}
 
+	}
+
+	private void doFindTheMap() {
+		final GeoPoint geo = mTileSource.findTheMap(mMap.getZoomLevel());
+		if(geo != null)
+			mMap.getController().setCenter(geo);
 	}
 
 	private void MeasureStart() {
@@ -1358,7 +1370,6 @@ public class MainActivity extends Activity {
 						.getDefaultDisplay().getOrientation();
 			}
 
-			Ut.dd("iOrientation="+iOrientation+" Azimuth="+event.values[0]);
 			mCompassView.setAzimuth(event.values[0] + 90 * iOrientation);
 			mCompassView.invalidate();
 

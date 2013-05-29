@@ -2,9 +2,30 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <item
-        android:id="@+id/search"
-        android:icon="@android:drawable/ic_menu_search"
-        android:title="@string/menu_search">
+        android:id="@+id/tools"
+        android:icon="@android:drawable/ic_menu_preferences"
+        android:title="@string/menu_tools">
+        <menu>
+            <item
+                android:id="@+id/search"
+                android:icon="@android:drawable/ic_menu_search"
+                android:title="@string/menu_search">
+            </item>
+            <item
+                android:id="@+id/measure"
+                android:enabled="true"
+                android:title="@string/menu_measure"
+                android:visible="true">
+            </item>
+            <item
+                android:id="@+id/reload"
+                android:title="@string/menu_reload">
+            </item>
+            <item
+                android:id="@+id/findthemap"
+                android:title="@string/menu_findthemap">
+            </item>
+        </menu>
     </item>
     <item
         android:id="@+id/compass"
@@ -31,16 +52,6 @@
                 android:menuCategory="container" >
             </group>
         </menu>
-    </item>
-    <item
-        android:id="@+id/reload"
-        android:title="@string/menu_reload">
-    </item>
-    <item
-        android:id="@+id/measure"
-        android:enabled="true"
-        android:title="@string/menu_measure"
-        android:visible="true">
     </item>
     <item
         android:id="@+id/area_selector"
