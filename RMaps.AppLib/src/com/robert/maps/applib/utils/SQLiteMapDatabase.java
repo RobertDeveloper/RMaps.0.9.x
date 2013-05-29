@@ -22,6 +22,7 @@ public class SQLiteMapDatabase implements ICacheProvider {
 	private static final String SQL_SELECT_PARAMS = "SELECT * FROM info";
 	private static final String SQL_UPDATE_PARAMS = "UPDATE info SET params = ?";
 	private static final String SQL_SELECT_IMAGE = "SELECT image as ret FROM tiles WHERE x = ? AND y = ? AND z = ?";
+	private static final String SQL_FINDTHEMAP = "SELECT x, y FROM tiles WHERE z = ? LIMIT 1";
 	private static final String SQL_DROP_tiles = "DROP TABLE IF EXISTS tiles";
 	private static final String SQL_DROP_info = "DROP TABLE IF EXISTS info";
 	private static final String SQL_tiles_count = "SELECT COUNT(*) cnt FROM tiles";
@@ -401,6 +402,26 @@ public class SQLiteMapDatabase implements ICacheProvider {
 				}
 		}
 		
+	}
+
+	public int[] findTheMap(int zoomLevel) {
+		int[] coord = new int[2];
+		final String[] args = {""+(17 - zoomLevel)};
+		boolean ret = false;
+		for(int i = 0; i < mDatabase.length; i++) {
+			if(mDatabase[i] != null) {
+				final Cursor c = this.mDatabase[i].rawQuery(SQL_FINDTHEMAP, args);
+				if(c != null) {
+					if(c.moveToFirst()) {
+						coord[0] = c.getInt(1);
+						coord[1] = c.getInt(0);
+					}
+					c.close();
+				}
+			}
+			if(ret) break;
+		}
+		return coord;
 	}
 
 }

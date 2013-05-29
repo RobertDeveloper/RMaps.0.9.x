@@ -129,8 +129,12 @@ public class TileProviderSQLITEDB extends TileProviderFileBase {
 		protected void onPostExecute(Boolean result) {
 			if(result && mCallbackHandler != null)
 				Message.obtain(mCallbackHandler, MessageHandlerConstants.MAPTILEFSLOADER_INDEXIND_SUCCESS_ID).sendToTarget();
-			if(mProgressDialog != null)
-				mProgressDialog.dismiss();
+			try {
+				if(mProgressDialog != null)
+					mProgressDialog.dismiss();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -178,6 +182,10 @@ public class TileProviderSQLITEDB extends TileProviderFileBase {
 		}
 		
 		return mLoadingMapTile;
+	}
+
+	public int[] findTheMap(int zoomLevel) {
+		return mUserMapDatabase.findTheMap(zoomLevel);
 	}
 
 

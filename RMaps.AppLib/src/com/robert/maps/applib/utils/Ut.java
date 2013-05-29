@@ -1,12 +1,9 @@
 package com.robert.maps.applib.utils;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.PrintWriter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -16,6 +13,7 @@ import org.andnav.osm.util.GeoPoint;
 import org.andnav.osm.util.constants.OpenStreetMapConstants;
 import org.andnav.osm.views.util.constants.OpenStreetMapViewConstants;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -69,6 +67,7 @@ public class Ut implements OpenStreetMapConstants, OpenStreetMapViewConstants {
 			"yyyy-MM-dd", 
 			};
 
+	@SuppressLint("SimpleDateFormat")
 	public static Date ParseDate(final String str){
 		SimpleDateFormat sdf = new SimpleDateFormat();
 		sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
