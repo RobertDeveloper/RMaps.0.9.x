@@ -69,6 +69,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.robert.maps.applib.downloader.AreaSelectorActivity;
+import com.robert.maps.applib.downloader.FileDownloadListActivity;
 import com.robert.maps.applib.kml.PoiActivity;
 import com.robert.maps.applib.kml.PoiListActivity;
 import com.robert.maps.applib.kml.PoiManager;
@@ -770,6 +771,9 @@ public class MainActivity extends Activity {
 
 		if(item.getItemId() == R.id.area_selector) {
 			startActivity(new Intent(this, AreaSelectorActivity.class).putExtra("new", true).putExtra(MAPNAME, mTileSource.ID).putExtra("Latitude", point.getLatitudeE6()).putExtra("Longitude", point.getLongitudeE6()).putExtra("ZoomLevel", mMap.getZoomLevel()));
+			return true;
+		} else if(item.getItemId() == R.id.downloadprepared) {
+			startActivity(new Intent(this, FileDownloadListActivity.class));
 			return true;
 		} else if(item.getItemId() == R.id.tools) {
 			return true;

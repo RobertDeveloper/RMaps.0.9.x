@@ -61,6 +61,10 @@
         android:visible="true">
     </item>
     <item
+        android:id="@+id/downloadprepared"
+        android:title="@string/menu_downloadprepared">
+    </item>
+    <item
         android:id="@+id/tracks"
         android:title="@string/menu_tracks">
     </item>
