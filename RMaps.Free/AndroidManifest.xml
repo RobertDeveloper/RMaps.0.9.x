@@ -124,6 +124,7 @@
         <activity android:name=".applib.preference.CustomMapsPrefActivity"></activity>
         <activity android:name=".applib.preference.PairMapsPrefActivity"></activity>
         <activity android:name=".applib.preference.OffsetActivity"></activity>
+        <activity android:name=".applib.downloader.FileDownloadListActivity"></activity>
 </application>
 
 </manifest>

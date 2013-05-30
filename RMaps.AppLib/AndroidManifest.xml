@@ -112,6 +112,7 @@
         <activity android:name=".preference.PredefMapsPrefActivity"></activity>
         <activity android:name=".preference.CustomMapsPrefActivity"></activity>
         <activity android:name=".preference.PairMapsPrefActivity"></activity>
+        <activity android:name=".downloader.FileDownloadListActivity"></activity>
     </application>
 
     <uses-permission android:name="android.permission.WAKE_LOCK" />

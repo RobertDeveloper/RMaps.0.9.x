@@ -260,4 +260,5 @@ How to and FAQ you can find on http://robertdeveloper.blogspot.com/\n</string>
     <string name="menu_reload">Reload screen tiles</string>
     <string name="menu_findthemap">Find the map</string>
     <string name="menu_tools">Tools</string>
+    <string name="menu_downloadprepared">Download maps prepared</string>
 </resources>
