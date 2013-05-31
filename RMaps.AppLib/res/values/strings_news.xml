@@ -6,7 +6,19 @@ Buy RMaps.Donation on Google Play Store</b>\n
 \n
 Do you want to help me translate the app interface? Write me to email robertk506@gmail.com\n
 \n
+\n
+v.0.9.2\n
++ Opened Google Community RMaps on Google+\n
++ Measuring distances (Menu - Tools - Measure)\n
++ Distance circles around current location\n
++ Joining multiple tracks into one\n
++ New Relief map\n
++ Reload/update tiles tool on the screen online map (Menu - Tools - Reload screen tiles)\n
 + OSGB 36 for offline Ordnance Survey Map\n
+- Compass fix?\n
+- Loading circles after download fix\n
+- White POI on SONY fix\n
+- Google.Land, Google.Satellite fix\n
 \n
 v.0.9.1\n
 + BING maps (Roag, Aerial , Hydrid)\n

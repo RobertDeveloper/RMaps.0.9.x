@@ -53,6 +53,7 @@ public class MyLocationOverlay extends TileViewOverlay {
 	private Paint mPaintAccurasyBorder;
 	private Paint mPaintLineToGPS;
 	private boolean mNeedCrosshair;
+	private boolean mNeedCircleDistance;
 	private final Paint mPaintCross = new Paint();
 	private final static int mCrossSize = 7;
 	private Location mLoc;
@@ -100,6 +101,7 @@ public class MyLocationOverlay extends TileViewOverlay {
 		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(ctx);
 		mPrefAccuracy = Integer.parseInt(pref.getString("pref_accuracy", "1").replace("\"", ""));
 		mNeedCrosshair = pref.getBoolean("pref_crosshair", true);
+		mNeedCircleDistance = pref.getBoolean("pref_circle_distance", true);
 		mLineToGPS = pref.getBoolean("pref_line_gps", false);
 		mUnits = Integer.parseInt(pref.getString("pref_units", "0"));
 		
@@ -202,10 +204,12 @@ public class MyLocationOverlay extends TileViewOverlay {
 	    		mWidth2 = (int) mWidth / 2;
 	        }
 	        
-	        c.drawCircle(screenCoords.x, screenCoords.y, mWidth, this.mPaintCross);
-	        c.drawCircle(screenCoords.x, screenCoords.y, mWidth * 2, this.mPaintCross);
-	        c.drawCircle(screenCoords.x, screenCoords.y, mWidth * 3, this.mPaintCross);
-	        c.drawCircle(screenCoords.x, screenCoords.y, mWidth * 4, this.mPaintCross);
+	        if(mNeedCircleDistance) {
+		        c.drawCircle(screenCoords.x, screenCoords.y, mWidth, this.mPaintCross);
+		        c.drawCircle(screenCoords.x, screenCoords.y, mWidth * 2, this.mPaintCross);
+		        c.drawCircle(screenCoords.x, screenCoords.y, mWidth * 3, this.mPaintCross);
+		        c.drawCircle(screenCoords.x, screenCoords.y, mWidth * 4, this.mPaintCross);
+	        }
 			
 			if (mPrefAccuracy != 0
 					&& mSpeed <= 0.278

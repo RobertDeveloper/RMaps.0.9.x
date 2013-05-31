@@ -62,7 +62,7 @@
     </item>
     <item
         android:id="@+id/downloadprepared"
-        android:title="@string/menu_downloadprepared">
+        android:title="@string/menu_downloadprepared" android:enabled="false" android:visible="false">
     </item>
     <item
         android:id="@+id/tracks"
