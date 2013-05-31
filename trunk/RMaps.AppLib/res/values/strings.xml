@@ -261,4 +261,6 @@ How to and FAQ you can find on http://robertdeveloper.blogspot.com/\n</string>
     <string name="menu_findthemap">Find the map</string>
     <string name="menu_tools">Tools</string>
     <string name="menu_downloadprepared">Download maps prepared</string>
+    <string name="pref_circle_distance">Distance rings</string>
+    <string name="pref_circle_distance_summary">Rings appear  around your location that show distance like scale indicator</string>
 </resources>

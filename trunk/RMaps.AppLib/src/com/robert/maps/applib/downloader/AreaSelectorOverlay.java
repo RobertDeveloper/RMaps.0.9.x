@@ -49,7 +49,7 @@ public class AreaSelectorOverlay extends TileViewOverlay {
 	
 	private Bitmap getPic(TileView tileView) {
 		if(mCornerMarker == null)
-			mCornerMarker = BitmapFactory.decodeResource(tileView.getContext().getResources(), R.drawable.person);
+			mCornerMarker = BitmapFactory.decodeResource(tileView.getContext().getResources(), R.drawable.r_mark);
 		
 		return mCornerMarker;
 	}

@@ -252,4 +252,13 @@ http://c.tile.openstreetmap.org/{z}/{x}/{y}.png\n
   <string name="offsetNS">Смещение север/юг, метры</string>
   <string name="offsetEW">Смещение запад/восток, метры</string>
   <string name="error_illegalmapid">Неверный идентификатор карты \'%s\'. Рекомендуется очистить индексный файл в настройках программы.</string>
+  <string name="menu_measure">Измерить</string>
+  <string name="menu_join">Соединить треки</string>
+  <string name="menu_undo">Undo</string>
+  <string name="menu_reload">Перезагрузить тайлы экрана</string>
+  <string name="menu_findthemap">Карту на экран</string>
+  <string name="menu_tools">Инструменты</string>
+  <string name="menu_downloadprepared">Загрузить оффлайн карты</string>
+  <string name="pref_circle_distance">Круги расстояния</string>
+  <string name="pref_circle_distance_summary">Круги появляются вокруг текущего местоположения и показывают расстояния кратные линейке масштаба</string>
 </resources>

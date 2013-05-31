@@ -176,6 +176,7 @@
         <com.robert.maps.applib.utils.TrackStylePreference android:key="pref_track_style_current" android:summary="@string/pref_track_style_summary" android:title="@string/pref_track_style_current" android:defaultValue='{"color":-5937666,"shadowradius":0,"width":10,"color_shadow":-5937666}' />
         <CheckBoxPreference android:key="pref_drawtilegrid" android:summary="@string/pref_drawtilegrid_summary" android:title="@string/pref_drawtilegrid" android:defaultValue="false"/>
         <CheckBoxPreference android:summary="@string/pref_line_gps_summary" android:key="pref_line_gps" android:title="@string/pref_line_gps" android:defaultValue="false"/>
+        <CheckBoxPreference android:key="pref_circle_distance" android:summary="@string/pref_circle_distance_summary" android:title="@string/pref_circle_distance" android:defaultValue="true"/>
         
         
         </PreferenceCategory>
