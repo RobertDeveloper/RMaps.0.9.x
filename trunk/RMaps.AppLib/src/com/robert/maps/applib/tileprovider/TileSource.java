@@ -282,7 +282,7 @@ public class TileSource extends TileSourceBase {
 		if(mTileProvider instanceof TileProviderSQLITEDB) {
 			final int[] coord = ((TileProviderSQLITEDB) mTileProvider).findTheMap(zoomLevel);
 			final BoundingBoxE6 bb = Util.getBoundingBoxFromMapTile(coord, zoomLevel, PROJECTION);
-			return new GeoPoint(bb.getLatNorthE6(), bb.getLonEastE6());
+			return new GeoPoint(bb.getLatSouthE6(), bb.getLonEastE6());
 		}
 		
 		return null;

@@ -1,5 +1,7 @@
 package com.robert.maps.applib.downloader;
 
+import java.io.File;
+
 import org.andnav.osm.util.GeoPoint;
 
 import android.app.Activity;
@@ -102,13 +104,7 @@ public class DownloaderActivity extends Activity {
 	}
 
 	protected void doOpenMap() {
-		final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
-		final Editor editor = pref.edit();
 		final String name = Ut.FileName2ID(mFileName+".sqlitedb");
-		editor.putBoolean(TileSourceBase.PREF_USERMAP_+name+"_enabled", true);
-		editor.putString(TileSourceBase.PREF_USERMAP_+name+"_name", mFileName);
-		editor.commit();
-		
 		startActivity(new Intent(this, MainActivity.class)
 		.setAction("SHOW_MAP_ID")
 		.putExtra("MapName", "usermap_"+name)
@@ -136,6 +132,17 @@ public class DownloaderActivity extends Activity {
 			mFileName = fileName;
 			mDownloadedAreaOverlay.Init(DownloaderActivity.this, lat0, lon0, lat1, lon1);
 			mHandler.sendMessage(mHandler.obtainMessage(R.id.download_start, b));
+			
+			final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(DownloaderActivity.this);
+			final Editor editor = pref.edit();
+			final String name = Ut.FileName2ID(mFileName+".sqlitedb");
+			editor.putBoolean(TileSourceBase.PREF_USERMAP_+name+"_enabled", true);
+			editor.putString(TileSourceBase.PREF_USERMAP_+name+"_name", mFileName);
+			editor.putString(TileSourceBase.PREF_USERMAP_+name+"_projection", "1");
+			final File folder = Ut.getRMapsMapsDir(DownloaderActivity.this);
+			editor.putString(TileSourceBase.PREF_USERMAP_+name+"_baseurl", folder.getAbsolutePath() + "/" + mFileName + ".sqlitedb");
+			editor.commit();
+			
 		}
 
 		public void downloadTileDone(int tileCnt, int errorCnt, int x, int y, int z) throws RemoteException {
