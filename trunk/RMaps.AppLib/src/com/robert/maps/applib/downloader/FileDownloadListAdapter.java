@@ -2,6 +2,7 @@ package com.robert.maps.applib.downloader;
 
 import java.util.ArrayList;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -13,6 +14,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.robert.maps.applib.R;
+import com.robert.maps.applib.utils.Ut;
 
 public class FileDownloadListAdapter extends BaseAdapter {
 	private ArrayList<JSONObject> mArray = null;
@@ -24,10 +26,12 @@ public class FileDownloadListAdapter extends BaseAdapter {
 		this.mCtx = ctx;
 		this.mArray = new ArrayList<JSONObject>();
 
-		JSONObject j = null;
+		final String str = Ut.loadStringFromResourceFile(ctx, R.raw.downlodablemaps);
 		try {
-			j = new JSONObject("{\"name\":\"hello\",\"descr\":\"sdfsdfsdf234234\"}");
-			mArray.add(j);
+			JSONArray ja = new JSONArray(str);
+			for(int i = 0; i < ja.length(); i++) {
+				mArray.add(ja.getJSONObject(i));
+			}
 		} catch (JSONException e) {
 		}
 		
@@ -60,8 +64,9 @@ public class FileDownloadListAdapter extends BaseAdapter {
         }
 
 		final JSONObject json = mArray.get(position);
-		((TextView) view.findViewById(R.id.name)).setText(json.optString("name", "name"));
-		((TextView) view.findViewById(R.id.descr)).setText(json.optString("descr", "descr"));
+		view.setId(json.optInt("id", 0));
+		((TextView) view.findViewById(R.id.name)).setText(json.optString("name", "Name"));
+		((TextView) view.findViewById(R.id.descr)).setText(json.optString("owner", ""));
 		
 		return view;
 	}

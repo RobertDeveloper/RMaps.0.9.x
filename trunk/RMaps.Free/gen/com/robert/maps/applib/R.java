@@ -368,7 +368,8 @@ public final class R {
 		public static final int tracklist = 0x7f0d0004;
 	}
 	public static final class raw {
-		public static final int predefmaps = 0x7f050000;
+		public static final int downlodablemaps = 0x7f050000;
+		public static final int predefmaps = 0x7f050001;
 	}
 	public static final class string {
 		public static final int FileName = 0x7f0b006d;
