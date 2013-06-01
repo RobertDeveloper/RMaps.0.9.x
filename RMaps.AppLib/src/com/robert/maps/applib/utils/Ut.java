@@ -1,8 +1,10 @@
 package com.robert.maps.applib.utils;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -20,6 +22,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.os.Environment;
@@ -498,4 +501,22 @@ public class Ut implements OpenStreetMapConstants, OpenStreetMapViewConstants {
 			return String.format("%.1f KB", size / 1024);
 				
 	}
+
+	public static String loadStringFromResourceFile(Context ctx, int id) {
+        try {           
+             Resources res = ctx.getResources();
+             InputStream fis = res.openRawResource(id);
+            final BufferedReader reader = new BufferedReader(new InputStreamReader(fis));
+            StringBuilder sb = new StringBuilder();
+            String line = null;
+            while ((line = reader.readLine()) != null) {
+                sb.append(line);
+            }
+            reader.close();
+            fis.close();
+            return sb.toString();
+        } catch (Exception ex) {
+            return "";
+        }
+    }
 }

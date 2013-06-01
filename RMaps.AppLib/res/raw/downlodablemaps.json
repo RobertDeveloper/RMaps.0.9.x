@@ -1,0 +1,30 @@
+[
+    {
+        "id": "1",
+        "name": "NSW Geology (160 MB)",
+        "owner": "NSW Geological Survey http://www.dpi.nsw.gov.au/minerals",
+        "filename": "NSWGeology.sqlitedb",
+        "source": "http://dwh.minerals.nsw.gov.au/CI/NSWGeology.sqlitedb"
+    },
+    {
+        "id": "2",
+        "name": "NSW Radiometrics (270 MB)",
+        "owner": "NSW Geological Survey http://www.dpi.nsw.gov.au/minerals",
+        "filename": "NSWRadiometrics.sqlitedb",
+        "source": "http://dwh.minerals.nsw.gov.au/CI/NSWRadiometrics.sqlitedb"
+    },
+    {
+        "id": "3",
+        "name": "NSW Magnetics (320 MB)",
+        "owner": "NSW Geological Survey http://www.dpi.nsw.gov.au/minerals",
+        "filename": "NSWMagnetics.sqlitedb",
+        "source": "http://dwh.minerals.nsw.gov.au/CI/NSWMagnetics.sqlitedb"
+    },
+    {
+        "id": "4",
+        "name": "NSW Magnetics-1VD (330 MB)",
+        "owner": "NSW Geological Survey http://www.dpi.nsw.gov.au/minerals",
+        "filename": "NSWMagnetics-1VD.sqlitedb",
+        "source": "http://dwh.minerals.nsw.gov.au/CI/NSWMagnetics-1VD.sqlitedb"
+    }
+]

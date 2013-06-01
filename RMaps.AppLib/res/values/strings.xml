@@ -77,7 +77,7 @@
     <string name="menu_categorylist">Category</string>
     <string name="menu_import">Import</string>
     <string name="menu_deleteall">Delete All</string>
-    <string name="menu_area_selector">Downloader</string>
+    <string name="menu_area_selector">Make available offline</string>
     <string name="no_traffic">On this zoom traffic info are unavailable</string>
     <string name="auto_follow_enabled">Auto-Follow Enabled</string>
     <string name="auto_follow_disabled">Auto-Follow Disabled</string>
