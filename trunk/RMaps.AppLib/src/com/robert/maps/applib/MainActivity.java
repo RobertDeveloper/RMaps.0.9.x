@@ -180,7 +180,7 @@ public class MainActivity extends Activity {
 		this.mTrackOverlay = new TrackOverlay(this, mPoiManager, mCallbackHandler);
 		this.mCurrentTrackOverlay = new CurrentTrackOverlay(this, mPoiManager);
 		this.mPoiOverlay = new PoiOverlay(this, mPoiManager, null, pref.getBoolean("pref_hidepoi", false));
-		mPoiOverlay.setTapIndex(uiState.getInt("curShowPoiId", -1));
+		mPoiOverlay.setTapIndex(uiState.getInt("curShowPoiId", PoiOverlay.NO_TAP));
         this.mMyLocationOverlay = new MyLocationOverlay(this);
         this.mSearchResultOverlay = new SearchResultOverlay(this);
         mSearchResultOverlay.fromPref(uiState);
@@ -995,7 +995,8 @@ public class MainActivity extends Activity {
 
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
-		if(menuInfo instanceof TileView.PoiMenuInfo && ((TileView.PoiMenuInfo) menuInfo).MarkerIndex >= 0) {
+		if(menuInfo instanceof TileView.PoiMenuInfo && ((TileView.PoiMenuInfo) menuInfo).MarkerIndex > PoiOverlay.NO_TAP) {
+			mMarkerIndex = ((TileView.PoiMenuInfo) menuInfo).MarkerIndex;
 			menu.add(0, R.id.menu_editpoi, 0, getText(R.string.menu_edit));
 			menu.add(0, R.id.menu_hide, 0, getText(R.string.menu_hide));
 			menu.add(0, R.id.menu_deletepoi, 0, getText(R.string.menu_delete));
@@ -1040,7 +1041,7 @@ public class MainActivity extends Activity {
 				startActivityForResult((new Intent(this, PoiActivity.class)).putExtra("lat", point.getLatitude()).putExtra("lon", point.getLongitude())
 						.putExtra("title", "POI"), R.id.menu_addpoi);
 			} else if (item.getItemId() == R.id.menu_editpoi) {
-				startActivityForResult((new Intent(this, PoiActivity.class)).putExtra("pointid", mPoiOverlay.getPoiPoint(mMarkerIndex).getId()),
+				startActivityForResult((new Intent(this, PoiActivity.class)).putExtra("pointid", mMarkerIndex),
 						R.id.menu_editpoi);
 				mMap.postInvalidate();
 			} else if (item.getItemId() == R.id.menu_deletepoi) {
