@@ -66,7 +66,7 @@ public class MeasureOverlay extends TileViewOverlay {
 	}
 	
 	private void ShowDistance() {
-		final String lbl = Ut.formatDistance(mCtx, mDistance, mUnits);
+		final String lbl = Ut.formatDistance(mCtx, mUnits == 0 ? mDistance : (int)(mDistance * 3.281), mUnits);
 		((TextView) msgbox.findViewById(R.id.value)).setText(lbl);
 	}
 	
