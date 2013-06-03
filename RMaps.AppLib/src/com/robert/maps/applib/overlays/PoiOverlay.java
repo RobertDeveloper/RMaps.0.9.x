@@ -1,9 +1,5 @@
 package com.robert.maps.applib.overlays;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
 import org.andnav.osm.util.GeoPoint;
 import org.andnav.osm.views.util.constants.OpenStreetMapViewConstants;
 
@@ -15,6 +11,7 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.util.DisplayMetrics;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.widget.ImageView;
@@ -32,28 +29,29 @@ import com.robert.maps.applib.view.TileViewOverlay;
 public class PoiOverlay extends TileViewOverlay {
 	private Context mCtx;
 	private PoiManager mPoiManager;
-	private int mTapIndex;
+	private int mTapId;
 	private GeoPoint mLastMapCenter;
 	private int mLastZoom;
 	private PoiListThread mThread;
 	private RelativeLayout mT;
 	private float mDensity;
 	private boolean mNeedUpdateList = false;
+	public static int NO_TAP = -9999;
 
 	protected OnItemTapListener<PoiPoint> mOnItemTapListener;
 	protected OnItemLongPressListener<PoiPoint> mOnItemLongPressListener;
-	protected List<PoiPoint> mItemList;
+	protected SparseArray<PoiPoint> mItemList;
 	protected final Point mMarkerHotSpot;
 	protected final int mMarkerWidth, mMarkerHeight;
 	private boolean mCanUpdateList = true;
-	protected HashMap<Integer, Drawable> mBtnMap;
+	protected SparseArray<Drawable> mBtnMap;
 
 	public int getTapIndex() {
-		return mTapIndex;
+		return mTapId;
 	}
 
 	public void setTapIndex(int mTapIndex) {
-		this.mTapIndex = mTapIndex;
+		this.mTapId = mTapIndex;
 	}
 	
 	public void UpdateList() {
@@ -66,14 +64,14 @@ public class PoiOverlay extends TileViewOverlay {
 		mCtx = ctx;
 		mPoiManager = poiManager;
 		mCanUpdateList = !hidepoi;
-		mTapIndex = -1;
+		mTapId = NO_TAP;
 
 		Drawable marker = ctx.getResources().getDrawable(R.drawable.poi);
 		this.mMarkerWidth = marker.getIntrinsicWidth();
 		this.mMarkerHeight = marker.getIntrinsicHeight();
 
-		mBtnMap = new HashMap<Integer, Drawable>();
-		mBtnMap.put(new Integer(R.drawable.poi), marker);
+		mBtnMap = new SparseArray<Drawable>();
+		mBtnMap.put(Integer.valueOf(R.drawable.poi), marker);
 		this.mMarkerHotSpot = new Point(0, mMarkerHeight);
 
         this.mOnItemTapListener = onItemTapListener;
@@ -93,13 +91,13 @@ public class PoiOverlay extends TileViewOverlay {
 	public void setGpsStatusGeoPoint(final GeoPoint geopoint, final String title, final String descr) {
 		PoiPoint poi = new PoiPoint(title, descr, geopoint, R.drawable.poi_satttelite);
 		if(mItemList == null)
-			mItemList = new ArrayList<PoiPoint>();
+			mItemList = new SparseArray<PoiPoint>();
 		else
 			mItemList.clear();
 
-		mItemList.add(poi);
+		mItemList.put(poi.getId(), poi);
 		mCanUpdateList = false;
-		mTapIndex = 0;
+		mTapId = NO_TAP;
 	}
 
 	@Override
@@ -136,39 +134,41 @@ public class PoiOverlay extends TileViewOverlay {
 			 * the front.
 			 */
 			for (int i = this.mItemList.size() - 1; i >= 0; i--) {
-				if (i != mTapIndex) {
-					PoiPoint item = this.mItemList.get(i);
+				if (i != mTapId) {
+					PoiPoint item = this.mItemList.valueAt(i);
 					pj.toPixels(item.GeoPoint, curScreenCoords);
 
 					c.save();
 					c.rotate(mapView.getBearing(), curScreenCoords.x,
 							curScreenCoords.y);
 
-					onDrawItem(c, i, curScreenCoords);
+					onDrawItem(c, item.getId(), curScreenCoords);
 
 					c.restore();
 				}
 			}
 
-			if (mTapIndex >= 0 && mTapIndex < this.mItemList.size()) {
-				PoiPoint item = this.mItemList.get(mTapIndex);
-				pj.toPixels(item.GeoPoint, curScreenCoords);
-
-				c.save();
-				c.rotate(mapView.getBearing(), curScreenCoords.x,
-						curScreenCoords.y);
-
-				onDrawItem(c, mTapIndex, curScreenCoords);
-
-				c.restore();
+			if (mTapId > NO_TAP) {
+				PoiPoint item = this.mItemList.get(mTapId);
+				if(item != null) {
+					pj.toPixels(item.GeoPoint, curScreenCoords);
+	
+					c.save();
+					c.rotate(mapView.getBearing(), curScreenCoords.x,
+							curScreenCoords.y);
+	
+					onDrawItem(c, mTapId, curScreenCoords);
+	
+					c.restore();
+				}
 			}
 		}
 	}
 
-	protected void onDrawItem(Canvas c, int index, Point screenCoords) {
-		final PoiPoint focusedItem = mItemList.get(index);
+	protected void onDrawItem(Canvas c, int id, Point screenCoords) {
+		final PoiPoint focusedItem = mItemList.get(id);
 
-		if (index == mTapIndex) {
+		if (id == mTapId) {
 			final ImageView pic = (ImageView) mT.findViewById(R.id.pic);
 			final TextView title = (TextView) mT.findViewById(R.id.poi_title);
 			final TextView descr = (TextView) mT.findViewById(R.id.descr);
@@ -194,17 +194,16 @@ public class PoiOverlay extends TileViewOverlay {
 		final int top = screenCoords.y - this.mMarkerHotSpot.y;
 		final int bottom = top + this.mMarkerHeight;
 
-		Integer key = new Integer(focusedItem.IconId);
 		Drawable marker = null;
-		if(mBtnMap.containsKey(key))
-			marker = mBtnMap.get(key);
+		if(mBtnMap.indexOfKey(focusedItem.IconId) > 0)
+			marker = mBtnMap.get(focusedItem.IconId);
 		else {
 			try{
 				marker = mCtx.getResources().getDrawable(focusedItem.IconId);
 			} catch (Exception e) {
 				marker = mCtx.getResources().getDrawable(R.drawable.poi);
 			}
-			mBtnMap.put(key, marker);
+			mBtnMap.put(focusedItem.IconId, marker);
 		}
 
 		marker.setBounds(left, top, right, bottom);
@@ -227,8 +226,8 @@ public class PoiOverlay extends TileViewOverlay {
 		}
 	}
 
-	public PoiPoint getPoiPoint(final int index){
-		return this.mItemList.get(index);
+	public PoiPoint getPoiPoint(final int id){
+		return this.mItemList.get(id);
 	}
 
 	public int getMarkerAtPoint(final int eventX, final int eventY, TileView mapView){
@@ -240,7 +239,7 @@ public class PoiOverlay extends TileViewOverlay {
 
 			 
 			for(int i = 0; i < this.mItemList.size(); i++){
-				final PoiPoint mItem = this.mItemList.get(i);
+				final PoiPoint mItem = this.mItemList.valueAt(i);
 				pj.toPixels(mItem.GeoPoint, mapView.getBearing(), mCurScreenCoords);
 
 				final int pxUp = 2;
@@ -248,23 +247,21 @@ public class PoiOverlay extends TileViewOverlay {
 				final int right = (int)(mCurScreenCoords.x + mDensity*(38 + pxUp));
 				final int top = (int)(mCurScreenCoords.y - this.mMarkerHotSpot.y - mDensity*(pxUp));
 				final int bottom = (int)(top + mDensity*(33 + pxUp));
-				Ut.d("event "+eventX+" "+eventY);
-				Ut.d("bounds "+left+"-"+right+" "+top+"-"+bottom);
 
 				curMarkerBounds.set(left, top, right, bottom);
 				if(curMarkerBounds.contains(eventX, eventY))
-					return i;
+					return mItem.getId();
 			}
 		}
 
-		return -1;
+		return NO_TAP;
 	}
 
 	@Override
 	public boolean onSingleTapUp(MotionEvent event, TileView mapView) {
-		final int index = getMarkerAtPoint((int)event.getX(), (int)event.getY(), mapView);
-		if (index >= 0)
-			if (onTap(index))
+		final int id = getMarkerAtPoint((int)event.getX(), (int)event.getY(), mapView);
+		if (id > NO_TAP)
+			if (onTap(id))
 				return true;
 
 		return super.onSingleTapUp(event, mapView);
@@ -272,28 +269,28 @@ public class PoiOverlay extends TileViewOverlay {
 
 	@Override
 	public boolean onLongPress(MotionEvent event, TileView mapView) {
-		final int index = getMarkerAtPoint((int)event.getX(), (int)event.getY(), mapView);
-		mapView.mPoiMenuInfo.MarkerIndex = index;
+		final int id = getMarkerAtPoint((int)event.getX(), (int)event.getY(), mapView);
+		mapView.mPoiMenuInfo.MarkerIndex = id;
 		mapView.mPoiMenuInfo.EventGeoPoint = mapView.getProjection().fromPixels((int)event.getX(), (int)event.getY(), mapView.getBearing());
-		if (index >= 0)
-			if (onLongLongPress(index))
+		if (id > NO_TAP)
+			if (onLongLongPress(id))
 				return true;
 
 		return super.onLongPress(event, mapView);
 	}
 
-	private boolean onLongLongPress(int index) {
+	private boolean onLongLongPress(int id) {
 		return false;
 	}
 
-	protected boolean onTap(int index) {
-		if(mTapIndex == index)
-			mTapIndex = -1;
+	protected boolean onTap(int id) {
+		if(mTapId == id)
+			mTapId = NO_TAP;
 		else
-			mTapIndex = index;
+			mTapId = id;
 
 		if(this.mOnItemTapListener != null)
-			return this.mOnItemTapListener.onItemTap(index, this.mItemList.get(index));
+			return this.mOnItemTapListener.onItemTap(id, this.mItemList.get(id));
 		else
 			return false;
 	}

@@ -1,8 +1,7 @@
 package com.robert.maps.applib.kml;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
+import java.util.HashMap;
 
 import org.andnav.osm.util.GeoPoint;
 
@@ -10,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.preference.PreferenceManager;
+import android.util.SparseArray;
 
 import com.robert.maps.applib.R;
 import com.robert.maps.applib.kml.Track.TrackPoint;
@@ -58,12 +58,12 @@ public class PoiManager implements PoiConstants {
 			mGeoDatabase.updatePoi(point.getId(), point.Title, point.Descr, point.GeoPoint.getLatitude(), point.GeoPoint.getLongitude(), point.Alt, point.CategoryId, point.PointSourceId, point.Hidden == true ? ONE : ZERO, point.IconId);
 	}
 
-	private List<PoiPoint> doCreatePoiListFromCursor(Cursor c){
-		final ArrayList<PoiPoint> items = new ArrayList<PoiPoint>();
+	private SparseArray<PoiPoint> doCreatePoiListFromCursor(Cursor c){
+		final SparseArray<PoiPoint> items = new SparseArray<PoiPoint>();
 		if (c != null) {
 			if (c.moveToFirst()) {
 				do {
-					items.add(new PoiPoint(c.getInt(4), c.getString(2), c.getString(3), new GeoPoint(
+					items.put(c.getInt(4), new PoiPoint(c.getInt(4), c.getString(2), c.getString(3), new GeoPoint(
 							(int) (1E6 * c.getDouble(0)), (int) (1E6 * c.getDouble(1))), c.getInt(7), c.getInt(8)));
 				} while (c.moveToNext());
 			}
@@ -73,11 +73,11 @@ public class PoiManager implements PoiConstants {
 		return items;
 	}
 
-	public List<PoiPoint> getPoiList() {
+	public SparseArray<PoiPoint> getPoiList() {
 		return doCreatePoiListFromCursor(mGeoDatabase.getPoiListCursor());
 	}
 
-	public List<PoiPoint> getPoiListNotHidden(int zoom, GeoPoint center, double deltaX, double deltaY){
+	public SparseArray<PoiPoint> getPoiListNotHidden(int zoom, GeoPoint center, double deltaX, double deltaY){
 		return doCreatePoiListFromCursor(mGeoDatabase.getPoiListNotHiddenCursor(zoom, center.getLongitude() - deltaX, center.getLongitude() + deltaX
 				, center.getLatitude() + deltaY, center.getLatitude() - deltaY));
 	}
