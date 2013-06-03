@@ -92,7 +92,7 @@ public class ScaleBarDrawable extends Drawable {
 
     		mWidth2 = (int) mWidth / 2;
         }
-
+        
         canvas.drawRect(margin+0, 0, margin+mWidth+2, 4, mPaint2);
         canvas.drawRect(margin+0, 0, margin+4, h+2, mPaint2);
         canvas.drawRect(margin+mWidth+2-4, 0, margin+mWidth+2, h+2, mPaint2);
@@ -110,7 +110,7 @@ public class ScaleBarDrawable extends Drawable {
 
     @Override
     public int getIntrinsicWidth() {
-    	return 300;
+    	return 300; // *320/240;
     }
 
     @Override
