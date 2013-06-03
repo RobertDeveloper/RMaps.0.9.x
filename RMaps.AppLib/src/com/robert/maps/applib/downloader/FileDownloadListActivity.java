@@ -11,10 +11,10 @@ import java.net.URLConnection;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.R;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.ActivityInfo;
@@ -24,6 +24,7 @@ import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.ListView;
 
+import com.robert.maps.applib.MainActivity;
 import com.robert.maps.applib.tileprovider.TileSourceBase;
 import com.robert.maps.applib.utils.Ut;
 
@@ -47,7 +48,7 @@ public class FileDownloadListActivity extends ListActivity {
 		mProgressDialog.setMax(0);
 		mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
 		mProgressDialog.setCancelable(false);
-		mProgressDialog.setButton(ProgressDialog.BUTTON_NEGATIVE, getText(R.string.cancel), new DialogInterface.OnClickListener() {
+		mProgressDialog.setButton(ProgressDialog.BUTTON_NEGATIVE, getText(android.R.string.cancel), new DialogInterface.OnClickListener() {
 			
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
@@ -66,9 +67,10 @@ public class FileDownloadListActivity extends ListActivity {
 		
 		mDownloadFile = new DownloadFile();
 		try {
-			mProgressDialog.setMessage(json.getString("name"));
-			mDownloadFile.execute(json.getString("source"), json.getString("filename"));
+			mProgressDialog.setMessage(json.getString("listtitle"));
+			mDownloadFile.execute(json.getString("source"), json.getString("filename"), json.getString("mapname"));
 		} catch (JSONException e) {
+			e.printStackTrace();
 		}
 
 		
@@ -77,11 +79,16 @@ public class FileDownloadListActivity extends ListActivity {
 	
 	private class DownloadFile extends AsyncTask<String, Integer, String> {
 		private String fileName;
-	    @Override
+		private String mapName;
+
+		@Override
 	    protected String doInBackground(String... sUrl) {
+			String ret = "OK";
 	        try {
 	        	fileName = sUrl[1];
-	            URL url = new URL(sUrl[0]);
+	        	mapName = sUrl[2];
+
+	        	URL url = new URL(sUrl[0]);
 	            URLConnection connection = url.openConnection();
 	            connection.connect();
 	            // this will be useful so that you can show a typical 0-100% progress bar
@@ -100,8 +107,10 @@ public class FileDownloadListActivity extends ListActivity {
 	                publishProgress((int) total, (int) fileLength);
 	                output.write(data, 0, count);
 	                
-	                if(isCancelled())
+	                if(isCancelled()) {
+	                	ret = null;
 	                	break;
+	                }
 	            }
 
 	            output.flush();
@@ -109,13 +118,16 @@ public class FileDownloadListActivity extends ListActivity {
 	            input.close();
 	            
 	            if(isCancelled()) {
+	            	ret = null;
 	            	final File file = new File(Ut.getRMapsMapsDir(FileDownloadListActivity.this).getAbsolutePath() + "/" + fileName);
 	            	if(file.exists())
 	            		file.delete();
 	            }
 	        } catch (Exception e) {
+	        	ret = null;
+	        	e.printStackTrace();
 	        }
-	        return null;
+	        return ret;
 	    }
 	    
 	    @Override
@@ -135,17 +147,26 @@ public class FileDownloadListActivity extends ListActivity {
 		protected void onPostExecute(String result) {
 			super.onPostExecute(result);
 			
-			final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(FileDownloadListActivity.this);
-			final Editor editor = pref.edit();
-			final String name = Ut.FileName2ID(fileName);
-			editor.putBoolean(TileSourceBase.PREF_USERMAP_+name+"_enabled", true);
-			editor.putString(TileSourceBase.PREF_USERMAP_+name+"_name", fileName);
-			editor.putString(TileSourceBase.PREF_USERMAP_+name+"_projection", "1");
-			final File folder = Ut.getRMapsMapsDir(FileDownloadListActivity.this);
-			editor.putString(TileSourceBase.PREF_USERMAP_+name+"_baseurl", folder.getAbsolutePath() + "/" + fileName);
-			editor.commit();
-			
-			mProgressDialog.dismiss();
+			if(result != null) {
+				final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(FileDownloadListActivity.this);
+				final Editor editor = pref.edit();
+				final String name = Ut.FileName2ID(fileName);
+				editor.putBoolean(TileSourceBase.PREF_USERMAP_+name+"_enabled", true);
+				editor.putString(TileSourceBase.PREF_USERMAP_+name+"_name", mapName);
+				editor.putString(TileSourceBase.PREF_USERMAP_+name+"_projection", "1");
+				final File folder = Ut.getRMapsMapsDir(FileDownloadListActivity.this);
+				editor.putString(TileSourceBase.PREF_USERMAP_+name+"_baseurl", folder.getAbsolutePath() + "/" + fileName);
+				editor.commit();
+				
+				mProgressDialog.dismiss();
+	
+				startActivity(new Intent(FileDownloadListActivity.this, MainActivity.class)
+				.setAction("SHOW_MAP_ID")
+				.putExtra("MapName", "usermap_"+name)
+				.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
+				);
+				finish();
+			}
 		}
 	    
 	}

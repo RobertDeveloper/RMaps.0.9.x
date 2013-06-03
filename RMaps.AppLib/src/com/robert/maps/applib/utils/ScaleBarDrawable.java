@@ -23,12 +23,13 @@ public class ScaleBarDrawable extends Drawable {
     private int mWidth = 100;
     private int mUnits;
     private int mWidth2 = 100;
+    private int mTileSize;
 
     private static final int SCALE[][] = {{25000000,15000000,8000000,4000000,2000000,1000000,500000,250000,100000,50000,25000,15000,8000,4000,2000,1000,500,250,100,50}
-    ,{15000,8000,4000,2000,1000,500,250,100,50,25,15,8,4,2,1,3000,1500,500,250,100}};
+    ,{15000,8000,4000,2000,1000,500,250,100,50,25,15,8,21120,10560,5280,3000,1500,500,250,100}};
     private static int EQUATOR_M = 40075676;
     private static int EQUATOR_ML = 24902;
-    private static int EQUATOR_FT = 131481877;
+    private static int EQUATOR_FT = 131481942;
 
     public ScaleBarDrawable(Context ctx, MapView osmv, int units) {
     	mOsmv = osmv;
@@ -52,25 +53,41 @@ public class ScaleBarDrawable extends Drawable {
     @Override
     public void draw(Canvas canvas) {
 		final int h = 13, h2 = 6, margin = 7;
+		final int tileSize = mOsmv.getTileSource().getTileSizePx(mOsmv.getZoomLevel());
 
-        if(mZoomLevel != mOsmv.getZoomLevel() || mTouchScale != mOsmv.getTouchScale()){
+        if(mZoomLevel != mOsmv.getZoomLevel() || mTileSize != tileSize || mTouchScale != mOsmv.getTouchScale()){
         	mZoomLevel = mOsmv.getZoomLevel();
         	mTouchScale = mOsmv.getTouchScale();
+        	mTileSize = tileSize;
 
-			final int dist = SCALE[mUnits][Math.max(0, Math.min(19, mZoomLevel + 1 + (int)(mTouchScale > 1 ? Math.round(mTouchScale)-1 : -Math.round(1/mTouchScale)+1)))];
+        	final double divider = tileSize / 256.0;
+			int dist = (int) (SCALE[mUnits][Math.max(0, Math.min(19, mZoomLevel + 1 + (int)(mTouchScale > 1 ? Math.round(mTouchScale)-1 : -Math.round(1/mTouchScale)+1)))] / divider);
+			
     		if(mUnits == 0){
-	    		mWidth = (int) ((double)dist*mTouchScale*256*(1<<(mZoomLevel + 1))/EQUATOR_M);
-
-	    		if(dist > 999)
+	    		if(dist > 999) {
+	    			dist = (dist / 1000) * 1000;
 	    			mDist = ""+(dist/1000)+" km";
-	    		else
+	    		} else
 	    			mDist = ""+dist+" m";
-    		} else if(mZoomLevel < 15){
-	    		mWidth = (int) ((double)dist*mTouchScale*256*2*(1<<(mZoomLevel + 1))/EQUATOR_ML);
-	    		mDist = ""+dist+" ml";
+
+	    		mWidth = (int) ((double)dist*mTouchScale*tileSize*(1<<(mZoomLevel + 1))/EQUATOR_M);
     		} else {
-	    		mWidth = (int) ((double)dist*mTouchScale*256*2*(1<<(mZoomLevel + 1))/EQUATOR_FT);
-	    		mDist = ""+dist+" ft";
+    			if(mZoomLevel < 11){
+		    		mWidth = (int) ((double)dist*mTouchScale*tileSize*(1<<(mZoomLevel + 1))/EQUATOR_ML);
+		    		mDist = ""+dist+" ml";
+    			} else if(dist > 5280) {
+    				dist = dist / 5280;
+		    		mWidth = (int) ((double)dist*mTouchScale*tileSize*(1<<(mZoomLevel + 1))/EQUATOR_ML);
+		    		mDist = ""+dist+" ml";
+	    		} else {
+	    			if(dist > 1000) {
+	    				dist = (dist / 1000) * 1000;
+	    			} else if(dist > 100) {
+	    				dist = (dist / 100) * 100;
+	    			}
+		    		mWidth = (int) ((double)dist*mTouchScale*tileSize*(1<<(mZoomLevel + 1))/EQUATOR_FT);
+		    		mDist = ""+dist+" ft";
+	    		}
     		}
 
     		mWidth2 = (int) mWidth / 2;

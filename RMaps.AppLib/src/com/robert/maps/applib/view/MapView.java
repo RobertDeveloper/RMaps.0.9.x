@@ -34,6 +34,7 @@ public class MapView extends RelativeLayout {
 	public MapView(Context context, int sideInOutButtons, int scaleBarVisible) {
 		super(context);
 
+		final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
 		mController = new MapController();
 		mTileView = new TileView(context);
 		mMoveListener = null;
@@ -43,8 +44,7 @@ public class MapView extends RelativeLayout {
 
 		if (scaleBarVisible == 1) {
 	        final ImageView ivScaleBar = new ImageView(getContext());
-			final ScaleBarDrawable dr = new ScaleBarDrawable(context, this, 0/*Integer.parseInt(pref.getString("pref_units",
-					"0"))*/);
+			final ScaleBarDrawable dr = new ScaleBarDrawable(context, this, Integer.parseInt(pref.getString("pref_units","0")));
 			ivScaleBar.setImageDrawable(dr);
 			final RelativeLayout.LayoutParams scaleParams = new RelativeLayout.LayoutParams(
 					RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
@@ -67,6 +67,7 @@ public class MapView extends RelativeLayout {
 
 		TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.MapView);
 
+		final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
 		mController = new MapController();
 		mTileView = new TileView(context);
 		addView(mTileView, new RelativeLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
@@ -76,8 +77,7 @@ public class MapView extends RelativeLayout {
 
 		if (a.getInt(R.styleable.MapView_SideInOutButtons, 0) == 1) {
 	        final ImageView ivScaleBar = new ImageView(getContext());
-			final ScaleBarDrawable dr = new ScaleBarDrawable(context, this, 0/*Integer.parseInt(pref.getString("pref_units",
-					"0"))*/);
+			final ScaleBarDrawable dr = new ScaleBarDrawable(context, this, Integer.parseInt(pref.getString("pref_units","0")));
 			ivScaleBar.setImageDrawable(dr);
 			final RelativeLayout.LayoutParams scaleParams = new RelativeLayout.LayoutParams(
 					RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);

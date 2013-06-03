@@ -65,7 +65,7 @@ public class FileDownloadListAdapter extends BaseAdapter {
 
 		final JSONObject json = mArray.get(position);
 		view.setId(json.optInt("id", 0));
-		((TextView) view.findViewById(R.id.name)).setText(json.optString("name", "Name"));
+		((TextView) view.findViewById(R.id.name)).setText(json.optString("listtitle", "Name"));
 		((TextView) view.findViewById(R.id.descr)).setText(json.optString("owner", ""));
 		
 		return view;

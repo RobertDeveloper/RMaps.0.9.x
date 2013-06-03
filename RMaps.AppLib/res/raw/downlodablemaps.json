@@ -1,30 +1,34 @@
 [
     {
         "id": "1",
-        "name": "NSW Geology (160 MB)",
-        "owner": "NSW Geological Survey http://www.dpi.nsw.gov.au/minerals",
+        "listtitle": "NSW Geology (160 MB)",
+        "mapname": "NSW Geology",
         "filename": "NSWGeology.sqlitedb",
-        "source": "http://dwh.minerals.nsw.gov.au/CI/NSWGeology.sqlitedb"
+        "source": "http://dwh.minerals.nsw.gov.au/CI/download.php?filename=NSWGeology&extension=sqlitedb&info=ANDROD",
+        "owner": "NSW Geological Survey http://www.dpi.nsw.gov.au/minerals"
     },
     {
         "id": "2",
-        "name": "NSW Radiometrics (270 MB)",
-        "owner": "NSW Geological Survey http://www.dpi.nsw.gov.au/minerals",
+        "listtitle": "NSW Radiometrics (270 MB)",
+        "mapname": "NSW Radiometrics",
         "filename": "NSWRadiometrics.sqlitedb",
-        "source": "http://dwh.minerals.nsw.gov.au/CI/NSWRadiometrics.sqlitedb"
+        "source": "http://dwh.minerals.nsw.gov.au/CI/download.php?filename=NSWRadiometrics&extension=sqlitedb&info=ANDROD",
+        "owner": "NSW Geological Survey http://www.dpi.nsw.gov.au/minerals"
     },
     {
         "id": "3",
-        "name": "NSW Magnetics (320 MB)",
-        "owner": "NSW Geological Survey http://www.dpi.nsw.gov.au/minerals",
+        "listtitle": "NSW Magnetics (320 MB)",
+        "mapname": "NSW Magnetics",
         "filename": "NSWMagnetics.sqlitedb",
-        "source": "http://dwh.minerals.nsw.gov.au/CI/NSWMagnetics.sqlitedb"
+        "source": "http://dwh.minerals.nsw.gov.au/CI/download.php?filename=NSWMagnetics&extension=sqlitedb&info=ANDROD",
+        "owner": "NSW Geological Survey http://www.dpi.nsw.gov.au/minerals"
     },
     {
         "id": "4",
-        "name": "NSW Magnetics-1VD (330 MB)",
-        "owner": "NSW Geological Survey http://www.dpi.nsw.gov.au/minerals",
+        "listtitle": "NSW Magnetics-1VD (330 MB)",
+        "mapname": "NSW Magnetics-1VD",
         "filename": "NSWMagnetics-1VD.sqlitedb",
-        "source": "http://dwh.minerals.nsw.gov.au/CI/NSWMagnetics-1VD.sqlitedb"
+        "source": "http://dwh.minerals.nsw.gov.au/CI/download.php?filename=NSWMagnetics-1VD&extension=sqlitedb&info=ANDROD",
+        "owner": "NSW Geological Survey http://www.dpi.nsw.gov.au/minerals"
     }
-]
+]    
