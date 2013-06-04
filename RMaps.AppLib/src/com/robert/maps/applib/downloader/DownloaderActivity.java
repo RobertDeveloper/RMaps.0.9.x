@@ -137,10 +137,11 @@ public class DownloaderActivity extends Activity {
 			final Editor editor = pref.edit();
 			final String name = Ut.FileName2ID(mFileName+".sqlitedb");
 			editor.putBoolean(TileSourceBase.PREF_USERMAP_+name+"_enabled", true);
-			editor.putString(TileSourceBase.PREF_USERMAP_+name+"_name", mFileName);
-			editor.putString(TileSourceBase.PREF_USERMAP_+name+"_projection", "1");
+			editor.putString(TileSourceBase.PREF_USERMAP_+name+"_name", pref.getString(TileSourceBase.PREF_USERMAP_+name+"_name", mFileName));
+			editor.putString(TileSourceBase.PREF_USERMAP_+name+"_projection", Integer.toString(mTileSource.PROJECTION));
 			final File folder = Ut.getRMapsMapsDir(DownloaderActivity.this);
 			editor.putString(TileSourceBase.PREF_USERMAP_+name+"_baseurl", folder.getAbsolutePath() + "/" + mFileName + ".sqlitedb");
+			editor.putBoolean(TileSourceBase.PREF_USERMAP_+name+"_isoverlay", mTileSource.LAYER);
 			editor.commit();
 			
 		}

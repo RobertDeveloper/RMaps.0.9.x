@@ -12,6 +12,7 @@ public class GpxTrackParser extends DefaultHandler {
 	private StringBuilder builder;
 	private PoiManager mPoiManager;
 	private Track mTrack;
+	private String mTrackName = "Track";
 
 	private static final String TRK = "trk";
 	private static final String LAT = "lat";
@@ -30,7 +31,7 @@ public class GpxTrackParser extends DefaultHandler {
 		super();
 		builder = new StringBuilder();
 		mPoiManager = poiManager;
-		mTrack = new Track();
+		mTrack = null;
 	}
 
 	@Override
@@ -58,12 +59,14 @@ public class GpxTrackParser extends DefaultHandler {
 	public void endElement(String uri, String localName, String name) throws SAXException {
 		if(localName.equalsIgnoreCase(TRK)){
 			if(mTrack.Name.equalsIgnoreCase(EMPTY)) 
-				mTrack.Name = "Track";
+				mTrack.Name = mTrackName;
 			mTrack.CalculateStat();
 			mPoiManager.updateTrack(mTrack);
 		} else if(localName.equalsIgnoreCase(NAME)) {
 			if(mTrack != null)
 				mTrack.Name = builder.toString().trim();
+			else
+				mTrackName = builder.toString().trim();
 		} else if(localName.equalsIgnoreCase(CMT)) {
 			if(mTrack != null)
 				mTrack.Descr = builder.toString().trim();

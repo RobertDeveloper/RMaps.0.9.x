@@ -401,6 +401,11 @@ public class AreaSelectorActivity extends Activity {
 				if(parser != null){
 					final InputStream in = getResources().openRawResource(R.raw.predefmaps);
 					parser.parse(in, new PredefMapsParser(menu, pref));
+					in.close();
+
+					final InputStream in2 = getResources().openRawResource(R.raw.predefmaps);
+					parser.parse(in2, new PredefMapsParser(menu, pref, true, mTileSource.PROJECTION));
+					in2.close();
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
