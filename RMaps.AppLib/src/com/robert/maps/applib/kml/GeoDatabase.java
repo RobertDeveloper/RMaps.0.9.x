@@ -4,6 +4,7 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -18,6 +19,7 @@ import com.robert.maps.applib.utils.Ut;
 public class GeoDatabase implements PoiConstants{
 	protected final Context mCtx;
 	private SQLiteDatabase mDatabase;
+	@SuppressLint("SimpleDateFormat")
 	protected final SimpleDateFormat DATE_FORMAT_ISO8601 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
 
 	public GeoDatabase(Context ctx) {
@@ -441,19 +443,30 @@ public class GeoDatabase implements PoiConstants{
 	}
 
 	public long JoinTracks() {
+		final Cursor ctc = getTrackChecked();
+		if(ctc == null) return -1;
+		if(ctc.getCount() < 2) {
+			ctc.close();
+			return -1;
+		}
+		ctc.close();
+		
 		final ContentValues cv = new ContentValues();
 		cv.put(NAME, TRACK);
 		cv.put(SHOW, 0);
 		cv.put(ACTIVITY, 0);
 		cv.put(CATEGORYID, 0);
 		final long newId = mDatabase.insert(TRACKS, null, cv);
+		cv.put(NAME, TRACK+ONE_SPACE+newId);
 		
 		mDatabase.execSQL(String.format("INSERT INTO 'trackpoints' (trackid, lat, lon, alt, speed, date) SELECT %d, lat, lon, alt, speed, date FROM 'trackpoints' WHERE trackid IN (SELECT trackid FROM 'tracks' WHERE show = 1) ORDER BY date", newId));
 		final String[] args = {Long.toString(newId)};
 		final Cursor c = mDatabase.rawQuery("SELECT MIN(date) FROM 'trackpoints' WHERE trackid = @1", args);
-		cv.put(NAME, TRACK+ONE_SPACE+newId);
-		if (c.moveToFirst()) {
-			cv.put(DATE, c.getDouble(0));
+		if(c != null) {
+			if (c.moveToFirst()) {
+				cv.put(DATE, c.getDouble(0));
+			}
+			c.close();
 		}
 		final String[] args2 = {Long.toString(newId)};
 		mDatabase.update(TRACKS, cv, UPDATE_TRACKS, args2);
