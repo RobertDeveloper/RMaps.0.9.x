@@ -311,7 +311,7 @@ public class SQLiteMapDatabase implements ICacheProvider {
 
 	public double getTileLenght() {
 		double ret = 0L;
-		if(mDatabase[0] != null) {
+		if(mDatabase.length > 0 && mDatabase[0] != null) {
 			final long cnt = mDatabase[0].compileStatement(SQL_tiles_count).simpleQueryForLong(); 
 			if(cnt > 0) {
 				final File file = new File(mDatabase[0].getPath()); 

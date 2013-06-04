@@ -712,10 +712,13 @@ public class MainActivity extends Activity {
 		submenu.clear();
 		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
 		
-		if(mTileSource.MAP_TYPE == TileSourceBase.PREDEF_ONLINE || mTileSource.MAP_TYPE == TileSourceBase.MIXMAP_CUSTOM)
-			menu.findItem(R.id.reload).setVisible(true);
-		else
+		if(mTileSource == null) {
 			menu.findItem(R.id.reload).setVisible(false);
+		} else if(mTileSource.MAP_TYPE == TileSourceBase.PREDEF_ONLINE || mTileSource.MAP_TYPE == TileSourceBase.MIXMAP_CUSTOM) {
+			menu.findItem(R.id.reload).setVisible(true);
+		} else {
+			menu.findItem(R.id.reload).setVisible(false);
+		}
 
 		File folder = Ut.getRMapsMapsDir(this);
 		if (folder.exists()) {

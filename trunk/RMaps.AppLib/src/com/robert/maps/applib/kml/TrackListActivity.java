@@ -188,6 +188,8 @@ public class TrackListActivity extends ListActivity {
 					Track tr = mPoiManager.getTrack(res);
 					tr.CalculateStat();
 					mPoiManager.updateTrack(tr);
+				} else {
+					res = 0; // Nothing to save
 				}
 				
 				dlgWait.dismiss();

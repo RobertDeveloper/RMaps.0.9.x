@@ -1,5 +1,6 @@
 package com.robert.maps.applib.tileprovider;
 
+import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map.Entry;
@@ -74,14 +75,18 @@ public class MapTileMemCache {
 	}
 
 	public void Free() {
-		Iterator<Entry<String, Bitmap>> it = mHardCachedTiles.entrySet().iterator();
-		while(it.hasNext()) {
-			final Bitmap bmpHard = it.next().getValue();
-			if(bmpHard != null){
-				if(!bmpHard.isRecycled()) {
-					bmpHard.recycle();
+		try {
+			Iterator<Entry<String, Bitmap>> it = mHardCachedTiles.entrySet().iterator();
+			while(it.hasNext()) {
+				final Bitmap bmpHard = it.next().getValue();
+				if(bmpHard != null){
+					if(!bmpHard.isRecycled()) {
+						bmpHard.recycle();
+					}
 				}
 			}
+		} catch (ConcurrentModificationException e) {
+			// TODO It's need other iteration code
 		}
 		mHardCachedTiles.clear();
 		mSize = 0;
