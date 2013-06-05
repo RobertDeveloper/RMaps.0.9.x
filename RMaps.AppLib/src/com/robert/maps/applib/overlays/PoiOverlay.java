@@ -177,7 +177,7 @@ public class PoiOverlay extends TileViewOverlay {
 			pic.setImageResource(focusedItem.IconId);
 			title.setText(focusedItem.Title);
 			descr.setText(focusedItem.Descr);
-			coord.setText(Ut.formatGeoPoint(focusedItem.GeoPoint));
+			coord.setText(Ut.formatGeoPoint(focusedItem.GeoPoint, mCtx));
 
 			mT.measure(0, 0);
 			mT.layout(0, 0, mT.getMeasuredWidth(), mT.getMeasuredHeight());

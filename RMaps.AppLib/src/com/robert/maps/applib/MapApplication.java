@@ -2,26 +2,31 @@ package com.robert.maps.applib;
 
 import java.util.Locale;
 
+import org.andnav.osm.util.GeoPoint;
+
 import android.app.Application;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.location.Location;
 import android.preference.PreferenceManager;
-import com.robert.maps.applib.R;
 
 public class MapApplication extends Application {
 	private Locale locale = null;
 	private Locale defLocale = null;
+	private int coordinateFormat = 0;
 	
 	@Override
 	public void onCreate() {
 		super.onCreate();
 	
-		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
+		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
         Configuration config = getBaseContext().getResources().getConfiguration();
         defLocale = config.locale;
         locale = defLocale;
         
-        String lang = settings.getString("pref_locale", "");
+        coordinateFormat = Integer.valueOf(pref.getString("pref_coordformat", "0"));
+        
+        String lang = pref.getString("pref_locale", "");
 		if(lang.equalsIgnoreCase("zh_CN")) {
 			locale = Locale.SIMPLIFIED_CHINESE;
 		} else if(lang.equalsIgnoreCase("zh_TW")) {
@@ -41,12 +46,14 @@ public class MapApplication extends Application {
 	@Override
 	public void onConfigurationChanged(Configuration newConfig) {
 		super.onConfigurationChanged(newConfig);
-		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
+		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
         Configuration config = getBaseContext().getResources().getConfiguration();
         defLocale = config.locale;
         locale = defLocale;
         
-        String lang = settings.getString("pref_locale", "");
+        coordinateFormat = Integer.valueOf(pref.getString("pref_coordformat", "0"));
+        
+        String lang = pref.getString("pref_locale", "");
 		if(lang.equalsIgnoreCase("zh_CN")) {
 			locale = Locale.SIMPLIFIED_CHINESE;
 		} else if(lang.equalsIgnoreCase("zh_TW")) {
@@ -59,4 +66,7 @@ public class MapApplication extends Application {
         getBaseContext().getResources().updateConfiguration(config, getBaseContext().getResources().getDisplayMetrics());
 	}
 	
+	public String convertCoord(double coordinate) {
+		return Location.convert(coordinate, coordinateFormat);
+	}
 }
