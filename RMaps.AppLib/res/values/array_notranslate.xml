@@ -2,14 +2,20 @@
 <resources>
 
     <string-array name="pref_coordformat_titles">
-        <item>DDD.DDDDD</item>
-        <item>DDD:MM.MMMMM</item>
-        <item>DDD:MM:SS.SSSSS</item>
+        <item>-00.00000°</item>
+        <item>-00°00.0000\'</item>
+        <item>-00°00\'00.00"</item>
+        <item>N00.00000°</item>
+        <item>N00°00.0000\'</item>
+        <item>N00°00\'00.00"</item>
     </string-array>
     <string-array name="pref_coordformat_values">
         <item>0</item>
         <item>1</item>
         <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
     </string-array>
     <string-array name="overlay_button_visibility_values">
         <item>0</item>
