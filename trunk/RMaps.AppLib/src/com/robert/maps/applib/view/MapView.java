@@ -13,6 +13,7 @@ import android.view.ContextMenu.ContextMenuInfo;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.robert.maps.applib.R;
@@ -131,14 +132,30 @@ public class MapView extends RelativeLayout {
 	}
 	
 	public void displayZoomControls(final int SideInOutButtons) {
+		final LinearLayout ll = new LinearLayout(getContext());
+		ll.setId(R.id.right_panel);
+		ll.setOrientation(LinearLayout.VERTICAL);
+        final RelativeLayout.LayoutParams llParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        llParams.addRule(RelativeLayout.CENTER_VERTICAL);
+        llParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        addView(ll, llParams);
+        final int pad = getResources().getDimensionPixelSize(R.dimen.zoom_ctrl_padding);
+		
 		if(SideInOutButtons == 0) return;
 		
         final ImageView ivZoomIn = new ImageView(getContext());
         ivZoomIn.setImageResource(R.drawable.zoom_in);
-        final RelativeLayout.LayoutParams zoominParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-        zoominParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-        zoominParams.addRule((SideInOutButtons == 2 ? false : true) ? RelativeLayout.ALIGN_PARENT_BOTTOM : RelativeLayout.ALIGN_PARENT_TOP);
-        addView(ivZoomIn, zoominParams);
+
+        if(SideInOutButtons == 3) {
+        	ivZoomIn.setPadding(0, pad, 0, pad);
+        	ll.addView(ivZoomIn);
+        } else {
+	        final RelativeLayout.LayoutParams zoominParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+	        zoominParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+	        zoominParams.addRule((SideInOutButtons == 2 ? false : true) ? RelativeLayout.ALIGN_PARENT_BOTTOM : RelativeLayout.ALIGN_PARENT_TOP);
+	        addView(ivZoomIn, zoominParams);
+        }
+        
         ivZoomIn.setOnClickListener(new OnClickListener(){
 			// @Override
 			public void onClick(View v) {
@@ -165,10 +182,17 @@ public class MapView extends RelativeLayout {
         final ImageView ivZoomOut = new ImageView(getContext());
         ivZoomOut.setId(R.id.whatsnew);
         ivZoomOut.setImageResource(R.drawable.zoom_out);
-        final RelativeLayout.LayoutParams zoomoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-        zoomoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-        zoomoutParams.addRule((SideInOutButtons == 2 ? false : true) ? RelativeLayout.ALIGN_PARENT_BOTTOM : RelativeLayout.ALIGN_PARENT_TOP);
-        addView(ivZoomOut, zoomoutParams);
+        
+        if(SideInOutButtons == 3) {
+	        ivZoomOut.setPadding(0, pad, 0, pad);
+        	ll.addView(ivZoomOut);
+        } else {
+	        final RelativeLayout.LayoutParams zoomoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+	        zoomoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+	        zoomoutParams.addRule((SideInOutButtons == 2 ? false : true) ? RelativeLayout.ALIGN_PARENT_BOTTOM : RelativeLayout.ALIGN_PARENT_TOP);
+	        addView(ivZoomOut, zoomoutParams);
+        }
+        
         ivZoomOut.setOnClickListener(new OnClickListener(){
 			// @Override
 			public void onClick(View v) {

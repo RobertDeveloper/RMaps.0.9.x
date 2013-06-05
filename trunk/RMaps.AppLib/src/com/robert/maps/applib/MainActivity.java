@@ -373,10 +373,9 @@ public class MainActivity extends Activity {
         
         mOverlayView = new ImageView(this);
         mOverlayView.setImageResource(R.drawable.r_overlays);
-        final RelativeLayout.LayoutParams layerParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-        layerParams.addRule(RelativeLayout.CENTER_VERTICAL);
-       	layerParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-        rl.addView(mOverlayView, layerParams);
+        final int pad = getResources().getDimensionPixelSize(R.dimen.zoom_ctrl_padding);
+        mOverlayView.setPadding(0, pad, 0, pad);
+        ((LinearLayout) mMap.findViewById(R.id.right_panel)).addView(mOverlayView);
         
         mOverlayView.setOnClickListener(new View.OnClickListener() {
 			
