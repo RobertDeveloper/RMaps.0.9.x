@@ -13,7 +13,6 @@ import android.preference.PreferenceManager;
 public class MapApplication extends Application {
 	private Locale locale = null;
 	private Locale defLocale = null;
-	private int coordinateFormat = 0;
 	
 	@Override
 	public void onCreate() {
@@ -23,8 +22,6 @@ public class MapApplication extends Application {
         Configuration config = getBaseContext().getResources().getConfiguration();
         defLocale = config.locale;
         locale = defLocale;
-        
-        coordinateFormat = Integer.valueOf(pref.getString("pref_coordformat", "0"));
         
         String lang = pref.getString("pref_locale", "");
 		if(lang.equalsIgnoreCase("zh_CN")) {
@@ -51,8 +48,6 @@ public class MapApplication extends Application {
         defLocale = config.locale;
         locale = defLocale;
         
-        coordinateFormat = Integer.valueOf(pref.getString("pref_coordformat", "0"));
-        
         String lang = pref.getString("pref_locale", "");
 		if(lang.equalsIgnoreCase("zh_CN")) {
 			locale = Locale.SIMPLIFIED_CHINESE;
@@ -66,7 +61,4 @@ public class MapApplication extends Application {
         getBaseContext().getResources().updateConfiguration(config, getBaseContext().getResources().getDisplayMetrics());
 	}
 	
-	public String convertCoord(double coordinate) {
-		return Location.convert(coordinate, coordinateFormat);
-	}
 }

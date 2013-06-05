@@ -25,11 +25,11 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.location.Location;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-import com.robert.maps.applib.MapApplication;
 import com.robert.maps.applib.R;
 
 public class Ut implements OpenStreetMapConstants, OpenStreetMapViewConstants {
@@ -232,8 +232,8 @@ public class Ut implements OpenStreetMapConstants, OpenStreetMapViewConstants {
 	}
 
 	public static String formatGeoPoint(GeoPoint point, Context ctx){
-		final MapApplication app = (MapApplication)ctx.getApplicationContext();
-		return ""+app.convertCoord(point.getLatitude())+", "+app.convertCoord(point.getLongitude());
+		final CoordFormatter cf = new CoordFormatter(ctx);
+		return cf.convertLat(point.getLatitude())+", "+cf.convertLon(point.getLongitude());
 	}
 
 	public static CharSequence formatGeoCoord(double double1) {
