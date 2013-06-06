@@ -16,7 +16,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.robert.maps.applib.R;
-import com.robert.maps.applib.utils.Ut;
+import com.robert.maps.applib.utils.CoordFormatter;
 
 public class PoiActivity extends Activity {
 	EditText mTitle, mLat, mLon, mDescr, mAlt;
@@ -24,6 +24,7 @@ public class PoiActivity extends Activity {
 	CheckBox mHidden;
 	private PoiPoint mPoiPoint;
 	private PoiManager mPoiManager;
+	private CoordFormatter mCf;
 	
 	
 	@Override
@@ -34,13 +35,42 @@ public class PoiActivity extends Activity {
 
 		if(mPoiManager == null)
 			mPoiManager = new PoiManager(this);
-
+		mCf = new CoordFormatter(this);
+		
 		mTitle = (EditText) findViewById(R.id.Title);
 		mLat = (EditText) findViewById(R.id.Lat);
 		mLon = (EditText) findViewById(R.id.Lon);
 		mAlt = (EditText) findViewById(R.id.Alt);
 		mDescr = (EditText) findViewById(R.id.Descr);
 		mHidden = (CheckBox) findViewById(R.id.Hidden);
+		
+		mLat.setHint(mCf.getHint());
+		mLat.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+			@Override
+			public void onFocusChange(View v, boolean hasFocus) {
+				if(!hasFocus) {
+					try {
+						mLat.setText(mCf.convertLat(CoordFormatter.convertTrowable(mLat.getText().toString())));
+					} catch (Exception e) {
+						mLat.setText("");
+					}
+				}
+			}
+		});
+
+		mLon.setHint(mCf.getHint());
+		mLon.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+			@Override
+			public void onFocusChange(View v, boolean hasFocus) {
+				if(!hasFocus) {
+					try {
+						mLat.setText(mCf.convertLat(CoordFormatter.convertTrowable(mLat.getText().toString())));
+					} catch (Exception e) {
+						mLat.setText("");
+					}
+				}
+			}
+		});
 
 		mSpinner = (Spinner) findViewById(R.id.spinnerCategory);
 		Cursor c = mPoiManager.getGeoDatabase().getPoiCategoryListCursor();
@@ -61,8 +91,8 @@ public class PoiActivity extends Activity {
         	mPoiPoint = new PoiPoint();
 			mTitle.setText(extras.getString("title"));
 			mSpinner.setSelection(0);
-			mLat.setText(Ut.formatGeoCoord(extras.getDouble("lat")));
-			mLon.setText(Ut.formatGeoCoord(extras.getDouble("lon")));
+			mLat.setText(mCf.convertLat(extras.getDouble("lat")));
+			mLon.setText(mCf.convertLon(extras.getDouble("lon")));
 			mAlt.setText(Double.toString(extras.getDouble("alt", 0.0)));
 			mDescr.setText(extras.getString("descr"));
 			mHidden.setChecked(false);
@@ -79,8 +109,8 @@ public class PoiActivity extends Activity {
         			break;
         		}
         	}
-         	mLat.setText(Ut.formatGeoCoord(mPoiPoint.GeoPoint.getLatitude()));
-        	mLon.setText(Ut.formatGeoCoord(mPoiPoint.GeoPoint.getLongitude()));
+         	mLat.setText(mCf.convertLat(mPoiPoint.GeoPoint.getLatitude()));
+        	mLon.setText(mCf.convertLon(mPoiPoint.GeoPoint.getLongitude()));
         	mAlt.setText(Double.toString(mPoiPoint.Alt));
         	mDescr.setText(mPoiPoint.Descr);
         	mHidden.setChecked(mPoiPoint.Hidden);
@@ -121,7 +151,7 @@ public class PoiActivity extends Activity {
 		mPoiPoint.Title = mTitle.getText().toString();
 		mPoiPoint.CategoryId = (int)mSpinner.getSelectedItemId();
 		mPoiPoint.Descr = mDescr.getText().toString();
-		mPoiPoint.GeoPoint = GeoPoint.from2DoubleString(mLat.getText().toString(), mLon.getText().toString());
+		mPoiPoint.GeoPoint = GeoPoint.fromDouble(CoordFormatter.convert(mLat.getText().toString()), CoordFormatter.convert(mLon.getText().toString()));
 		mPoiPoint.Hidden = mHidden.isChecked();
 		try {
 			mPoiPoint.Alt = Double.parseDouble(mAlt.getText().toString());

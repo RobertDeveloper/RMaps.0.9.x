@@ -39,6 +39,10 @@ public class GeoPoint implements MathConstants, GeoConstants{
 				spacerPos + 1, s.length())) * 1E6));
 	}
 
+	public static GeoPoint fromDouble(final double lat, final double lon){
+		return new GeoPoint((int)(lat* 1E6), (int)(lon* 1E6));
+	}
+
 	public static GeoPoint fromDoubleString(final String s){
 		//final int commaPos = s.indexOf(',');
 		final String[] f = s.split(",");

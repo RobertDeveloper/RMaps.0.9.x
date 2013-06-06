@@ -43,7 +43,7 @@
 		    android:id="@+id/Lat"
 		    android:layout_width="fill_parent"
 		    android:layout_height="wrap_content"
-		    android:inputType="numberSigned|numberDecimal"
+		    android:inputType="numberSigned|numberDecimal|text"
 		    android:text="@+id/Lat" >
 </EditText>
 		<TextView
@@ -57,7 +57,7 @@
 		    android:id="@+id/Lon"
 		    android:layout_width="fill_parent"
 		    android:layout_height="wrap_content"
-		    android:inputType="numberSigned|numberDecimal"
+		    android:inputType="text|numberSigned|numberDecimal"
 		    android:text="@+id/Lon" >
 </EditText>
 		<TextView
