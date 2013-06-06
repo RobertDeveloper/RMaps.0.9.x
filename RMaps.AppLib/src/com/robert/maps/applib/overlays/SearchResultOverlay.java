@@ -17,6 +17,8 @@ import android.widget.RelativeLayout.LayoutParams;
 import android.widget.TextView;
 
 import com.robert.maps.applib.R;
+import com.robert.maps.applib.utils.CoordFormatter;
+import com.robert.maps.applib.utils.Ut;
 import com.robert.maps.applib.view.TileView;
 import com.robert.maps.applib.view.TileViewOverlay;
 
@@ -26,12 +28,14 @@ public class SearchResultOverlay extends TileViewOverlay {
 	protected GeoPoint mLocation;
 	protected String mDescr;
 	private TextView mT;
+	private CoordFormatter mCf;
 
 	public SearchResultOverlay(final Context ctx) {
 		this.mDescr = "";
 		this.mPaint.setAntiAlias(true);
 		this.mT = (TextView) LayoutInflater.from(ctx).inflate(R.layout.search_bubble, null); //new Button(ctx);
 		this.mT.setLayoutParams(new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+		mCf = new CoordFormatter(ctx);
 	}
 
 	public void setLocation(final Location loc){
@@ -89,6 +93,22 @@ public class SearchResultOverlay extends TileViewOverlay {
 		}
 
 		return super.onSingleTapUp(e, mapView);
+	}
+
+	@Override
+	public boolean onLongPress(MotionEvent event, TileView mapView) {
+		mLocation = mapView.getProjection().fromPixels((int)event.getX(), (int)event.getY(), mapView.getBearing());
+		
+		mDescr = new StringBuilder()
+			.append("Lat: ")
+			.append(mCf.convertLat(mLocation.getLatitude()))
+			.append("\nLon: ")
+			.append(mCf.convertLat(mLocation.getLongitude()))
+			.append("\nAlt: ")
+			.append("\nBearing: ")
+			.toString();				
+		mapView.invalidate();
+		return true;
 	}
 
 	@Override
