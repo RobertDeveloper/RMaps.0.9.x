@@ -51,7 +51,7 @@ public interface PoiConstants {
 	public static final String UPDATE_TRACKS = "trackid = @1";
 	public static final String UPDATE_MAPS = "mapid = @1";
 
-	public static final String STAT_GET_POI_LIST = "SELECT lat, lon, points.name, descr, pointid, pointid _id, pointid ID, category.iconid, category.name || ', ' || lat || ' ' || lon poititle2 FROM points LEFT JOIN category ON category.categoryid = points.categoryid ORDER BY ";
+	public static final String STAT_GET_POI_LIST = "SELECT lat, lon, points.name, descr, pointid, pointid _id, pointid ID, category.iconid, category.name as catname FROM points LEFT JOIN category ON category.categoryid = points.categoryid ORDER BY ";
 	public static final String STAT_PoiListNotHidden = "SELECT poi.lat, poi.lon, poi.name, poi.descr, poi.pointid, poi.pointid _id, poi.pointid ID, poi.categoryid, cat.iconid FROM points poi LEFT JOIN category cat ON cat.categoryid = poi.categoryid WHERE poi.hidden = 0 AND cat.hidden = 0 "
 		+"AND cat.minzoom <= @1"
 		+ " AND poi.lon BETWEEN @2 AND @3"
