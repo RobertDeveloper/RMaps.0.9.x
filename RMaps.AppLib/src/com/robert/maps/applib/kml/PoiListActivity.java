@@ -27,17 +27,20 @@ import android.widget.AdapterView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.robert.maps.applib.R;
 import com.robert.maps.applib.kml.XMLparser.SimpleXML;
 import com.robert.maps.applib.kml.constants.PoiConstants;
+import com.robert.maps.applib.utils.CoordFormatter;
 import com.robert.maps.applib.utils.Ut;
 
 public class PoiListActivity extends ListActivity {
 	private PoiManager mPoiManager;
 	private ProgressDialog dlgWait;
 	private String mSortOrder;
+	private SimpleCursorAdapter.ViewBinder mViewBinder;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +49,7 @@ public class PoiListActivity extends ListActivity {
         registerForContextMenu(getListView());
         mPoiManager = new PoiManager(this);
 		mSortOrder = "lat asc, lon asc";
+		mViewBinder = new PoiViewBinder();
 	}
 
 	@Override
@@ -78,9 +82,29 @@ public class PoiListActivity extends ListActivity {
 
         ListAdapter adapter = new SimpleCursorAdapter(this,
                 R.layout.poilist_item, c,
-                        new String[] { "name", "iconid", "poititle2", "descr" },
+                        new String[] { "name", "iconid", "catname", "descr" },
                         new int[] { R.id.title1, R.id.pic, R.id.title2, R.id.descr});
+        ((SimpleCursorAdapter) adapter).setViewBinder(mViewBinder);
         setListAdapter(adapter);
+	}
+
+	private class PoiViewBinder implements SimpleCursorAdapter.ViewBinder {
+		private static final String CATNAME = "catname";
+		private static final String LAT = "lat";
+		private static final String LON = "lon";
+		private CoordFormatter mCf = new CoordFormatter(PoiListActivity.this.getApplicationContext());
+
+		public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
+			if(cursor.getColumnName(columnIndex).equalsIgnoreCase(CATNAME)) {
+				((TextView)view.findViewById(R.id.title2)).setText(cursor.getString(cursor.getColumnIndex(CATNAME))
+						+", "+mCf.convertLat(cursor.getDouble(cursor.getColumnIndex(LAT)))
+						+", "+mCf.convertLon(cursor.getDouble(cursor.getColumnIndex(LON)))
+			);
+				return true;
+			}
+			return false;
+		}
+		
 	}
 
 	@Override
