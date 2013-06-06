@@ -2,6 +2,14 @@
 <resources>
     <string name="whats_new_dialog_text">
 Вам нравится RMaps? Поддержите проект. Купите RMaps.Donation\n
+v.0.9.3.b10\n
++ Выбор формата координат в настройках\n
++ Возможность установить кнопки Zoom справа\n
++ Возможность закачивать в оффлайн слои\n
++ Build-in ability to download Geology and Geophysics offline maps from www.dpi.nsw.gov.au/minerals\n
+- Поправил баг линейки масштаба\n
+- Поправил баги отображения POI\n
+\n
 \n
 v.0.9.2\n
 + Открыт Google Community RMaps на Google+\n
