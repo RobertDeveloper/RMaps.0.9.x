@@ -106,7 +106,8 @@ public class TileView extends View {
 
 		public void onLongPress(MotionEvent e) {
 			for (TileViewOverlay osmvo : mOverlays) {
-				osmvo.onLongPress(e, TileView.this);
+				if(osmvo.onLongPress(e, TileView.this))
+					return;
 			}
 			
 			showContextMenu();
