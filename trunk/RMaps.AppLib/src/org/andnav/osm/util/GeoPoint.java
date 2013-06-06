@@ -160,6 +160,15 @@ public class GeoPoint implements MathConstants, GeoConstants{
 
 		return (int)(RADIUS_EARTH_METERS*tt);
 	}
+	
+	public double bearingTo(final GeoPoint other) {
+		final double lat1 = this.mLatitudeE6 / 1E6;
+		final double lon1 = this.mLongitudeE6 / 1E6;
+		final double lat2 = other.mLatitudeE6 / 1E6;
+		final double lon2 = other.mLongitudeE6 / 1E6;		
+		double brng = Math.atan2(Math.cos(lat1)*Math.sin(lat2)-Math.sin(lat1)*Math.cos(lat2)*Math.cos(lon2-lon1), Math.sin(lon2-lon1)*Math.cos(lat2));
+		return (Math.toDegrees(brng) +270) % 360;
+	}
 
 	// ===========================================================
 	// Inner and Anonymous Classes
