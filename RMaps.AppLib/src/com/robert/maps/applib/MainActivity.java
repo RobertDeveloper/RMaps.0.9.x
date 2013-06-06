@@ -182,7 +182,7 @@ public class MainActivity extends Activity {
 		this.mPoiOverlay = new PoiOverlay(this, mPoiManager, null, pref.getBoolean("pref_hidepoi", false));
 		mPoiOverlay.setTapIndex(uiState.getInt("curShowPoiId", PoiOverlay.NO_TAP));
         this.mMyLocationOverlay = new MyLocationOverlay(this);
-        this.mSearchResultOverlay = new SearchResultOverlay(this);
+        this.mSearchResultOverlay = new SearchResultOverlay(this, mMap);
         mSearchResultOverlay.fromPref(uiState);
         FillOverlays();
 		
@@ -1296,7 +1296,7 @@ public class MainActivity extends Activity {
 
 		public void onLocationChanged(Location loc) {
 			mMyLocationOverlay.setLocation(loc);
-			Ut.d("onLocationChanged " + loc.getProvider());
+			mSearchResultOverlay.setLocation(loc);
 			
 			if (loc.getProvider().equals(GPS) && mNetListener != null) {
 				getLocationManager().removeUpdates(mNetListener);
