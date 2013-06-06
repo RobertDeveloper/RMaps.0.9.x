@@ -11,6 +11,7 @@ v.0.9.3.b9\n
 + Build-in ability to download Geology and Geophysics offline maps from www.dpi.nsw.gov.au/minerals\n
 + Ability set Zoom controls at the right\n
 + Ability download to offline a layers\n
++ Coordinates formatting preference\n
 - Fix scale bar bug\n
 - Fix some POI bug\n
 \n
