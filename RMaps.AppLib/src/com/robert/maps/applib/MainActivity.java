@@ -244,7 +244,25 @@ public class MainActivity extends Activity {
 				}
 			}
 		} else if("SHOW_MAP_ID".equalsIgnoreCase(queryAction)) {
-			mMapId = queryIntent.getExtras().getString(MAPNAME);
+			final Bundle bundle = queryIntent.getExtras(); 
+			mMapId = bundle.getString(MAPNAME);
+			if(bundle.containsKey("center")) {
+				try {
+					final GeoPoint geo = GeoPoint.fromDoubleString(bundle.getString("center"));
+					mMap.getController().setCenter(geo);
+				} catch (Exception e) {
+				}
+			}
+			if(bundle.containsKey("zoom")) {
+				try {
+					final int zoom = Integer.valueOf(bundle.getString("zoom"));
+					mMap.getController().setZoom(zoom);
+					SharedPreferences.Editor editor = uiState.edit();
+					editor.putInt("ZoomLevel", mMap.getZoomLevel());
+					editor.commit();
+				} catch (Exception e) {
+				}
+			}
 			queryIntent.setAction("");
 		}
 	}
@@ -259,7 +277,26 @@ public class MainActivity extends Activity {
         } else if (ACTION_SHOW_POINTS.equalsIgnoreCase(queryAction)) {
 			ActionShowPoints(intent);
 		} else if("SHOW_MAP_ID".equalsIgnoreCase(queryAction)) {
-			mMapId = intent.getExtras().getString(MAPNAME);
+			final Bundle bundle = intent.getExtras(); 
+			mMapId = bundle.getString(MAPNAME);
+			if(bundle.containsKey("center")) {
+				try {
+					final GeoPoint geo = GeoPoint.fromDoubleString(bundle.getString("center"));
+					mMap.getController().setCenter(geo);
+				} catch (Exception e) {
+				}
+			}
+			if(bundle.containsKey("zoom")) {
+				try {
+					final int zoom = Integer.valueOf(bundle.getString("zoom"));
+					mMap.getController().setZoom(zoom);
+					SharedPreferences uiState = getPreferences(Activity.MODE_PRIVATE);
+					SharedPreferences.Editor editor = uiState.edit();
+					editor.putInt("ZoomLevel", mMap.getZoomLevel());
+					editor.commit();
+				} catch (Exception e) {
+				}
+			}
         }
 	}
 

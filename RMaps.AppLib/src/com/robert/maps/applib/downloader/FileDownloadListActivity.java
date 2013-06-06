@@ -68,7 +68,7 @@ public class FileDownloadListActivity extends ListActivity {
 		mDownloadFile = new DownloadFile();
 		try {
 			mProgressDialog.setMessage(json.getString("listtitle"));
-			mDownloadFile.execute(json.getString("source"), json.getString("filename"), json.getString("mapname"));
+			mDownloadFile.execute(json.getString("source"), json.getString("filename"), json.getString("mapname"), json.optString("center", ""), json.optString("zoom", ""));
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -80,6 +80,8 @@ public class FileDownloadListActivity extends ListActivity {
 	private class DownloadFile extends AsyncTask<String, Integer, String> {
 		private String fileName;
 		private String mapName;
+		private String mapCenter = "";
+		private String mapZoom = "";
 
 		@Override
 	    protected String doInBackground(String... sUrl) {
@@ -87,6 +89,8 @@ public class FileDownloadListActivity extends ListActivity {
 	        try {
 	        	fileName = sUrl[1];
 	        	mapName = sUrl[2];
+	        	mapCenter = sUrl[3];
+	        	mapZoom = sUrl[4];
 
 	        	URL url = new URL(sUrl[0]);
 	            URLConnection connection = url.openConnection();
@@ -160,11 +164,15 @@ public class FileDownloadListActivity extends ListActivity {
 				
 				mProgressDialog.dismiss();
 	
-				startActivity(new Intent(FileDownloadListActivity.this, MainActivity.class)
+				final Intent intent = new Intent(FileDownloadListActivity.this, MainActivity.class)
 				.setAction("SHOW_MAP_ID")
 				.putExtra("MapName", "usermap_"+name)
-				.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
-				);
+				.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+				if(!mapCenter.equalsIgnoreCase(""))
+					intent.putExtra("center", mapCenter);
+				if(!mapZoom.equalsIgnoreCase(""))
+					intent.putExtra("zoom", mapZoom);
+				startActivity(intent);
 				finish();
 			}
 		}
