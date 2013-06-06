@@ -64,9 +64,9 @@ public class PoiActivity extends Activity {
 			public void onFocusChange(View v, boolean hasFocus) {
 				if(!hasFocus) {
 					try {
-						mLat.setText(mCf.convertLat(CoordFormatter.convertTrowable(mLat.getText().toString())));
+						mLon.setText(mCf.convertLon(CoordFormatter.convertTrowable(mLon.getText().toString())));
 					} catch (Exception e) {
-						mLat.setText("");
+						mLon.setText("");
 					}
 				}
 			}
