@@ -438,14 +438,18 @@ public class MainActivity extends Activity {
         mOverlayView.setOnLongClickListener(new View.OnLongClickListener() {
 			
 			public boolean onLongClick(View v) {
-				if(mTileSource.YANDEX_TRAFFIC_ON != 1 && mPrefOverlayButtonBehavior == 0)
+				if(mTileSource.YANDEX_TRAFFIC_ON != 1 && mPrefOverlayButtonBehavior == 0) {
+					mMap.getTileView().mPoiMenuInfo.EventGeoPoint = null;
 					v.showContextMenu();
+				}
 				return true;
 			}
 		});
         mOverlayView.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
 			
 			public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
+				mMap.getTileView().mPoiMenuInfo.EventGeoPoint = null;
+				
 				menu.setHeaderTitle(R.string.menu_title_overlays);
 				menu.add(Menu.NONE, R.id.hide_overlay, Menu.NONE, R.string.menu_hide_overlay);
 				
@@ -1034,15 +1038,20 @@ public class MainActivity extends Activity {
 
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
-		if(menuInfo instanceof TileView.PoiMenuInfo && ((TileView.PoiMenuInfo) menuInfo).MarkerIndex > PoiOverlay.NO_TAP) {
-			mMarkerIndex = ((TileView.PoiMenuInfo) menuInfo).MarkerIndex;
-			menu.add(0, R.id.menu_editpoi, 0, getText(R.string.menu_edit));
-			menu.add(0, R.id.menu_hide, 0, getText(R.string.menu_hide));
-			menu.add(0, R.id.menu_deletepoi, 0, getText(R.string.menu_delete));
-			menu.add(0, R.id.menu_share, 0, getText(R.string.menu_share));
-			menu.add(0, R.id.menu_toradar, 0, getText(R.string.menu_toradar));
-		} else {
-			menu.add(0, R.id.menu_addpoi, 0, getText(R.string.menu_addpoi));
+		if(menuInfo instanceof TileView.PoiMenuInfo) {
+			final TileView.PoiMenuInfo info = (TileView.PoiMenuInfo) menuInfo;
+			if(info.EventGeoPoint != null) {
+				if(info.MarkerIndex > PoiOverlay.NO_TAP) {
+					mMarkerIndex = ((TileView.PoiMenuInfo) menuInfo).MarkerIndex;
+					menu.add(0, R.id.menu_editpoi, 0, getText(R.string.menu_edit));
+					menu.add(0, R.id.menu_hide, 0, getText(R.string.menu_hide));
+					menu.add(0, R.id.menu_deletepoi, 0, getText(R.string.menu_delete));
+					menu.add(0, R.id.menu_share, 0, getText(R.string.menu_share));
+					menu.add(0, R.id.menu_toradar, 0, getText(R.string.menu_toradar));
+				} else {
+					menu.add(0, R.id.menu_addpoi, 0, getText(R.string.menu_addpoi));
+				}
+			}
 		}
 
 		super.onCreateContextMenu(menu, v, menuInfo);

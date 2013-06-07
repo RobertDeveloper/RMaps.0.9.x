@@ -128,43 +128,44 @@ public class SearchResultOverlay extends TileViewOverlay {
 
 	@Override
 	public boolean onLongPress(MotionEvent event, TileView mapView) {
-		mLocation = mapView.getProjection().fromPixels((int)event.getX(), (int)event.getY(), mapView.getBearing());
-		mElevation = 0.0;
-		
-		mRequestQueue.add(new JsonObjectRequest("http://maps.googleapis.com/maps/api/elevation/json?locations="
-		+ mLocation.toDoubleString()
-		+ "&sensor=true", null, new Listener<JSONObject>() {
-			@Override
-			public void onResponse(JSONObject response) {
-				if(mLocation != null) {
-					try {
-						mElevation = response.getJSONArray("results").getJSONObject(0).getDouble("elevation");
-					} catch (JSONException e) {
-						mElevation = 0.0;
-					}
-					mDescr = new StringBuilder()
-					.append("Lat: ")
-					.append(mCf.convertLat(mLocation.getLatitude()))
-					.append("\nLon: ")
-					.append(mCf.convertLat(mLocation.getLongitude()))
-					.append("\nElev: ")
-					.append(mElevation == 0.0 ? "n/a" : mDf.formatElevation(mElevation))
-					.append(mCurrLocation == null ? "" : "\nBearing: "+String.format(Locale.UK, "%.1f°", mCurrLocation.bearingTo(mLocation))+"\nDist: "+mDf.formatDistance(mCurrLocation.distanceTo(mLocation)))
-					.toString();				
-					mMapView.invalidate();
-				}
-			}}, null));
-		
-		mDescr = new StringBuilder()
-			.append("Lat: ")
-			.append(mCf.convertLat(mLocation.getLatitude()))
-			.append("\nLon: ")
-			.append(mCf.convertLat(mLocation.getLongitude()))
-			.append("\nElev: n/a")
-			.append(mCurrLocation == null ? "" : "\nBearing: "+String.format(Locale.UK, "%.1f°", mCurrLocation.bearingTo(mLocation))+"\nDist: "+mDf.formatDistance(mCurrLocation.distanceTo(mLocation)))
-			.toString();				
-		mapView.invalidate();
-		return true;
+		return false;
+//		mLocation = mapView.getProjection().fromPixels((int)event.getX(), (int)event.getY(), mapView.getBearing());
+//		mElevation = 0.0;
+//		
+//		mRequestQueue.add(new JsonObjectRequest("http://maps.googleapis.com/maps/api/elevation/json?locations="
+//		+ mLocation.toDoubleString()
+//		+ "&sensor=true", null, new Listener<JSONObject>() {
+//			@Override
+//			public void onResponse(JSONObject response) {
+//				if(mLocation != null) {
+//					try {
+//						mElevation = response.getJSONArray("results").getJSONObject(0).getDouble("elevation");
+//					} catch (JSONException e) {
+//						mElevation = 0.0;
+//					}
+//					mDescr = new StringBuilder()
+//					.append("Lat: ")
+//					.append(mCf.convertLat(mLocation.getLatitude()))
+//					.append("\nLon: ")
+//					.append(mCf.convertLat(mLocation.getLongitude()))
+//					.append("\nElev: ")
+//					.append(mElevation == 0.0 ? "n/a" : mDf.formatElevation(mElevation))
+//					.append(mCurrLocation == null ? "" : "\nBearing: "+String.format(Locale.UK, "%.1f°", mCurrLocation.bearingTo(mLocation))+"\nDist: "+mDf.formatDistance(mCurrLocation.distanceTo(mLocation)))
+//					.toString();				
+//					mMapView.invalidate();
+//				}
+//			}}, null));
+//		
+//		mDescr = new StringBuilder()
+//			.append("Lat: ")
+//			.append(mCf.convertLat(mLocation.getLatitude()))
+//			.append("\nLon: ")
+//			.append(mCf.convertLat(mLocation.getLongitude()))
+//			.append("\nElev: n/a")
+//			.append(mCurrLocation == null ? "" : "\nBearing: "+String.format(Locale.UK, "%.1f°", mCurrLocation.bearingTo(mLocation))+"\nDist: "+mDf.formatDistance(mCurrLocation.distanceTo(mLocation)))
+//			.toString();				
+//		mapView.invalidate();
+//		return true;
 	}
 
 	@Override
