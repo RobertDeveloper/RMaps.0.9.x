@@ -4,7 +4,7 @@
   <string-array name="overlay_button_visibility">
     <item>Всегда показывать</item>
     <item>Всегда скрывать</item>
-    <item>Показывать только для пользовательский карт</item>
+    <item>Показывать только для пользовательских карт</item>
   </string-array>
   <string-array name="overlay_button_behavior">
     <item>Скрыть/показать слой, долгое касание открывает меню выбора слоев</item>

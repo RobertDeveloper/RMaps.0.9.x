@@ -267,4 +267,7 @@ How to and FAQ you can find on http://robertdeveloper.blogspot.com/\n</string>
     <string name="pref_coordformat_summary">Latitude, longitude format for display</string>
     <string name="dist">Distance</string>
     <string name="azimuth">Azimuth</string>
+    <string name="tostart">to Start</string>
+    <string name="toend">to End</string>
+    <string name="toprev">to Previous</string>
 </resources>

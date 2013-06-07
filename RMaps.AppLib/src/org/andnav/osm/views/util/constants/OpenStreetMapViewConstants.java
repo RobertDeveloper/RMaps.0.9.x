@@ -11,7 +11,7 @@ public interface OpenStreetMapViewConstants {
 	// Final Fields
 	// ===========================================================
 
-	public static final boolean DEBUGMODE = true;
+	public static final boolean DEBUGMODE = false;
 
 
 	public static final int MAPTILE_LATITUDE_INDEX = 0;

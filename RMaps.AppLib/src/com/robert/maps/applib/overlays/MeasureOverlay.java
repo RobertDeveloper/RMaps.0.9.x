@@ -34,7 +34,6 @@ public class MeasureOverlay extends TileViewOverlay {
 	
 	private Paint mPaint = new Paint();
 	private ArrayList<DistPoint> points = new ArrayList<DistPoint>();
-	//private int mPointHolded = -1;
 	private Bitmap mCornerMarker = null;
 	private float mDistance = 0;
 	private TextView mT;
@@ -43,6 +42,12 @@ public class MeasureOverlay extends TileViewOverlay {
 	private CoordFormatter mCf;
 	private DistPoint mLocation;
 	private CharSequence mDescr;
+	
+	private final String DIST_START;
+	private final String DIST_END;
+	private final String DIST_PREV;
+	private final String AZI;
+	static private final String DIV = ": ";
 	
 	public MeasureOverlay(Context ctx, View bottomView) {
 		super();
@@ -62,6 +67,11 @@ public class MeasureOverlay extends TileViewOverlay {
 		msgbox.setVisibility(View.VISIBLE);
 		this.mT = (TextView) LayoutInflater.from(ctx).inflate(R.layout.search_bubble, null);
 		this.mT.setLayoutParams(new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+		
+		DIST_START = ctx.getResources().getString(R.string.tostart);
+		DIST_END = ctx.getResources().getString(R.string.toend);
+		DIST_PREV = ctx.getResources().getString(R.string.toprev);
+		AZI = ctx.getResources().getString(R.string.azimuth);
 		
 		ShowDistance();
 	}
@@ -174,12 +184,6 @@ public class MeasureOverlay extends TileViewOverlay {
 			Point = point;
 		}
 	}
-	
-	static private final String DIST_START = "to Start";
-	static private final String DIST_END = "to End";
-	static private final String DIST_PREV = "to Previous";
-	static private final String AZI = "Azimut";
-	static private final String DIV = ": ";
 	
 	private void setDescr() {
 		if(mLocation != null)
