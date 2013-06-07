@@ -7,7 +7,9 @@ Buy RMaps.Donation on Google Play Store</b>\n
 Do you want to help me translate the app interface? Write me to email robertk506@gmail.com\n
 \n
 \n
-v.0.9.3.b11\n
+v.0.9.3.b12\n
++ Been improved measure tool. When you click on each point of the measurement line you can see the coordinates, distance, azimuth\n
++ Ability to use the app on a devices without GPS\n
 + Long press on the map now shows the coordinates, altitude (online only), bearing and distance from your current position. Clicking on a black bubble shows the context menu.\n
 + Coordinates formatting preference\n
 + Ability set Zoom controls at the right\n

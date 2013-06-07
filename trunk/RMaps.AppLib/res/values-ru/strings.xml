@@ -77,7 +77,7 @@
   <string name="menu_categorylist">Категория</string>
   <string name="menu_import">Импорт</string>
   <string name="menu_deleteall">Удалить все</string>
-  <string name="menu_area_selector">Загрузчик</string>
+  <string name="menu_area_selector">Загрузчик онлайн карт</string>
   <string name="no_traffic">При таком значении зума пробки недоступны</string>
   <string name="auto_follow_enabled">Авто следование за текущим положением включено</string>
   <string name="auto_follow_disabled">Авто следование за текущим положением выключено</string>
@@ -261,6 +261,11 @@ http://c.tile.openstreetmap.org/{z}/{x}/{y}.png\n
   <string name="menu_downloadprepared">Загрузить оффлайн карты</string>
   <string name="pref_circle_distance">Круги расстояния</string>
   <string name="pref_circle_distance_summary">Круги появляются вокруг текущего местоположения и показывают расстояния кратные линейке масштаба</string>
-    <string name="dist">Расстояние</string>
-    <string name="azimuth">Азимут</string>
+  <string name="pref_coordformat">Формат координат</string>
+  <string name="pref_coordformat_summary">Формат отображения широты и долготы</string>
+  <string name="dist">Дистанция</string>
+  <string name="azimuth">Азимут</string>
+  <string name="tostart">до Начала</string>
+  <string name="toend">до Конца</string>
+  <string name="toprev">до Предид</string>
 </resources>
