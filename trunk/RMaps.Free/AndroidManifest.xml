@@ -3,7 +3,7 @@
     android:installLocation="auto"
     android:sharedUserId="@string/app_user_id"
     android:sharedUserLabel="@string/app_user_label"
-    android:versionCode="8129"
+    android:versionCode="8130"
     android:versionName="0.9.3.b11" >
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -15,13 +15,14 @@
 
     <uses-sdk
         android:minSdkVersion="3"
-        android:targetSdkVersion="8" />
+        android:targetSdkVersion="10" />
 
     <supports-screens
         android:anyDensity="true"
         android:largeScreens="true"
         android:normalScreens="true"
         android:resizeable="true"
+        android:xlargeScreens="true"
         android:smallScreens="true" />
 
     <application

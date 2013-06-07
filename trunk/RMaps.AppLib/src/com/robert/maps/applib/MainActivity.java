@@ -150,6 +150,7 @@ public class MainActivity extends Activity {
 
         //mTracker = GoogleAnalyticsTracker.getInstance();
         //mTracker.startNewSession("UA-10715419-3", 20, this);
+        
 
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		CreateContentView();

@@ -106,11 +106,6 @@ public class SearchResultOverlay extends TileViewOverlay {
 			mT.draw(c);
 			
 			c.restore();
-			
-			final Rect rect = new Rect(screenCoords.x - mT.getMeasuredWidth() / 2, screenCoords.y - mT.getMeasuredHeight()/* + 5*/, screenCoords.x + mT.getMeasuredWidth() / 2, screenCoords.y/* - 20*/);
-			c.drawRect(rect, mPaintLine);
-			//c.drawLine(screenCoords.x - mT.getMeasuredWidth() / 2, screenCoords.y - mT.getMeasuredHeight() + 5, screenCoords.x + mT.getMeasuredWidth() / 2, screenCoords.y - 20, mPaintLine);
-			
 		}
 	}
 
