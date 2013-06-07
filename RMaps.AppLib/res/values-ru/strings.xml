@@ -261,4 +261,6 @@ http://c.tile.openstreetmap.org/{z}/{x}/{y}.png\n
   <string name="menu_downloadprepared">Загрузить оффлайн карты</string>
   <string name="pref_circle_distance">Круги расстояния</string>
   <string name="pref_circle_distance_summary">Круги появляются вокруг текущего местоположения и показывают расстояния кратные линейке масштаба</string>
+    <string name="dist">Расстояние</string>
+    <string name="azimuth">Азимут</string>
 </resources>

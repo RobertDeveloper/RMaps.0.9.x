@@ -46,6 +46,12 @@ public class SearchResultOverlay extends TileViewOverlay {
 	private double mElevation;
 	private MapView mMapView;
 	private boolean mSearchBubble;
+	
+	private final String LAT;
+	private final String LON;
+	private final String ALT;
+	private final String DIST;
+	private final String AZIMUT;
 
 	public SearchResultOverlay(final Context ctx, MapView mapView) {
 		this.mDescr = "";
@@ -62,6 +68,12 @@ public class SearchResultOverlay extends TileViewOverlay {
 		mPaintLine.setStrokeWidth(2);
 		mPaintLine.setStyle(Paint.Style.STROKE);
 		mPaintLine.setColor(ctx.getResources().getColor(R.color.line_to_gps));
+		
+		LAT = ctx.getResources().getString(R.string.PoiLat);
+		LON = ctx.getResources().getString(R.string.PoiLon);
+		ALT = ctx.getResources().getString(R.string.PoiAlt);
+		DIST = ctx.getResources().getString(R.string.dist);
+		AZIMUT = ctx.getResources().getString(R.string.azimuth);
 }
 
 	public void setLocation(final Location loc){
@@ -133,7 +145,6 @@ public class SearchResultOverlay extends TileViewOverlay {
 			if(rect.contains((int)e.getX(), (int)e.getY())) {
 				mapView.mPoiMenuInfo.EventGeoPoint = mLocation;
 				mapView.mPoiMenuInfo.MarkerIndex = PoiOverlay.NO_TAP;
-				mapView.mPoiMenuInfo.Elevation = mElevation;
 				mapView.showContextMenu();
 			}
 			
@@ -174,13 +185,13 @@ public class SearchResultOverlay extends TileViewOverlay {
 	private void setDescr() {
 		if(mLocation != null)
 			mDescr = new StringBuilder()
-			.append("Lat: ")
+			.append(LAT).append(": ")
 			.append(mCf.convertLat(mLocation.getLatitude()))
-			.append("\nLon: ")
-			.append(mCf.convertLat(mLocation.getLongitude()))
-			.append("\nElev: ")
+			.append("\n").append(LON).append(": ")
+			.append(mCf.convertLon(mLocation.getLongitude()))
+			.append("\n").append(ALT).append(": ")
 			.append(mElevation == 0.0 ? "n/a" : mDf.formatElevation(mElevation))
-			.append(mCurrLocation == null ? "" : "\nBearing: "+String.format(Locale.UK, "%.1f°", mCurrLocation.bearingTo(mLocation))+"\nDist: "+mDf.formatDistance(mCurrLocation.distanceTo(mLocation)))
+			.append(mCurrLocation == null ? "" : String.format(Locale.UK, "\n%s: %.1f°", AZIMUT, mCurrLocation.bearingTo(mLocation))+"\n"+DIST+": "+mDf.formatDistance(mCurrLocation.distanceTo(mLocation)))
 			.toString();				
 	}
 

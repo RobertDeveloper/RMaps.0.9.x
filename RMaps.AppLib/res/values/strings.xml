@@ -265,4 +265,6 @@ How to and FAQ you can find on http://robertdeveloper.blogspot.com/\n</string>
     <string name="pref_circle_distance_summary">Rings appear  around your location that show distance like scale indicator</string>
     <string name="pref_coordformat">Coordinates format</string>
     <string name="pref_coordformat_summary">Latitude, longitude format for display</string>
+    <string name="dist">Distance</string>
+    <string name="azimuth">Azimuth</string>
 </resources>
