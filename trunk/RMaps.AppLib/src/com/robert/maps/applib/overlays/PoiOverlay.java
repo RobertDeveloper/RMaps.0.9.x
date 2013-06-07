@@ -268,13 +268,13 @@ public class PoiOverlay extends TileViewOverlay {
 	}
 
 	@Override
-	public boolean onLongPress(MotionEvent event, TileView mapView) {
+	public int onLongPress(MotionEvent event, TileView mapView) {
 		final int id = getMarkerAtPoint((int)event.getX(), (int)event.getY(), mapView);
 		mapView.mPoiMenuInfo.MarkerIndex = id;
 		mapView.mPoiMenuInfo.EventGeoPoint = mapView.getProjection().fromPixels((int)event.getX(), (int)event.getY(), mapView.getBearing());
 		if (id > NO_TAP)
-			if (onLongLongPress(id))
-				return true;
+			return 1;
+			//if (onLongLongPress(id))
 
 		return super.onLongPress(event, mapView);
 	}

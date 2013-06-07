@@ -7,8 +7,8 @@ Buy RMaps.Donation on Google Play Store</b>\n
 Do you want to help me translate the app interface? Write me to email robertk506@gmail.com\n
 \n
 \n
-v.0.9.3.b10\n
-+ Coordinates formatting preference\n
+v.0.9.3.b11\n
++ Долгое нажатие на карту показывает теперь координаты, высоту (онлайн только), азимут и расстояние от текущей позиции. Нажатие на черный пузырь показывает контекстное меню.\n
 + Ability set Zoom controls at the right\n
 + Ability download to offline a layers\n
 + Build-in ability to download Geology and Geophysics offline maps from www.dpi.nsw.gov.au/minerals\n

@@ -157,7 +157,7 @@ public class MainActivity extends Activity {
 		mPoiManager = new PoiManager(this);
 		mLocationListener = new SampleLocationListener();
 		mMap.setMoveListener(mMoveListener);
-		if(!OpenStreetMapViewConstants.DEBUGMODE) // эмулятор стал виснуть на след строчке
+		//if(!OpenStreetMapViewConstants.DEBUGMODE) // эмулятор стал виснуть на след строчке
 			mOrientationSensorManager = (SensorManager)getSystemService(Context.SENSOR_SERVICE);
 
 		final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
@@ -676,7 +676,10 @@ public class MainActivity extends Activity {
 		SharedPreferences uiState = getPreferences(Activity.MODE_PRIVATE);
 		SharedPreferences.Editor editor = uiState.edit();
 		editor.putString("MapName", mTileSource.ID);
-		editor.putString("OverlayID", mTileOverlay == null ? mTileSource.getOverlayName() : mTileOverlay.getTileSource().ID);
+		try {
+			editor.putString("OverlayID", mTileOverlay == null ? mTileSource.getOverlayName() : mTileOverlay.getTileSource().ID);
+		} catch (Exception e) {
+		}
 		editor.putBoolean("ShowOverlay", mShowOverlay);
 		editor.putInt("Latitude", point.getLatitudeE6());
 		editor.putInt("Longitude", point.getLongitudeE6());

@@ -86,8 +86,11 @@ public abstract class TileViewOverlay {
 	 * By default does nothing (<code>return false</code>). If you handled the Event, return <code>true</code>, otherwise return <code>false</code>.
 	 * If you returned <code>true</code> none of the following Overlays or the underlying {@link OpenStreetMapView} has the chance to handle this event. 
 	 */
-	public boolean onLongPress(MotionEvent e, TileView openStreetMapView) {
-		return false;
+	public int onLongPress(MotionEvent e, TileView openStreetMapView) {
+		// 0 - не блокировать ничего, событие не обработано
+		// 1 - событие обработано, блокировать обработку в других оверле€х, Ќ≈ блокировать вызов контекстного меню
+		// 2 - событие обработано, блокировать обработку в других оверле€х и блокировать вызов контекстного меню
+		return 0;
 	}
 	
 	public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY, final TileView tileView) {
