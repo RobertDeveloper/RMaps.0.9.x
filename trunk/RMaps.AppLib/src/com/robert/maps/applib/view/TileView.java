@@ -219,6 +219,7 @@ public class TileView extends View {
 	public class PoiMenuInfo implements ContextMenuInfo {
 		public int MarkerIndex;
 		public GeoPoint EventGeoPoint;
+		public double Elevation;
 
 		public PoiMenuInfo(int markerIndex) {
 			super();

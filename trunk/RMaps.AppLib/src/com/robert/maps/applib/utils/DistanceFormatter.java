@@ -14,7 +14,8 @@ public class DistanceFormatter {
 	private String mUnitM, mUnitKM;
 	static final public int FT_IN_ML = 5280;
 	static final public int M_IN_KM = 1000;
-	static final String ELEV_FORMAT = "%d %s";
+	static final String ELEV_FORMAT = "%.1f %s";
+	static final double FT_IN_M = 3.281;
 
 	public DistanceFormatter(Context ctx) {
 		super();
@@ -33,17 +34,17 @@ public class DistanceFormatter {
 	@SuppressLint("DefaultLocale")
 	public String formatElevation(double mElevation) {
 		if(mUnits == 0)
-			return String.format(Locale.UK, ELEV_FORMAT, (int)mElevation, mUnitM);
+			return String.format(Locale.UK, ELEV_FORMAT, mElevation, mUnitM);
 		else
-			return String.format(Locale.UK, ELEV_FORMAT, (int)(mElevation / FT_IN_ML), mUnitM);
+			return String.format(Locale.UK, ELEV_FORMAT, (mElevation * FT_IN_M), mUnitM);
 	}
 
-	public String formatDistance(float dist) {
+	public String formatDistance(double dist) {
 		final String[] str = formatDistance2(dist);
 		return str[0]+" "+str[1];
 	}
 
-	public String[] formatDistance2(float dist) {
+	public String[] formatDistance2(double dist) {
 		final String[] str = new String[2];
 		if(mUnits == 0) {
 			if(dist < M_IN_KM) {

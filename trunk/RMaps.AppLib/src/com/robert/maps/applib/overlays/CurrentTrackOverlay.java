@@ -122,7 +122,7 @@ public class CurrentTrackOverlay extends TileViewOverlay {
 					final Cursor c = db.rawQuery("SELECT lat, lon FROM trackpoints ORDER BY id", null);
 					
 					mPath = mBasePj.toPixelsTrackPoints(c, mBaseCoords, mBaseLocation);
-					if(mPath.isEmpty())
+					if(mPath != null && mPath.isEmpty())
 						mPath = null;
 					
 					db.close();
