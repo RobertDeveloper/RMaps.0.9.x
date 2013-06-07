@@ -177,7 +177,7 @@
         <CheckBoxPreference android:key="pref_drawtilegrid" android:summary="@string/pref_drawtilegrid_summary" android:title="@string/pref_drawtilegrid" android:defaultValue="false"/>
         <CheckBoxPreference android:summary="@string/pref_line_gps_summary" android:key="pref_line_gps" android:title="@string/pref_line_gps" android:defaultValue="false"/>
         <CheckBoxPreference android:key="pref_circle_distance" android:summary="@string/pref_circle_distance_summary" android:title="@string/pref_circle_distance" android:defaultValue="true"/>
-        <ListPreference android:title="@string/pref_coordformat" android:summary="@string/pref_coordformat_summary" android:key="pref_coordformat" android:entryValues="@array/pref_coordformat_values" android:entries="@array/pref_coordformat_titles" android:defaultValue='"0"'/>
+        <ListPreference android:title="@string/pref_coordformat" android:summary="@string/pref_coordformat_summary" android:key="pref_coordformat" android:entryValues="@array/pref_coordformat_values" android:entries="@array/pref_coordformat_titles" android:defaultValue='0'/>
         
         
         </PreferenceCategory>

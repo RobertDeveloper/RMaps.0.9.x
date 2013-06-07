@@ -4,7 +4,7 @@
         "listtitle": "NSW Geology (160 MB)",
         "mapname": "NSW Geology",
         "filename": "NSWGeology.sqlitedb",
-        "source": "http://dwh.minerals.nsw.gov.au/CI/download.php?filename=NSWGeology&extension=sqlitedb&info=ANDROD",
+        "source": "http://dwh.minerals.nsw.gov.au/CI/download.php?filename=NSWGeology&extension=sqlitedb&info=ANDROD ",
         "owner": "NSW Geological Survey http://www.dpi.nsw.gov.au/minerals", 
         "center": "-32.379378,146.781712",
         "zoom": "6"

@@ -53,6 +53,7 @@
   <string-array name="zoomctrl_pref_title">
     <item>Unten</item>
     <item>Oben</item>
+    <item>Rechts</item>
     <item>Ausblenden</item>
   </string-array>
   <string-array name="units_pref_title">

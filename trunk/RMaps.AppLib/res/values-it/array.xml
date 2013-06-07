@@ -53,6 +53,7 @@
   <string-array name="zoomctrl_pref_title">
     <item>Sotto</item>
     <item>Sopra</item>
+    <item>Destra</item>
     <item>Nascondi</item>
   </string-array>
   <string-array name="units_pref_title">
