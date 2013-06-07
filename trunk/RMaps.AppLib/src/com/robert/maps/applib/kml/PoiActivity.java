@@ -1,5 +1,7 @@
 package com.robert.maps.applib.kml;
 
+import java.util.Locale;
+
 import org.andnav.osm.util.GeoPoint;
 
 import android.app.Activity;
@@ -93,7 +95,7 @@ public class PoiActivity extends Activity {
 			mSpinner.setSelection(0);
 			mLat.setText(mCf.convertLat(extras.getDouble("lat")));
 			mLon.setText(mCf.convertLon(extras.getDouble("lon")));
-			mAlt.setText(Double.toString(extras.getDouble("alt", 0.0)));
+			mAlt.setText(String.format(Locale.UK, "%.1f", extras.getDouble("alt", 0.0)));
 			mDescr.setText(extras.getString("descr"));
 			mHidden.setChecked(false);
         }else{
@@ -111,7 +113,7 @@ public class PoiActivity extends Activity {
         	}
          	mLat.setText(mCf.convertLat(mPoiPoint.GeoPoint.getLatitude()));
         	mLon.setText(mCf.convertLon(mPoiPoint.GeoPoint.getLongitude()));
-        	mAlt.setText(Double.toString(mPoiPoint.Alt));
+        	mAlt.setText(String.format(Locale.UK, "%.1f", mPoiPoint.Alt));
         	mDescr.setText(mPoiPoint.Descr);
         	mHidden.setChecked(mPoiPoint.Hidden);
         }
