@@ -145,6 +145,7 @@ public class SearchResultOverlay extends TileViewOverlay {
 			if(rect.contains((int)e.getX(), (int)e.getY())) {
 				mapView.mPoiMenuInfo.EventGeoPoint = mLocation;
 				mapView.mPoiMenuInfo.MarkerIndex = PoiOverlay.NO_TAP;
+				mapView.mPoiMenuInfo.Elevation = mElevation;
 				mapView.showContextMenu();
 			}
 			

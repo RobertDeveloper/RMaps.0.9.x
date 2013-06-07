@@ -1089,8 +1089,11 @@ public class MainActivity extends Activity {
 				FillOverlays();
 		        setTitle();
 			} else if (item.getItemId() == R.id.menu_addpoi) {
-				GeoPoint point = ((TileView.PoiMenuInfo) item.getMenuInfo()).EventGeoPoint;
-				startActivityForResult((new Intent(this, PoiActivity.class)).putExtra("lat", point.getLatitude()).putExtra("lon", point.getLongitude())
+				TileView.PoiMenuInfo info = (TileView.PoiMenuInfo) item.getMenuInfo(); //).EventGeoPoint;
+				startActivityForResult((new Intent(this, PoiActivity.class))
+						.putExtra("lat", info.EventGeoPoint.getLatitude())
+						.putExtra("lon", info.EventGeoPoint.getLongitude())
+						.putExtra("alt", info.Elevation)
 						.putExtra("title", "POI"), R.id.menu_addpoi);
 			} else if (item.getItemId() == R.id.menu_editpoi) {
 				startActivityForResult((new Intent(this, PoiActivity.class)).putExtra("pointid", mMarkerIndex),
