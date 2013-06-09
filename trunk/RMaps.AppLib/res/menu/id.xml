@@ -45,5 +45,7 @@
     </item>
     <item android:id="@+id/menu_showinfo">
     </item>
+    <item android:id="@+id/menu_showlineinfo">
+    </item>
     
 </menu>

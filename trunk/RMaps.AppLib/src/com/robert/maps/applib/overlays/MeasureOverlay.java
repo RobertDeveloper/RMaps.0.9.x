@@ -7,13 +7,16 @@ import java.util.Locale;
 import org.andnav.osm.util.GeoPoint;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
+import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.preference.PreferenceManager;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -24,6 +27,7 @@ import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
 import android.widget.TextView;
 
+import com.robert.maps.applib.MainActivity;
 import com.robert.maps.applib.R;
 import com.robert.maps.applib.utils.CoordFormatter;
 import com.robert.maps.applib.utils.DistanceFormatter;
@@ -33,6 +37,7 @@ import com.robert.maps.applib.view.TileViewOverlay;
 public class MeasureOverlay extends TileViewOverlay {
 	
 	private Paint mPaint = new Paint();
+	private Paint mPaintText;
 	private ArrayList<DistPoint> points = new ArrayList<DistPoint>();
 	private Bitmap mCornerMarker = null;
 	private float mDistance = 0;
@@ -47,7 +52,8 @@ public class MeasureOverlay extends TileViewOverlay {
 	private final String DIST_END;
 	private final String DIST_PREV;
 	private final String AZI;
-	private boolean mShowInfo;
+	private boolean mShowInfoBubble;
+	private boolean mShowLineInfo;
 	static private final String DIV = ": ";
 	
 	public MeasureOverlay(Context ctx, View bottomView) {
@@ -61,11 +67,20 @@ public class MeasureOverlay extends TileViewOverlay {
 		mPaint.setStrokeCap(Paint.Cap.ROUND);
 		mPaint.setShadowLayer(10.0f, 0, 0, ctx.getResources().getColor(R.color.chart_graph_0));
 		
+		mPaintText = new Paint();
+		mPaintText.setAntiAlias(true);
+		mPaintText.setAlpha(10);
+		mPaintText.setColor(ctx.getResources().getColor(android.R.color.black));
+		mPaintText.setShadowLayer(4.0f, 0, 0, ctx.getResources().getColor(android.R.color.white));
+		mPaintText.setTextAlign(Paint.Align.CENTER);
+		mPaintText.setTextSize(ctx.getResources().getDimensionPixelSize(R.dimen.measuretool_label_size));
+		
 		mDf = new DistanceFormatter(ctx);
 		mCf = new CoordFormatter(ctx);
 
 		msgbox = (LinearLayout) LayoutInflater.from(ctx).inflate(R.layout.measure_info_box, (ViewGroup) bottomView);
 		msgbox.setVisibility(View.VISIBLE);
+		
 		this.mT = (TextView) LayoutInflater.from(ctx).inflate(R.layout.search_bubble, null);
 		this.mT.setLayoutParams(new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 		
@@ -73,7 +88,11 @@ public class MeasureOverlay extends TileViewOverlay {
 		DIST_END = ctx.getResources().getString(R.string.toend);
 		DIST_PREV = ctx.getResources().getString(R.string.toprev);
 		AZI = ctx.getResources().getString(R.string.azimuth);
-		
+
+		final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(ctx);
+		mShowLineInfo = pref.getBoolean("pref_show_measure_line_info", true);
+		mShowInfoBubble = pref.getBoolean("pref_show_measure_info", true);
+
 		ShowDistance();
 	}
 
@@ -96,6 +115,7 @@ public class MeasureOverlay extends TileViewOverlay {
 		if(points.size() > 0) {
 			Point p0 = null;
 			DistPoint pt = null;
+			final Path path = new Path();
 			Iterator<DistPoint> it = points.iterator();
 			while(it.hasNext()) {
 				pt = it.next();
@@ -103,6 +123,20 @@ public class MeasureOverlay extends TileViewOverlay {
 				
 				if(p0 != null) {
 					c.drawLine(p0.x, p0.y, p1.x, p1.y, mPaint);
+					path.reset();
+					if(p0.x < p1.x) {
+						path.moveTo(p0.x, p0.y);
+						path.lineTo(p1.x, p1.y);
+					} else {
+						path.moveTo(p1.x, p1.y);
+						path.lineTo(p0.x, p0.y);
+					}
+					
+					if(mShowLineInfo) {
+						c.drawTextOnPath(mDf.formatDistance(pt.Dist2Prev), path, 0, -5, mPaintText);
+						c.drawTextOnPath(String.format(Locale.UK, "%.1f°", pt.Bearing), path, 0, mPaintText.getTextSize(), mPaintText);
+					}
+					
 					c.drawBitmap(pic, p0.x - (int)(pic.getWidth()/2), p0.y - (int)(pic.getHeight() / 2), mPaint);
 				}
 				
@@ -144,7 +178,7 @@ public class MeasureOverlay extends TileViewOverlay {
 		DistPoint pt = null;
 		Point px = new Point();
 		Rect rect = new Rect();
-		final int bounds = 8;
+		final int bounds = 12;
 		Iterator<DistPoint> it = points.iterator();
 		while(it.hasNext()) {
 			pt = it.next();
@@ -161,7 +195,7 @@ public class MeasureOverlay extends TileViewOverlay {
 		pt.Dist2Prev = points.size() > 0 ? points.get(points.size() - 1).Point.distanceTo(pt.Point) : 0;
 		pt.Dist2Start = mDistance + pt.Dist2Prev;
 		pt.Bearing = points.size() > 0 ? points.get(points.size() - 1).Point.bearingTo(pt.Point) : 0;
-		if(mShowInfo)
+		if(mShowInfoBubble)
 			mLocation = pt;
 		
 		if(points.size() > 0) {
@@ -236,10 +270,14 @@ public class MeasureOverlay extends TileViewOverlay {
 		ShowDistance();
 	}
 
-	public void setShowInfo(boolean showInfo) {
-		mShowInfo = showInfo;
+	public void setShowInfoBubble(boolean showInfo) {
+		mShowInfoBubble = showInfo;
 		if(!showInfo)
 			mLocation = null;
+	}
+
+	public void setShowLineInfo(boolean showInfo) {
+		mShowLineInfo = showInfo;
 	}
 
 }
