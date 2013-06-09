@@ -916,6 +916,13 @@ public class MainActivity extends Activity {
 	        mMeasureOverlay = new MeasureOverlay(this, findViewById(R.id.bottom_area));
 			
 		final View viewBottomArea = findViewById(R.id.bottom_area);
+		viewBottomArea.findViewById(R.id.add).setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				mMeasureOverlay.addPointOnCenter(mMap.getTileView());
+				mMap.postInvalidate();
+			}
+		});
 		viewBottomArea.findViewById(R.id.close).setOnClickListener(new View.OnClickListener() {
 			
 			@Override
@@ -950,6 +957,7 @@ public class MainActivity extends Activity {
 					final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
 					item.setChecked(pref.getBoolean("pref_show_measure_line_info", true));
 				}
+				menu.add(Menu.NONE, R.id.menu_addpoi, Menu.NONE, R.string.menu_add);
 				menu.add(Menu.NONE, R.id.menu_undo, Menu.NONE, R.string.menu_undo);
 				menu.add(Menu.NONE, R.id.clear, Menu.NONE, R.string.clear);
 			}
@@ -1113,6 +1121,9 @@ public class MainActivity extends Activity {
 				editor.commit();
 				mMeasureOverlay.setShowLineInfo(item.isChecked());
 
+				mMap.postInvalidate();
+			} else if (item.getItemId() == R.id.menu_addpoi) {
+				mMeasureOverlay.addPointOnCenter(mMap.getTileView());
 				mMap.postInvalidate();
 			} else if (item.getItemId() == R.id.hide_overlay) {
 				setTileSource(mTileSource.ID, mOverlayId, false);
