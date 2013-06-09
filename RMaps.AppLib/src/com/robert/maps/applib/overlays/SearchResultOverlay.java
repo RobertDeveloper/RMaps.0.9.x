@@ -1,9 +1,18 @@
 package com.robert.maps.applib.overlays;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URL;
 import java.util.Locale;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.andnav.osm.util.GeoPoint;
 import org.andnav.osm.util.TypeConverter;
+import org.andnav.osm.views.util.StreamUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -21,13 +30,10 @@ import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
 import android.widget.TextView;
 
-import com.android.volley.RequestQueue;
-import com.android.volley.Response.Listener;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 import com.robert.maps.applib.R;
 import com.robert.maps.applib.utils.CoordFormatter;
 import com.robert.maps.applib.utils.DistanceFormatter;
+import com.robert.maps.applib.utils.SimpleThreadFactory;
 import com.robert.maps.applib.view.MapView;
 import com.robert.maps.applib.view.TileView;
 import com.robert.maps.applib.view.TileViewOverlay;
@@ -42,10 +48,12 @@ public class SearchResultOverlay extends TileViewOverlay {
 	private TextView mT;
 	private CoordFormatter mCf;
 	private DistanceFormatter mDf;
-	private RequestQueue mRequestQueue;
+	//private RequestQueue mRequestQueue;
 	private double mElevation;
 	private MapView mMapView;
 	private boolean mSearchBubble;
+	
+	private ExecutorService mThreadPool = Executors.newFixedThreadPool(2, new SimpleThreadFactory("SearchResultOverlay"));
 	
 	private final String LAT;
 	private final String LON;
@@ -60,7 +68,7 @@ public class SearchResultOverlay extends TileViewOverlay {
 		this.mT.setLayoutParams(new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 		mCf = new CoordFormatter(ctx);
 		mDf = new DistanceFormatter(ctx);
-		mRequestQueue = Volley.newRequestQueue(ctx);
+		//mRequestQueue = Volley.newRequestQueue(ctx);
 		mMapView = mapView;
 	
 		mPaintLine = new Paint();
@@ -74,7 +82,13 @@ public class SearchResultOverlay extends TileViewOverlay {
 		ALT = ctx.getResources().getString(R.string.PoiAlt);
 		DIST = ctx.getResources().getString(R.string.dist);
 		AZIMUT = ctx.getResources().getString(R.string.azimuth);
-}
+	}
+
+	@Override
+	public void Free() {
+		mThreadPool.shutdown();
+		super.Free();
+	}
 
 	public void setLocation(final Location loc){
 		// »спользуетс€ дл€ сохранени€ текущего положени€ 
@@ -163,20 +177,38 @@ public class SearchResultOverlay extends TileViewOverlay {
 		mElevation = 0.0;
 		mSearchBubble = false;
 		
-		mRequestQueue.add(new JsonObjectRequest("http://maps.googleapis.com/maps/api/elevation/json?locations="+mLocation.toDoubleString()+"&sensor=true"
-				, null, new Listener<JSONObject>() {
+		mThreadPool.execute(new Runnable() {
 			@Override
-			public void onResponse(JSONObject response) {
-				if(mLocation != null) {
+			public void run() {
+				InputStream in = null;
+				OutputStream out = null;
+				
+				try {
+					in = new BufferedInputStream(new URL("http://maps.googleapis.com/maps/api/elevation/json?locations="+mLocation.toDoubleString()+"&sensor=true").openStream(), StreamUtils.IO_BUFFER_SIZE);
+					
+					final ByteArrayOutputStream dataStream = new ByteArrayOutputStream();
+					out = new BufferedOutputStream(dataStream, StreamUtils.IO_BUFFER_SIZE);
+					StreamUtils.copy(in, out);
+					out.flush();
+					
 					try {
-						mElevation = response.getJSONArray("results").getJSONObject(0).getDouble("elevation");
+						final JSONObject json = new JSONObject(dataStream.toString());
+						mElevation = json.getJSONArray("results").getJSONObject(0).getDouble("elevation");
 					} catch (JSONException e) {
 						mElevation = 0.0;
 					}
 					setDescr();
 					mMapView.postInvalidate();
+					
+				} catch (Exception e) {
+				} catch (OutOfMemoryError e) {
+					System.gc();
+				} finally {
+					StreamUtils.closeStream(in);
+					StreamUtils.closeStream(out);
 				}
-			}}, null));
+			}
+		});
 		
 		setDescr();
 		mMapView.postInvalidate();

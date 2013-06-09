@@ -27,7 +27,6 @@ import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
 import android.widget.TextView;
 
-import com.robert.maps.applib.MainActivity;
 import com.robert.maps.applib.R;
 import com.robert.maps.applib.utils.CoordFormatter;
 import com.robert.maps.applib.utils.DistanceFormatter;
@@ -48,6 +47,8 @@ public class MeasureOverlay extends TileViewOverlay {
 	private DistPoint mLocation;
 	private CharSequence mDescr;
 	
+	private final String LAT;
+	private final String LON;
 	private final String DIST_START;
 	private final String DIST_END;
 	private final String DIST_PREV;
@@ -84,6 +85,8 @@ public class MeasureOverlay extends TileViewOverlay {
 		this.mT = (TextView) LayoutInflater.from(ctx).inflate(R.layout.search_bubble, null);
 		this.mT.setLayoutParams(new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 		
+		LAT = ctx.getResources().getString(R.string.PoiLat);
+		LON = ctx.getResources().getString(R.string.PoiLon);
 		DIST_START = ctx.getResources().getString(R.string.tostart);
 		DIST_END = ctx.getResources().getString(R.string.toend);
 		DIST_PREV = ctx.getResources().getString(R.string.toprev);
@@ -185,7 +188,10 @@ public class MeasureOverlay extends TileViewOverlay {
 			px = pj.toPixels(pt.Point, tileView.getBearing(), px);
 			rect.set(px.x - bounds, px.y - bounds, px.x + bounds, px.y + bounds);
 			if(rect.contains((int)e.getX(), (int)e.getY())) {
-				mLocation = pt;
+				if(mLocation != null && mLocation.Point.equals(pt.Point))
+					mLocation = null;
+				else
+					mLocation = pt;
 				setDescr();
 				return true;
 			}
@@ -231,9 +237,8 @@ public class MeasureOverlay extends TileViewOverlay {
 	private void setDescr() {
 		if(mLocation != null)
 			mDescr = new StringBuilder()
-			.append(mCf.convertLat(mLocation.Point.getLatitude()))
-			.append("\n")
-			.append(mCf.convertLon(mLocation.Point.getLongitude()))
+			.append(LAT).append(DIV).append(mCf.convertLat(mLocation.Point.getLatitude()))
+			.append("\n").append(LON).append(DIV).append(mCf.convertLon(mLocation.Point.getLongitude()))
 			.append("\n").append(DIST_PREV).append(DIV).append(mDf.formatDistance(mLocation.Dist2Prev))
 			.append("\n").append(DIST_START).append(DIV).append(mDf.formatDistance(mLocation.Dist2Start))
 			.append("\n").append(DIST_END).append(DIV).append(mDf.formatDistance(mDistance - mLocation.Dist2Start))
