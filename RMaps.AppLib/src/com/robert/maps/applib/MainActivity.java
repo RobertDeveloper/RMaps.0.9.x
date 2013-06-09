@@ -938,12 +938,20 @@ public class MainActivity extends Activity {
 			
 			@Override
 			public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
+				{
+					final MenuItem item = menu.add(Menu.NONE, R.id.menu_showinfo, Menu.NONE, R.string.menu_showinfo);
+					item.setCheckable(true);
+					final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+					item.setChecked(pref.getBoolean("pref_show_measure_info", true));
+				}
+				{
+					final MenuItem item = menu.add(Menu.NONE, R.id.menu_showlineinfo, Menu.NONE, R.string.menu_showlineinfo);
+					item.setCheckable(true);
+					final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+					item.setChecked(pref.getBoolean("pref_show_measure_line_info", true));
+				}
 				menu.add(Menu.NONE, R.id.menu_undo, Menu.NONE, R.string.menu_undo);
 				menu.add(Menu.NONE, R.id.clear, Menu.NONE, R.string.clear);
-				final MenuItem menuitem = menu.add(Menu.NONE, R.id.menu_showinfo, Menu.NONE, R.string.menu_showinfo);
-				menuitem.setCheckable(true);
-				final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
-				menuitem.setChecked(pref.getBoolean("pref_show_measure_info", true));
 			}
 		});
 		
@@ -1094,7 +1102,16 @@ public class MainActivity extends Activity {
 				Editor editor = pref.edit();
 				editor.putBoolean("pref_show_measure_info", item.isChecked());
 				editor.commit();
-				mMeasureOverlay.setShowInfo(item.isChecked());
+				mMeasureOverlay.setShowInfoBubble(item.isChecked());
+
+				mMap.postInvalidate();
+			} else if (item.getItemId() == R.id.menu_showlineinfo) {
+				item.setChecked(!item.isChecked());
+				final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+				Editor editor = pref.edit();
+				editor.putBoolean("pref_show_measure_line_info", item.isChecked());
+				editor.commit();
+				mMeasureOverlay.setShowLineInfo(item.isChecked());
 
 				mMap.postInvalidate();
 			} else if (item.getItemId() == R.id.hide_overlay) {
