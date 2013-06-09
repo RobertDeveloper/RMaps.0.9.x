@@ -43,5 +43,7 @@
     </item>
     <item android:id="@+id/right_panel">
     </item>
+    <item android:id="@+id/menu_showinfo">
+    </item>
     
 </menu>
