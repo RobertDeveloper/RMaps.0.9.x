@@ -4,7 +4,7 @@
   <string-array name="overlay_button_visibility">
     <item>Immer anzeigen</item>
     <item>Immer ausblenden</item>
-    <item>Nur bei Mischkarten anzeigen</item>
+    <item>Zeige nur bei benutzerdefinierten Karten</item>
   </string-array>
   <string-array name="overlay_button_behavior">
     <item>Ausblenden/anzeigen Überlagerung, lange drücken - Menü anzeigen</item>
@@ -54,7 +54,7 @@
     <item>Unten</item>
     <item>Oben</item>
     <item>Rechts</item>
-    <item>Ausblenden</item>
+    <item>Verberge</item>
   </string-array>
   <string-array name="units_pref_title">
     <item>km, m, km/h, m/s</item>
@@ -80,7 +80,7 @@
     <item>Reiten</item>
     <item>Motorradfahren</item>
     <item>Pfad-Radfahren</item>
-    <item>ATV</item>
+    <item>Universalgelände-Fahrzeug</item>
     <item>Autofahren</item>
     <item>Bootfahren</item>
     <item>Kajakfahren</item>

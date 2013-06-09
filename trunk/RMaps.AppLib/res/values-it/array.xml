@@ -4,7 +4,7 @@
   <string-array name="overlay_button_visibility">
     <item>Mostra sempre</item>
     <item>Nascondi sempre</item>
-    <item>Mostra solo per mappe miste</item>
+    <item>Mostra solo mappe personali</item>
   </string-array>
   <string-array name="overlay_button_behavior">
     <item>Nascondi/Mostra overlay, Tap a lungo - mostra menu</item>
