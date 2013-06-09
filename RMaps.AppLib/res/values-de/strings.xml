@@ -77,7 +77,7 @@
   <string name="menu_categorylist">Kategorie</string>
   <string name="menu_import">Importieren</string>
   <string name="menu_deleteall">Alle löschen</string>
-  <string name="menu_area_selector">Runterlader</string>
+  <string name="menu_area_selector">Mache offline verfügbar</string>
   <string name="no_traffic">In dieser Zoomeinstellung sind Verkehrsinfos nicht verfügbar</string>
   <string name="auto_follow_enabled">Automatisch-Folgen aktiviert</string>
   <string name="auto_follow_disabled">Automatisch-Folgen deaktiviert</string>
@@ -136,8 +136,8 @@ Problemlösungen und FAQ kannst Du bei http://robertdeveloper.blogspot.com/ find
   <string name="this_folder_is_empty">Dieser Ordner ist leer.</string>
   <string name="MinZoom">Zeige POI ab Zoom (0..23)</string>
   <string name="warning_delete_all_poi">Bist Du sicher, daß Du alle POI löschen willst ?</string>
-  <string name="menu_tracks">Pfad</string>
-  <string name="remote_service_started">RMaps Pfad-Schreiber</string>
+  <string name="menu_tracks">Pfade</string>
+  <string name="remote_service_started">RMaps Pfad-Aufzeichner</string>
   <string name="menu_goto_track">Gehe zu Pfad</string>
   <string name="btn_start">Start</string>
   <string name="btn_pause">Pause</string>
@@ -148,14 +148,14 @@ Problemlösungen und FAQ kannst Du bei http://robertdeveloper.blogspot.com/ find
   <string name="pref_trackwriter_mindistance">Min. Abstand zwischen Punkten</string>
   <string name="pref_trackwriter_mintime_summary">Kleinstes Zeitintervall zwischen zwei Aufnahmen Deiner Position</string>
   <string name="pref_trackwriter_mintime">Min. Zeit zwischen Punkten</string>
-  <string name="prefcat_main_trackwriter">Pfad-Schreiber</string>
+  <string name="prefcat_main_trackwriter">Pfad-Aufzeichner</string>
   <string name="menu_toradar">Zum Radar</string>
   <string name="message_noradar">Radar-Anwendung nicht gefunden. Bitte installieren Sie es! Sie können GPS-Status oder Radar vom Markt installieren.</string>
   <string name="message_nogpsstatus">GPS-Status nicht gefunden. Bitte installieren Sie es !</string>
   <string name="menu_exporttogpx">Als GPX-Datei exportieren</string>
   <string name="menu_exporttokml">Als KML-Datei exportieren</string>
   <string name="message_trackexported">Der Pfad wird exportiert nach </string>
-  <string name="message_cantstarttrackwriter">Kann Pfad-Schreiber nicht starten, weil ich Pfad nicht schreiben kann nach</string>
+  <string name="message_cantstarttrackwriter">Kann Pfad-Aufzeichnung nicht starten, weil ich Pfad nicht schreiben kann nach</string>
   <string name="message_error">Fehler: %s</string>
   <string name="error_title">Fehlerbericht</string>
   <string name="error_text">Nach dem letzten Start hat ein Softwareproblem RMaps unerwartet zum Beenden gezwungen. Bitte senden Sie den Fehlerbericht zum Programmierer. Klicke Bericht erzeugen, Du kannst den Bericht lesen, bevor er gesendet wird.</string>
@@ -258,4 +258,20 @@ Schreib mir eine E-Mail, wenn Du diese Parameterliste erweitern möchtest.\n</st
   <string name="offsetNS">Nord/Süd-Versatz, Meter</string>
   <string name="offsetEW">Ost/West-Versatz, Meter</string>
   <string name="error_illegalmapid">Illegale Karten-ID \'%s\'. Empfehlenswert, Indexdaten in Settings zu löschen. </string>
+  <string name="menu_measure">Vermesse</string>
+  <string name="menu_join">Füge Pfade zusammen</string>
+  <string name="menu_undo">Rückgängig machen</string>
+  <string name="menu_reload">Erneutes Laden der Bildschirm-Kacheln</string>
+  <string name="menu_findthemap">Karte finden</string>
+  <string name="menu_tools">Werkzeuge</string>
+  <string name="menu_downloadprepared">Lade vorbereitete Karten</string>
+  <string name="pref_circle_distance">Entfernungs-Kreise</string>
+  <string name="pref_circle_distance_summary">In Deiner Umgebung erscheinen Kreise, welche die Entfernung ähnlich einer Maßstabsanzeige anzeigen</string>
+  <string name="pref_coordformat">Koordinatenformat</string>
+  <string name="pref_coordformat_summary">Breitengrad, Längengrad Format für die Anzeige</string>
+  <string name="dist">Entfernung</string>
+  <string name="azimuth">Kurs</string>
+  <string name="tostart">zum Start</string>
+  <string name="toend">zum Ende</string>
+  <string name="toprev">zum Vorhergehenden</string>
 </resources>

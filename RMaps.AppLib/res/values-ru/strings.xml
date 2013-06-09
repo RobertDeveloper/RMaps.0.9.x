@@ -267,5 +267,7 @@ http://c.tile.openstreetmap.org/{z}/{x}/{y}.png\n
   <string name="azimuth">Азимут</string>
   <string name="tostart">до Начала</string>
   <string name="toend">до Конца</string>
-  <string name="toprev">до Предид</string>
+  <string name="toprev">до Предыд</string>
+    <string name="menu_showinfo">Инфо окно</string>
+    <string name="menu_showlineinfo">Инфо на линии</string>
 </resources>
