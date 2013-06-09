@@ -47,6 +47,7 @@ public class MeasureOverlay extends TileViewOverlay {
 	private final String DIST_END;
 	private final String DIST_PREV;
 	private final String AZI;
+	private boolean mShowInfo;
 	static private final String DIV = ": ";
 	
 	public MeasureOverlay(Context ctx, View bottomView) {
@@ -160,7 +161,8 @@ public class MeasureOverlay extends TileViewOverlay {
 		pt.Dist2Prev = points.size() > 0 ? points.get(points.size() - 1).Point.distanceTo(pt.Point) : 0;
 		pt.Dist2Start = mDistance + pt.Dist2Prev;
 		pt.Bearing = points.size() > 0 ? points.get(points.size() - 1).Point.bearingTo(pt.Point) : 0;
-		mLocation = pt;
+		if(mShowInfo)
+			mLocation = pt;
 		
 		if(points.size() > 0) {
 			mDistance += pt.Dist2Prev;
@@ -232,6 +234,12 @@ public class MeasureOverlay extends TileViewOverlay {
 			mLocation = null;
 		}
 		ShowDistance();
+	}
+
+	public void setShowInfo(boolean showInfo) {
+		mShowInfo = showInfo;
+		if(!showInfo)
+			mLocation = null;
 	}
 
 }

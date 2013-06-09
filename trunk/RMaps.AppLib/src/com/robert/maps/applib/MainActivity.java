@@ -31,6 +31,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteException;
 import android.hardware.Sensor;
@@ -832,7 +833,7 @@ public class MainActivity extends Activity {
 			mMap.postInvalidate();
 			return true;
 		} else if(item.getItemId() == R.id.measure) {
-			MeasureStart();
+			doMeasureStart();
 			return true;
 		} else if(item.getItemId() == R.id.gpsstatus) {
 			try {
@@ -910,7 +911,7 @@ public class MainActivity extends Activity {
 			mMap.getController().setCenter(geo);
 	}
 
-	private void MeasureStart() {
+	private void doMeasureStart() {
 		if(mMeasureOverlay == null)
 	        mMeasureOverlay = new MeasureOverlay(this, findViewById(R.id.bottom_area));
 			
@@ -939,6 +940,10 @@ public class MainActivity extends Activity {
 			public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
 				menu.add(Menu.NONE, R.id.menu_undo, Menu.NONE, R.string.menu_undo);
 				menu.add(Menu.NONE, R.id.clear, Menu.NONE, R.string.clear);
+				final MenuItem menuitem = menu.add(Menu.NONE, R.id.menu_showinfo, Menu.NONE, R.string.menu_showinfo);
+				menuitem.setCheckable(true);
+				final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+				menuitem.setChecked(pref.getBoolean("pref_show_measure_info", true));
 			}
 		});
 		
@@ -1082,6 +1087,15 @@ public class MainActivity extends Activity {
 				mMap.postInvalidate();
 			} else if (item.getItemId() == R.id.menu_undo) {
 				mMeasureOverlay.Undo();
+				mMap.postInvalidate();
+			} else if (item.getItemId() == R.id.menu_showinfo) {
+				item.setChecked(!item.isChecked());
+				final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+				Editor editor = pref.edit();
+				editor.putBoolean("pref_show_measure_info", item.isChecked());
+				editor.commit();
+				mMeasureOverlay.setShowInfo(item.isChecked());
+
 				mMap.postInvalidate();
 			} else if (item.getItemId() == R.id.hide_overlay) {
 				setTileSource(mTileSource.ID, mOverlayId, false);
