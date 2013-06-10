@@ -69,6 +69,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.robert.maps.applib.dashboard.BoardView;
+import com.robert.maps.applib.dashboard.IndicatorManager;
 import com.robert.maps.applib.downloader.AreaSelectorActivity;
 import com.robert.maps.applib.downloader.FileDownloadListActivity;
 import com.robert.maps.applib.kml.PoiActivity;
@@ -113,6 +115,7 @@ public class MainActivity extends Activity {
 	private MoveListener mMoveListener = new MoveListener();
 	private SensorManager mOrientationSensorManager;
 	private PowerManager.WakeLock myWakeLock;
+	private IndicatorManager mIndicatorManager;
 	
 	// Overlays
 	private YandexTrafficOverlay mYandexTrafficOverlay = null;
@@ -154,6 +157,8 @@ public class MainActivity extends Activity {
         
 
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
+        mIndicatorManager = new IndicatorManager(this);
+		
 		CreateContentView();
 		
 		mPoiManager = new PoiManager(this);
@@ -187,7 +192,7 @@ public class MainActivity extends Activity {
         this.mSearchResultOverlay = new SearchResultOverlay(this, mMap);
         mSearchResultOverlay.fromPref(uiState);
         FillOverlays();
-		
+        
 		mDrivingDirectionUp = pref.getBoolean("pref_drivingdirectionup", true);
 		mNorthDirectionUp = pref.getBoolean("pref_northdirectionup", true);
 
@@ -509,6 +514,8 @@ public class MainActivity extends Activity {
 			}
 		});
         
+       	((ViewGroup) findViewById(R.id.message_list)).addView(mIndicatorManager.getView(this));
+        
         registerForContextMenu(mMap);
  		
 		return rl;
@@ -601,6 +608,8 @@ public class MainActivity extends Activity {
 	}
 
 	private void setTitle(){
+		mIndicatorManager.setMapName(mMap.getTileSource().NAME);
+		
 		try {
 			final TextView leftText = (TextView) findViewById(R.id.left_text);
 			if(leftText != null)
@@ -614,10 +623,13 @@ public class MainActivity extends Activity {
 			final TextView rightText = (TextView) findViewById(R.id.right_text);
 			if(rightText != null){
 				final double zoom = mMap.getZoomLevelScaled();
-				if(zoom > mMap.getTileSource().ZOOM_MAXLEVEL)
+				if(zoom > mMap.getTileSource().ZOOM_MAXLEVEL) {
 					rightText.setText(""+(mMap.getTileSource().ZOOM_MAXLEVEL+1)+"+");
-				else
+					mIndicatorManager.setZoom(mMap.getTileSource().ZOOM_MAXLEVEL+1);
+				} else {
 					rightText.setText(""+(1 + Math.round(zoom)));
+					mIndicatorManager.setZoom((int)(1 + Math.round(zoom)));
+				}
 			}
 		} catch (Exception e) {
 		}
