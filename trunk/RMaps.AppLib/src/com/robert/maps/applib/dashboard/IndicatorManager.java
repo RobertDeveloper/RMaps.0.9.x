@@ -105,7 +105,7 @@ public class IndicatorManager implements Indicator {
 
 	public LinearLayout getView(Context context) {
 		//LinearLayout ll = (LinearLayout)LayoutInflater.from(context).inflate(R.layout.ind_test, null, false);
-		LinearLayout ll = new LinearLayout(context);
+		LinearLayout ll = new BoardView(context);
 		ll.setOrientation(LinearLayout.HORIZONTAL);
 		ll.setLayoutParams(new ViewGroup.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
 		
