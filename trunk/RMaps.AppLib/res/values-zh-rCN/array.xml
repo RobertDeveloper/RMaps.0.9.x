@@ -4,7 +4,7 @@
   <string-array name="overlay_button_visibility">
     <item>总是显示</item>
     <item>始终隐藏</item>
-    <item>只在混合地图显示</item>
+    <item>仅在自定义地图显示</item>
   </string-array>
   <string-array name="overlay_button_behavior">
     <item>隐藏/显示叠加层，长按显示菜单</item>
@@ -53,7 +53,7 @@
   <string-array name="zoomctrl_pref_title">
     <item>底部</item>
     <item>顶部</item>
-    <item>在右邊</item>
+    <item>右</item>
     <item>隐藏</item>
   </string-array>
   <string-array name="units_pref_title">

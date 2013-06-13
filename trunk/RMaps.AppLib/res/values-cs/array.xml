@@ -4,7 +4,7 @@
   <string-array name="overlay_button_visibility">
     <item>Vždy zobrazit</item>
     <item>Vždy skrýt</item>
-    <item>Zobrazit pouze pro smíšené mapy</item>
+    <item>Show for custom maps only</item>
   </string-array>
   <string-array name="overlay_button_behavior">
     <item>Zobrazit/skrýt překrytí, dlouhý stisk - Zobrazit menu</item>
@@ -53,8 +53,8 @@
   <string-array name="zoomctrl_pref_title">
     <item>Dole</item>
     <item>Nahoře</item>
-    <item>Vpravo</item>
-    <item>Skrýt</item>
+    <item>Right</item>
+    <item>Hide</item>
   </string-array>
   <string-array name="units_pref_title">
     <item>km, m, km/h, m/s</item>

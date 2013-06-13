@@ -47,5 +47,7 @@
     </item>
     <item android:id="@+id/menu_showlineinfo">
     </item>
+    <item android:id="@+id/menu_addmeasurepoint">
+    </item>
     
 </menu>
