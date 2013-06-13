@@ -6,17 +6,19 @@ Buy RMaps.Donation on Google Play Store</b>\n
 \n
 Do you want to help me translate the app interface? Write me to email robertk506@gmail.com\n
 \n
+v.0.9.3.1\n
+- Fixed add POI bug\n
 \n
-v.0.9.3.b12\n
-+ Been improved measure tool. When you click on each point of the measurement line you can see the coordinates, distance, azimuth\n
-+ Ability to use the app on a devices without GPS\n
+v.0.9.3\n
++ Much improved measure tool. When you click on each point of the measurement line you can see the coordinates, distance, azimuth\n
++ Ability to use the app on devices without GPS\n
 + Long press on the map now shows the coordinates, altitude (online only), bearing and distance from your current position. Clicking on a black bubble shows the context menu.\n
 + Coordinates formatting preference\n
-+ Ability set Zoom controls at the right\n
-+ Ability download to offline a layers\n
-+ Build-in ability to download Geology and Geophysics offline maps from www.dpi.nsw.gov.au/minerals\n
-- Fix scale bar bug\n
-- Fix some POI bug\n
++ Ability to set Zoom controls at the right\n
++ Ability to download layers offline\n
++ Built-in ability to download Geology and Geophysics offline maps from www.dpi.nsw.gov.au/minerals\n
+- Fixed scale bar bug\n
+- Fixed some POI bug\n
 \n
 v.0.9.2\n
 + Opened Google Community RMaps on Google+\n
