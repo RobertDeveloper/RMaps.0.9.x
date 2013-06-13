@@ -1,5 +1,7 @@
 package com.robert.maps.applib.overlays;
 
+import java.util.Locale;
+
 import org.andnav.osm.util.GeoPoint;
 import org.andnav.osm.util.TypeConverter;
 
@@ -18,6 +20,7 @@ import android.widget.RelativeLayout.LayoutParams;
 import android.widget.TextView;
 
 import com.robert.maps.applib.R;
+import com.robert.maps.applib.utils.DistanceFormatter;
 import com.robert.maps.applib.utils.Ut;
 import com.robert.maps.applib.view.TileView;
 import com.robert.maps.applib.view.TileView.OpenStreetMapViewProjection;
@@ -57,6 +60,7 @@ public class MyLocationOverlay extends TileViewOverlay {
 	private final Paint mPaintCross = new Paint();
 	private final static int mCrossSize = 7;
 	private Location mLoc;
+	private DistanceFormatter mDf;
 
 	private boolean mLineToGPS;
 	private int mUnits;
@@ -99,6 +103,7 @@ public class MyLocationOverlay extends TileViewOverlay {
 		mNeedCircleDistance = pref.getBoolean("pref_circle_distance", true);
 		mLineToGPS = pref.getBoolean("pref_line_gps", false);
 		mUnits = Integer.parseInt(pref.getString("pref_units", "0"));
+		mDf = new DistanceFormatter(ctx);
 		
 		if(mLineToGPS) {
 			mLabelVw = (TextView) LayoutInflater.from(ctx).inflate(R.layout.label_map, null);
@@ -203,7 +208,7 @@ public class MyLocationOverlay extends TileViewOverlay {
 				c.drawLine(screenCoords.x, screenCoords.y, osmv.getWidth() / 2, osmv.getHeight() / 2, mPaintLineToGPS);
 				final GeoPoint geo = pj.fromPixels(osmv.getWidth() / 2, osmv.getHeight() / 2);
 				final float dist = this.mLocation.distanceTo(geo);
-				final String lbl = Ut.formatDistance(mCtx, dist, mUnits); 
+				final String lbl = String.format(Locale.UK, "%s %.1f°", mDf.formatDistance(dist), mLocation.bearingTo(geo));
 				
 				mLabelVw.setText(lbl);
 				mLabelVw.measure(0, 0);

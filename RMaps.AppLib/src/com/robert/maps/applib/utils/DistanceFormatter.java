@@ -62,7 +62,7 @@ public class DistanceFormatter {
 				str[0] = String.format("%.0f", dist);
 				str[1] = mUnitM;
 			} else if(dist/FT_IN_ML < 100) {
-				str[0] = String.format("%.1f", dist/FT_IN_ML);
+				str[0] = String.format("%.2f", dist/FT_IN_ML);
 				str[1] = mUnitKM;
 			} else {
 				str[0] = String.format("%.0f", dist/FT_IN_ML);
