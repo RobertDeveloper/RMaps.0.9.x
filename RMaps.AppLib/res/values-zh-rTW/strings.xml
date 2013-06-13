@@ -77,7 +77,7 @@
   <string name="menu_categorylist">類別</string>
   <string name="menu_import">輸入</string>
   <string name="menu_deleteall">刪除全部</string>
-  <string name="menu_area_selector">Make available offline</string>
+  <string name="menu_area_selector">讓它離線後仍可使用</string>
   <string name="no_traffic">在此縮放下流量資訊不可用</string>
   <string name="auto_follow_enabled">自動追蹤啟用</string>
   <string name="auto_follow_disabled">自動追蹤禁用</string>
@@ -237,7 +237,7 @@ http://c.tile.openstreetmap.org/{z}/{x}/{y}.png\n
   <string name="pref_stretchtile_summary">伸展圖磚圖片和放大地圖圖像</string>
   <string name="yes">是</string>
   <string name="no">否</string>
-  <string name="question_delete">Do you really want to delete %s?</string>
+  <string name="question_delete">你真的要刪除 %s 嗎？</string>
   <string name="poi">興趣點</string>
   <string name="track">track</string>
   <string name="pref_drawtilegrid">圖磚網格</string>
@@ -256,18 +256,18 @@ http://c.tile.openstreetmap.org/{z}/{x}/{y}.png\n
   <string name="error_illegalmapid">不合法的地圖識別碼 \'%s\'。建議清除設定裡的索引資料。</string>
   <string name="menu_measure">Measure</string>
   <string name="menu_join">Join tracks</string>
-  <string name="menu_undo">Undo</string>
-  <string name="menu_reload">Reload screen tiles</string>
-  <string name="menu_findthemap">Find the map</string>
-  <string name="menu_tools">Tools</string>
+  <string name="menu_undo">還原</string>
+  <string name="menu_reload">重新載入畫面圖磚</string>
+  <string name="menu_findthemap">尋找地圖</string>
+  <string name="menu_tools">工具</string>
   <string name="menu_downloadprepared">Download maps prepared</string>
   <string name="pref_circle_distance">Distance rings</string>
   <string name="pref_circle_distance_summary">Rings appear  around your location that show distance like scale indicator</string>
-  <string name="pref_coordformat">Coordinates format</string>
-  <string name="pref_coordformat_summary">Latitude, longitude format for display</string>
-  <string name="dist">Distance</string>
+  <string name="pref_coordformat">座標格式</string>
+  <string name="pref_coordformat_summary">要顯示的經緯度格式</string>
+  <string name="dist">距離</string>
   <string name="azimuth">Azimuth</string>
-  <string name="tostart">to Start</string>
-  <string name="toend">to End</string>
-  <string name="toprev">to Previous</string>
+  <string name="tostart">到最前面</string>
+  <string name="toend">到最後面</string>
+  <string name="toprev">到前一個</string>
 </resources>

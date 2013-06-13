@@ -157,7 +157,7 @@ public class MainActivity extends Activity {
         
 
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
-        mIndicatorManager = new IndicatorManager(this);
+        //mIndicatorManager = new IndicatorManager(this);
 		
 		CreateContentView();
 		
@@ -514,7 +514,8 @@ public class MainActivity extends Activity {
 			}
 		});
         
-       	((ViewGroup) findViewById(R.id.message_list)).addView(mIndicatorManager.getView(this));
+        if(mIndicatorManager != null)
+        	((ViewGroup) findViewById(R.id.message_list)).addView(mIndicatorManager.getView(this));
         
         registerForContextMenu(mMap);
  		
@@ -608,7 +609,8 @@ public class MainActivity extends Activity {
 	}
 
 	private void setTitle(){
-		mIndicatorManager.setMapName(mMap.getTileSource().NAME);
+		if(mIndicatorManager != null)
+			mIndicatorManager.setMapName(mMap.getTileSource().NAME);
 		
 		try {
 			final TextView leftText = (TextView) findViewById(R.id.left_text);
@@ -625,10 +627,12 @@ public class MainActivity extends Activity {
 				final double zoom = mMap.getZoomLevelScaled();
 				if(zoom > mMap.getTileSource().ZOOM_MAXLEVEL) {
 					rightText.setText(""+(mMap.getTileSource().ZOOM_MAXLEVEL+1)+"+");
-					mIndicatorManager.setZoom(mMap.getTileSource().ZOOM_MAXLEVEL+1);
+					if(mIndicatorManager != null)
+						mIndicatorManager.setZoom(mMap.getTileSource().ZOOM_MAXLEVEL+1);
 				} else {
 					rightText.setText(""+(1 + Math.round(zoom)));
-					mIndicatorManager.setZoom((int)(1 + Math.round(zoom)));
+					if(mIndicatorManager != null)
+						mIndicatorManager.setZoom((int)(1 + Math.round(zoom)));
 				}
 			}
 		} catch (Exception e) {
@@ -969,7 +973,7 @@ public class MainActivity extends Activity {
 					final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
 					item.setChecked(pref.getBoolean("pref_show_measure_line_info", true));
 				}
-				menu.add(Menu.NONE, R.id.menu_addpoi, Menu.NONE, R.string.menu_add);
+				menu.add(Menu.NONE, R.id.menu_addmeasurepoint, Menu.NONE, R.string.menu_add);
 				menu.add(Menu.NONE, R.id.menu_undo, Menu.NONE, R.string.menu_undo);
 				menu.add(Menu.NONE, R.id.clear, Menu.NONE, R.string.clear);
 			}
@@ -1134,7 +1138,7 @@ public class MainActivity extends Activity {
 				mMeasureOverlay.setShowLineInfo(item.isChecked());
 
 				mMap.postInvalidate();
-			} else if (item.getItemId() == R.id.menu_addpoi) {
+			} else if (item.getItemId() == R.id.menu_addmeasurepoint) {
 				mMeasureOverlay.addPointOnCenter(mMap.getTileView());
 				mMap.postInvalidate();
 			} else if (item.getItemId() == R.id.hide_overlay) {

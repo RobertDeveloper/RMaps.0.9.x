@@ -133,14 +133,14 @@ public class CoordFormatter {
 	            (min == 0) && (sec == 0);
 
 	        // deg must be in [0, 179] except for the case of -180 degrees
-	        if ((deg < 0.0) || (deg > 179 && !isNegative180)) {
+	        if ((deg < 0.0) || (deg > 180 && !isNegative180)) {
 	            throw new IllegalArgumentException("coordinate=" + coordinate);
 	        }
-	        if (min < 0 || min > 59) {
+	        if (min < 0 || min > 60) {
 	            throw new IllegalArgumentException("coordinate=" +
 	                    coordinate);
 	        }
-	        if (sec < 0 || sec > 59) {
+	        if (sec < 0 || sec > 60) {
 	            throw new IllegalArgumentException("coordinate=" +
 	                    coordinate);
 	        }
