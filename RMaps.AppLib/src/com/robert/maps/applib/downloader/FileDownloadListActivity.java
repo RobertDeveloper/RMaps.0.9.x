@@ -5,8 +5,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLConnection;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -44,9 +44,9 @@ public class FileDownloadListActivity extends ListActivity {
 		setListAdapter(adapter);
 
 		mProgressDialog = new ProgressDialog(FileDownloadListActivity.this);
-		mProgressDialog.setIndeterminate(false);
-		mProgressDialog.setMax(0);
-		mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+		mProgressDialog.setIndeterminate(true);
+		//mProgressDialog.setMax(0);
+		//mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
 		mProgressDialog.setCancelable(false);
 		mProgressDialog.setButton(ProgressDialog.BUTTON_NEGATIVE, getText(android.R.string.cancel), new DialogInterface.OnClickListener() {
 			
@@ -93,13 +93,16 @@ public class FileDownloadListActivity extends ListActivity {
 	        	mapZoom = sUrl[4];
 
 	        	URL url = new URL(sUrl[0]);
-	            URLConnection connection = url.openConnection();
+	        	HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+	            connection.setRequestProperty("Cache-Control", "no-cache");
+	            //connection.setRequestProperty("User-Agent", "Java bot");
 	            connection.connect();
 	            // this will be useful so that you can show a typical 0-100% progress bar
-	            int fileLength = connection.getContentLength();
 
 	            // download the file
 	            InputStream input = new BufferedInputStream(url.openStream());
+	            //int fileLength = connection.getContentLength();
+	            //Ut.d("Content-Length="+connection.getHeaderField("Content-Length"));
 	            OutputStream output = new FileOutputStream(Ut.getRMapsMapsDir(FileDownloadListActivity.this).getAbsolutePath() + "/" + fileName);
 
 	            byte data[] = new byte[1024];
@@ -108,7 +111,7 @@ public class FileDownloadListActivity extends ListActivity {
 	            while ((count = input.read(data)) != -1) {
 	                total += count;
 	                // publishing the progress....
-	                publishProgress((int) total, (int) fileLength);
+	                publishProgress((int) total); //, (int) fileLength);
 	                output.write(data, 0, count);
 	                
 	                if(isCancelled()) {
@@ -120,6 +123,7 @@ public class FileDownloadListActivity extends ListActivity {
 	            output.flush();
 	            output.close();
 	            input.close();
+	            connection.disconnect();
 	            
 	            if(isCancelled()) {
 	            	ret = null;
@@ -143,8 +147,9 @@ public class FileDownloadListActivity extends ListActivity {
 	    @Override
 	    protected void onProgressUpdate(Integer... progress) {
 	        super.onProgressUpdate(progress);
-	        mProgressDialog.setMax(progress[1]/1024);
-	        mProgressDialog.setProgress(progress[0]/1024);
+	        //mProgressDialog.setMax(progress[1]/1024);
+	        //mProgressDialog.setProgress(progress[0]/1024);
+	        mProgressDialog.setMessage(String.format("%s: %dKB", mapName, (int)(progress[0]/1024)));
 	    }
 
 		@Override
