@@ -9,6 +9,9 @@ import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Locale;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -32,6 +35,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.content.res.Configuration;
+import android.content.res.Resources;
+import android.content.res.Resources.NotFoundException;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteException;
 import android.hardware.Sensor;
@@ -69,7 +75,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.robert.maps.applib.dashboard.BoardView;
 import com.robert.maps.applib.dashboard.IndicatorManager;
 import com.robert.maps.applib.downloader.AreaSelectorActivity;
 import com.robert.maps.applib.downloader.FileDownloadListActivity;
@@ -95,6 +100,7 @@ import com.robert.maps.applib.utils.CompassView;
 import com.robert.maps.applib.utils.CrashReportHandler;
 import com.robert.maps.applib.utils.RException;
 import com.robert.maps.applib.utils.SearchSuggestionsProvider;
+import com.robert.maps.applib.utils.SimpleThreadFactory;
 import com.robert.maps.applib.utils.Ut;
 import com.robert.maps.applib.view.IMoveListener;
 import com.robert.maps.applib.view.MapView;
@@ -144,6 +150,7 @@ public class MainActivity extends Activity {
 	
 	//private GoogleAnalyticsTracker mTracker;
 	private ImageView mOverlayView;
+	private ExecutorService mThreadPool = Executors.newSingleThreadExecutor(new SimpleThreadFactory("MainActivity.Search"));
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -316,58 +323,66 @@ public class MainActivity extends Activity {
         // Record the query string in the recent queries suggestions provider.
         SearchRecentSuggestions suggestions = new SearchRecentSuggestions(this, SearchSuggestionsProvider.AUTHORITY, SearchSuggestionsProvider.MODE);
         suggestions.saveRecentQuery(queryString, null);
+        
+        mThreadPool.execute(new Runnable() {
+			@Override
+			public void run() {
+				Handler handler = MainActivity.this.mCallbackHandler;
+				Resources resources = MainActivity.this.getApplicationContext().getResources();
 
-		InputStream in = null;
-		OutputStream out = null;
+				InputStream in = null;
+				OutputStream out = null;
 
-		try {
-			final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
-			URL url = new URL(
-					"http://ajax.googleapis.com/ajax/services/search/local?v=1.0&sll="
-							+ this.mMap.getMapCenter().toDoubleString()
-							+ "&q=" + URLEncoder.encode(queryString, "UTF-8")
-							+ "&hl="+ pref.getString("pref_googlelanguagecode", "en")
-							+ "");
-			Ut.dd(url.toString());
-			in = new BufferedInputStream(url.openStream(), StreamUtils.IO_BUFFER_SIZE);
+				try {
+					//final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+					Configuration config = getBaseContext().getResources().getConfiguration();
+			        final String lang = config.locale.getLanguage();
+			        
+					URL url = new URL(
+							"http://ajax.googleapis.com/ajax/services/search/local?v=1.0&sll="
+									+ MainActivity.this.mMap.getMapCenter().toDoubleString()
+									+ "&q=" + URLEncoder.encode(queryString, "UTF-8")
+									+ "&hl="+ lang /*pref.getString("pref_googlelanguagecode", "en")*/
+									+ "");
+					in = new BufferedInputStream(url.openStream(), StreamUtils.IO_BUFFER_SIZE);
 
-			final ByteArrayOutputStream dataStream = new ByteArrayOutputStream();
-			out = new BufferedOutputStream(dataStream, StreamUtils.IO_BUFFER_SIZE);
-			StreamUtils.copy(in, out);
-			out.flush();
+					final ByteArrayOutputStream dataStream = new ByteArrayOutputStream();
+					out = new BufferedOutputStream(dataStream, StreamUtils.IO_BUFFER_SIZE);
+					StreamUtils.copy(in, out);
+					out.flush();
 
-			String str = dataStream.toString();
-			JSONObject json = new JSONObject(str);
-			//Ut.dd(json.toString(4)); //
-			JSONArray results = (JSONArray) ((JSONObject) json.get("responseData")).get("results");
-			//Ut.dd("results.length="+results.length());
-			if(results.length() == 0){
-				Toast.makeText(this, R.string.no_items, Toast.LENGTH_SHORT).show();
-				return;
+					String str = dataStream.toString();
+					JSONObject json = new JSONObject(str);
+					//Ut.dd(json.toString(4)); //
+					JSONArray results = (JSONArray) ((JSONObject) json.get("responseData")).get("results");
+					//Ut.dd("results.length="+results.length());
+					if(results.length() == 0){
+						handler.obtainMessage(Ut.ERROR_MESSAGE, resources.getString(R.string.no_items));
+						return;
+					}
+					JSONObject res = results.getJSONObject(0);
+
+					//handler.obtainMessage(Ut.SEARCH_OK_MESSAGE, res);
+					final String address = res.getString("addressLines").replace("\"", "").replace("[", "").replace("]", "").replace(",", ", ").replace("  ", " ");
+					setAutoFollow(false, true);
+					final GeoPoint point = new GeoPoint((int)(res.getDouble("lat")* 1E6), (int)(res.getDouble("lng")* 1E6));
+					mSearchResultOverlay.setLocation(point, address);
+					mMap.getController().setZoom((int) (2 * res.getInt("accuracy")));
+					mMap.getController().setCenter(point);
+					setTitle();
+
+				} catch (Exception e) {
+					try {
+						handler.obtainMessage(Ut.ERROR_MESSAGE, resources.getString(R.string.no_inet_conn));
+					} catch (NotFoundException e1) {
+					}
+				} finally {
+					StreamUtils.closeStream(in);
+					StreamUtils.closeStream(out);
+				}
 			}
-			JSONObject res = results.getJSONObject(0);
-			//Ut.dd(res.toString(4));
-			//Toast.makeText(this, res.getString("titleNoFormatting"), Toast.LENGTH_LONG).show();
-			final String address = res.getString("addressLines").replace("\"", "").replace("[", "").replace("]", "").replace(",", ", ").replace("  ", " ");
-			//Toast.makeText(this, address, Toast.LENGTH_LONG).show();
-			//Toast.makeText(this, ((JSONObject) json.get("addressLines")).toString(), Toast.LENGTH_LONG).show();
+		});
 
-			setAutoFollow(false, true);
-			final GeoPoint point = new GeoPoint((int)(res.getDouble("lat")* 1E6), (int)(res.getDouble("lng")* 1E6));
-			this.mSearchResultOverlay.setLocation(point, address);
-			this.mMap.getController().setZoom((int) (2 * res.getInt("accuracy")));
-			mMap.getController().setCenter(point);
-			//this.mOsmv.getController().animateTo(new GeoPoint((int)(res.getDouble("lat")* 1E6), (int)(res.getDouble("lng")* 1E6)), OpenStreetMapViewController.AnimationType.MIDDLEPEAKSPEED, OpenStreetMapViewController.ANIMATION_SMOOTHNESS_HIGH, OpenStreetMapViewController.ANIMATION_DURATION_DEFAULT);
-
-			setTitle();
-
-		} catch (Exception e) {
-			e.printStackTrace();
-			Toast.makeText(this, R.string.no_inet_conn, Toast.LENGTH_LONG).show();
-		} finally {
-			StreamUtils.closeStream(in);
-			StreamUtils.closeStream(out);
-		}
 	}
 	
 	private View CreateContentView() {
@@ -753,6 +768,7 @@ public class MainActivity extends Activity {
 		mTileSource = null;
 		mMap.setMoveListener(null);
 		//mTracker.stopSession();
+		mThreadPool.shutdown();
 		
 		super.onDestroy();
 	}
