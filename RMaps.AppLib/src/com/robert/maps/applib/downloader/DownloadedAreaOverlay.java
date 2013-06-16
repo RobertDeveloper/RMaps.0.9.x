@@ -12,7 +12,6 @@ import android.graphics.Path;
 import android.graphics.Point;
 
 import com.robert.maps.applib.R;
-import com.robert.maps.applib.utils.Ut;
 import com.robert.maps.applib.view.TileView;
 import com.robert.maps.applib.view.TileViewOverlay;
 
@@ -76,10 +75,12 @@ public class DownloadedAreaOverlay extends TileViewOverlay {
 	protected void onDraw(Canvas c, TileView tileView) {
 		if(mPoint == null || mProj == null) return;
 		
+		mProj = tileView.getProjection();
+		
 		final Point p0 = mProj.toPixels(mPoint[0], null);
 		final Point p1 = mProj.toPixels(mPoint[1], null);
-		final int[] tileCoord = {Y, X};
 		
+		final int[] tileCoord = {Y, X};
 		final BoundingBoxE6 bb = Util.getBoundingBoxFromMapTile(tileCoord, Z, tileView.getTileSource().PROJECTION);
 		final Point p2 = mProj.toPixels(new GeoPoint(bb.getLatNorthE6(), bb.getLonWestE6()), null);
 		final Point p3 = mProj.toPixels(new GeoPoint(bb.getLatSouthE6(), bb.getLonEastE6()), null);

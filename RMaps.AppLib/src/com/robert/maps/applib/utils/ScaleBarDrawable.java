@@ -11,6 +11,7 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 
+import com.robert.maps.applib.R;
 import com.robert.maps.applib.view.MapView;
 import com.robert.maps.applib.view.TileView.OpenStreetMapViewProjection;
 
@@ -27,6 +28,8 @@ public class ScaleBarDrawable extends Drawable {
     private int mWidth = 100;
     private int mUnits;
     private int mWidth2 = 100;
+    private int mIntrinsicHeight;
+    private int mIntrinsicWidth;
 
     private static final int SCALE[][] = {{25000000,15000000,8000000,4000000,2000000,1000000,500000,250000,100000,50000,25000,15000,8000,4000,2000,1000,500,250,100,50}
     ,{15000,8000,4000,2000,1000,500,250,100,50,25,15,8,21120,10560,5280,3000,1500,500,250,100}};
@@ -39,10 +42,13 @@ public class ScaleBarDrawable extends Drawable {
         mPaint2.setColor(ctx.getResources().getColor(android.R.color.white));
         mPaint3.setColor(ctx.getResources().getColor(android.R.color.black));
         mPaint3.setAntiAlias(true);
-        mPaint3.setTextSize(15);
+        mPaint3.setTextSize(ctx.getResources().getDimension(R.dimen.scale_descr_text_size));
         mPaint4.setColor(ctx.getResources().getColor(android.R.color.white));
         mPaint4.setAntiAlias(true);
-        mPaint4.setTextSize(15);
+        mPaint4.setTextSize(ctx.getResources().getDimension(R.dimen.scale_descr_text_size));
+        
+        mIntrinsicHeight = (int) (10+ctx.getResources().getDimension(R.dimen.scale_descr_text_size));
+        mIntrinsicWidth = (int) (10+ctx.getResources().getDimension(R.dimen.scalebar_width));
     }
 
     @Override
@@ -60,12 +66,7 @@ public class ScaleBarDrawable extends Drawable {
 		final GeoPoint center = mOsmv.getMapCenter();
 		
 		int dist = SCALE[mUnits][Math.max(0, Math.min(19, mZoomLevel + 1 + (int)(mTouchScale > 1 ? Math.round(mTouchScale)-1 : -Math.round(1/mTouchScale)+1)))];
-		final GeoPoint c2 = center.calculateEndingGlobalCoordinates(center, 90, dist);
-		final Point p = new Point();
-		pj.toPixels(c2, p);
-		mWidth = p.x - mOsmv.getWidth() / 2;
-   		mWidth2 = (int) mWidth / 2;
-
+   		
 		if(mUnits == 0){
     		if(dist > 999) {
     			mDist = ""+(dist/1000)+" km";
@@ -74,13 +75,22 @@ public class ScaleBarDrawable extends Drawable {
 		} else {
 			if(mZoomLevel < 11){
 	    		mDist = ""+dist+" ml";
-			} else if(dist > 5280) {
-	    		mDist = ""+dist+" ml";
+	    		dist = (int) (dist * 1609.344);
+			} else if(dist >= 5280) {
+	    		mDist = ""+(int)(dist / 5280)+" ml";
+	    		dist = (int) (dist * 0.305);
     		} else {
 	    		mDist = ""+dist+" ft";
+	    		dist = (int) (dist * 0.305);
     		}
 		}
-        
+
+		final GeoPoint c2 = center.calculateEndingGlobalCoordinates(center, 90, dist);
+		final Point p = new Point();
+		pj.toPixels(c2, p);
+		mWidth = p.x - mOsmv.getWidth() / 2;
+   		mWidth2 = (int) mWidth / 2;
+
         canvas.drawRect(margin+0, 0, margin+mWidth+2, 4, mPaint2);
         canvas.drawRect(margin+0, 0, margin+4, h+2, mPaint2);
         canvas.drawRect(margin+mWidth+2-4, 0, margin+mWidth+2, h+2, mPaint2);
@@ -98,12 +108,12 @@ public class ScaleBarDrawable extends Drawable {
 
     @Override
     public int getIntrinsicWidth() {
-    	return 300; // *320/240;
+		return mIntrinsicWidth;
     }
 
     @Override
     public int getIntrinsicHeight() {
-    	return 22;
+    	return mIntrinsicHeight;
     }
 
 	@Override
