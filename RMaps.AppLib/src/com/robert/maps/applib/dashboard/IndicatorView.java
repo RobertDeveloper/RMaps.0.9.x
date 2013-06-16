@@ -33,7 +33,16 @@ public class IndicatorView extends RelativeLayout {
 
 	public void updateIndicator(IndicatorManager indicatorManager) {
 		if(indicatorManager.getIndicators().containsKey(mIndicatorTag)) {
-			((TextView)findViewById(R.id.data_value)).setText(indicatorManager.getIndicators().get(mIndicatorTag).toString());
+			if(mIndicatorTag.equalsIgnoreCase(Indicator.GPSELEV) 
+					|| mIndicatorTag.equalsIgnoreCase(Indicator.GPSACCURACY)
+					|| mIndicatorTag.equalsIgnoreCase(Indicator.GPSSPEED)
+					) {
+				final String[] val = (String[]) indicatorManager.getIndicators().get(mIndicatorTag);
+				((TextView)findViewById(R.id.data_value)).setText(val[0]);
+				((TextView)findViewById(R.id.data_unit)).setText(val[1]);
+			} else {
+				((TextView)findViewById(R.id.data_value)).setText(indicatorManager.getIndicators().get(mIndicatorTag).toString());
+			}
 		}
 	}
 }

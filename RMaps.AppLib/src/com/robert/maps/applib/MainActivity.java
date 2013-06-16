@@ -664,7 +664,7 @@ public class MainActivity extends Activity {
 		setTileSource(mMapId, mOverlayId, mShowOverlay);
 		mMapId = null;
 		
-		if(uiState.getBoolean("show_dashboard", true)) {
+		if(uiState.getBoolean("show_dashboard", true) && mIndicatorManager == null) {
 	        mIndicatorManager = new IndicatorManager(this);
 	        mIndicatorManager.setCenter(mMap.getMapCenter());
 		}
@@ -684,6 +684,9 @@ public class MainActivity extends Activity {
 			mCurrentTrackOverlay.onResume();
 		
 		mLocationListener.getBestProvider();
+
+		if(mIndicatorManager != null)
+			mIndicatorManager.Resume(this);
 
 		if (pref.getBoolean("pref_keepscreenon", true)) {
 			myWakeLock = ((PowerManager) getSystemService(POWER_SERVICE)).newWakeLock(
@@ -758,6 +761,9 @@ public class MainActivity extends Activity {
 		mLocationListener.getLocationManager().removeUpdates(mLocationListener);
 		if(mNetListener != null)
 			mLocationListener.getLocationManager().removeUpdates(mNetListener);
+		
+		if(mIndicatorManager != null)
+			mIndicatorManager.Pause(this);
 
 		super.onPause();
 	}
