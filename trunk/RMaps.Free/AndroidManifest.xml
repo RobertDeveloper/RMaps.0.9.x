@@ -4,7 +4,7 @@
     android:sharedUserId="@string/app_user_id"
     android:sharedUserLabel="@string/app_user_label"
     android:versionCode="8133"
-    android:versionName="0.9.4.b1" >
+    android:versionName="0.9.4.b2" >
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />

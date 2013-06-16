@@ -6,6 +6,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -83,6 +85,23 @@ public class MapDownloaderService extends Service {
 		Ut.e("onCreate");
 		
 		mNM = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+	    try {
+	        mStartForeground = getClass().getMethod("startForeground",
+	                mStartForegroundSignature);
+	        mStopForeground = getClass().getMethod("stopForeground",
+	                mStopForegroundSignature);
+	        return;
+	    } catch (NoSuchMethodException e) {
+	        // Running on an older platform.
+	        mStartForeground = mStopForeground = null;
+	    }
+	    try {
+	        mSetForeground = getClass().getMethod("setForeground",
+	                mSetForegroundSignature);
+	    } catch (NoSuchMethodException e) {
+	        throw new IllegalStateException(
+	                "OS doesn't have Service.startForeground OR Service.setForeground!");
+	    }
 	}
 	
 	@Override
@@ -237,7 +256,7 @@ public class MapDownloaderService extends Service {
 			mTileSource.Free();
 		
 		//mNM.cancel(R.id.downloader_service);
-		stopForeground(true);
+		stopForegroundCompat(R.id.downloader_service);
 		mNM = null;
 		
 		mStartTime = 0;
@@ -267,7 +286,7 @@ public class MapDownloaderService extends Service {
 		// We use a string id because it is a unique number. We use it later to
 		// cancel.
 		//mNM.notify(R.id.downloader_service, mNotification);
-		startForeground(R.id.downloader_service, mNotification);
+		startForegroundCompat(R.id.downloader_service, mNotification);
 	}
 	
 	private void downloadDone() {
@@ -500,5 +519,64 @@ public class MapDownloaderService extends Service {
 			Y = y;
 			Z = z;
 		}
+	}
+	private static final Class<?>[] mSetForegroundSignature = new Class[] {
+	    boolean.class};
+	private static final Class<?>[] mStartForegroundSignature = new Class[] {
+	    int.class, Notification.class};
+	private static final Class<?>[] mStopForegroundSignature = new Class[] {
+	    boolean.class};
+
+	private Method mSetForeground;
+	private Method mStartForeground;
+	private Method mStopForeground;
+	private Object[] mSetForegroundArgs = new Object[1];
+	private Object[] mStartForegroundArgs = new Object[2];
+	private Object[] mStopForegroundArgs = new Object[1];
+
+	void invokeMethod(Method method, Object[] args) {
+	    try {
+	        method.invoke(this, args);
+	    } catch (InvocationTargetException e) {
+	    } catch (IllegalAccessException e) {
+	    }
+	}
+
+	/**
+	 * This is a wrapper around the new startForeground method, using the older
+	 * APIs if it is not available.
+	 */
+	void startForegroundCompat(int id, Notification notification) {
+	    // If we have the new startForeground API, then use it.
+	    if (mStartForeground != null) {
+	        mStartForegroundArgs[0] = Integer.valueOf(id);
+	        mStartForegroundArgs[1] = notification;
+	        invokeMethod(mStartForeground, mStartForegroundArgs);
+	        return;
+	    }
+
+	    // Fall back on the old API.
+	    mSetForegroundArgs[0] = Boolean.TRUE;
+	    invokeMethod(mSetForeground, mSetForegroundArgs);
+	    mNM.notify(id, notification);
+	}
+
+	/**
+	 * This is a wrapper around the new stopForeground method, using the older
+	 * APIs if it is not available.
+	 */
+	void stopForegroundCompat(int id) {
+	    // If we have the new stopForeground API, then use it.
+	    if (mStopForeground != null) {
+	        mStopForegroundArgs[0] = Boolean.TRUE;
+	        invokeMethod(mStopForeground, mStopForegroundArgs);
+	        return;
+	    }
+
+	    // Fall back on the old API.  Note to cancel BEFORE changing the
+	    // foreground state, since we could be killed at that point.
+	    mNM.cancel(id);
+	    mSetForegroundArgs[0] = Boolean.FALSE;
+	    invokeMethod(mSetForeground, mSetForegroundArgs);
 	}
 }
