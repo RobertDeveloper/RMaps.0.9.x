@@ -161,10 +161,8 @@ public class MainActivity extends Activity {
 
         //mTracker = GoogleAnalyticsTracker.getInstance();
         //mTracker.startNewSession("UA-10715419-3", 20, this);
-        
 
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
-        //mIndicatorManager = new IndicatorManager(this);
 		
 		CreateContentView();
 		
@@ -416,11 +414,13 @@ public class MainActivity extends Activity {
 
         final RelativeLayout.LayoutParams followParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         followParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-        if(!(sideBottom == 2 ? false : true))
+        if(!(sideBottom == 2 ? false : true)) {
         	followParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-        else
-        	followParams.addRule(RelativeLayout.ALIGN_TOP, R.id.main);
-        rl.addView(ivAutoFollow, followParams);
+        	rl.addView(ivAutoFollow, followParams);
+        } else {
+        	followParams.addRule(RelativeLayout.BELOW, R.id.dashboard_area);
+        	mMap.addView(ivAutoFollow, followParams);
+        }
 
         ivAutoFollow.setOnClickListener(new OnClickListener(){
 			public void onClick(View v) {
@@ -528,9 +528,6 @@ public class MainActivity extends Activity {
 				
 			}
 		});
-        
-        if(mIndicatorManager != null)
-        	((ViewGroup) findViewById(R.id.message_list)).addView(mIndicatorManager.getView(this));
         
         registerForContextMenu(mMap);
  		
@@ -667,6 +664,11 @@ public class MainActivity extends Activity {
 		setTileSource(mMapId, mOverlayId, mShowOverlay);
 		mMapId = null;
 		
+		if(uiState.getBoolean("show_dashboard", true)) {
+	        mIndicatorManager = new IndicatorManager(this);
+	        mIndicatorManager.setCenter(mMap.getMapCenter());
+		}
+		
  		mMap.getController().setZoom(uiState.getInt("ZoomLevel", 0));
  		setTitle();
  		
@@ -723,6 +725,7 @@ public class MainActivity extends Activity {
 		if(mPoiOverlay != null)
 			editor.putInt("curShowPoiId", mPoiOverlay.getTapIndex());
 		mSearchResultOverlay.toPref(editor);
+		editor.putBoolean("show_dashboard", mIndicatorManager == null ? false : true);
 		editor.commit();
 		
 		uiState = getSharedPreferences("MapName", Activity.MODE_PRIVATE);
@@ -851,6 +854,17 @@ public class MainActivity extends Activity {
 
 		if(item.getItemId() == R.id.area_selector) {
 			startActivity(new Intent(this, AreaSelectorActivity.class).putExtra("new", true).putExtra(MAPNAME, mTileSource.ID).putExtra("Latitude", point.getLatitudeE6()).putExtra("Longitude", point.getLongitudeE6()).putExtra("ZoomLevel", mMap.getZoomLevel()));
+			return true;
+		} else if(item.getItemId() == R.id.menu_show_dashboard) {
+			if(mIndicatorManager == null) {
+				mIndicatorManager = new IndicatorManager(this);
+				mIndicatorManager.setCenter(mMap.getMapCenter());
+				mIndicatorManager.setMapName(mTileSource.NAME);
+				mIndicatorManager.setZoom(mMap.getZoomLevel());
+			} else {
+				mIndicatorManager.Dismiss(this);
+				mIndicatorManager = null;
+			}
 			return true;
 		} else if(item.getItemId() == R.id.downloadprepared) {
 			startActivity(new Intent(this, FileDownloadListActivity.class));
@@ -1481,6 +1495,9 @@ public class MainActivity extends Activity {
 	private class MoveListener implements IMoveListener {
 
 		public void onMoveDetected() {
+			if(mIndicatorManager != null)
+				mIndicatorManager.setCenter(mMap.getMapCenter());
+
 			if(mAutoFollow)
 				setAutoFollow(false);
 		}

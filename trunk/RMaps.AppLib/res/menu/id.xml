@@ -49,5 +49,7 @@
     </item>
     <item android:id="@+id/menu_addmeasurepoint">
     </item>
+    <item android:id="@+id/dashboard_area">
+    </item>
     
 </menu>
