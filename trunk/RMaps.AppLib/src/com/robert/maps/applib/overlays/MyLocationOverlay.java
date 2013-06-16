@@ -21,7 +21,6 @@ import android.widget.TextView;
 
 import com.robert.maps.applib.R;
 import com.robert.maps.applib.utils.DistanceFormatter;
-import com.robert.maps.applib.utils.Ut;
 import com.robert.maps.applib.view.TileView;
 import com.robert.maps.applib.view.TileView.OpenStreetMapViewProjection;
 import com.robert.maps.applib.view.TileViewOverlay;
@@ -183,8 +182,15 @@ public class MyLocationOverlay extends TileViewOverlay {
 	        if(mNeedCircleDistance) {
 	        	mZoomLevel = osmv.getZoomLevel();
 	        	mTouchScale = osmv.mTouchScale;
-	    		final int dist = SCALE[mUnits][Math.max(0, Math.min(19, mZoomLevel + 1 + (int)(mTouchScale > 1 ? Math.round(mTouchScale)-1 : -Math.round(1/mTouchScale)+1)))];
+	    		int dist = SCALE[mUnits][Math.max(0, Math.min(19, mZoomLevel + 1 + (int)(mTouchScale > 1 ? Math.round(mTouchScale)-1 : -Math.round(1/mTouchScale)+1)))];
 	    		final GeoPoint center = osmv.getMapCenter();
+	    		if(mUnits == 1){
+	    			if(mZoomLevel < 11){
+	    	    		dist = (int) (dist * 1609.344);
+	    			} else {
+	    	    		dist = (int) (dist * 0.305);
+	        		}
+	    		}
 	    		final GeoPoint c2 = center.calculateEndingGlobalCoordinates(center, 90, dist);
 	    		final Point p = new Point();
 	    		pj.toPixels(c2, p);

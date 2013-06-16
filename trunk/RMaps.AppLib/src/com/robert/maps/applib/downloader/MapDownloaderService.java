@@ -14,11 +14,13 @@ import java.util.concurrent.TimeUnit;
 import org.andnav.osm.views.util.StreamUtils;
 import org.andnav.osm.views.util.Util;
 
+import android.annotation.TargetApi;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
@@ -78,18 +80,22 @@ public class MapDownloaderService extends Service {
 	@Override
 	public void onCreate() {
 		super.onCreate();
+		Ut.e("onCreate");
 		
 		mNM = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 	}
 	
 	@Override
 	public void onStart(Intent intent, int startId) {
+		Ut.e("onStart="+intent);
 		handleCommand(intent);
 	}
 	
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
-		handleCommand(intent);
+		Ut.e("onStartCommand="+intent);
+		if(intent != null)
+			handleCommand(intent);
 		return START_STICKY;
 	}
 	
@@ -112,9 +118,11 @@ public class MapDownloaderService extends Service {
 		mContentIntent = PendingIntent.getActivity(
 				this,
 				0,
-				new Intent(this, DownloaderActivity.class).putExtra("MAPID", mMapID)
+				new Intent(this, DownloaderActivity.class)
+						.putExtra("MAPID", mMapID)
 						.putExtra("Latitude", mCoordArr[2] - mCoordArr[0])
-						.putExtra("Longitude", mCoordArr[3] - mCoordArr[1]).putExtra("ZoomLevel", mZoomArr[0])
+						.putExtra("Longitude", mCoordArr[3] - mCoordArr[1])
+						.putExtra("ZoomLevel", mZoomArr[0])
 						.putExtra("OFFLINEMAPNAME", mOfflineMapName), 0);
 		showNotification();
 		
@@ -188,8 +196,11 @@ public class MapDownloaderService extends Service {
 //		}
 	}
 
+	@TargetApi(Build.VERSION_CODES.ECLAIR)
 	@Override
 	public void onDestroy() {
+		Ut.e("downloader.onDestroy");
+		
 		if (mThreadPool != null) {
 			mThreadPool.shutdown();
 			try {
@@ -225,7 +236,8 @@ public class MapDownloaderService extends Service {
 		if (mTileSource != null)
 			mTileSource.Free();
 		
-		mNM.cancel(R.id.downloader_service);
+		//mNM.cancel(R.id.downloader_service);
+		stopForeground(true);
 		mNM = null;
 		
 		mStartTime = 0;
@@ -233,6 +245,7 @@ public class MapDownloaderService extends Service {
 		super.onDestroy();
 	}
 	
+	@TargetApi(Build.VERSION_CODES.ECLAIR)
 	private void showNotification() {
 		// In this sample, we'll use the same text for the ticker and the
 		// expanded notification
@@ -253,7 +266,8 @@ public class MapDownloaderService extends Service {
 		// Send the notification.
 		// We use a string id because it is a unique number. We use it later to
 		// cancel.
-		mNM.notify(R.id.downloader_service, mNotification);
+		//mNM.notify(R.id.downloader_service, mNotification);
+		startForeground(R.id.downloader_service, mNotification);
 	}
 	
 	private void downloadDone() {
