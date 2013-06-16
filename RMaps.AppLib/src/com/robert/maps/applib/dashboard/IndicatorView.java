@@ -24,7 +24,7 @@ public class IndicatorView extends RelativeLayout {
 
 	@Override
 	protected void onLayout(boolean changed, int l, int t, int r, int b) {
-
+		super.onLayout(changed, l, t, r, b);
 	}
 	
 	public void setIndicatorTag(String tag) {
@@ -33,7 +33,7 @@ public class IndicatorView extends RelativeLayout {
 
 	public void updateIndicator(IndicatorManager indicatorManager) {
 		if(indicatorManager.getIndicators().containsKey(mIndicatorTag)) {
-			((TextView)findViewById(R.id.about)).setText(indicatorManager.getIndicators().get(mIndicatorTag).toString());
+			((TextView)findViewById(R.id.data_value)).setText(indicatorManager.getIndicators().get(mIndicatorTag).toString());
 		}
 	}
 }

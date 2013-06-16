@@ -1,33 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.robert.maps.applib.dashboard.IndicatorView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/RelativeLayout1"
     android:layout_width="fill_parent"
-    android:layout_height="wrap_content" >
+    android:layout_height="wrap_content"
+    android:background="#dd000000"
+    android:paddingBottom="4dp"
+    android:paddingLeft="4dp"
+    android:paddingRight="4dp"
+    android:paddingTop="4dp" >
 
     <TextView
-        android:id="@+id/title"
+        android:id="@+id/data_header"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="DISTANCE"
-        android:textAppearance="?android:attr/textAppearanceSmall" />
+        android:includeFontPadding="false"
+        android:text="@string/points_cnt"
+        android:textAppearance="@style/data_header" >
+    </TextView>
 
     <TextView
-        android:id="@+id/units"
+        android:id="@+id/data_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@id/title"
+        android:layout_below="@+id/data_header"
+        android:includeFontPadding="false"
+        android:maxLines="1"
+        android:text="452"
+        android:textAppearance="@style/data_value" >
+
+    </TextView>
+
+    <TextView
+        android:id="@+id/data_unit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/data_value"
+        android:layout_toRightOf="@+id/data_value"
+        android:includeFontPadding="false"
+        android:paddingLeft="5.0px"
         android:text="km"
-        android:textAppearance="?android:attr/textAppearanceSmall" />
+        android:textAppearance="@style/data_unit" >
+    </TextView>
 
-    <TextView
-        android:id="@+id/indicator"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:text="2345.6"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textSize="30dp" />
-
-</RelativeLayout>
+</com.robert.maps.applib.dashboard.IndicatorView>

@@ -1,6 +1,8 @@
 package com.robert.maps.applib.dashboard;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 
 import org.andnav.osm.util.GeoPoint;
 
@@ -12,18 +14,25 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.LinearLayout.LayoutParams;
+import android.widget.TextView;
 
+import com.robert.maps.applib.MainActivity;
 import com.robert.maps.applib.R;
+import com.robert.maps.applib.utils.CoordFormatter;
 
 public class IndicatorManager implements Indicator {
 	private HashMap<String, Object> mIndicators = new HashMap<String, Object>();
 	private SampleLocationListener mLocationListener = new SampleLocationListener();
+	private ArrayList<IndicatorView> mIndicatorViewList = new ArrayList<IndicatorView>();
+	private CoordFormatter mCf;
 
-	public IndicatorManager(Context ctx) {
+	public IndicatorManager(MainActivity ctx) {
+		mCf = new CoordFormatter(ctx);
 		setUpIndicators();
-	}
+
+       	((ViewGroup) ctx.findViewById(R.id.dashboard_area)).addView(getView(ctx));
+}
 	
 	private void setUpIndicators() {
 		// GPS indicators
@@ -47,16 +56,22 @@ public class IndicatorManager implements Indicator {
 	}
 
 	public void setCenter(GeoPoint point) {
-		mIndicators.put(MAPCENTERLAT, point.getLatitude());
-		mIndicators.put(MAPCENTERLON, point.getLongitude());
+		mIndicators.put(MAPCENTERLAT, mCf.convertLat(point.getLatitude()));
+		mIndicators.put(MAPCENTERLON, mCf.convertLon(point.getLongitude()));
+		
+		updateIndicatorViewValues();
 	}
 	
 	public void setZoom(int zoom) {
 		mIndicators.put(MAPZOOM, zoom);
+		
+		updateIndicatorViewValues();
 	}
 	
 	public void setMapName(String name) {
 		mIndicators.put(MAPNAME, name);
+		
+		updateIndicatorViewValues();
 	}
 	
 	public void Pause(Context ctx) {
@@ -65,6 +80,13 @@ public class IndicatorManager implements Indicator {
 	
 	public void Resume(Context ctx) {
 		((LocationManager) ctx.getSystemService(Context.LOCATION_SERVICE)).requestLocationUpdates(GPS, 0, 0, mLocationListener);
+	}
+	
+	public void Dismiss(Context ctx) {
+		((LocationManager) ctx.getSystemService(Context.LOCATION_SERVICE)).removeUpdates(mLocationListener);
+		
+		mIndicatorViewList.clear();
+		((ViewGroup) ((MainActivity) ctx).findViewById(R.id.dashboard_area)).removeAllViews();
 	}
 	
 	private class SampleLocationListener implements LocationListener {
@@ -104,15 +126,33 @@ public class IndicatorManager implements Indicator {
 	}
 
 	public LinearLayout getView(Context context) {
-		//LinearLayout ll = (LinearLayout)LayoutInflater.from(context).inflate(R.layout.ind_test, null, false);
-		LinearLayout ll = new BoardView(context);
+		LinearLayout ll = new LinearLayout(context); // new BoardView(context);
 		ll.setOrientation(LinearLayout.HORIZONTAL);
 		ll.setLayoutParams(new ViewGroup.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
 		
-		//LayoutInflater.from(context).inflate(R.layout.indicator_simple, ll, true);
-		ll.addView((RelativeLayout)LayoutInflater.from(context).inflate(R.layout.indicator_simple, null, false), 0, new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT, 1));
-		ll.addView((RelativeLayout)LayoutInflater.from(context).inflate(R.layout.indicator_simple, null, false), 1, new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT, 1));
+		//ll.addView(addIndicatorView(context, R.layout.indicator_simple, MAPZOOM, "ZOOM", ""), 0, new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT, 1));
+		ll.addView(addIndicatorView(context, R.layout.indicator_simple, MAPNAME, "MAP NAME", ""), 0, new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT, 1));
+		ll.addView(addIndicatorView(context, R.layout.indicator_simple, MAPCENTERLAT, "CENTER LATITUDE", ""), 1, new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT, 1));
+
 		return ll;
-		//return new BoardView(context, this);
+	}
+	
+	private IndicatorView addIndicatorView(Context context, int resId, String tag, String header, String units) {
+		final IndicatorView iv = (IndicatorView) LayoutInflater.from(context).inflate(resId, null, false);
+		iv.setIndicatorTag(tag);
+		((TextView) iv.findViewById(R.id.data_header)).setText(header);
+		((TextView) iv.findViewById(R.id.data_unit)).setText(units);
+		iv.updateIndicator(this);
+		mIndicatorViewList.add(iv);
+		return iv;
+	}
+	
+	private void updateIndicatorViewValues() {
+		IndicatorView iv = null;
+		Iterator<IndicatorView> it = mIndicatorViewList.iterator();
+		while(it.hasNext()) {
+			iv = it.next();
+			iv.updateIndicator(this);
+		}
 	}
 }

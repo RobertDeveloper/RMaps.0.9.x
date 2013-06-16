@@ -272,4 +272,5 @@ How to and FAQ you can find on http://robertdeveloper.blogspot.com/\n</string>
     <string name="toprev">to Previous</string>
     <string name="menu_showinfo">Show info bubble</string>
     <string name="menu_showlineinfo">Show info under line</string>
+    <string name="menu_show_dashboard">Dashboard</string>
 </resources>

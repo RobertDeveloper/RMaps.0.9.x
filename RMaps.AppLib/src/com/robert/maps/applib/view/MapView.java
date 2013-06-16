@@ -12,9 +12,11 @@ import android.util.AttributeSet;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.LinearLayout.LayoutParams;
 
 import com.robert.maps.applib.R;
 import com.robert.maps.applib.tileprovider.TileSource;
@@ -40,6 +42,15 @@ public class MapView extends RelativeLayout {
 		mTileView = new TileView(context);
 		mMoveListener = null;
 		addView(mTileView, new RelativeLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
+		
+		final LinearLayout ll = new LinearLayout(context);
+		ll.setOrientation(LinearLayout.VERTICAL);
+		ll.setLayoutParams(new ViewGroup.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
+		ll.setId(R.id.dashboard_area);
+		final RelativeLayout.LayoutParams dashboardParams = new RelativeLayout.LayoutParams(
+				RelativeLayout.LayoutParams.FILL_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+		dashboardParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+		addView(ll, dashboardParams);
 		
 		displayZoomControls(sideInOutButtons);
 
@@ -152,7 +163,11 @@ public class MapView extends RelativeLayout {
         } else {
 	        final RelativeLayout.LayoutParams zoominParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
 	        zoominParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-	        zoominParams.addRule((SideInOutButtons == 2 ? false : true) ? RelativeLayout.ALIGN_PARENT_BOTTOM : RelativeLayout.ALIGN_PARENT_TOP);
+	        if(SideInOutButtons != 2) {
+		        zoominParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+	        } else {
+		        zoominParams.addRule(RelativeLayout.BELOW, R.id.dashboard_area);
+	        }
 	        addView(ivZoomIn, zoominParams);
         }
         
@@ -189,7 +204,11 @@ public class MapView extends RelativeLayout {
         } else {
 	        final RelativeLayout.LayoutParams zoomoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
 	        zoomoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-	        zoomoutParams.addRule((SideInOutButtons == 2 ? false : true) ? RelativeLayout.ALIGN_PARENT_BOTTOM : RelativeLayout.ALIGN_PARENT_TOP);
+	        if(SideInOutButtons != 2) {
+	        	zoomoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+	        } else {
+	        	zoomoutParams.addRule(RelativeLayout.BELOW, R.id.dashboard_area);
+	        }
 	        addView(ivZoomOut, zoomoutParams);
         }
         

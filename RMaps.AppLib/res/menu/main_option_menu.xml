@@ -11,7 +11,7 @@
                 android:icon="@android:drawable/ic_menu_search"
                 android:title="@string/menu_search">
             </item>
-            <item
+            <item android:id="@+id/menu_show_dashboard" android:title="@string/menu_show_dashboard" /><item
                 android:id="@+id/measure"
                 android:enabled="true"
                 android:title="@string/menu_measure"
@@ -25,6 +25,7 @@
                 android:id="@+id/findthemap"
                 android:title="@string/menu_findthemap">
             </item>
+            
         </menu>
     </item>
     <item
