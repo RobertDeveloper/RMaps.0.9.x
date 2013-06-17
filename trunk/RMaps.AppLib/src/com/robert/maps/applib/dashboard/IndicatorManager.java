@@ -43,7 +43,7 @@ import com.robert.maps.applib.utils.CoordFormatter;
 import com.robert.maps.applib.utils.DistanceFormatter;
 import com.robert.maps.applib.utils.Ut;
 
-public class IndicatorManager implements Indicator {
+public class IndicatorManager implements IndicatorConst {
 	private HashMap<String, Object> mIndicators = new HashMap<String, Object>();
 	private HashMap<String, String> mIndicatorTitles = new HashMap<String, String>();
 	private SampleLocationListener mLocationListener = new SampleLocationListener();
