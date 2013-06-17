@@ -317,7 +317,8 @@ public class TileView extends View {
 		this.mLatitudeE6 = aLatitudeE6;
 		this.mLongitudeE6 = aLongitudeE6;
 		
-		mMoveListener.onMoveDetected();
+		if(mMoveListener != null)
+			mMoveListener.onMoveDetected();
 
 		this.postInvalidate();
 	}
