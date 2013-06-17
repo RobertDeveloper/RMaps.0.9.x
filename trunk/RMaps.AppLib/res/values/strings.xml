@@ -273,4 +273,5 @@ How to and FAQ you can find on http://robertdeveloper.blogspot.com/\n</string>
     <string name="menu_showinfo">Show info bubble</string>
     <string name="menu_showlineinfo">Show info under line</string>
     <string name="menu_show_dashboard">Dashboard</string>
+    <string name="menu_i_am_here">I am here</string>
 </resources>
