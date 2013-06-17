@@ -9,7 +9,6 @@ import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
@@ -76,6 +75,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.robert.maps.applib.dashboard.IndicatorManager;
+import com.robert.maps.applib.dashboard.IndicatorView;
+import com.robert.maps.applib.dashboard.IndicatorView.IndicatorViewMenuInfo;
 import com.robert.maps.applib.downloader.AreaSelectorActivity;
 import com.robert.maps.applib.downloader.FileDownloadListActivity;
 import com.robert.maps.applib.kml.PoiActivity;
@@ -770,6 +771,11 @@ public class MainActivity extends Activity {
 
 	@Override
 	protected void onDestroy() {
+		if(mIndicatorManager != null) {
+			mIndicatorManager.Dismiss(this);
+			mIndicatorManager = null;
+		}
+		
 		for (TileViewOverlay osmvo : mMap.getOverlays())
 			osmvo.Free();
 		if(mTileSource != null)
@@ -1147,13 +1153,36 @@ public class MainActivity extends Activity {
 			//}
 			
 			FillOverlays();
-
 	        setTitle();
-
+	        
+		} else if(item.getGroupId() == R.id.menu_dashboard_edit) {
+			final IndicatorViewMenuInfo info = (IndicatorViewMenuInfo) item.getMenuInfo();
+			final IndicatorView iv = info.IndicatorView;
+			mIndicatorManager.putTagToIndicatorView(iv, item.getTitleCondensed().toString());
+			mMap.postInvalidate();
+			
 		} else {
 			if(item.getItemId() == R.id.clear) {
 				mMeasureOverlay.Clear();
 				mMap.postInvalidate();
+			} else if (item.getItemId() == R.id.menu_dashboard_delete) {
+				final IndicatorViewMenuInfo info = (IndicatorViewMenuInfo) item.getMenuInfo();
+				final IndicatorView iv = info.IndicatorView;
+				mIndicatorManager.removeIndicatorView(this, iv);
+				mMap.postInvalidate();
+				
+			} else if (item.getItemId() == R.id.menu_dashboard_add) {
+				final IndicatorViewMenuInfo info = (IndicatorViewMenuInfo) item.getMenuInfo();
+				final IndicatorView iv = info.IndicatorView;
+				mIndicatorManager.addIndicatorView(this, iv, iv.getIndicatorTag(), false);
+				mMap.postInvalidate();
+			
+			} else if (item.getItemId() == R.id.menu_dashboard_add_line) {
+				final IndicatorViewMenuInfo info = (IndicatorViewMenuInfo) item.getMenuInfo();
+				final IndicatorView iv = info.IndicatorView;
+				mIndicatorManager.addIndicatorView(this, iv, iv.getIndicatorTag(), true);
+				mMap.postInvalidate();
+
 			} else if (item.getItemId() == R.id.menu_undo) {
 				mMeasureOverlay.Undo();
 				mMap.postInvalidate();
@@ -1251,6 +1280,12 @@ public class MainActivity extends Activity {
 				}
 			}
 		}
+		
+		final ContextMenuInfo menuInfo = item.getMenuInfo();
+		if(menuInfo != null && menuInfo instanceof TileView.PoiMenuInfo) {
+			((TileView.PoiMenuInfo) menuInfo).EventGeoPoint = null;
+		}
+		
 		return super.onContextItemSelected(item);
 	}
 
