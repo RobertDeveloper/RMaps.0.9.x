@@ -274,4 +274,20 @@ How to and FAQ you can find on http://robertdeveloper.blogspot.com/\n</string>
     <string name="menu_showlineinfo">Show info under line</string>
     <string name="menu_show_dashboard">Dashboard</string>
     <string name="menu_i_am_here">I am here</string>
+    <string name="menu_dashboard_add_line">Add line</string>
+    <string name="dashboard_message_cant_remove_last_indicator">Can\'t remove last indicator</string>
+    
+    <string name="dashboard_title_gps_latitude">GPS Latitude</string>
+    <string name="dashboard_title_gps_longitude">GPS Longitude</string>
+    <string name="dashboard_title_gps_accuracy">GPS Accuracy</string>
+    <string name="dashboard_title_gps_altitude">GPS Altitude</string>
+    <string name="dashboard_title_gps_bearing">GPS Bearing</string>
+    <string name="dashboard_title_gps_time">GPS Timestamp</string>
+    <string name="dashboard_title_gps_provider">Loc Provider</string>
+    <string name="dashboard_title_gps_speed">Speed</string>
+
+    <string name="dashboard_title_map_name">Map Name</string>
+    <string name="dashboard_title_map_center_lat">Center Latitude</string>
+    <string name="dashboard_title_map_center_lon">Center Longitude</string>
+    <string name="dashboard_title_map_zoom">Zoom</string>
 </resources>

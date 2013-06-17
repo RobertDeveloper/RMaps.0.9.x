@@ -34,6 +34,7 @@ import com.robert.maps.applib.R;
 import com.robert.maps.applib.utils.CoordFormatter;
 import com.robert.maps.applib.utils.DistanceFormatter;
 import com.robert.maps.applib.utils.SimpleThreadFactory;
+import com.robert.maps.applib.utils.Ut;
 import com.robert.maps.applib.view.MapView;
 import com.robert.maps.applib.view.TileView;
 import com.robert.maps.applib.view.TileViewOverlay;
@@ -150,6 +151,7 @@ public class SearchResultOverlay extends TileViewOverlay {
 
 	@Override
 	public boolean onSingleTapUp(MotionEvent e, TileView mapView) {
+		Ut.e("SearchResultOverlay.onSingleTapUp");
 		if (mLocation != null) {
 			final com.robert.maps.applib.view.TileView.OpenStreetMapViewProjection pj = mapView.getProjection();
 			final Point screenCoords = new Point();
@@ -173,6 +175,7 @@ public class SearchResultOverlay extends TileViewOverlay {
 
 	@Override
 	public int onLongPress(MotionEvent event, TileView mapView) {
+		Ut.e("SearchResultOverlay.onLongPress");
 		mLocation = mapView.getProjection().fromPixels((int)event.getX(), (int)event.getY(), mapView.getBearing());
 		mElevation = 0.0;
 		mSearchBubble = false;

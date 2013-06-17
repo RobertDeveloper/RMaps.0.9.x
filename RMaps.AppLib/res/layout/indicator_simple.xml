@@ -14,8 +14,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:includeFontPadding="false"
+        android:maxLines="1"
         android:text="@string/points_cnt"
         android:textAppearance="@style/data_header" >
+
     </TextView>
 
     <TextView
@@ -37,9 +39,11 @@
         android:layout_alignBaseline="@+id/data_value"
         android:layout_toRightOf="@+id/data_value"
         android:includeFontPadding="false"
+        android:maxLines="1"
         android:paddingLeft="5.0px"
         android:text="km"
         android:textAppearance="@style/data_unit" >
+
     </TextView>
 
 </com.robert.maps.applib.dashboard.IndicatorView>
