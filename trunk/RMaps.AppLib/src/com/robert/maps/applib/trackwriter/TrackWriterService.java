@@ -1,6 +1,8 @@
 package com.robert.maps.applib.trackwriter;
 
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
@@ -29,8 +31,8 @@ import android.preference.PreferenceManager;
 import android.widget.Toast;
 
 import com.robert.maps.applib.R;
-import com.robert.maps.applib.kml.Track;
 import com.robert.maps.applib.kml.TrackListActivity;
+import com.robert.maps.applib.kml.TrackStatHelper;
 import com.robert.maps.applib.utils.Ut;
 
 public class TrackWriterService extends Service implements OpenStreetMapConstants {
@@ -39,6 +41,7 @@ public class TrackWriterService extends Service implements OpenStreetMapConstant
     Notification mNotification;
     PendingIntent mContentIntent;
     final SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+    private TrackStatHelper mTrackStat = new TrackStatHelper();
 
 	protected LocationManager mLocationManager;
 	protected SampleLocationListener mLocationListener;
@@ -87,8 +90,46 @@ public class TrackWriterService extends Service implements OpenStreetMapConstant
 		
 		sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
 		sdf.applyPattern("HH:mm:ss");
-		
 
+        mNM = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
+
+	    try {
+	        mStartForeground = getClass().getMethod("startForeground",
+	                mStartForegroundSignature);
+	        mStopForeground = getClass().getMethod("stopForeground",
+	                mStopForegroundSignature);
+	        return;
+	    } catch (NoSuchMethodException e) {
+	        // Running on an older platform.
+	        mStartForeground = mStopForeground = null;
+	    }
+	    try {
+	        mSetForeground = getClass().getMethod("setForeground",
+	                mSetForegroundSignature);
+	    } catch (NoSuchMethodException e) {
+	        throw new IllegalStateException(
+	                "OS doesn't have Service.startForeground OR Service.setForeground!");
+	    }
+		
+		Ut.w("TrackWriterService.onCreate");
+	}
+
+    //final RemoteCallbackList<IRemoteServiceCallback> mCallbacks = new RemoteCallbackList<IRemoteServiceCallback>();
+
+	@Override
+	public void onStart(Intent intent, int startId) {
+		if(intent != null)
+			handleCommand(intent);
+	}
+
+	@Override
+	public int onStartCommand(Intent intent, int flags, int startId) {
+		if(intent != null)
+			handleCommand(intent);
+		return START_STICKY;
+	}
+
+	private void handleCommand(Intent intent) {
 		final File folder = Ut.getRMapsMainDir(this, "data");
 		if(folder.canRead()){
 			try {
@@ -106,40 +147,28 @@ public class TrackWriterService extends Service implements OpenStreetMapConstant
 			return;
 		};
 
-        mNM = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
+		final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+		final int minTime = Integer.parseInt(pref.getString("pref_trackwriter_mintime", "2000"));
+		final int minDistance = Integer.parseInt(pref.getString("pref_trackwriter_mindistance", "10"));
 
 		mLocationListener = new SampleLocationListener();
-		final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
-		mLocationListener.Init(Integer.parseInt(pref.getString("pref_trackwriter_mintime", "2000")), Integer.parseInt(pref.getString("pref_trackwriter_mindistance", "10")));
-		final int minTime = 1000;
-		final int minDistance = 1;
 		getLocationManager().requestLocationUpdates(GPS, minTime, minDistance, this.mLocationListener);
 
-
 		showNotification();
-        //mHandler.sendEmptyMessage(1) ;
 	}
-
-    //final RemoteCallbackList<IRemoteServiceCallback> mCallbacks = new RemoteCallbackList<IRemoteServiceCallback>();
-
+	
 	private void showNotification() {
-		// In this sample, we'll use the same text for the ticker and the expanded notification
 		CharSequence text = getText(R.string.remote_service_started);
 
-		// Set the icon, scrolling text and timestamp
 		mNotification = new Notification(R.drawable.track_writer_service, text, System.currentTimeMillis());
 		mNotification.flags = mNotification.flags | Notification.FLAG_NO_CLEAR;
 
-		// The PendingIntent to launch our activity if the user selects this notification
 		mContentIntent = PendingIntent.getActivity(this, 0,
 				new Intent(this, TrackListActivity.class), 0);
 
-		// Set the info for the views that show in the notification panel.
 		mNotification.setLatestEventInfo(this, getText(R.string.remote_service_started), text, mContentIntent);
 
-		// Send the notification.
-		// We use a string id because it is a unique number. We use it later to cancel.
-		mNM.notify(R.string.remote_service_started, mNotification);
+		startForegroundCompat(R.string.remote_service_started, mNotification);
 	}
 
 	@Override
@@ -149,9 +178,7 @@ public class TrackWriterService extends Service implements OpenStreetMapConstant
 
 	@Override
 	public void onDestroy() {
-	       // Cancel the persistent notification.
-		if(mNM != null)
-			mNM.cancel(R.string.remote_service_started);
+		stopForegroundCompat(R.string.remote_service_started);
 
 		if(mLocationListener != null)
 			getLocationManager().removeUpdates(mLocationListener);
@@ -159,16 +186,10 @@ public class TrackWriterService extends Service implements OpenStreetMapConstant
 		if(db != null)
 			db.close();
 
-        // Tell the user we stopped.
-        //Toast.makeText(this, R.string.remote_service_stopped, Toast.LENGTH_SHORT).show();
-
-        // Unregister all callbacks.
         if(mCallbacks != null)
         	mCallbacks.kill();
-
-        // Remove the next pending message to increment the counter, stopping
-        // the increment loop.
-        //mHandler.removeMessages(REPORT_MSG);
+        
+		Ut.w("TrackWriterService.onDestroy");
 	}
 
 	private LocationManager getLocationManager() {
@@ -178,104 +199,22 @@ public class TrackWriterService extends Service implements OpenStreetMapConstant
 	}
 
 	private class SampleLocationListener implements LocationListener {
-		private Location mLastWritedLocation = null;
-		private Location mLastLocation = null;
-		private long mMinTime = 2000;
-		private long mMaxTime = 2000;
-		private int mMinDistance = 10;
-		private double mDistanceFromLastWriting = 0;
-		private long mTimeFromLastWriting = 0;
-
-		//public Track.TrackPoint lastpt = null;
-		float[] results = {0};
-		public Date lastDate = new Date();
-		public double Distance = 0;
-		public double Duration = 0;
-		public Date Date1 = new Date();
-		public Date Date2 = new Date();
-		public double MaxSpeed = 0;
-		public double AvgSpeed = 0;
-		public double AvgPace = 0;
-		public double MinEle = 99999;
-		public double MaxEle = -99999;
-		public int MoveTime = 0;
-		public double AvgMoveSpeed = 0;
-		
 		public void onLocationChanged(final Location loc) {
 			if (loc != null){
-				boolean needWrite = false;
-				if(mLastLocation != null)
-					mDistanceFromLastWriting =+ loc.distanceTo(mLastLocation);
-				if(mLastWritedLocation != null)
-					mTimeFromLastWriting = loc.getTime() - mLastWritedLocation.getTime();
+				addPoint(loc.getLatitude(), loc.getLongitude(), loc.getAltitude(), loc.getSpeed(), loc.getTime());
+				
+				mTrackStat.addPoint(loc);
 
-				if(mLastWritedLocation == null || mLastLocation == null)
-					needWrite = true;
-				else if (mTimeFromLastWriting > mMaxTime)
-					needWrite = true;
-				else if(mDistanceFromLastWriting > mMinDistance && mTimeFromLastWriting > mMinTime)
-					needWrite = true;
-
-				if(needWrite){
-					final long time = System.currentTimeMillis();
-
-					if(mLastWritedLocation != null) {
-						results[0] = 0;
-						Location.distanceBetween(mLastWritedLocation.getLatitude(), mLastWritedLocation.getLongitude(), loc.getLatitude(), loc.getLongitude(), results);
-						Distance += results[0];
-					} else {
-						Date1.setTime(time);
-						lastDate.setTime(time);
-					}
-
-					mLastWritedLocation = loc;
-					mLastLocation = loc;
-					mDistanceFromLastWriting = 0;
-					addPoint(loc.getLatitude(), loc.getLongitude(), loc.getAltitude(), loc.getSpeed(), time);
-
-					mHandler.sendMessage(mHandler.obtainMessage(1, loc));
-					
-					// Statistic
-					Duration = (time - Date1.getTime()) / 1000;
-					if(Duration > 0)
-						AvgSpeed = (Distance / 1000) / (Duration/60/60);
-					if(Distance > 0)
-						AvgPace = Duration / (Distance / 1000);
-					
-					if(loc.getSpeed() > MaxSpeed)
-						MaxSpeed = loc.getSpeed();
-					if(loc.getAltitude() > MaxEle)
-						MaxEle = loc.getAltitude();
-					if(loc.getAltitude() < MinEle)
-						MinEle = loc.getAltitude();
-					if(loc.getSpeed() > 0.5)
-						MoveTime += time - lastDate.getTime();
-					Date2.setTime(time);
-					if(MoveTime > 0)
-						AvgMoveSpeed = (Distance / 1000) / (MoveTime/1000/60.0/60.0);
-					
-					lastDate.setTime(time);
-					
-					final String text = ""
-							+sdf.format(new Date((long) (Duration*1000)))
-							+" | "+Ut.formatDistance(TrackWriterService.this, (float) Distance, 0)
-							+" | "+String.format("%.1f", AvgSpeed)+" km/h"
-							;
-					mNotification.setLatestEventInfo(TrackWriterService.this, getText(R.string.remote_service_started), text, mContentIntent);
-					mNM.notify(R.string.remote_service_started, mNotification);
-
-					
-				} else {
-					//Ut.dd("NOT addPoint mDistanceFromLastWriting="+mDistanceFromLastWriting+" mTimeFromLastWriting="+(mTimeFromLastWriting/1000));
-					mLastLocation = loc;
-				}
+				mHandler.sendMessage(mHandler.obtainMessage(1, loc));
+				
+				final String text = ""
+						+sdf.format(new Date((long) (mTrackStat.Duration*1000)))
+						+" | "+Ut.formatDistance(TrackWriterService.this, (float) mTrackStat.Distance, 0)
+						+" | "+String.format("%.1f", mTrackStat.AvgSpeed)+" km/h"
+						;
+				mNotification.setLatestEventInfo(TrackWriterService.this, getText(R.string.remote_service_started), text, mContentIntent);
+				mNM.notify(R.string.remote_service_started, mNotification);
 			}
-		}
-
-		public void Init(int mintime, int mindistance) {
-			mMinTime = mintime;
-			mMinDistance = mindistance;
-			Ut.d("mintime="+mintime+" mindistance="+mindistance);
 		}
 
 		public void onStatusChanged(String a, int status, Bundle b) {
@@ -283,6 +222,7 @@ public class TrackWriterService extends Service implements OpenStreetMapConstant
 
 		public void onProviderEnabled(String a) {
 		}
+
 		public void onProviderDisabled(String a) {
 		}
 	}
@@ -298,4 +238,63 @@ public class TrackWriterService extends Service implements OpenStreetMapConstant
 		this.db.insert("trackpoints", null, cv);
 	}
 
+	private static final Class<?>[] mSetForegroundSignature = new Class[] {
+	    boolean.class};
+	private static final Class<?>[] mStartForegroundSignature = new Class[] {
+	    int.class, Notification.class};
+	private static final Class<?>[] mStopForegroundSignature = new Class[] {
+	    boolean.class};
+
+	private Method mSetForeground;
+	private Method mStartForeground;
+	private Method mStopForeground;
+	private Object[] mSetForegroundArgs = new Object[1];
+	private Object[] mStartForegroundArgs = new Object[2];
+	private Object[] mStopForegroundArgs = new Object[1];
+
+	void invokeMethod(Method method, Object[] args) {
+	    try {
+	        method.invoke(this, args);
+	    } catch (InvocationTargetException e) {
+	    } catch (IllegalAccessException e) {
+	    }
+	}
+
+	/**
+	 * This is a wrapper around the new startForeground method, using the older
+	 * APIs if it is not available.
+	 */
+	void startForegroundCompat(int id, Notification notification) {
+	    // If we have the new startForeground API, then use it.
+	    if (mStartForeground != null) {
+	        mStartForegroundArgs[0] = Integer.valueOf(id);
+	        mStartForegroundArgs[1] = notification;
+	        invokeMethod(mStartForeground, mStartForegroundArgs);
+	        return;
+	    }
+
+	    // Fall back on the old API.
+	    mSetForegroundArgs[0] = Boolean.TRUE;
+	    invokeMethod(mSetForeground, mSetForegroundArgs);
+	    mNM.notify(id, notification);
+	}
+
+	/**
+	 * This is a wrapper around the new stopForeground method, using the older
+	 * APIs if it is not available.
+	 */
+	void stopForegroundCompat(int id) {
+	    // If we have the new stopForeground API, then use it.
+	    if (mStopForeground != null) {
+	        mStopForegroundArgs[0] = Boolean.TRUE;
+	        invokeMethod(mStopForeground, mStopForegroundArgs);
+	        return;
+	    }
+
+	    // Fall back on the old API.  Note to cancel BEFORE changing the
+	    // foreground state, since we could be killed at that point.
+	    mNM.cancel(id);
+	    mSetForegroundArgs[0] = Boolean.FALSE;
+	    invokeMethod(mSetForeground, mSetForegroundArgs);
+	}
 }

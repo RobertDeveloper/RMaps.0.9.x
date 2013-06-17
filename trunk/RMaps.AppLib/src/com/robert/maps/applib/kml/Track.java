@@ -17,7 +17,7 @@ public class Track implements PoiConstants {
 	public static final String COLORSHADOW = "color_shadow";
 	public static final String WIDTH = "width";
 	public static final String SHADOWRADIUS = "shadowradius";
-
+	
 	private final int Id;
 	public String Name;
 	public String Descr;
@@ -35,57 +35,59 @@ public class Track implements PoiConstants {
 	public double ShadowRadius;
 	public String Style;
 	public String DefaultStyle;
-
+	
 	private List<TrackPoint> trackpoints = null;
-
-	public class TrackPoint{
+	
+	public class TrackPoint {
 		public double lat;
 		public double lon;
 		public double alt;
 		public double speed;
 		public Date date;
-
+		
 		public TrackPoint() {
 			lat = 0;
 			lon = 0;
 			alt = 0;
 			speed = 0;
 			date = new Date();
-			//trackpoints = new ArrayList<TrackPoint>(1);
+			// trackpoints = new ArrayList<TrackPoint>(1);
 		}
-
+		
 		public int getLatitudeE6() {
 			return (int) (lat * 1E6);
 		}
-
+		
 		public int getLongitudeE6() {
 			return (int) (lon * 1E6);
 		}
 	};
 	
-	public List<TrackPoint> getPoints(){
-		if(trackpoints == null)
+	public List<TrackPoint> getPoints() {
+		if (trackpoints == null)
 			return new ArrayList<TrackPoint>(0);
 		
 		return trackpoints;
 	}
-
-	public void AddTrackPoint(){
+	
+	public void AddTrackPoint() {
 		LastTrackPoint = new TrackPoint();
-		if(trackpoints == null)
+		if (trackpoints == null)
 			trackpoints = new ArrayList<TrackPoint>(1);
 		trackpoints.add(LastTrackPoint);
 	}
-
+	
 	public Track() {
 		this(EMPTY_ID, "", "", false, 0, 0, 0, 0, 0, new Date(0), "", "");
 	}
-
+	
 	public Track(final String style) {
 		this(EMPTY_ID, "", "", false, 0, 0, 0, 0, 0, new Date(0), style, style);
 	}
-
-	public Track(final int id, final String name, final String descr, final boolean show, final int cnt, final double distance, final double duration, final int category, final int activity, final Date date, final String style, final String defaultStyle) {
+	
+	public Track(final int id, final String name, final String descr, final boolean show, final int cnt,
+			final double distance, final double duration, final int category, final int activity, final Date date,
+			final String style, final String defaultStyle) {
 		Id = id;
 		Name = name;
 		Descr = descr;
@@ -124,13 +126,13 @@ public class Track implements PoiConstants {
 		}
 		return json.toString();
 	}
-
+	
 	public int getId() {
 		return Id;
 	}
-
+	
 	public GeoPoint getBeginGeoPoint() {
-		if(trackpoints.size()>0)
+		if (trackpoints.size() > 0)
 			return new GeoPoint(trackpoints.get(0).getLatitudeE6(), trackpoints.get(0).getLongitudeE6());
 		return null;
 	}
@@ -139,13 +141,14 @@ public class Track implements PoiConstants {
 		Cnt = trackpoints.size();
 		Duration = 0;
 		if (trackpoints.size() > 0)
-			Duration = (double) ((trackpoints.get(trackpoints.size() - 1).date.getTime() - trackpoints.get(0).date.getTime())/1000);
+			Duration = (double) ((trackpoints.get(trackpoints.size() - 1).date.getTime() - trackpoints.get(0).date
+					.getTime()) / 1000);
 		TrackPoint lastpt = null;
 		Distance = 0;
-		float[] results = {0};
+		float[] results = { 0 };
 		
-		for(TrackPoint pt : trackpoints){
-			if(lastpt != null){
+		for (TrackPoint pt : trackpoints) {
+			if (lastpt != null) {
 				results[0] = 0;
 				try {
 					Location.distanceBetween(lastpt.lat, lastpt.lon, pt.lat, pt.lon, results);
@@ -157,54 +160,90 @@ public class Track implements PoiConstants {
 		}
 	}
 	
-	public class Stat{
-		public Date Date1;
-		public Date Date2;
-		public double MaxSpeed;
-		public double AvgSpeed;
-		public double AvgPace;
-		public double MinEle;
-		public double MaxEle;
-		public int MoveTime;
-		public double AvgMoveSpeed;
-	};
-
-	public Stat CalculateStatFull() {
-		TrackPoint lastpt = null;
-		final Stat stat = new Stat();
+//	public class TrackStat {
+//		public Date Date1;
+//		public Date Date2;
+//		public double MaxSpeed;
+//		public double AvgSpeed;
+//		public double AvgPace;
+//		public double MinEle;
+//		public double MaxEle;
+//		public int MoveTime;
+//		public double AvgMoveSpeed;
+//		
+//		public int Cnt;
+//		public double Distance;
+//		public double Duration;
+//		
+//		public void addPoint(TrackPoint pt) {
+//			addPoint(pt.lat, pt.lon, pt.alt, pt.speed, pt.date);
+//		}
+//		
+//		private TrackPoint lastpt = null;
+//		private float[] results = { 0 };
+//		
+//		public void finalCalc() {
+//			if (lastpt != null)
+//				Date2 = lastpt.date;
+//			if (MoveTime > 0) {
+//				AvgMoveSpeed = (Distance / 1000) / (MoveTime / 1000 / 60.0 / 60.0);
+//			}
+//			
+//			MaxSpeed *= 3.6;
+//			
+//			if (Duration > 0)
+//				AvgSpeed = (Distance / 1000) / (Duration / 60 / 60);
+//			if (Distance > 0)
+//				AvgPace = Duration / (Distance / 1000);
+//		}
+//		
+//		private void addPoint(double lat, double lon, double alt, double speed, Date date) {
+//			Cnt++;
+//			
+//			if (lastpt == null) {
+//				lastpt = new TrackPoint();
+//				Date1 = date;
+//				MaxSpeed = 0.0;
+//				MinEle = alt;
+//				MaxEle = alt;
+//			} else {
+//				if (speed > MaxSpeed)
+//					MaxSpeed = speed;
+//				if (alt > MaxEle)
+//					MaxEle = alt;
+//				if (alt < MinEle)
+//					MinEle = alt;
+//				if (lastpt.speed > 0.5)
+//					MoveTime += date.getTime() - lastpt.date.getTime();
+//				
+//				results[0] = 0;
+//				try {
+//					Location.distanceBetween(lastpt.lat, lastpt.lon, lat, lon, results);
+//					Distance += results[0];
+//				} catch (Exception e) {
+//				}
+//				
+//				Duration = (double) ((date.getTime() - Date1.getTime()) / 1000);
+//			}
+//			
+//			lastpt.lat = lat;
+//			lastpt.lon = lon;
+//			lastpt.alt = alt;
+//			lastpt.speed = speed;
+//			lastpt.date = date;
+//		}
+//	};
+//	
+	public TrackStatHelper CalculateStatFull() {
+		final TrackStatHelper trst = new TrackStatHelper();
 		
-		if(Duration > 0)
-			stat.AvgSpeed = (Distance / 1000) / (Duration/60/60);
-		if(Distance > 0)
-			stat.AvgPace = Duration / (Distance / 1000);
-		
-		for(TrackPoint pt : trackpoints){
-			if(lastpt == null){
-				stat.Date1 = pt.date;
-				stat.MaxSpeed = 0.0;
-				stat.MinEle = pt.alt;
-				stat.MaxEle = pt.alt;
-			} else {
-				if(pt.speed > stat.MaxSpeed)
-					stat.MaxSpeed = pt.speed;
-				if(pt.alt > stat.MaxEle)
-					stat.MaxEle = pt.alt;
-				if(pt.alt < stat.MinEle)
-					stat.MinEle = pt.alt;
-				if(lastpt.speed > 0.5)
-					stat.MoveTime += pt.date.getTime() - lastpt.date.getTime();
-				
-			}
-			lastpt = pt;
+		for (TrackPoint pt : trackpoints) {
+			trst.addPoint(pt.lat, pt.lon, pt.alt, pt.speed, pt.date);
 		}
-		if (lastpt != null)
-			stat.Date2 = lastpt.date;
-		if(stat.MoveTime > 0){
-			stat.AvgMoveSpeed = (Distance / 1000) / (stat.MoveTime/1000/60.0/60.0);
-		}
 		
-		stat.MaxSpeed *= 3.6;
+		trst.finalCalc();
 		
-		return stat;
+		return trst;
 	}
+	
 }

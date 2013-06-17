@@ -11,7 +11,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.robert.maps.applib.R;
-import com.robert.maps.applib.utils.Ut;
 
 public class IndicatorView extends RelativeLayout implements OnCreateContextMenuListener, OnClickListener {
 	private String mIndicatorTag;
@@ -81,7 +80,6 @@ public class IndicatorView extends RelativeLayout implements OnCreateContextMenu
 
 	@Override
 	protected ContextMenuInfo getContextMenuInfo() {
-		Ut.e("IndicatorView.getContextMenuInfo");
 		final IndicatorViewMenuInfo info = new IndicatorViewMenuInfo();
 		info.IndicatorView = this;
 		return info;
@@ -89,6 +87,5 @@ public class IndicatorView extends RelativeLayout implements OnCreateContextMenu
 
 	@Override
 	public void onClick(View v) {
-		Ut.e("IndicatorView.onClick");
 	}
 }

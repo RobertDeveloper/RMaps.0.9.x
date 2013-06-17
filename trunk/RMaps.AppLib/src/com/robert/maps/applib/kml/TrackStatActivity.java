@@ -29,11 +29,10 @@ public class TrackStatActivity extends Activity {
         if (id >= 0) {
         	final PoiManager mPoiManager = new PoiManager(this);
         	final Track tr = mPoiManager.getTrack(id);
-        	tr.CalculateStatFull();
         	
         	if (tr != null){
 				final SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-        		final Track.Stat stat = tr.CalculateStatFull();
+        		final TrackStatHelper stat = tr.CalculateStatFull();
         		final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
         		final Units units = new Units(pref);
 
