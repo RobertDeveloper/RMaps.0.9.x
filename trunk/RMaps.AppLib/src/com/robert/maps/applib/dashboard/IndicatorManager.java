@@ -19,13 +19,18 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.IBinder;
+import android.os.RemoteException;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
@@ -39,6 +44,8 @@ import android.widget.Toast;
 
 import com.robert.maps.applib.MainActivity;
 import com.robert.maps.applib.R;
+import com.robert.maps.applib.trackwriter.IRemoteService;
+import com.robert.maps.applib.trackwriter.ITrackWriterCallback;
 import com.robert.maps.applib.utils.CoordFormatter;
 import com.robert.maps.applib.utils.DistanceFormatter;
 import com.robert.maps.applib.utils.Ut;
@@ -52,17 +59,37 @@ public class IndicatorManager implements IndicatorConst {
 	private final DistanceFormatter mDf;
 	private final SimpleDateFormat sdf;
 
+    IRemoteService mService = null;
+    private ServiceConnection mConnection;
+
 	public IndicatorManager(MainActivity ctx) {
 		mCf = new CoordFormatter(ctx);
 		mDf = new DistanceFormatter(ctx);
-        final Configuration config = ctx.getResources().getConfiguration();
+		final Configuration config = ctx.getResources().getConfiguration();
 		sdf = new SimpleDateFormat("HH:mm:ss", config.locale);
-
+		
+		mConnection = new ServiceConnection() {
+			public void onServiceConnected(ComponentName className, IBinder service) {
+				mService = IRemoteService.Stub.asInterface(service);
+				
+				try {
+					mService.registerCallback(mCallback);
+				} catch (RemoteException e) {
+				}
+			}
+			
+			public void onServiceDisconnected(ComponentName className) {
+				mService = null;
+			}
+		};
+		
 		setUpIndicators(ctx);
-
-       	initView(ctx, (ViewGroup) ctx.findViewById(R.id.dashboard_area));
-
-		((LocationManager) ctx.getSystemService(Context.LOCATION_SERVICE)).requestLocationUpdates(GPS, 0, 0, mLocationListener);
+		
+		initView(ctx, (ViewGroup) ctx.findViewById(R.id.dashboard_area));
+		
+		((LocationManager) ctx.getSystemService(Context.LOCATION_SERVICE)).requestLocationUpdates(GPS, 0, 0,
+				mLocationListener);
+		ctx.bindService(new Intent(IRemoteService.class.getName()), mConnection, 0 /*Context.BIND_AUTO_CREATE*/);
 	}
 	
 	private void setUpIndicators(Context ctx) {
@@ -81,6 +108,9 @@ public class IndicatorManager implements IndicatorConst {
 		putIndicator(MAPCENTERLAT, res.getString(R.string.dashboard_title_map_center_lat), EMPTY);
 		putIndicator(MAPCENTERLON, res.getString(R.string.dashboard_title_map_center_lon), EMPTY);
 		putIndicator(MAPZOOM, res.getString(R.string.dashboard_title_map_zoom), EMPTY);
+		// Track writing indicators
+		putIndicator(TRCNT, res.getString(R.string.points_cnt), EMPTY);
+		putIndicator(TRDIST, res.getString(R.string.distance), mDf.formatSpeed2(0));
 	}
 	
 	private void putIndicator(String tag, String title, Object initValue) {
@@ -92,6 +122,21 @@ public class IndicatorManager implements IndicatorConst {
 		return mIndicators;
 	}
 
+    private ITrackWriterCallback mCallback = new ITrackWriterCallback.Stub() {
+
+		@Override
+		public void newPointWrited(double lat, double lon) throws RemoteException {
+		}
+
+		@Override
+		public void onTrackStatUpdate(int Cnt, double Distance, double Duration, double MaxSpeed, double AvgSpeed,
+				int MoveTime, double AvgMoveSpeed) throws RemoteException {
+			mIndicators.put(TRCNT, Cnt);
+			mIndicators.put(TRDIST, mDf.formatDistance2(Distance));
+		}
+    	
+    };
+    
 	public void setCenter(GeoPoint point) {
 		mIndicators.put(MAPCENTERLAT, mCf.convertLat(point.getLatitude()));
 		mIndicators.put(MAPCENTERLON, mCf.convertLon(point.getLongitude()));
@@ -113,10 +158,12 @@ public class IndicatorManager implements IndicatorConst {
 	
 	public void Pause(Context ctx) {
 		((LocationManager) ctx.getSystemService(Context.LOCATION_SERVICE)).removeUpdates(mLocationListener);
+		ctx.unbindService(mConnection);
 	}
 	
 	public void Resume(Context ctx) {
 		((LocationManager) ctx.getSystemService(Context.LOCATION_SERVICE)).requestLocationUpdates(GPS, 0, 0, mLocationListener);
+		ctx.bindService(new Intent(IRemoteService.class.getName()), mConnection, 0 /*Context.BIND_AUTO_CREATE*/);
 	}
 	
 	public void Dismiss(MainActivity ctx) {

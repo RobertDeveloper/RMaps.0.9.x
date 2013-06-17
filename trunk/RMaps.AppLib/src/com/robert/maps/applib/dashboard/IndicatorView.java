@@ -59,6 +59,7 @@ public class IndicatorView extends RelativeLayout implements OnCreateContextMenu
 			if(mIndicatorTag.equalsIgnoreCase(IndicatorConst.GPSELEV) 
 					|| mIndicatorTag.equalsIgnoreCase(IndicatorConst.GPSACCURACY)
 					|| mIndicatorTag.equalsIgnoreCase(IndicatorConst.GPSSPEED)
+					|| mIndicatorTag.equalsIgnoreCase(IndicatorConst.TRDIST)
 					) {
 				final String[] val = (String[]) indicatorManager.getIndicators().get(mIndicatorTag);
 				((TextView)findViewById(R.id.data_value)).setText(val[0]);

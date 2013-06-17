@@ -216,6 +216,12 @@ public class CurrentTrackOverlay extends TileViewOverlay {
         	}
 
         }
+
+		@Override
+		public void onTrackStatUpdate(int Cnt, double Distance, double Duration, double MaxSpeed, double AvgSpeed,
+				int MoveTime, double AvgMoveSpeed) throws RemoteException {
+			
+		}
     };
 
 }

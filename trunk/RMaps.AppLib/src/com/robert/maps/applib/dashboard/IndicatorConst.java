@@ -25,7 +25,9 @@ public interface IndicatorConst {
 	public static final String MAPZOOM = "mapzoom";
 	public static final String MAPCENTERLAT = "mapcenterlat";
 	public static final String MAPCENTERLON = "mapcenterlon";
-//	public static final String MAP = "map";
+	
+	public static final String TRCNT = "trcnt";
+	public static final String TRDIST = "trdist";
 //	public static final String MAP = "map";
 //	public static final String MAP = "map";
 //	public static final String MAP = "map";
