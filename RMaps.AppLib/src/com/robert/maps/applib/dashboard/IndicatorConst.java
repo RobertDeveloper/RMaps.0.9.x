@@ -1,6 +1,6 @@
 package com.robert.maps.applib.dashboard;
 
-public interface Indicator {
+public interface IndicatorConst {
 	public static final String GPS = "gps";
 	public static final String EMPTY = "";
 
