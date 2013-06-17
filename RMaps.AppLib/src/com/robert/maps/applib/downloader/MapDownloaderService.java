@@ -106,13 +106,12 @@ public class MapDownloaderService extends Service {
 	
 	@Override
 	public void onStart(Intent intent, int startId) {
-		Ut.e("onStart="+intent);
-		handleCommand(intent);
+		if(intent != null)
+			handleCommand(intent);
 	}
 	
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
-		Ut.e("onStartCommand="+intent);
 		if(intent != null)
 			handleCommand(intent);
 		return START_STICKY;
@@ -520,6 +519,7 @@ public class MapDownloaderService extends Service {
 			Z = z;
 		}
 	}
+	
 	private static final Class<?>[] mSetForegroundSignature = new Class[] {
 	    boolean.class};
 	private static final Class<?>[] mStartForegroundSignature = new Class[] {
