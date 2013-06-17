@@ -1127,6 +1127,7 @@ public class MainActivity extends Activity {
 					menu.add(0, R.id.menu_toradar, 0, getText(R.string.menu_toradar));
 				} else {
 					menu.add(0, R.id.menu_addpoi, 0, getText(R.string.menu_addpoi));
+					menu.add(0, R.id.menu_i_am_here, 0, getText(R.string.menu_i_am_here));
 				}
 			}
 		}
@@ -1182,6 +1183,17 @@ public class MainActivity extends Activity {
 				
 				FillOverlays();
 		        setTitle();
+			} else if (item.getItemId() == R.id.menu_i_am_here) {
+				final Location loc = new Location("gps");
+				TileView.PoiMenuInfo info = (TileView.PoiMenuInfo) item.getMenuInfo();
+				loc.setLatitude(info.EventGeoPoint.getLatitude());
+				loc.setLongitude(info.EventGeoPoint.getLongitude());
+
+				mMyLocationOverlay.setLocation(loc);
+				mSearchResultOverlay.setLocation(loc);
+				
+				mMap.postInvalidate();
+				
 			} else if (item.getItemId() == R.id.menu_addpoi) {
 				TileView.PoiMenuInfo info = (TileView.PoiMenuInfo) item.getMenuInfo(); //).EventGeoPoint;
 				startActivityForResult((new Intent(this, PoiActivity.class))
