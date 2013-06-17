@@ -66,17 +66,13 @@ public class TrackWriterService extends Service implements OpenStreetMapConstant
                     for (int i=0; i<N; i++) {
                         try {
                         	final Location loc = (Location)msg.obj;
-                        	Ut.dd("mCallbacks.getBroadcastItem(i).newPointWrited");
                             mCallbacks.getBroadcastItem(i).newPointWrited(loc.getLatitude(), loc.getLongitude());
+                            mCallbacks.getBroadcastItem(i).onTrackStatUpdate(mTrackStat.Cnt, mTrackStat.Distance, mTrackStat.Duration, mTrackStat.MaxSpeed, mTrackStat.AvgSpeed, mTrackStat.MoveTime, mTrackStat.AvgMoveSpeed);
                         } catch (RemoteException e) {
-                            // The RemoteCallbackList will take care of removing
-                            // the dead object for us.
-                        	Ut.dd("RemoteException: The RemoteCallbackList will take care of removing");
                         }
                     }
                     mCallbacks.finishBroadcast();
 
-                    //sendMessageDelayed(obtainMessage(1), 1*1000);
                } break;
                 default:
                     super.handleMessage(msg);
