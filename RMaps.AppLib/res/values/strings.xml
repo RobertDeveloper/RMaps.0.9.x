@@ -284,7 +284,7 @@ How to and FAQ you can find on http://robertdeveloper.blogspot.com/\n</string>
     <string name="dashboard_title_gps_bearing">GPS Bearing</string>
     <string name="dashboard_title_gps_time">GPS Timestamp</string>
     <string name="dashboard_title_gps_provider">Loc Provider</string>
-    <string name="dashboard_title_gps_speed">Speed</string>
+    <string name="dashboard_title_gps_speed">GPS Speed</string>
 
     <string name="dashboard_title_map_name">Map Name</string>
     <string name="dashboard_title_map_center_lat">Center Latitude</string>
