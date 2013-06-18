@@ -52,6 +52,14 @@ public class MapView extends RelativeLayout {
 		dashboardParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
 		addView(ll, dashboardParams);
 		
+		final RelativeLayout rl = new RelativeLayout(context);
+		rl.setId(R.id.right_area);
+		final RelativeLayout.LayoutParams rigthAreaParams = new RelativeLayout.LayoutParams(
+				RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+		rigthAreaParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+		rigthAreaParams.addRule(RelativeLayout.BELOW, R.id.dashboard_area);
+		addView(rl, rigthAreaParams);
+		
 		displayZoomControls(sideInOutButtons);
 
 		if (scaleBarVisible == 1) {
@@ -143,13 +151,15 @@ public class MapView extends RelativeLayout {
 	}
 	
 	public void displayZoomControls(final int SideInOutButtons) {
+		RelativeLayout rigthArea = (RelativeLayout) findViewById(R.id.right_area);
+		
 		final LinearLayout ll = new LinearLayout(getContext());
 		ll.setId(R.id.right_panel);
 		ll.setOrientation(LinearLayout.VERTICAL);
         final RelativeLayout.LayoutParams llParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         llParams.addRule(RelativeLayout.CENTER_VERTICAL);
         llParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-        addView(ll, llParams);
+        rigthArea.addView(ll, llParams);
         final int pad = getResources().getDimensionPixelSize(R.dimen.zoom_ctrl_padding);
 		
 		if(SideInOutButtons == 0) return;
@@ -166,9 +176,9 @@ public class MapView extends RelativeLayout {
 	        if(SideInOutButtons != 2) {
 		        zoominParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
 	        } else {
-		        zoominParams.addRule(RelativeLayout.BELOW, R.id.dashboard_area);
+		        zoominParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
 	        }
-	        addView(ivZoomIn, zoominParams);
+	        rigthArea.addView(ivZoomIn, zoominParams);
         }
         
         ivZoomIn.setOnClickListener(new OnClickListener(){
@@ -207,9 +217,9 @@ public class MapView extends RelativeLayout {
 	        if(SideInOutButtons != 2) {
 	        	zoomoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
 	        } else {
-	        	zoomoutParams.addRule(RelativeLayout.BELOW, R.id.dashboard_area);
+	        	zoomoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
 	        }
-	        addView(ivZoomOut, zoomoutParams);
+	        rigthArea.addView(ivZoomOut, zoomoutParams);
         }
         
         ivZoomOut.setOnClickListener(new OnClickListener(){

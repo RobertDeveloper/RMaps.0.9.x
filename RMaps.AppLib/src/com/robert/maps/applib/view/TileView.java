@@ -318,7 +318,7 @@ public class TileView extends View {
 		this.mLongitudeE6 = aLongitudeE6;
 		
 		if(mMoveListener != null)
-			mMoveListener.onMoveDetected();
+			mMoveListener.onCenterDetected();
 
 		this.postInvalidate();
 	}

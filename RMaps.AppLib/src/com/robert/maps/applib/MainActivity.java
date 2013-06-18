@@ -406,8 +406,13 @@ public class MainActivity extends Activity {
 
         final RelativeLayout.LayoutParams compassParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         compassParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-        compassParams.addRule(!(sideBottom == 2 ? false : true) ? RelativeLayout.ALIGN_BOTTOM : RelativeLayout.ALIGN_TOP, R.id.main);
-        rl.addView(mCompassView, compassParams);
+        if(!(sideBottom == 2 ? false : true)) {
+	        compassParams.addRule(RelativeLayout.ALIGN_BOTTOM);
+	        rl.addView(mCompassView, compassParams);
+        } else {
+	        compassParams.addRule(RelativeLayout.BELOW, R.id.dashboard_area);
+	        mMap.addView(mCompassView, compassParams);
+        }
 
         ivAutoFollow = new ImageView(this);
         ivAutoFollow.setImageResource(R.drawable.autofollow);
@@ -417,11 +422,10 @@ public class MainActivity extends Activity {
         followParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         if(!(sideBottom == 2 ? false : true)) {
         	followParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-        	rl.addView(ivAutoFollow, followParams);
         } else {
-        	followParams.addRule(RelativeLayout.BELOW, R.id.dashboard_area);
-        	mMap.addView(ivAutoFollow, followParams);
+        	followParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
         }
+        ((RelativeLayout) findViewById(R.id.right_area)).addView(ivAutoFollow, followParams);
 
         ivAutoFollow.setOnClickListener(new OnClickListener(){
 			public void onClick(View v) {
@@ -1557,6 +1561,12 @@ public class MainActivity extends Activity {
 
 		public void onZoomDetected() {
 			setTitle();
+		}
+
+		@Override
+		public void onCenterDetected() {
+			if(mIndicatorManager != null)
+				mIndicatorManager.setCenter(mMap.getMapCenter());
 		}
 		
 	}
