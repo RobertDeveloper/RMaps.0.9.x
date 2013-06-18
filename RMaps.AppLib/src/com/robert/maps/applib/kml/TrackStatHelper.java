@@ -48,6 +48,10 @@ public class TrackStatHelper {
 			MaxSpeed = 0.0;
 			MinEle = alt;
 			MaxEle = alt;
+			
+			Distance = 0;
+			Duration = 0;
+			MoveTime = 0;
 		} else {
 			if (speed > MaxSpeed)
 				MaxSpeed = speed;
@@ -66,6 +70,15 @@ public class TrackStatHelper {
 			}
 			
 			Duration = date.getTime() - Date1.getTime();
+
+			Date2 = new Date(date.getTime());
+			
+			if (MoveTime > 0) 
+				AvgMoveSpeed = Distance / (MoveTime / 1000);
+			if (Duration > 0)
+				AvgSpeed = Distance / (Duration / 1000);
+			if (Distance > 0)
+				AvgPace = Duration / 1000 / (Distance / 1000);
 		}
 		
 		lastpt.setLatitude(lat);

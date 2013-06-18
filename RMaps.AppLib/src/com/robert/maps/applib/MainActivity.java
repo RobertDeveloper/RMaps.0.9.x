@@ -392,6 +392,7 @@ public class MainActivity extends Activity {
 		final RelativeLayout rl = (RelativeLayout) findViewById(R.id.map_area);
 		final int sideBottom = Integer.parseInt(pref.getString("pref_zoomctrl", "1"));
 		final boolean showTitle = pref.getBoolean("pref_showtitle", true);
+		final boolean showAutoFollow = pref.getBoolean("pref_show_autofollow_button", true);
 		
 		if(!showTitle) 
 			findViewById(R.id.screen).setVisibility(View.GONE);
@@ -407,34 +408,36 @@ public class MainActivity extends Activity {
         final RelativeLayout.LayoutParams compassParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         compassParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
         if(!(sideBottom == 2 ? false : true)) {
-	        compassParams.addRule(RelativeLayout.ALIGN_BOTTOM);
-	        rl.addView(mCompassView, compassParams);
+	        compassParams.addRule(RelativeLayout.ABOVE, R.id.scale_bar);
         } else {
 	        compassParams.addRule(RelativeLayout.BELOW, R.id.dashboard_area);
-	        mMap.addView(mCompassView, compassParams);
         }
+        mMap.addView(mCompassView, compassParams);
 
-        ivAutoFollow = new ImageView(this);
-        ivAutoFollow.setImageResource(R.drawable.autofollow);
-        ivAutoFollow.setVisibility(ImageView.INVISIBLE);
+		if (showAutoFollow) {
+			ivAutoFollow = new ImageView(this);
+			ivAutoFollow.setImageResource(R.drawable.autofollow);
+			ivAutoFollow.setVisibility(ImageView.INVISIBLE);
 
-        final RelativeLayout.LayoutParams followParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-        followParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-        if(!(sideBottom == 2 ? false : true)) {
-        	followParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-        } else {
-        	followParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
-        }
-        ((RelativeLayout) findViewById(R.id.right_area)).addView(ivAutoFollow, followParams);
-
-        ivAutoFollow.setOnClickListener(new OnClickListener(){
-			public void onClick(View v) {
-				setAutoFollow(true);
-				mSearchResultOverlay.Clear();
-				setLastKnownLocation();
+			final RelativeLayout.LayoutParams followParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
+					RelativeLayout.LayoutParams.WRAP_CONTENT);
+			followParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+			if (!(sideBottom == 2 ? false : true)) {
+				followParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+			} else {
+				followParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
 			}
-        });
-        
+			((RelativeLayout) findViewById(R.id.right_area)).addView(ivAutoFollow, followParams);
+
+			ivAutoFollow.setOnClickListener(new OnClickListener() {
+				public void onClick(View v) {
+					setAutoFollow(true);
+					mSearchResultOverlay.Clear();
+					setLastKnownLocation();
+				}
+			});
+		}
+       
         mOverlayView = new ImageView(this);
         mOverlayView.setImageResource(R.drawable.r_overlays);
         final int pad = getResources().getDimensionPixelSize(R.dimen.zoom_ctrl_padding);
@@ -576,11 +579,11 @@ public class MainActivity extends Activity {
 		mAutoFollow = autoFollow;
 
 		if (autoFollow) {
-			ivAutoFollow.setVisibility(ImageView.INVISIBLE);
+			if(ivAutoFollow != null) ivAutoFollow.setVisibility(ImageView.INVISIBLE);
 			if(!supressToast)
 				Toast.makeText(this, R.string.auto_follow_enabled, Toast.LENGTH_SHORT).show();
 		} else {
-			ivAutoFollow.setVisibility(ImageView.VISIBLE);
+			if(ivAutoFollow != null) ivAutoFollow.setVisibility(ImageView.VISIBLE);
 			if(!supressToast)
 				Toast.makeText(this, R.string.auto_follow_disabled, Toast.LENGTH_SHORT).show();
 		}
@@ -1517,6 +1520,7 @@ public class MainActivity extends Activity {
 			;
 			
 			getLocationManager().removeUpdates(mLocationListener);
+			
 			if (mNetListener != null)
 				getLocationManager().removeUpdates(mNetListener);
 			

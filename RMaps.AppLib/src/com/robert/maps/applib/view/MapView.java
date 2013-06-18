@@ -66,9 +66,13 @@ public class MapView extends RelativeLayout {
 	        final ImageView ivScaleBar = new ImageView(getContext());
 			final ScaleBarDrawable dr = new ScaleBarDrawable(context, this, Integer.parseInt(pref.getString("pref_units","0")));
 			ivScaleBar.setImageDrawable(dr);
+			ivScaleBar.setId(R.id.scale_bar);
 			final RelativeLayout.LayoutParams scaleParams = new RelativeLayout.LayoutParams(
 					RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-			scaleParams.addRule(RelativeLayout.RIGHT_OF, R.id.whatsnew);
+			if(sideInOutButtons == 1)
+				scaleParams.addRule(RelativeLayout.RIGHT_OF, R.id.whatsnew);
+			else
+				scaleParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
 			scaleParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
 			addView(ivScaleBar, scaleParams);
 		}
@@ -91,6 +95,23 @@ public class MapView extends RelativeLayout {
 		mController = new MapController();
 		mTileView = new TileView(context);
 		addView(mTileView, new RelativeLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
+		
+		final LinearLayout ll = new LinearLayout(context);
+		ll.setOrientation(LinearLayout.VERTICAL);
+		ll.setLayoutParams(new ViewGroup.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
+		ll.setId(R.id.dashboard_area);
+		final RelativeLayout.LayoutParams dashboardParams = new RelativeLayout.LayoutParams(
+				RelativeLayout.LayoutParams.FILL_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+		dashboardParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+		addView(ll, dashboardParams);
+		
+		final RelativeLayout rl = new RelativeLayout(context);
+		rl.setId(R.id.right_area);
+		final RelativeLayout.LayoutParams rigthAreaParams = new RelativeLayout.LayoutParams(
+				RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+		rigthAreaParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+		rigthAreaParams.addRule(RelativeLayout.BELOW, R.id.dashboard_area);
+		addView(rl, rigthAreaParams);
 		
 		final int sideBottom = a.getInt(R.styleable.MapView_SideInOutButtons, 0);
 		displayZoomControls(sideBottom);
@@ -194,7 +215,6 @@ public class MapView extends RelativeLayout {
 			public boolean onLongClick(View v) {
 				SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getContext());
 				final int zoom = Integer.parseInt(pref.getString("pref_zoommaxlevel", "17"));
-				Ut.d("ZoomIn OnLongClick pref_zoomminlevel="+zoom);
 				if (zoom > 0) {
 					mTileView.setZoomLevel(zoom - 1);
 					if(mMoveListener != null)
@@ -217,9 +237,9 @@ public class MapView extends RelativeLayout {
 	        if(SideInOutButtons != 2) {
 	        	zoomoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
 	        } else {
-	        	zoomoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+	        	zoomoutParams.addRule(RelativeLayout.BELOW, R.id.dashboard_area);
 	        }
-	        rigthArea.addView(ivZoomOut, zoomoutParams);
+	        addView(ivZoomOut, zoomoutParams);
         }
         
         ivZoomOut.setOnClickListener(new OnClickListener(){
@@ -235,7 +255,6 @@ public class MapView extends RelativeLayout {
 			public boolean onLongClick(View v) {
 				SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getContext());
 				final int zoom = Integer.parseInt(pref.getString("pref_zoomminlevel", "10"));
-				Ut.d("ZoomOut OnLongClick pref_zoomminlevel="+zoom);
 				if (zoom > 0) {
 					mTileView.setZoomLevel(zoom - 1);
 					if(mMoveListener != null)
