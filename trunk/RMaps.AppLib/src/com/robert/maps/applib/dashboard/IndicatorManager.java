@@ -11,6 +11,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map.Entry;
 import java.util.TimeZone;
@@ -54,8 +55,8 @@ import com.robert.maps.applib.utils.DistanceFormatter;
 import com.robert.maps.applib.utils.Ut;
 
 public class IndicatorManager implements IndicatorConst {
-	private HashMap<String, Object> mIndicators = new HashMap<String, Object>();
-	private HashMap<String, String> mIndicatorTitles = new HashMap<String, String>();
+	private LinkedHashMap<String, Object> mIndicators = new LinkedHashMap<String, Object>(16, 0.75f, false);
+	private LinkedHashMap<String, String> mIndicatorTitles = new LinkedHashMap<String, String>(16, 0.75f, false);
 	private SampleLocationListener mLocationListener = new SampleLocationListener();
 	private ArrayList<IndicatorView> mIndicatorViewList = new ArrayList<IndicatorView>();
 	private final CoordFormatter mCf;
