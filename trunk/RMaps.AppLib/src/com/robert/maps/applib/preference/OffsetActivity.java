@@ -142,6 +142,10 @@ public class OffsetActivity extends Activity {
 		public void onZoomDetected() {
 			setTitle();
 		}
+
+		@Override
+		public void onCenterDetected() {
+		}
 		
 	}
 	

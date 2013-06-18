@@ -53,6 +53,8 @@
     </item>
     <item android:id="@+id/dashboard_area">
     </item>
+    <item android:id="@+id/right_area">
+    </item>
     <item android:id="@+id/menu_dashboard_edit">
     </item>
     <item android:id="@+id/menu_dashboard_delete">
