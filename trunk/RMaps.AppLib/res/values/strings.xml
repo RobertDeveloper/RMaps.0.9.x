@@ -290,4 +290,8 @@ How to and FAQ you can find on http://robertdeveloper.blogspot.com/\n</string>
     <string name="dashboard_title_map_center_lat">Center Latitude</string>
     <string name="dashboard_title_map_center_lon">Center Longitude</string>
     <string name="dashboard_title_map_zoom">Zoom</string>
+    
+    <string name="pref_show_autofollow_button">Auto-Follow button</string>
+    <string name="pref_show_autofollow_button_summary">Show auto-follow button on the screen</string>
+    <string name="load_tiles_to_online_cache">Load tiles to the online cache</string>
 </resources>

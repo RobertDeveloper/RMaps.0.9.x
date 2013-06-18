@@ -24,6 +24,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -103,6 +104,12 @@ public class AreaSelectorActivity extends Activity {
 				doBack();
 			}
 		});
+		((CheckBox) findViewById(R.id.online_cache)).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+				onOnlineCacheBoxChecked();
+			}
+		});
 		
 		Intent intent = getIntent();
 		if(intent != null) {
@@ -174,7 +181,6 @@ public class AreaSelectorActivity extends Activity {
 
 			cb = new CheckBox(this);
 			cb.setTag("Layer"+i);
-			//cb.setTextAppearance(this, android.R.attr.textAppearanceSmall);
 			cb.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
 			cb.setText("Zoom "+(i+1)+"\n"+tileCnt+" tiles, ~"+Ut.formatSize(tileCnt * tileLength));
 			
@@ -213,20 +219,24 @@ public class AreaSelectorActivity extends Activity {
 		intent.putExtra("ZOOMCUR", mMap.getZoomLevel());
 		intent.putExtra("overwritefile", ((CheckBox) findViewById(R.id.overwritefile)).isChecked());
 		intent.putExtra("overwritetiles", ((CheckBox) findViewById(R.id.overwritetiles)).isChecked());
+		intent.putExtra("online_cache", ((CheckBox) findViewById(R.id.online_cache)).isChecked());
+		
 		String filename = ((EditText) findViewById(R.id.name)).getText().toString();
-		if(filename.equalsIgnoreCase("")) {
-			Toast.makeText(this, "Invalid file name", Toast.LENGTH_LONG).show();
-			return;
-		}
-
-		final File folder = Ut.getRMapsMapsDir(this);
-		if(folder != null) {
-			File[] files = folder.listFiles();
-			if(files != null) {
-				for(int i = 0; i < files.length; i++) {
-					if(files[i].getName().equalsIgnoreCase(filename+".sqlitedb")) {
-						filename = files[i].getName().substring(0, files[i].getName().length() - 9);
-						break;
+		if(!((CheckBox) findViewById(R.id.online_cache)).isChecked()) {
+			if(filename.equalsIgnoreCase("")) {
+				Toast.makeText(this, "Invalid file name", Toast.LENGTH_LONG).show();
+				return;
+			}
+	
+			final File folder = Ut.getRMapsMapsDir(this);
+			if(folder != null) {
+				File[] files = folder.listFiles();
+				if(files != null) {
+					for(int i = 0; i < files.length; i++) {
+						if(files[i].getName().equalsIgnoreCase(filename+".sqlitedb")) {
+							filename = files[i].getName().substring(0, files[i].getName().length() - 9);
+							break;
+						}
 					}
 				}
 			}
@@ -243,6 +253,7 @@ public class AreaSelectorActivity extends Activity {
 			.putExtra("Longitude", point.getLongitudeE6())
 			.putExtra("ZoomLevel", mMap.getZoomLevel())
 			.putExtra("OFFLINEMAPNAME", filename)
+			.putExtra("online_cache", ((CheckBox) findViewById(R.id.online_cache)).isChecked())
 			);
 		finish();
 	}
@@ -315,6 +326,9 @@ public class AreaSelectorActivity extends Activity {
 		((EditText) findViewById(R.id.name)).setText(uiState.getString("filename", "NewFile"));
 		((CheckBox) findViewById(R.id.overwritefile)).setChecked(uiState.getBoolean("overwritefile", true));
 		((CheckBox) findViewById(R.id.overwritetiles)).setChecked(uiState.getBoolean("overwritetiles", false));
+		((CheckBox) findViewById(R.id.online_cache)).setChecked(uiState.getBoolean("online_cache", false));
+		
+		onOnlineCacheBoxChecked();
 		
 		mZoomArr = new int[uiState.getInt("zoomCnt", 0)];
 		for(int i = 0; i < mZoomArr.length; i++) {
@@ -328,6 +342,13 @@ public class AreaSelectorActivity extends Activity {
 		}
  		
 		super.onResume();
+	}
+
+	private void onOnlineCacheBoxChecked() {
+		final boolean isOnlineCache = ((CheckBox) findViewById(R.id.online_cache)).isChecked();
+		findViewById(R.id.name).setVisibility(isOnlineCache ? View.GONE : View.VISIBLE);
+		findViewById(R.id.overwritefile).setVisibility(isOnlineCache ? View.GONE : View.VISIBLE);
+		findViewById(R.id.fileNameTitle).setVisibility(isOnlineCache ? View.GONE : View.VISIBLE);
 	}
 
 	@Override
@@ -345,6 +366,7 @@ public class AreaSelectorActivity extends Activity {
 		editor.putString("filename", ((EditText) findViewById(R.id.name)).getText().toString());
 		editor.putBoolean("overwritefile", ((CheckBox) findViewById(R.id.overwritefile)).isChecked());
 		editor.putBoolean("overwritetiles", ((CheckBox) findViewById(R.id.overwritetiles)).isChecked());
+		editor.putBoolean("online_cache", ((CheckBox) findViewById(R.id.online_cache)).isChecked());
 		
 		mAreaSelectorOverlay.put(editor);
 		if(findViewById(R.id.step2).getVisibility() == View.VISIBLE) {

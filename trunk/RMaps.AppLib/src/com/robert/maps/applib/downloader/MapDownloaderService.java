@@ -50,6 +50,7 @@ public class MapDownloaderService extends Service {
 	private String mOfflineMapName;
 	private boolean mOverwriteFile;
 	private boolean mOverwriteTiles;
+	private boolean mLoadToOnlineCache;
 	private TileIterator mTileIterator;
 	private SQLiteMapDatabase mMapDatabase;
 	private TileSource mTileSource;
@@ -66,7 +67,7 @@ public class MapDownloaderService extends Service {
 				mCallbacks.register(cb);
 				if (mStartTime > 0)
 					try {
-						cb.downloadStart(mTileCntTotal, mStartTime, mOfflineMapName, mMapID, mZoom, mCoordArr[0], mCoordArr[1],
+						cb.downloadStart(mTileCntTotal, mStartTime, mLoadToOnlineCache ? "" : mOfflineMapName, mMapID, mZoom, mCoordArr[0], mCoordArr[1],
 								mCoordArr[2], mCoordArr[3]);
 					} catch (RemoteException e) {
 					}
@@ -132,6 +133,7 @@ public class MapDownloaderService extends Service {
 		mOfflineMapName = intent.getStringExtra("OFFLINEMAPNAME");
 		mOverwriteFile = intent.getBooleanExtra("overwritefile", true);
 		mOverwriteTiles = intent.getBooleanExtra("overwritetiles", false);
+		mLoadToOnlineCache = intent.getBooleanExtra("online_cache", false);
 		
 		mContentIntent = PendingIntent.getActivity(
 				this,
@@ -152,9 +154,17 @@ public class MapDownloaderService extends Service {
 		}
 		
 		final SQLiteMapDatabase cacheDatabase = new SQLiteMapDatabase();
-		final File folder = Ut.getRMapsMapsDir(this);
+		
+		if(mLoadToOnlineCache) {
+			if(mTileSource.CACHE.trim().equalsIgnoreCase(""))
+				mOfflineMapName = mTileSource.ID;
+			else
+				mOfflineMapName = mTileSource.CACHE;
+		}
+
+		final File folder = mLoadToOnlineCache ? Ut.getRMapsMainDir(this, "cache") : Ut.getRMapsMapsDir(this);
 		final File file = new File(folder.getAbsolutePath() + "/" + mOfflineMapName + ".sqlitedb");
-		if (mOverwriteFile) {
+		if (mOverwriteFile && !mLoadToOnlineCache) {
 			File[] files = folder.listFiles();
 			if (files != null) {
 				for (int i = 0; i < files.length; i++) {

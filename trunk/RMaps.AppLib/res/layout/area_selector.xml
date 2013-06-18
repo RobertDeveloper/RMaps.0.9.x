@@ -80,8 +80,15 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical" >
 
+                <CheckBox
+                    android:id="@+id/online_cache"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5"
+                    android:text="@string/load_tiles_to_online_cache" />
+
                 <TextView
-                    android:id="@+id/textView1"
+                    android:id="@+id/fileNameTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.5"
@@ -137,6 +144,7 @@
                         android:orientation="vertical" >
                     </LinearLayout>
                 </LinearLayout>
+
             </LinearLayout>
         </ScrollView>
 

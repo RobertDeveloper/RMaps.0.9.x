@@ -50,6 +50,7 @@ public class DownloaderActivity extends Activity {
 	private int mTileCntTotal;
 	private long mStartTime;
 	private String mFileName;
+	private boolean mLoadToOnlineCache;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -107,7 +108,7 @@ public class DownloaderActivity extends Activity {
 		final String name = Ut.FileName2ID(mFileName+".sqlitedb");
 		startActivity(new Intent(this, MainActivity.class)
 		.setAction("SHOW_MAP_ID")
-		.putExtra("MapName", "usermap_"+name)
+		.putExtra("MapName", mLoadToOnlineCache ? mTileSource.ID : "usermap_"+name)
 		.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
 		);
 		finish();
@@ -130,6 +131,7 @@ public class DownloaderActivity extends Activity {
 			b.putInt(LAT, lat0 + (lat1 - lat0) / 2);
 			b.putInt(LON, lon0 + (lon1 - lon0) / 2);
 			mFileName = fileName;
+			mLoadToOnlineCache = mFileName.equalsIgnoreCase("");
 			mDownloadedAreaOverlay.Init(DownloaderActivity.this, lat0, lon0, lat1, lon1);
 			mHandler.sendMessage(mHandler.obtainMessage(R.id.download_start, b));
 			

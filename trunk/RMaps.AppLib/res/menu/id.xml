@@ -55,6 +55,8 @@
     </item>
     <item android:id="@+id/right_area">
     </item>
+    <item android:id="@+id/scale_bar">
+    </item>
     <item android:id="@+id/menu_dashboard_edit">
     </item>
     <item android:id="@+id/menu_dashboard_delete">
