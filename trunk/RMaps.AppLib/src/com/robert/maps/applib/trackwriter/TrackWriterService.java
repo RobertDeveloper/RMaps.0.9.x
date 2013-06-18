@@ -33,6 +33,7 @@ import android.widget.Toast;
 import com.robert.maps.applib.R;
 import com.robert.maps.applib.kml.TrackListActivity;
 import com.robert.maps.applib.kml.TrackStatHelper;
+import com.robert.maps.applib.utils.DistanceFormatter;
 import com.robert.maps.applib.utils.Ut;
 
 public class TrackWriterService extends Service implements OpenStreetMapConstants {
@@ -42,6 +43,7 @@ public class TrackWriterService extends Service implements OpenStreetMapConstant
     PendingIntent mContentIntent;
     final SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
     private TrackStatHelper mTrackStat = new TrackStatHelper();
+    private DistanceFormatter mDf;
 
 	protected LocationManager mLocationManager;
 	protected SampleLocationListener mLocationListener;
@@ -50,7 +52,15 @@ public class TrackWriterService extends Service implements OpenStreetMapConstant
 
     private final IRemoteService.Stub mBinder = new IRemoteService.Stub() {
         public void registerCallback(ITrackWriterCallback cb) {
-            if (cb != null) mCallbacks.register(cb);
+            if (cb != null) { 
+            	mCallbacks.register(cb);
+            	if(mTrackStat != null) {
+            		try {
+						cb.onTrackStatUpdate(mTrackStat.Cnt, mTrackStat.Distance, mTrackStat.Duration, mTrackStat.MaxSpeed, mTrackStat.AvgSpeed, mTrackStat.MoveTime, mTrackStat.AvgMoveSpeed);
+					} catch (RemoteException e) {
+					}
+            	}
+            }
         }
         public void unregisterCallback(ITrackWriterCallback cb) {
             if (cb != null) mCallbacks.unregister(cb);
@@ -86,6 +96,8 @@ public class TrackWriterService extends Service implements OpenStreetMapConstant
 		
 		sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
 		sdf.applyPattern("HH:mm:ss");
+		
+		mDf = new DistanceFormatter(this);
 
         mNM = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
 
@@ -107,7 +119,6 @@ public class TrackWriterService extends Service implements OpenStreetMapConstant
 	                "OS doesn't have Service.startForeground OR Service.setForeground!");
 	    }
 		
-		Ut.w("TrackWriterService.onCreate");
 	}
 
     //final RemoteCallbackList<IRemoteServiceCallback> mCallbacks = new RemoteCallbackList<IRemoteServiceCallback>();
@@ -185,7 +196,6 @@ public class TrackWriterService extends Service implements OpenStreetMapConstant
         if(mCallbacks != null)
         	mCallbacks.kill();
         
-		Ut.w("TrackWriterService.onDestroy");
 	}
 
 	private LocationManager getLocationManager() {
@@ -204,9 +214,9 @@ public class TrackWriterService extends Service implements OpenStreetMapConstant
 				mHandler.sendMessage(mHandler.obtainMessage(1, loc));
 				
 				final String text = ""
-						+sdf.format(new Date((long) (mTrackStat.Duration*1000)))
-						+" | "+Ut.formatDistance(TrackWriterService.this, (float) mTrackStat.Distance, 0)
-						+" | "+String.format("%.1f", mTrackStat.AvgSpeed)+" km/h"
+						+sdf.format(new Date(mTrackStat.Duration))
+						+" | " + mDf.formatDistance(mTrackStat.Distance)
+						+" | " + mDf.formatSpeed(mTrackStat.AvgSpeed)
 						;
 				mNotification.setLatestEventInfo(TrackWriterService.this, getText(R.string.remote_service_started), text, mContentIntent);
 				mNM.notify(R.string.remote_service_started, mNotification);

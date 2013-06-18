@@ -13,12 +13,14 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map.Entry;
+import java.util.TimeZone;
 
 import org.andnav.osm.util.GeoPoint;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -33,6 +35,7 @@ import android.os.IBinder;
 import android.os.RemoteException;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -58,6 +61,8 @@ public class IndicatorManager implements IndicatorConst {
 	private final CoordFormatter mCf;
 	private final DistanceFormatter mDf;
 	private final SimpleDateFormat sdf;
+	private final SimpleDateFormat sdfDelta;
+	private String mTemplateFileName;
 
     IRemoteService mService = null;
     private ServiceConnection mConnection;
@@ -67,6 +72,8 @@ public class IndicatorManager implements IndicatorConst {
 		mDf = new DistanceFormatter(ctx);
 		final Configuration config = ctx.getResources().getConfiguration();
 		sdf = new SimpleDateFormat("HH:mm:ss", config.locale);
+		sdfDelta = new SimpleDateFormat("HH:mm:ss", config.locale);
+		sdfDelta.setTimeZone(TimeZone.getTimeZone("UTC"));
 		
 		mConnection = new ServiceConnection() {
 			public void onServiceConnected(ComponentName className, IBinder service) {
@@ -111,6 +118,11 @@ public class IndicatorManager implements IndicatorConst {
 		// Track writing indicators
 		putIndicator(TRCNT, res.getString(R.string.points_cnt), EMPTY);
 		putIndicator(TRDIST, res.getString(R.string.distance), mDf.formatSpeed2(0));
+		putIndicator(TRDURATION, res.getString(R.string.duration), EMPTY);
+		putIndicator(TRMAXSPEED, res.getString(R.string.max_speed), mDf.formatSpeed2(0));
+		putIndicator(TRAVGSPEED, res.getString(R.string.avg_speed), mDf.formatSpeed2(0));
+		putIndicator(TRMOVETIME, res.getString(R.string.moving_time), EMPTY);
+		putIndicator(TRAVGMOVESPEED, res.getString(R.string.avg_moving_speed), mDf.formatSpeed2(0));
 	}
 	
 	private void putIndicator(String tag, String title, Object initValue) {
@@ -129,10 +141,15 @@ public class IndicatorManager implements IndicatorConst {
 		}
 
 		@Override
-		public void onTrackStatUpdate(int Cnt, double Distance, double Duration, double MaxSpeed, double AvgSpeed,
-				int MoveTime, double AvgMoveSpeed) throws RemoteException {
+		public void onTrackStatUpdate(int Cnt, double Distance, long Duration, double MaxSpeed, double AvgSpeed,
+				long MoveTime, double AvgMoveSpeed) throws RemoteException {
 			mIndicators.put(TRCNT, Cnt);
 			mIndicators.put(TRDIST, mDf.formatDistance2(Distance));
+			mIndicators.put(TRDURATION, sdfDelta.format(Duration));
+			mIndicators.put(TRMAXSPEED, mDf.formatSpeed2(MaxSpeed));
+			mIndicators.put(TRAVGSPEED, mDf.formatSpeed2(AvgSpeed));
+			mIndicators.put(TRMOVETIME, sdfDelta.format(MoveTime));
+			mIndicators.put(TRAVGMOVESPEED, mDf.formatSpeed2(AvgMoveSpeed));
 		}
     	
     };
@@ -193,7 +210,7 @@ public class IndicatorManager implements IndicatorConst {
 			
 			final File folder = Ut.getRMapsMainDir(ctx, DASHBOARD_DIR);
 			if(folder.exists()) {
-				FileWriter writer = new FileWriter(String.format(DASHBOARD_FILE, folder.getAbsolutePath(), JMAIN));
+				FileWriter writer = new FileWriter(String.format(DASHBOARD_FILE, folder.getAbsolutePath(), mTemplateFileName));
 				writer.write(json.toString());
 				writer.close();
 			}
@@ -216,7 +233,7 @@ public class IndicatorManager implements IndicatorConst {
 				mIndicators.put(GPSACCURACY, mDf.formatDistance2(location.getAccuracy()));
 				mIndicators.put(GPSELEV, mDf.formatDistance2(location.getAltitude()));
 				mIndicators.put(GPSBEARING, String.format(Locale.UK, "%.1f°", location.getBearing()));
-				mIndicators.put(GPSTIME, sdf.format(Long.valueOf(location.getTime())));
+				mIndicators.put(GPSTIME, sdf.format(location.getTime()));
 				mIndicators.put(GPSLAT, mCf.convertLat(Double.valueOf(location.getLatitude())));
 				mIndicators.put(GPSLON, mCf.convertLon(Double.valueOf(location.getLongitude())));
 				mIndicators.put(GPSPROVIDER, location.getProvider());
@@ -228,25 +245,58 @@ public class IndicatorManager implements IndicatorConst {
 
 		@Override
 		public void onProviderDisabled(String provider) {
-			Ut.e("onProviderDisabled="+provider);
 		}
 
 		@Override
 		public void onProviderEnabled(String provider) {
-			Ut.e("onProviderEnabled="+provider);
 		}
 
 		@Override
 		public void onStatusChanged(String provider, int status, Bundle extras) {
-			Ut.e("onStatusChanged="+provider+" "+status);
 		}
 		
 	}
+	
+	public int getOrientation(Activity context) {
+		Display getOrient = context.getWindowManager().getDefaultDisplay();
 
-	private void initView(Context context, ViewGroup viewGroup) {
+		//int orientation = getOrient.getOrientation();
+		int orientation = context.getResources().getConfiguration().orientation;
+
+		// Sometimes you may get undefined orientation Value is 0
+		// simple logic solves the problem compare the screen
+		// X,Y Co-ordinates and determine the Orientation in such cases
+		if (orientation == Configuration.ORIENTATION_UNDEFINED) {
+
+			Configuration config = context.getResources().getConfiguration();
+			orientation = config.orientation;
+
+			if (orientation == Configuration.ORIENTATION_UNDEFINED) {
+				// if height and widht of screen are equal then
+				// it is square orientation
+				if (getOrient.getWidth() == getOrient.getHeight()) {
+					orientation = Configuration.ORIENTATION_SQUARE;
+				} else { // if widht is less than height than it is portrait
+					if (getOrient.getWidth() < getOrient.getHeight()) {
+						orientation = Configuration.ORIENTATION_PORTRAIT;
+					} else { // if it is not any of the above it will defineitly
+								// be landscape
+						orientation = Configuration.ORIENTATION_LANDSCAPE;
+					}
+				}
+			}
+		}
+		
+		return orientation;
+	}
+
+	private void initView(MainActivity context, ViewGroup viewGroup) {
+		mTemplateFileName = getOrientation(context) == Configuration.ORIENTATION_LANDSCAPE ? JMAINLANDSCAPE : JMAIN;
+		
 		final File folder = Ut.getRMapsMainDir(context, DASHBOARD_DIR);
 		if (folder.exists()) {
-			final File file = new File(String.format(DASHBOARD_FILE, folder.getAbsolutePath(), JMAIN));
+			final File file = new File(String.format(DASHBOARD_FILE, folder.getAbsolutePath(), mTemplateFileName));
+			
 			if (file.exists()) {
 				FileInputStream fis;
 				try {

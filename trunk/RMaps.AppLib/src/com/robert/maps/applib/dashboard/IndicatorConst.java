@@ -7,6 +7,7 @@ public interface IndicatorConst {
 	public static final String JNAME = "name";
 	public static final String JINDICATORS = "indicators";
 	public static final String JMAIN = "main";
+	public static final String JMAINLANDSCAPE = "main_landscape";
 	public static final String JTAG = "tag";
 	public static final String JINDEX = "index";
 	public static final String DASHBOARD_DIR = "data/dashboards";
@@ -28,11 +29,9 @@ public interface IndicatorConst {
 	
 	public static final String TRCNT = "trcnt";
 	public static final String TRDIST = "trdist";
-//	public static final String MAP = "map";
-//	public static final String MAP = "map";
-//	public static final String MAP = "map";
-//	public static final String MAP = "map";
-//	public static final String MAP = "map";
-//	public static final String MAP = "map";
-//	public static final String MAP = "map";
+	public static final String TRDURATION = "trduration";
+	public static final String TRMAXSPEED = "trmaxspeed";
+	public static final String TRAVGSPEED = "travgspeed";
+	public static final String TRMOVETIME = "trmovetime";
+	public static final String TRAVGMOVESPEED = "travgmovespeed";
 }
