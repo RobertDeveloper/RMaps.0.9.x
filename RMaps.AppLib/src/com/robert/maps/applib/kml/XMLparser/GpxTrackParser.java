@@ -1,5 +1,7 @@
 package com.robert.maps.applib.kml.XMLparser;
 
+import java.util.Date;
+
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -13,6 +15,7 @@ public class GpxTrackParser extends DefaultHandler {
 	private PoiManager mPoiManager;
 	private Track mTrack;
 	private String mTrackName = "Track";
+	private Date mTrackTime = new Date();
 
 	private static final String TRK = "trk";
 	private static final String LAT = "lat";
@@ -44,9 +47,10 @@ public class GpxTrackParser extends DefaultHandler {
 	public void startElement(String uri, String localName, String name, Attributes attributes)
 			throws SAXException {
 		builder.delete(0, builder.length());
-		if(localName.equalsIgnoreCase(TRK))
+		if(localName.equalsIgnoreCase(TRK)) {
 			mTrack = new Track();
-		else if(localName.equalsIgnoreCase(POINT)){
+			mTrack.Date = mTrackTime;
+		} else if(localName.equalsIgnoreCase(POINT)){
 			mTrack.AddTrackPoint();
 			mTrack.LastTrackPoint.lat = Double.parseDouble(attributes.getValue(LAT));
 			mTrack.LastTrackPoint.lon = Double.parseDouble(attributes.getValue(LON));
@@ -71,15 +75,18 @@ public class GpxTrackParser extends DefaultHandler {
 			if(mTrack != null)
 				mTrack.Descr = builder.toString().trim();
 		} else if(localName.equalsIgnoreCase(DESC)) {
-			if(mTrack != null)
-				if(mTrack.Descr.equals(EMPTY))
-					mTrack.Descr = builder.toString().trim();
+			if(mTrack != null && mTrack.Descr.equals(EMPTY))
+				mTrack.Descr = builder.toString().trim();
 		} else if (localName.equalsIgnoreCase(ELE)) {
 			if(mTrack.LastTrackPoint != null && !builder.toString().equalsIgnoreCase(EMPTY))
 				mTrack.LastTrackPoint.alt = Double.parseDouble(builder.toString().trim());
 		} else if (localName.equalsIgnoreCase(TIME)) {
-			if(mTrack.LastTrackPoint != null && !builder.toString().equalsIgnoreCase(EMPTY))
-				mTrack.LastTrackPoint.date = Ut.ParseDate(builder.toString().trim());
+			if(mTrack != null) {
+				if(mTrack.LastTrackPoint != null && !builder.toString().equalsIgnoreCase(EMPTY))
+					mTrack.LastTrackPoint.date = Ut.ParseDate(builder.toString().trim());
+			} else {
+				mTrackTime = Ut.ParseDate(builder.toString().trim());
+			}
 		}
 
 		super.endElement(uri, localName, name);
