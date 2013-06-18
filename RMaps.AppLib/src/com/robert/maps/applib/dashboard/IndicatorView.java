@@ -60,12 +60,16 @@ public class IndicatorView extends RelativeLayout implements OnCreateContextMenu
 					|| mIndicatorTag.equalsIgnoreCase(IndicatorConst.GPSACCURACY)
 					|| mIndicatorTag.equalsIgnoreCase(IndicatorConst.GPSSPEED)
 					|| mIndicatorTag.equalsIgnoreCase(IndicatorConst.TRDIST)
+					|| mIndicatorTag.equalsIgnoreCase(IndicatorConst.TRMAXSPEED)
+					|| mIndicatorTag.equalsIgnoreCase(IndicatorConst.TRAVGSPEED)
+					|| mIndicatorTag.equalsIgnoreCase(IndicatorConst.TRAVGMOVESPEED)
 					) {
 				final String[] val = (String[]) indicatorManager.getIndicators().get(mIndicatorTag);
 				((TextView)findViewById(R.id.data_value)).setText(val[0]);
 				((TextView)findViewById(R.id.data_unit)).setText(val[1]);
 			} else {
 				((TextView)findViewById(R.id.data_value)).setText(indicatorManager.getIndicators().get(mIndicatorTag).toString());
+				((TextView)findViewById(R.id.data_unit)).setText(IndicatorConst.EMPTY);
 			}
 		}
 	}

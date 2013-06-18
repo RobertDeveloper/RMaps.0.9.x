@@ -12,12 +12,12 @@ public class TrackStatHelper {
 	public double AvgPace;
 	public double MinEle;
 	public double MaxEle;
-	public int MoveTime;
+	public long MoveTime;
 	public double AvgMoveSpeed;
 	
 	public int Cnt;
 	public double Distance;
-	public double Duration;
+	public long Duration;
 	
 	private Location lastpt = null;
 	private float[] results = { 0 };
@@ -67,7 +67,7 @@ public class TrackStatHelper {
 			} catch (Exception e) {
 			}
 			
-			Duration = (double) ((date.getTime() - Date1.getTime()) / 1000);
+			Duration = date.getTime() - Date1.getTime();
 		}
 		
 		lastpt.setLatitude(lat);
