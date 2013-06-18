@@ -12,14 +12,17 @@ import android.widget.TextView;
 
 import com.robert.maps.applib.R;
 import com.robert.maps.applib.kml.constants.PoiConstants;
+import com.robert.maps.applib.utils.DistanceFormatter;
 import com.robert.maps.applib.utils.Units;
 
 public class TrackStatActivity extends Activity {
+	private DistanceFormatter mDf;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		mDf = new DistanceFormatter(this);
 		this.setContentView(R.layout.track_stat);
 
         Bundle extras = getIntent().getExtras();
@@ -45,11 +48,11 @@ public class TrackStatActivity extends Activity {
         		((TextView)findViewById(R.id.duration_data)).setText(sdf.format(new Date((long) (tr.Duration*1000))));
         		((TextView)findViewById(R.id.distance_data)).setText(String.format("%.2f", units.KM(tr.Distance/1000)));
         		((TextView)findViewById(R.id.points_data)).setText(String.format("%d", tr.Cnt));
-        		((TextView)findViewById(R.id.avgspeed_data)).setText(String.format("%.1f", units.KMH(stat.AvgSpeed)));
+        		((TextView)findViewById(R.id.avgspeed_data)).setText(mDf.formatSpeed2(stat.AvgSpeed)[0]);
         		((TextView)findViewById(R.id.avgpace_data)).setText(String.format("%d:%02d", (int)(units.MINKM(stat.AvgPace)/60), (int)(units.MINKM(stat.AvgPace) - 60 * (int)(units.MINKM(stat.AvgPace)/60))));
-        		((TextView)findViewById(R.id.maxspeed_data)).setText(String.format("%.1f", units.KMH(stat.MaxSpeed)));
+        		((TextView)findViewById(R.id.maxspeed_data)).setText(mDf.formatSpeed2(stat.MaxSpeed)[0]);
         		((TextView)findViewById(R.id.movetime_data)).setText(sdf.format(new Date((long) (stat.MoveTime))));
-        		((TextView)findViewById(R.id.moveavgspeed_data)).setText(String.format("%.1f", units.KMH(stat.AvgMoveSpeed)));
+        		((TextView)findViewById(R.id.moveavgspeed_data)).setText(mDf.formatSpeed2(stat.AvgMoveSpeed)[0]);
         		((TextView)findViewById(R.id.minele_data)).setText(String.format("%.1f", units.M(stat.MinEle)));
         		((TextView)findViewById(R.id.maxele_data)).setText(String.format("%.1f", units.M(stat.MaxEle)));
         		
