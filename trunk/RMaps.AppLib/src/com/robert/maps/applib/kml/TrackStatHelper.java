@@ -30,15 +30,13 @@ public class TrackStatHelper {
 		if (lastpt != null)
 			Date2 = new Date(lastpt.getTime());
 		if (MoveTime > 0) {
-			AvgMoveSpeed = (Distance / 1000) / (MoveTime / 1000 / 60.0 / 60.0);
+			AvgMoveSpeed = Distance / (MoveTime / 1000);
 		}
 		
-		MaxSpeed *= 3.6;
-		
 		if (Duration > 0)
-			AvgSpeed = (Distance / 1000) / (Duration / 60 / 60);
+			AvgSpeed = Distance / (Duration / 1000);
 		if (Distance > 0)
-			AvgPace = Duration / (Distance / 1000);
+			AvgPace = Duration / 1000 / (Distance / 1000);
 	}
 	
 	public void addPoint(double lat, double lon, double alt, double speed, Date date) {
