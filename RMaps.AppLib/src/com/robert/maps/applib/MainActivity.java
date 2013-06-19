@@ -731,10 +731,12 @@ public class MainActivity extends Activity {
 
 		SharedPreferences uiState = getPreferences(Activity.MODE_PRIVATE);
 		SharedPreferences.Editor editor = uiState.edit();
-		editor.putString("MapName", mTileSource.ID);
-		try {
-			editor.putString("OverlayID", mTileOverlay == null ? mTileSource.getOverlayName() : mTileOverlay.getTileSource().ID);
-		} catch (Exception e) {
+		if(mTileSource != null) {
+			editor.putString("MapName", mTileSource.ID);
+			try {
+				editor.putString("OverlayID", mTileOverlay == null ? mTileSource.getOverlayName() : mTileOverlay.getTileSource().ID);
+			} catch (Exception e) {
+			}
 		}
 		editor.putBoolean("ShowOverlay", mShowOverlay);
 		editor.putInt("Latitude", point.getLatitudeE6());
@@ -751,7 +753,8 @@ public class MainActivity extends Activity {
 		
 		uiState = getSharedPreferences("MapName", Activity.MODE_PRIVATE);
 		editor = uiState.edit();
-		editor.putString("MapName", mTileSource.ID);
+		if(mTileSource != null)
+			editor.putString("MapName", mTileSource.ID);
 		editor.putInt("Latitude", point.getLatitudeE6());
 		editor.putInt("Longitude", point.getLongitudeE6());
 		editor.putInt("ZoomLevel", mMap.getZoomLevel());

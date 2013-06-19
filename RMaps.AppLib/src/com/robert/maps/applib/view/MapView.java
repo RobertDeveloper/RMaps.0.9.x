@@ -33,11 +33,13 @@ public class MapView extends RelativeLayout {
 	private final MapController mController;
 	private IMoveListener mMoveListener;
 	private boolean mStopBearing = false;
+	private boolean mUseVolumeControl;
 
 	public MapView(Context context, int sideInOutButtons, int scaleBarVisible) {
 		super(context);
 
 		final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
+		mUseVolumeControl = pref.getBoolean("pref_use_volume_controls", true);
 		mController = new MapController();
 		mTileView = new TileView(context);
 		mMoveListener = null;
@@ -304,6 +306,18 @@ public class MapView extends RelativeLayout {
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		boolean stopPropagation = false;
 		switch (keyCode) {
+			case KeyEvent.KEYCODE_VOLUME_DOWN:
+				if(mUseVolumeControl) {
+					stopPropagation = true;
+					getController().zoomOut();
+				}
+				break;
+			case KeyEvent.KEYCODE_VOLUME_UP:
+				if(mUseVolumeControl) {
+					stopPropagation = true;
+					getController().zoomIn();
+				}
+				break;
 			case KeyEvent.KEYCODE_DPAD_UP:
 				stopPropagation = true;
 				getController().zoomOut();
