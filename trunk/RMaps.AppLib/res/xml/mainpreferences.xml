@@ -139,7 +139,7 @@
             android:title="@string/pref_zoommaxlevel" >
         </ListPreference>
 
-        <CheckBoxPreference android:key="pref_show_autofollow_button" android:title="@string/pref_show_autofollow_button" android:summary="@string/pref_show_autofollow_button_summary" android:defaultValue="true" /><ListPreference android:title="@string/pref_overlay_button_visibility" android:entryValues="@array/overlay_button_visibility_values" android:defaultValue="0" android:summary="@string/pref_overlay_button_visibility_summary" android:entries="@array/overlay_button_visibility" android:key="pref_overlay_button_visibility"/><ListPreference android:entryValues="@array/overlay_button_behavior_values" android:entries="@array/overlay_button_behavior" android:title="@string/pref_overlay_button_behavior" android:summary="@string/pref_overlay_button_behavior_summary" android:key="pref_overlay_button_behavior" android:defaultValue="0"/><CheckBoxPreference
+        <CheckBoxPreference android:title="@string/pref_use_volume_controls" android:defaultValue="true" android:summary="@string/pref_use_volume_controls_summary" android:key="pref_use_volume_controls" /><CheckBoxPreference android:key="pref_show_autofollow_button" android:title="@string/pref_show_autofollow_button" android:summary="@string/pref_show_autofollow_button_summary" android:defaultValue="true" /><ListPreference android:title="@string/pref_overlay_button_visibility" android:entryValues="@array/overlay_button_visibility_values" android:defaultValue="0" android:summary="@string/pref_overlay_button_visibility_summary" android:entries="@array/overlay_button_visibility" android:key="pref_overlay_button_visibility"/><ListPreference android:entryValues="@array/overlay_button_behavior_values" android:entries="@array/overlay_button_behavior" android:title="@string/pref_overlay_button_behavior" android:summary="@string/pref_overlay_button_behavior_summary" android:key="pref_overlay_button_behavior" android:defaultValue="0"/><CheckBoxPreference
             android:defaultValue="true"
             android:key="pref_drivingdirectionup"
             android:summary="@string/pref_drivingdirectionup_summary"
@@ -178,6 +178,7 @@
         <CheckBoxPreference android:summary="@string/pref_line_gps_summary" android:key="pref_line_gps" android:title="@string/pref_line_gps" android:defaultValue="false"/>
         <CheckBoxPreference android:key="pref_circle_distance" android:summary="@string/pref_circle_distance_summary" android:title="@string/pref_circle_distance" android:defaultValue="true"/>
         <ListPreference android:title="@string/pref_coordformat" android:summary="@string/pref_coordformat_summary" android:key="pref_coordformat" android:entryValues="@array/pref_coordformat_values" android:entries="@array/pref_coordformat_titles" android:defaultValue='0'/>
+        
         
         
         
