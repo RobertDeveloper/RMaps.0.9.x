@@ -168,7 +168,7 @@ public class DownloaderActivity extends Activity {
 				mTextVwTileCnt.setText(Integer.toString(mTileCntTotal));
 				mTextVwTime.setText(Ut.formatTime(System.currentTimeMillis() - mStartTime));
 				mDownloadedAreaOverlay.downloadDone();
-				mMap.postInvalidate();
+				mMap.invalidate(); //postInvalidate();
 			} else if(msg.what == R.id.download_start) {
 				Bundle b = (Bundle) msg.obj;
 				mTileCntTotal = b.getInt(CNT);
@@ -215,7 +215,7 @@ public class DownloaderActivity extends Activity {
 					mTextVwTime.setText(String.format("%s / %s", Ut.formatTime(time - mStartTime), Ut.formatTime((long)((double)(time - mStartTime) / (1.0f * tileCnt / mTileCntTotal))) ));
 				else
 					mTextVwTime.setText(Ut.formatTime(time - mStartTime));
-				mMap.postInvalidate();
+				mMap.invalidate(); //postInvalidate();
 			}
 		}
 	};

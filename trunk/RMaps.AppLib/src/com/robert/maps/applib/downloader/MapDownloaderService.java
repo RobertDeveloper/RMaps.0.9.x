@@ -224,7 +224,6 @@ public class MapDownloaderService extends Service {
 //		}
 	}
 
-	@TargetApi(Build.VERSION_CODES.ECLAIR)
 	@Override
 	public void onDestroy() {
 		Ut.e("downloader.onDestroy");

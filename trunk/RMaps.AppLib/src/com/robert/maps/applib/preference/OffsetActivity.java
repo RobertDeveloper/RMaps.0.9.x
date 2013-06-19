@@ -154,7 +154,7 @@ public class OffsetActivity extends Activity {
 		public void handleMessage(final Message msg) {
 			final int what = msg.what;
 			if (what == Ut.MAPTILEFSLOADER_SUCCESS_ID) {
-				mMap.postInvalidate();
+				mMap.invalidate(); //postInvalidate();
 			} else if (what == R.id.user_moved_map) {
 				// setAutoFollow(false);
 			} else if (what == R.id.set_title) {
