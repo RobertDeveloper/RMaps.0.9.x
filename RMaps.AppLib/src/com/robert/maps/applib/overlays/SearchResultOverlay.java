@@ -214,7 +214,7 @@ public class SearchResultOverlay extends TileViewOverlay {
 		});
 		
 		setDescr();
-		mMapView.postInvalidate();
+		mMapView.invalidate(); //postInvalidate();
 		return 2;
 	}
 	

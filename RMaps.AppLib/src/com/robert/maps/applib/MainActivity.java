@@ -9,6 +9,7 @@ import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
@@ -46,6 +47,7 @@ import android.hardware.SensorManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.location.LocationProvider;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -462,7 +464,7 @@ public class MainActivity extends Activity {
 					}
 				}
 				
-				mMap.postInvalidate();
+				mMap.invalidate(); //postInvalidate();
 			}
 		});
         mOverlayView.setOnLongClickListener(new View.OnLongClickListener() {
@@ -595,11 +597,11 @@ public class MainActivity extends Activity {
 			mMap.getController().setCenter(p);
 		else {
 			final LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-			final Location loc1 = lm.getLastKnownLocation(SampleLocationListener.GPS);
-			final Location loc2 = lm.getLastKnownLocation(SampleLocationListener.NETWORK);
+			final Location loc1 = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+			final Location loc2 = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
 	
-			boolean boolGpsEnabled = lm.isProviderEnabled(SampleLocationListener.GPS);
-			boolean boolNetworkEnabled = lm.isProviderEnabled(SampleLocationListener.NETWORK);
+			boolean boolGpsEnabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
+			boolean boolNetworkEnabled = lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
 			String str = "";
 			Location loc = null;
 	
@@ -691,6 +693,7 @@ public class MainActivity extends Activity {
 		if(mCurrentTrackOverlay != null)
 			mCurrentTrackOverlay.onResume();
 		
+		Ut.d("onResume getBestProvider");
 		mLocationListener.getBestProvider();
 
 		if(mIndicatorManager != null)
@@ -716,7 +719,14 @@ public class MainActivity extends Activity {
 	}
 
 	@Override
+	protected void onStop() {
+		Ut.d("onStop");
+		super.onStop();
+	}
+
+	@Override
 	protected void onPause() {
+		Ut.d("onPause");
 		final GeoPoint point = mMap.getMapCenter();
 
 		SharedPreferences uiState = getPreferences(Activity.MODE_PRIVATE);
@@ -767,8 +777,10 @@ public class MainActivity extends Activity {
 			mTileOverlay.Free();
 		
 		mLocationListener.getLocationManager().removeUpdates(mLocationListener);
-		if(mNetListener != null)
+		if(mNetListener != null) {
 			mLocationListener.getLocationManager().removeUpdates(mNetListener);
+			mNetListener = null;
+		}
 		
 		if(mIndicatorManager != null)
 			mIndicatorManager.Pause(this);
@@ -778,6 +790,7 @@ public class MainActivity extends Activity {
 
 	@Override
 	protected void onDestroy() {
+		Ut.d("onDestroy");
 		if(mIndicatorManager != null) {
 			mIndicatorManager.Dismiss(this);
 			mIndicatorManager = null;
@@ -895,7 +908,7 @@ public class MainActivity extends Activity {
 			return true;
 		} else if(item.getItemId() == R.id.reload) {
 			mTileSource.setReloadTileMode(true);
-			mMap.postInvalidate();
+			mMap.invalidate(); //postInvalidate();
 			return true;
 		} else if(item.getItemId() == R.id.measure) {
 			doMeasureStart();
@@ -985,7 +998,7 @@ public class MainActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				mMeasureOverlay.addPointOnCenter(mMap.getTileView());
-				mMap.postInvalidate();
+				mMap.invalidate(); //postInvalidate();
 			}
 		});
 		viewBottomArea.findViewById(R.id.close).setOnClickListener(new View.OnClickListener() {
@@ -1166,33 +1179,33 @@ public class MainActivity extends Activity {
 			final IndicatorViewMenuInfo info = (IndicatorViewMenuInfo) item.getMenuInfo();
 			final IndicatorView iv = info.IndicatorView;
 			mIndicatorManager.putTagToIndicatorView(iv, item.getTitleCondensed().toString());
-			mMap.postInvalidate();
+			mMap.invalidate(); //postInvalidate();
 			
 		} else {
 			if(item.getItemId() == R.id.clear) {
 				mMeasureOverlay.Clear();
-				mMap.postInvalidate();
+				mMap.invalidate(); //postInvalidate();
 			} else if (item.getItemId() == R.id.menu_dashboard_delete) {
 				final IndicatorViewMenuInfo info = (IndicatorViewMenuInfo) item.getMenuInfo();
 				final IndicatorView iv = info.IndicatorView;
 				mIndicatorManager.removeIndicatorView(this, iv);
-				mMap.postInvalidate();
+				mMap.invalidate(); //postInvalidate();
 				
 			} else if (item.getItemId() == R.id.menu_dashboard_add) {
 				final IndicatorViewMenuInfo info = (IndicatorViewMenuInfo) item.getMenuInfo();
 				final IndicatorView iv = info.IndicatorView;
 				mIndicatorManager.addIndicatorView(this, iv, iv.getIndicatorTag(), false);
-				mMap.postInvalidate();
+				mMap.invalidate(); //postInvalidate();
 			
 			} else if (item.getItemId() == R.id.menu_dashboard_add_line) {
 				final IndicatorViewMenuInfo info = (IndicatorViewMenuInfo) item.getMenuInfo();
 				final IndicatorView iv = info.IndicatorView;
 				mIndicatorManager.addIndicatorView(this, iv, iv.getIndicatorTag(), true);
-				mMap.postInvalidate();
+				mMap.invalidate(); //postInvalidate();
 
 			} else if (item.getItemId() == R.id.menu_undo) {
 				mMeasureOverlay.Undo();
-				mMap.postInvalidate();
+				mMap.invalidate(); //postInvalidate();
 			} else if (item.getItemId() == R.id.menu_showinfo) {
 				item.setChecked(!item.isChecked());
 				final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
@@ -1201,7 +1214,7 @@ public class MainActivity extends Activity {
 				editor.commit();
 				mMeasureOverlay.setShowInfoBubble(item.isChecked());
 
-				mMap.postInvalidate();
+				mMap.invalidate(); //postInvalidate();
 			} else if (item.getItemId() == R.id.menu_showlineinfo) {
 				item.setChecked(!item.isChecked());
 				final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
@@ -1210,10 +1223,10 @@ public class MainActivity extends Activity {
 				editor.commit();
 				mMeasureOverlay.setShowLineInfo(item.isChecked());
 
-				mMap.postInvalidate();
+				mMap.invalidate(); //postInvalidate();
 			} else if (item.getItemId() == R.id.menu_addmeasurepoint) {
 				mMeasureOverlay.addPointOnCenter(mMap.getTileView());
-				mMap.postInvalidate();
+				mMap.invalidate(); //postInvalidate();
 			} else if (item.getItemId() == R.id.hide_overlay) {
 				setTileSource(mTileSource.ID, mOverlayId, false);
 				
@@ -1228,7 +1241,7 @@ public class MainActivity extends Activity {
 				mMyLocationOverlay.setLocation(loc);
 				mSearchResultOverlay.setLocation(loc);
 				
-				mMap.postInvalidate();
+				mMap.invalidate(); //postInvalidate();
 				
 			} else if (item.getItemId() == R.id.menu_addpoi) {
 				TileView.PoiMenuInfo info = (TileView.PoiMenuInfo) item.getMenuInfo(); //).EventGeoPoint;
@@ -1240,7 +1253,7 @@ public class MainActivity extends Activity {
 			} else if (item.getItemId() == R.id.menu_editpoi) {
 				startActivityForResult((new Intent(this, PoiActivity.class)).putExtra("pointid", mMarkerIndex),
 						R.id.menu_editpoi);
-				mMap.postInvalidate();
+				mMap.invalidate(); //postInvalidate();
 			} else if (item.getItemId() == R.id.menu_deletepoi) {
 				final int pointid = mPoiOverlay.getPoiPoint(mMarkerIndex).getId();
 				new AlertDialog.Builder(this) 
@@ -1251,7 +1264,7 @@ public class MainActivity extends Activity {
 
 						mPoiManager.deletePoi(pointid);
 						mPoiOverlay.UpdateList();
-						mMap.postInvalidate();
+						mMap.invalidate(); //postInvalidate();
 					}
 				}).setNegativeButton(R.string.no, null).create().show();
 			} else if (item.getItemId() == R.id.menu_hide) {
@@ -1259,7 +1272,7 @@ public class MainActivity extends Activity {
 				poi.Hidden = true;
 				mPoiManager.updatePoi(poi);
 				mPoiOverlay.UpdateList();
-				mMap.postInvalidate();
+				mMap.invalidate(); //postInvalidate();
 			} else if (item.getItemId() == R.id.menu_share) {
 				try {
 					final PoiPoint poi = mPoiOverlay.getPoiPoint(mMarkerIndex);
@@ -1402,7 +1415,7 @@ public class MainActivity extends Activity {
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (requestCode == R.id.menu_editpoi || requestCode == R.id.menu_addpoi) {
 			mPoiOverlay.UpdateList();
-			mMap.postInvalidate();
+			mMap.invalidate(); //postInvalidate();
 		} else if (requestCode == R.id.poilist) {
 			if(resultCode == RESULT_OK){
 				PoiPoint point = mPoiManager.getPoiPoint(data.getIntExtra("pointid", PoiPoint.EMPTY_ID()));
@@ -1413,7 +1426,7 @@ public class MainActivity extends Activity {
 				}
 			} else {
 				mPoiOverlay.UpdateList();
-				mMap.postInvalidate();
+				mMap.invalidate(); //postInvalidate();
 			}
 		} else if (requestCode == R.id.tracks) {
 			if(resultCode == RESULT_OK){
@@ -1436,7 +1449,7 @@ public class MainActivity extends Activity {
 		public void handleMessage(final Message msg) {
 			final int what = msg.what;
 			if (what == Ut.MAPTILEFSLOADER_SUCCESS_ID) {
-				mMap.postInvalidate();
+				mMap.invalidate(); //postInvalidate();
 			} else if (what == R.id.user_moved_map) {
 				// setAutoFollow(false);
 			} else if (what == R.id.set_title) {
@@ -1454,17 +1467,16 @@ public class MainActivity extends Activity {
 	private SampleLocationListener mLocationListener, mNetListener;
 	
 	private class SampleLocationListener implements LocationListener {
-		public static final String GPS = "gps";
-		public static final String NETWORK = "network";
 		public static final String OFF = "off";
 
 		public void onLocationChanged(Location loc) {
 			mMyLocationOverlay.setLocation(loc);
 			mSearchResultOverlay.setLocation(loc);
 			
-			if (loc.getProvider().equals(GPS) && mNetListener != null) {
+			if (loc.getProvider().equals(LocationManager.GPS_PROVIDER) && mNetListener != null) {
 				getLocationManager().removeUpdates(mNetListener);
 				mNetListener = null;
+				mGpsStatusName = LocationManager.GPS_PROVIDER;
 				Ut.d("NETWORK provider removed");
 			}
 			
@@ -1488,12 +1500,27 @@ public class MainActivity extends Activity {
 
 		public void onProviderDisabled(String provider) {
 			Ut.d("onProviderDisabled "+provider);
-			getBestProvider();
+			if(provider.equalsIgnoreCase(LocationManager.GPS_PROVIDER) && mNetListener != null)
+				mGpsStatusName = LocationManager.NETWORK_PROVIDER;
+			else
+				mGpsStatusName = OFF;
+			
+			if(provider.equalsIgnoreCase(LocationManager.NETWORK_PROVIDER) && mNetListener != null) {
+				getLocationManager().removeUpdates(mNetListener);
+				mNetListener = null;
+				if(getLocationManager().isProviderEnabled(LocationManager.GPS_PROVIDER))
+					mGpsStatusName = LocationManager.GPS_PROVIDER;
+				else
+					mGpsStatusName = OFF;
+			}
+			setTitle();
 		}
 
 		public void onProviderEnabled(String provider) {
 			Ut.d("onProviderEnabled "+provider);
-			getBestProvider();
+			if(provider.equalsIgnoreCase(LocationManager.GPS_PROVIDER) && mNetListener == null)
+				mGpsStatusName = LocationManager.GPS_PROVIDER;
+			setTitle();
 		}
 
 		public void onStatusChanged(String provider, int status, Bundle extras) {
@@ -1512,6 +1539,9 @@ public class MainActivity extends Activity {
 		private void getBestProvider() {
 			int minTime = 0;
 			int minDistance = 0;
+			final LocationManager lm = getLocationManager();
+			final List<String> listProviders = lm.getAllProviders();
+			mGpsStatusName = OFF;
 			
 			if (!mGPSFastUpdate) {
 				minTime = 2000;
@@ -1519,34 +1549,34 @@ public class MainActivity extends Activity {
 			}
 			;
 			
-			getLocationManager().removeUpdates(mLocationListener);
+			lm.removeUpdates(mLocationListener);
 			
 			if (mNetListener != null)
-				getLocationManager().removeUpdates(mNetListener);
+				lm.removeUpdates(mNetListener);
 			
-			if (getLocationManager().isProviderEnabled(GPS)) {
-				Ut.d("GPS Provider Enabled");
-				getLocationManager().requestLocationUpdates(GPS, minTime, minDistance, mLocationListener);
-				mGpsStatusName = GPS;
+			if (listProviders.contains(LocationManager.GPS_PROVIDER)) {
+				Ut.d("GPS Provider available");
+				lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, minTime, minDistance, mLocationListener);
+				if(lm.isProviderEnabled(LocationManager.GPS_PROVIDER))
+					mGpsStatusName = LocationManager.GPS_PROVIDER;
 				
 				try {
-					if (getLocationManager().isProviderEnabled(NETWORK)) {
+					if (lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
 						Ut.d("NETWORK Provider Enabled");
 						mNetListener = new SampleLocationListener();
-						getLocationManager().requestLocationUpdates(NETWORK, minTime, minDistance, mNetListener);
-						mGpsStatusName = NETWORK;
+						lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, minTime, minDistance, mNetListener);
+						mGpsStatusName = LocationManager.NETWORK_PROVIDER;
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 				
-			} else if (getLocationManager().isProviderEnabled(NETWORK)) {
+			} else if (listProviders.contains(LocationManager.NETWORK_PROVIDER) && lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
 				Ut.d("only NETWORK Provider Enabled");
-				getLocationManager().requestLocationUpdates(NETWORK, minTime, minDistance, mLocationListener);
-				mGpsStatusName = NETWORK;
+				lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, minTime, minDistance, mLocationListener);
+				mGpsStatusName = LocationManager.NETWORK_PROVIDER;
 			} else {
 				Ut.d("NO Provider Enabled");
-				mGpsStatusName = OFF;
 			}
 			
 			setTitle();

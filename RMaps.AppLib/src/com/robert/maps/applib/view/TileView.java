@@ -59,21 +59,22 @@ public class TileView extends View {
 	private class ScaleListener implements VerScaleGestureDetector.OnGestureListener {
 
 		public void onScale(double aScaleFactor) {
-			mTouchScale = aScaleFactor;
+			mTouchScale = aScaleFactor; //mTouchScale + aScaleFactor > 1 ? aScaleFactor - 1 : - 1 / aScaleFactor;
 			if(mMoveListener != null)
 				mMoveListener.onZoomDetected();
 			
-			postInvalidate();
+			invalidate(); //postInvalidate();
 		}
 
 		public void onScaleEnd() {
 			int zoom = 0;
-			if(mTouchScale > 1)
+			if(mTileSource.ZOOM_MAXLEVEL == getZoomLevel() && mTouchScale > 1) {
+				return; 
+			} else if(mTouchScale > 1)
 				zoom = getZoomLevel()+(int)Math.round(mTouchScale)-1;
 			else
 				zoom = getZoomLevel()-(int)Math.round(1/mTouchScale)+1;
 			
-			mTouchScale = 1;
 			setZoomLevel(zoom);
 		}
 		
@@ -137,7 +138,7 @@ public class TileView extends View {
 				mOffsetLat = mOffsetLat + (newCenter.getLatitudeE6() - mLatitudeE6) / 1E6;
 				mOffsetLon = mOffsetLon + (newCenter.getLongitudeE6() - mLongitudeE6) / 1E6;
 				mTileOverlay.setOffset(mOffsetLat, mOffsetLon);
-				TileView.this.postInvalidate();
+				TileView.this.invalidate(); //postInvalidate();
 			} else {
 				TileView.this.setMapCenter(newCenter);
 			}
@@ -320,7 +321,7 @@ public class TileView extends View {
 		if(mMoveListener != null)
 			mMoveListener.onCenterDetected();
 
-		this.postInvalidate();
+		this.invalidate(); //postInvalidate();
 	}
 	
 	public int getZoomLevel() {
@@ -342,10 +343,12 @@ public class TileView extends View {
 		else
 			mZoom = Math.max(mTileSource.ZOOM_MINLEVEL, Math.min(mTileSource.ZOOM_MAXLEVEL, zoom));
 		
+		mTouchScale = 1;
+		
 		if(mMoveListener != null)
 			mMoveListener.onZoomDetected();
 		
-		this.postInvalidate();
+		this.invalidate(); //postInvalidate();
 	}
 	
 	public void setBearing(final float aBearing){
