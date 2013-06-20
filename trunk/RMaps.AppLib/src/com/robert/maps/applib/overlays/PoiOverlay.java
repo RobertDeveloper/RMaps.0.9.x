@@ -87,13 +87,19 @@ public class PoiOverlay extends TileViewOverlay {
 		((Activity) ctx).getWindowManager().getDefaultDisplay().getMetrics(metrics);
 		mDensity = metrics.density;
 	}
-
-	public void setGpsStatusGeoPoint(final GeoPoint geopoint, final String title, final String descr) {
-		PoiPoint poi = new PoiPoint(title, descr, geopoint, R.drawable.poi_satttelite);
+	
+	public void clearPoiList() {
 		if(mItemList == null)
 			mItemList = new SparseArray<PoiPoint>();
 		else
 			mItemList.clear();
+	}
+
+	public void setGpsStatusGeoPoint(final int id, final GeoPoint geopoint, final String title, final String descr) {
+		PoiPoint poi = new PoiPoint(id, title, descr, geopoint, 0, R.drawable.poi_satttelite);
+
+		if(mItemList == null)
+			mItemList = new SparseArray<PoiPoint>();
 
 		mItemList.put(poi.getId(), poi);
 		mCanUpdateList = false;

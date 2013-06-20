@@ -2,6 +2,7 @@ package com.robert.maps.applib.dashboard;
 
 public interface IndicatorConst {
 	public static final String GPS = "gps";
+	public static final String OFF = "off";
 	public static final String EMPTY = "";
 
 	public static final String JNAME = "name";
