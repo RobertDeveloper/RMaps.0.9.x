@@ -279,14 +279,18 @@ public class GeoDatabase implements PoiConstants{
     	}
 	}
 
-	public void addPoiCategory(final String title, final int hidden, final int iconid) {
+	public long addPoiCategory(final String title, final int hidden, final int iconid) {
+		long newId = -1;
+
 		if (isDatabaseReady()) {
 			final ContentValues cv = new ContentValues();
 			cv.put(NAME, title);
 			cv.put(HIDDEN, hidden);
 			cv.put(ICONID, iconid);
-			this.mDatabase.insert(CATEGORY, null, cv);
+			newId = this.mDatabase.insert(CATEGORY, null, cv);
 		}
+		
+		return newId;
 	}
 
 	public void updatePoiCategory(final int id, final String title, final int hidden, final int iconid, final int minzoom) {

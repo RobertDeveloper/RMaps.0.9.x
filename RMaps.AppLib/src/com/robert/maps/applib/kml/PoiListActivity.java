@@ -195,7 +195,7 @@ public class PoiListActivity extends ListActivity {
 			xml.setAttr("xmlns:gx", "http://www.google.com/kml/ext/2.2");
 			xml.setAttr("xmlns", "http://www.opengis.net/kml/2.2");
 			SimpleXML fold = xml.createChild("Folder");
-			
+
 			Cursor c = mPoiManager.getGeoDatabase().getPoiListCursor();
 			PoiPoint poi = null;
 			
@@ -209,6 +209,12 @@ public class PoiListActivity extends ListActivity {
 						wpt.createChild(PoiConstants.DESCRIPTION).setText(poi.Descr);
 						SimpleXML point = wpt.createChild("Point");
 						point.createChild("coordinates").setText(new StringBuilder().append(poi.GeoPoint.getLongitude()).append(",").append(poi.GeoPoint.getLatitude()).toString());
+						SimpleXML ext = wpt.createChild("ExtendedData");
+						SimpleXML category = ext.createChild(PoiConstants.CATEGORYID);
+						final PoiCategory poiCat = mPoiManager.getPoiCategory(poi.CategoryId);
+						category.setAttr(PoiConstants.CATEGORYID, Integer.toString(poiCat.getId()));
+						category.setAttr(PoiConstants.NAME, poiCat.Title);
+						category.setAttr(PoiConstants.ICONID, Integer.toString(poiCat.IconId));
 						
 					} while(c.moveToNext());
 				};
@@ -278,7 +284,12 @@ public class PoiListActivity extends ListActivity {
 						wpt.createChild(PoiConstants.NAME).setText(poi.Title);
 						wpt.createChild(PoiConstants.DESC).setText(poi.Descr);
 						wpt.createChild(PoiConstants.TYPE).setText(mPoiManager.getPoiCategory(poi.CategoryId).Title);
-						/*SimpleXML ext =*/ xml.createChild(PoiConstants.EXTENSIONS);
+						SimpleXML ext = wpt.createChild("extensions");
+						SimpleXML category = ext.createChild(PoiConstants.CATEGORYID);
+						final PoiCategory poiCat = mPoiManager.getPoiCategory(poi.CategoryId);
+						category.setAttr(PoiConstants.CATEGORYID, Integer.toString(poiCat.getId()));
+						category.setAttr(PoiConstants.NAME, poiCat.Title);
+						category.setAttr(PoiConstants.ICONID, Integer.toString(poiCat.IconId));
 						
 					} while(c.moveToNext());
 				};

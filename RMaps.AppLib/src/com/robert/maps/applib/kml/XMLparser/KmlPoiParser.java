@@ -1,12 +1,17 @@
 package com.robert.maps.applib.kml.XMLparser;
 
+import java.util.HashMap;
+
 import org.andnav.osm.util.GeoPoint;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
+import android.database.Cursor;
+
 import com.robert.maps.applib.kml.PoiManager;
 import com.robert.maps.applib.kml.PoiPoint;
+import com.robert.maps.applib.kml.constants.PoiConstants;
 
 public class KmlPoiParser extends DefaultHandler {
 	private StringBuilder builder;
@@ -22,7 +27,7 @@ public class KmlPoiParser extends DefaultHandler {
 	private static final String coordinates = "coordinates";
 	private static final String description = "description";
 
-
+	private HashMap<String, Integer> mCategoryMap;
 
 	public KmlPoiParser(PoiManager poiManager, int CategoryId) {
 		super();
@@ -31,6 +36,17 @@ public class KmlPoiParser extends DefaultHandler {
 		mCategoryId = CategoryId;
 		mPoiPoint = new PoiPoint();
 		mItIsPoint = false;
+		
+		mCategoryMap = new HashMap<String, Integer>();
+		Cursor c = mPoiManager.getGeoDatabase().getPoiCategoryListCursor();
+		if(c != null) {
+			if(c.moveToFirst()) {
+				do {
+					mCategoryMap.put(c.getString(0), c.getInt(2));
+				} while(c.moveToNext());
+			}
+			c.close();
+		}
 	}
 
 	@Override
@@ -47,6 +63,14 @@ public class KmlPoiParser extends DefaultHandler {
 			mPoiPoint = new PoiPoint();
 			mPoiPoint.CategoryId = mCategoryId;
 			mItIsPoint = false;
+		} else if(localName.equalsIgnoreCase("categoryid") && mPoiPoint != null) {
+			final String attrName = attributes.getValue(PoiConstants.NAME);
+			if(mCategoryMap.containsKey(attrName)) {
+				mPoiPoint.CategoryId = mCategoryMap.get(attrName);
+			} else {
+				mPoiPoint.CategoryId = (int) mPoiManager.getGeoDatabase().addPoiCategory(attrName, 0, Integer.parseInt(attributes.getValue(PoiConstants.ICONID)));
+				mCategoryMap.put(attrName, mPoiPoint.CategoryId);
+			}
 		}
 		super.startElement(uri, localName, name, attributes);
 	}
