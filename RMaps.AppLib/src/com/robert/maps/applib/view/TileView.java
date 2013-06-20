@@ -57,9 +57,16 @@ public class TileView extends View {
 	private VerScaleGestureDetector mScaleDetector = VerScaleGestureDetector.newInstance(getContext(), new ScaleListener());
 	
 	private class ScaleListener implements VerScaleGestureDetector.OnGestureListener {
+//		private double mPrevScaleFactor = 1.0;
 
 		public void onScale(double aScaleFactor) {
-			mTouchScale = aScaleFactor; //mTouchScale + aScaleFactor > 1 ? aScaleFactor - 1 : - 1 / aScaleFactor;
+			mTouchScale = aScaleFactor;
+			
+//			mTouchScale = mPrevScaleFactor + (aScaleFactor >= 1.0 ? (aScaleFactor /*- 1.0*/) : (1 - 1 / aScaleFactor));
+//			if(mTouchScale < 0.0)
+//				mTouchScale = - 1 / mTouchScale;
+//			Ut.e("aScaleFactor = "+aScaleFactor+" mTouchScale="+mTouchScale+" d="+(aScaleFactor >= 1.0 ? (aScaleFactor - 1.0) : (1 - 1 / aScaleFactor)));
+			
 			if(mMoveListener != null)
 				mMoveListener.onZoomDetected();
 			
@@ -69,11 +76,15 @@ public class TileView extends View {
 		public void onScaleEnd() {
 			int zoom = 0;
 			if(mTileSource.ZOOM_MAXLEVEL == getZoomLevel() && mTouchScale > 1) {
+//				mPrevScaleFactor = mTouchScale;
 				return; 
-			} else if(mTouchScale > 1)
+			} else if(mTouchScale > 1) {
+//				mPrevScaleFactor = 1.0;
 				zoom = getZoomLevel()+(int)Math.round(mTouchScale)-1;
-			else
+			} else {
+//				mPrevScaleFactor = 1.0;
 				zoom = getZoomLevel()-(int)Math.round(1/mTouchScale)+1;
+			}
 			
 			setZoomLevel(zoom);
 		}
@@ -321,7 +332,7 @@ public class TileView extends View {
 		if(mMoveListener != null)
 			mMoveListener.onCenterDetected();
 
-		this.invalidate(); //postInvalidate();
+		this.postInvalidate();
 	}
 	
 	public int getZoomLevel() {
@@ -348,7 +359,7 @@ public class TileView extends View {
 		if(mMoveListener != null)
 			mMoveListener.onZoomDetected();
 		
-		this.invalidate(); //postInvalidate();
+		this.postInvalidate();
 	}
 	
 	public void setBearing(final float aBearing){

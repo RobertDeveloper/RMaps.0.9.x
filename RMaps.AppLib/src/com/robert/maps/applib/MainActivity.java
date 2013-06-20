@@ -9,6 +9,7 @@ import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -47,7 +48,6 @@ import android.hardware.SensorManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.location.LocationProvider;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -253,7 +253,8 @@ public class MainActivity extends Activity {
 					
 				} else {
 					GeoPoint point = GeoPoint.fromDoubleString(latlon);
-					mPoiOverlay.setGpsStatusGeoPoint(point, "GEO", "");
+					mPoiOverlay.clearPoiList();
+					mPoiOverlay.setGpsStatusGeoPoint(0, point, "GEO", "");
 					setAutoFollow(false);
 					mMap.getController().setCenter(point);
 				}
@@ -1148,10 +1149,12 @@ public class MainActivity extends Activity {
 			final TileView.PoiMenuInfo info = (TileView.PoiMenuInfo) menuInfo;
 			if(info.EventGeoPoint != null) {
 				if(info.MarkerIndex > PoiOverlay.NO_TAP) {
-					mMarkerIndex = ((TileView.PoiMenuInfo) menuInfo).MarkerIndex;
-					menu.add(0, R.id.menu_editpoi, 0, getText(R.string.menu_edit));
-					menu.add(0, R.id.menu_hide, 0, getText(R.string.menu_hide));
-					menu.add(0, R.id.menu_deletepoi, 0, getText(R.string.menu_delete));
+					mMarkerIndex = info.MarkerIndex;
+					if(info.MarkerIndex >= 0) {
+						menu.add(0, R.id.menu_editpoi, 0, getText(R.string.menu_edit));
+						menu.add(0, R.id.menu_hide, 0, getText(R.string.menu_hide));
+						menu.add(0, R.id.menu_deletepoi, 0, getText(R.string.menu_delete));
+					}
 					menu.add(0, R.id.menu_share, 0, getText(R.string.menu_share));
 					menu.add(0, R.id.menu_toradar, 0, getText(R.string.menu_toradar));
 				} else {
@@ -1664,17 +1667,23 @@ public class MainActivity extends Activity {
 	private void ActionShowPoints(Intent queryIntent) {
 		final ArrayList<String> locations = queryIntent.getStringArrayListExtra("locations");
 		if(!locations.isEmpty()){
-			Ut.dd("Intent: "+ACTION_SHOW_POINTS+" locations: "+locations.toString());
-			String [] fields = locations.get(0).split(";");
-			String locns = "", title = "", descr = "";
-			if(fields.length>0) locns = fields[0];
-			if(fields.length>1) title = fields[1];
-			if(fields.length>2) descr = fields[2];
-
-			GeoPoint point = GeoPoint.fromDoubleString(locns);
-			mPoiOverlay.setGpsStatusGeoPoint(point, title, descr);
+			GeoPoint point = null;
+			mPoiOverlay.clearPoiList();
+			int id = -1;
+			Iterator<String> it = locations.iterator();
+			while(it.hasNext()) {
+				final String [] fields = it.next().split(";");
+				String locns = "", title = "", descr = "";
+				if(fields.length>0) locns = fields[0];
+				if(fields.length>1) title = fields[1];
+				if(fields.length>2) descr = fields[2];
+	
+				point = GeoPoint.fromDoubleString(locns);
+				mPoiOverlay.setGpsStatusGeoPoint(id--, point, title, descr);
+			}
 			setAutoFollow(false);
-			mMap.getController().setCenter(point);
+			if(point != null)
+				mMap.getController().setCenter(point);
 		}
 	}
 

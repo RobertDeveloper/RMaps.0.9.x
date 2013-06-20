@@ -28,6 +28,8 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.location.GpsSatellite;
+import android.location.GpsStatus;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -57,13 +59,14 @@ import com.robert.maps.applib.utils.Ut;
 public class IndicatorManager implements IndicatorConst {
 	private LinkedHashMap<String, Object> mIndicators = new LinkedHashMap<String, Object>(16, 0.75f, false);
 	private LinkedHashMap<String, String> mIndicatorTitles = new LinkedHashMap<String, String>(16, 0.75f, false);
-	private SampleLocationListener mLocationListener = new SampleLocationListener();
+	private SampleLocationListener mLocationListener;
 	private ArrayList<IndicatorView> mIndicatorViewList = new ArrayList<IndicatorView>();
 	private final CoordFormatter mCf;
 	private final DistanceFormatter mDf;
 	private final SimpleDateFormat sdf;
 	private final SimpleDateFormat sdfDelta;
 	private String mTemplateFileName;
+	private LocationManager mLocationManager;
 
     IRemoteService mService = null;
     private ServiceConnection mConnection;
@@ -72,6 +75,8 @@ public class IndicatorManager implements IndicatorConst {
 		mCf = new CoordFormatter(ctx);
 		mDf = new DistanceFormatter(ctx);
 		final Configuration config = ctx.getResources().getConfiguration();
+		mLocationManager = (LocationManager) ctx.getSystemService(Context.LOCATION_SERVICE);
+		mLocationListener = new SampleLocationListener();
 		sdf = new SimpleDateFormat("HH:mm:ss", config.locale);
 		sdfDelta = new SimpleDateFormat("HH:mm:ss", config.locale);
 		sdfDelta.setTimeZone(TimeZone.getTimeZone("UTC"));
@@ -95,8 +100,9 @@ public class IndicatorManager implements IndicatorConst {
 		
 		initView(ctx, (ViewGroup) ctx.findViewById(R.id.dashboard_area));
 		
-		((LocationManager) ctx.getSystemService(Context.LOCATION_SERVICE)).requestLocationUpdates(GPS, 0, 0,
-				mLocationListener);
+		mLocationManager.requestLocationUpdates(GPS, 0, 0, mLocationListener);
+		mLocationManager.addGpsStatusListener(mLocationListener);
+		
 		ctx.bindService(new Intent(IRemoteService.class.getName()), mConnection, 0 /*Context.BIND_AUTO_CREATE*/);
 	}
 	
@@ -109,7 +115,7 @@ public class IndicatorManager implements IndicatorConst {
 		putIndicator(GPSTIME, res.getString(R.string.dashboard_title_gps_time), EMPTY);
 		putIndicator(GPSLAT, res.getString(R.string.dashboard_title_gps_latitude), EMPTY);
 		putIndicator(GPSLON, res.getString(R.string.dashboard_title_gps_longitude), EMPTY);
-		putIndicator(GPSPROVIDER, res.getString(R.string.dashboard_title_gps_provider), "off");
+		putIndicator(GPSPROVIDER, res.getString(R.string.dashboard_title_gps_provider), mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ? GPS : OFF);
 		putIndicator(GPSSPEED, res.getString(R.string.dashboard_title_gps_speed), mDf.formatSpeed2(0));
 		// Map indicators
 		putIndicator(MAPNAME, res.getString(R.string.dashboard_title_map_name), EMPTY);
@@ -185,7 +191,8 @@ public class IndicatorManager implements IndicatorConst {
 	}
 	
 	public void Dismiss(MainActivity ctx) {
-		((LocationManager) ctx.getSystemService(Context.LOCATION_SERVICE)).removeUpdates(mLocationListener);
+		mLocationManager.removeUpdates(mLocationListener);
+		mLocationManager.removeGpsStatusListener(mLocationListener);
 		
 		final JSONObject json = new JSONObject();
 		try {
@@ -226,7 +233,18 @@ public class IndicatorManager implements IndicatorConst {
 		((ViewGroup) ((MainActivity) ctx).findViewById(R.id.dashboard_area)).removeAllViews();
 	}
 	
-	private class SampleLocationListener implements LocationListener {
+	private class SampleLocationListener implements LocationListener, GpsStatus.Listener {
+		private int mFix = 0;
+		private int mSat = 0;
+		private int mSat2 = 0;
+		private int mStatus = 0;
+		private String mProvider = "";
+		private GpsStatus mGpsStatus;
+
+		public SampleLocationListener() {
+			super();
+			mProvider = mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ? GPS : OFF;
+		}
 
 		@Override
 		public void onLocationChanged(Location location) {
@@ -240,20 +258,53 @@ public class IndicatorManager implements IndicatorConst {
 				mIndicators.put(GPSPROVIDER, location.getProvider());
 				mIndicators.put(GPSSPEED, mDf.formatSpeed2(location.getSpeed()));
 				
-				updateIndicatorViewValues();
+				updateIndicator();
 			}
 		}
 
 		@Override
 		public void onProviderDisabled(String provider) {
+			if(provider.equalsIgnoreCase(LocationManager.GPS_PROVIDER)) {
+				mProvider = OFF;
+				updateIndicator();
+			}
 		}
 
 		@Override
 		public void onProviderEnabled(String provider) {
+			if(provider.equalsIgnoreCase(LocationManager.GPS_PROVIDER)) {
+				mProvider = GPS;
+				updateIndicator();
+			}
 		}
 
 		@Override
 		public void onStatusChanged(String provider, int status, Bundle extras) {
+			if(provider.equalsIgnoreCase(LocationManager.GPS_PROVIDER)) {
+				mSat = extras.getInt("satellites", 0);
+				mStatus = status;
+				updateIndicator();
+			}
+		}
+
+		@Override
+		public void onGpsStatusChanged(int event) {
+			mGpsStatus = mLocationManager.getGpsStatus(mGpsStatus);
+			mFix = 0;
+			Iterator<GpsSatellite> it = mGpsStatus.getSatellites().iterator();
+			while(it.hasNext()) {
+				if(it.next().usedInFix())
+					mFix++;
+			}
+			updateIndicator();
+		}
+		
+		private void updateIndicator() {
+			if(mProvider.equalsIgnoreCase(GPS))
+				mIndicators.put(GPSPROVIDER, String.format(Locale.UK, "%s %d %d/%d", mProvider, mStatus, mSat, mFix));
+			else
+				mIndicators.put(GPSPROVIDER, mProvider);
+			updateIndicatorViewValues();
 		}
 		
 	}
