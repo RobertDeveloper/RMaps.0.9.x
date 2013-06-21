@@ -1,18 +1,24 @@
 package com.robert.maps.applib.kml.XMLparser;
 
+import java.util.HashMap;
+
 import org.andnav.osm.util.GeoPoint;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
+import android.database.Cursor;
+
 import com.robert.maps.applib.kml.PoiManager;
 import com.robert.maps.applib.kml.PoiPoint;
+import com.robert.maps.applib.kml.constants.PoiConstants;
 
 public class GpxPoiParser extends DefaultHandler {
 	private StringBuilder builder;
 	private PoiManager mPoiManager;
 	private PoiPoint mPoiPoint;
 	private int mCategoryId;
+	private HashMap<String, Integer> mCategoryMap;
 	
 	private static final String WPT = "wpt";
 	private static final String LAT = "lat";
@@ -29,6 +35,17 @@ public class GpxPoiParser extends DefaultHandler {
 		mPoiManager = poiManager;
 		mCategoryId = CategoryId;
 		mPoiPoint = new PoiPoint();
+		
+		mCategoryMap = new HashMap<String, Integer>();
+		Cursor c = mPoiManager.getGeoDatabase().getPoiCategoryListCursor();
+		if(c != null) {
+			if(c.moveToFirst()) {
+				do {
+					mCategoryMap.put(c.getString(0), c.getInt(2));
+				} while(c.moveToNext());
+			}
+			c.close();
+		}
 	}
 
 	@Override
@@ -45,6 +62,14 @@ public class GpxPoiParser extends DefaultHandler {
 			mPoiPoint = new PoiPoint();
 			mPoiPoint.CategoryId = mCategoryId;
 			mPoiPoint.GeoPoint = GeoPoint.from2DoubleString(attributes.getValue(LAT), attributes.getValue(LON));
+		} else if(localName.equalsIgnoreCase("categoryid") && mPoiPoint != null) {
+			final String attrName = attributes.getValue(PoiConstants.NAME);
+			if(mCategoryMap.containsKey(attrName)) {
+				mPoiPoint.CategoryId = mCategoryMap.get(attrName);
+			} else {
+				mPoiPoint.CategoryId = (int) mPoiManager.getGeoDatabase().addPoiCategory(attrName, 0, Integer.parseInt(attributes.getValue(PoiConstants.ICONID)));
+				mCategoryMap.put(attrName, mPoiPoint.CategoryId);
+			}
 		}
 		super.startElement(uri, localName, name, attributes);
 	}
