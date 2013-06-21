@@ -23,10 +23,12 @@ public class MapTileMemCache {
 	}
 
 	public synchronized Bitmap getMapTile(final String aTileURLString) {
-		final Bitmap bmpHard = this.mHardCachedTiles.get(aTileURLString);
-		if(bmpHard != null){
-			if(!bmpHard.isRecycled()) {
-				return bmpHard;
+		if(aTileURLString != null) {
+			final Bitmap bmpHard = this.mHardCachedTiles.get(aTileURLString);
+			if(bmpHard != null){
+				if(!bmpHard.isRecycled()) {
+					return bmpHard;
+				}
 			}
 		}
 		return null;
