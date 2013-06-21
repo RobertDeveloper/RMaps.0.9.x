@@ -2,6 +2,7 @@ package com.robert.maps.applib;
 
 import java.io.File;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Locale;
 
 import javax.xml.parsers.SAXParser;
@@ -17,6 +18,7 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceGroup;
@@ -31,13 +33,31 @@ import com.robert.maps.applib.utils.CheckBoxPreferenceExt;
 import com.robert.maps.applib.utils.Ut;
 
 public class MainPreferences extends PreferenceActivity implements OnSharedPreferenceChangeListener, PrefConstants {
-
+	private static String PNG = ".png";
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		registerForContextMenu(getListView());
 
 		final SharedPreferences aPref = PreferenceManager.getDefaultSharedPreferences(this);
+		
+		final ArrayList<String> arrEntry = new ArrayList<String>();
+		arrEntry.add("Default");
+		final ArrayList<String> arrEntryValues = new ArrayList<String>();
+		arrEntryValues.add("");
+		final File folderCursors = Ut.getRMapsMainDir(this, "icons/cursors");
+		if(folderCursors != null) {
+			File[] files = folderCursors.listFiles();
+			if(files != null) {
+				for (int i = 0; i < files.length; i++) {
+					if(files[i].getName().toLowerCase().endsWith(PNG)) {
+						arrEntry.add(files[i].getName());
+						arrEntryValues.add(files[i].getName());
+					}
+				}
+			}
+		}
 		
 		final String sdf = aPref.getString("pref_dir_main", "NO");
 		if(sdf.equalsIgnoreCase("NO")) {
@@ -51,6 +71,11 @@ public class MainPreferences extends PreferenceActivity implements OnSharedPrefe
 		
 		// Load the preferences from an XML resource
 		addPreferencesFromResource(R.xml.mainpreferences);
+
+		((ListPreference) findPreference("pref_person_icon")).setEntries((String[])arrEntry.toArray(new String[arrEntry.size()]));
+		((ListPreference) findPreference("pref_person_icon")).setEntryValues((String[])arrEntryValues.toArray(new String[arrEntry.size()]));
+		((ListPreference) findPreference("pref_arrow_icon")).setEntries((String[])arrEntry.toArray(new String[arrEntry.size()]));
+		((ListPreference) findPreference("pref_arrow_icon")).setEntryValues((String[])arrEntryValues.toArray(new String[arrEntry.size()]));
 		
 		findPreference("pref_dir_main").setSummary(aPref.getString("pref_dir_main", Ut.getExternalStorageDirectory()+"/rmaps/"));
 		findPreference("pref_dir_maps").setSummary(aPref.getString("pref_dir_maps", Ut.getExternalStorageDirectory()+"/rmaps/maps/"));

@@ -21,6 +21,7 @@ import android.widget.TextView;
 
 import com.robert.maps.applib.R;
 import com.robert.maps.applib.utils.DistanceFormatter;
+import com.robert.maps.applib.utils.IconManager;
 import com.robert.maps.applib.view.TileView;
 import com.robert.maps.applib.view.TileView.OpenStreetMapViewProjection;
 import com.robert.maps.applib.view.TileViewOverlay;
@@ -116,26 +117,14 @@ public class MyLocationOverlay extends TileViewOverlay {
 
 	private boolean getPersonIcon(){
 		if(PERSON_ICON2 == null)
-			try {
-				this.PERSON_ICON2 = BitmapFactory.decodeResource(mCtx.getResources(), R.drawable.person);
-			} catch (Exception e) {
-				PERSON_ICON2 = null;
-			} catch (OutOfMemoryError e) {
-				PERSON_ICON2 = null;
-			}
+			this.PERSON_ICON2 = IconManager.getInstance(mCtx).getLocationIcon();
 
 		return PERSON_ICON2 == null ? false : true;
 	}
 
 	private boolean getArrowIcon(){
 		if(mArrow == null)
-			try {
-				this.mArrow = BitmapFactory.decodeResource(mCtx.getResources(), R.drawable.arrow);
-			} catch (Exception e) {
-				mArrow = null;
-			} catch (OutOfMemoryError e) {
-				mArrow = null;
-			}
+			this.mArrow = IconManager.getInstance(mCtx).getArrowIcon();
 
 		return mArrow == null ? false : true;
 	}
