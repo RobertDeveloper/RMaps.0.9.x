@@ -116,9 +116,7 @@ public class TileProviderSQLITEDB extends TileProviderFileBase {
 				Ut.d("IndexTask: maxzoom = "+maxzoom);
 
 				CommitIndex(mMapID, fileLength, fileModified, minzoom, maxzoom);
-				Ut.d("IndexTask: CommitIndex = OK");
-			} catch (SQLiteException e) {
-				Ut.dd("Error during update min max zoom");
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 

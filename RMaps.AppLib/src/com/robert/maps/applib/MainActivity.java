@@ -637,8 +637,13 @@ public class MainActivity extends Activity {
 		
 		try {
 			final TextView leftText = (TextView) findViewById(R.id.left_text);
-			if(leftText != null)
-				leftText.setText(mMap.getTileSource().NAME);
+			if(leftText != null) {
+				String overlayName = "";
+				if(mMap.getTileSource() != null && mMap.getTileSource().MAP_TYPE != TileSourceBase.MIXMAP_PAIR)
+					if(mMap.getTileSource().getTileSourceBaseOverlay() != null)
+						overlayName = " / " + mMap.getTileSource().getTileSourceBaseOverlay().NAME;
+				leftText.setText(mMap.getTileSource().NAME + overlayName);
+			}
 			
 			final TextView gpsText = (TextView) findViewById(R.id.gps_text);
 			if(gpsText != null){

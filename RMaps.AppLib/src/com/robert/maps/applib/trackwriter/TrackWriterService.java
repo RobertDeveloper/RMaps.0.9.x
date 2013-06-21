@@ -52,7 +52,7 @@ public class TrackWriterService extends Service implements OpenStreetMapConstant
     final SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
     private TrackStatHelper mTrackStat = new TrackStatHelper();
     private DistanceFormatter mDf;
-    private String mLogFileName;
+//    private String mLogFileName;
 
 	protected LocationManager mLocationManager;
 	protected SampleLocationListener mLocationListener;
@@ -99,60 +99,60 @@ public class TrackWriterService extends Service implements OpenStreetMapConstant
         }
     };
 
-    public class CrashReportHandler implements UncaughtExceptionHandler {
-
-		@Override
-		public void uncaughtException(Thread thread, Throwable ex) {
-			StringWriter stackTrace=new StringWriter();
-			ex.printStackTrace(new PrintWriter(stackTrace));
-
-			appendLog(stackTrace.toString());
-			Process.killProcess(Process.myPid());
-			System.exit(10);
-		}
-    	
-    }
-    
-    public void appendLog(String text)
-    {       
-       File logFile = new File(mLogFileName);
-       if (!logFile.exists())
-       {
-          try
-          {
-             logFile.createNewFile();
-          } 
-          catch (IOException e)
-          {
-             e.printStackTrace();
-          }
-       }
-       try
-       {
-          //BufferedWriter for performance, true to set append to file flag
-          BufferedWriter buf = new BufferedWriter(new FileWriter(logFile, true)); 
-          buf.append(sdf.format(new Date(System.currentTimeMillis()))+" "+text);
-          buf.newLine();
-          buf.close();
-       }
-       catch (IOException e)
-       {
-          e.printStackTrace();
-       }
-    }
+//    public class CrashReportHandler implements UncaughtExceptionHandler {
+//
+//		@Override
+//		public void uncaughtException(Thread thread, Throwable ex) {
+//			StringWriter stackTrace=new StringWriter();
+//			ex.printStackTrace(new PrintWriter(stackTrace));
+//
+//			appendLog(stackTrace.toString());
+//			Process.killProcess(Process.myPid());
+//			System.exit(10);
+//		}
+//    	
+//    }
+//    
+//    public void appendLog(String text)
+//    {       
+//       File logFile = new File(mLogFileName);
+//       if (!logFile.exists())
+//       {
+//          try
+//          {
+//             logFile.createNewFile();
+//          } 
+//          catch (IOException e)
+//          {
+//             e.printStackTrace();
+//          }
+//       }
+//       try
+//       {
+//          //BufferedWriter for performance, true to set append to file flag
+//          BufferedWriter buf = new BufferedWriter(new FileWriter(logFile, true)); 
+//          buf.append(sdf.format(new Date(System.currentTimeMillis()))+" "+text);
+//          buf.newLine();
+//          buf.close();
+//       }
+//       catch (IOException e)
+//       {
+//          e.printStackTrace();
+//       }
+//    }
     
     @Override
 	public void onCreate() {
 		super.onCreate();
 		
-		mLogFileName = Ut.getRMapsMainDir(this, "").getAbsolutePath()+"/trackwriter.log";
-		
-		Thread.setDefaultUncaughtExceptionHandler(new CrashReportHandler());
+//		mLogFileName = Ut.getRMapsMainDir(this, "").getAbsolutePath()+"/trackwriter.log";
+//		
+//		Thread.setDefaultUncaughtExceptionHandler(new CrashReportHandler());
 		
 		sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
 		sdf.applyPattern("HH:mm:ss");
 		
-		appendLog("onCreate");
+//		appendLog("onCreate");
 		
 		mDf = new DistanceFormatter(this);
 
@@ -194,7 +194,7 @@ public class TrackWriterService extends Service implements OpenStreetMapConstant
 	}
 
 	private void handleCommand(Intent intent) {
-		appendLog("handleCommand");
+//		appendLog("handleCommand");
 		final File folder = Ut.getRMapsMainDir(this, "data");
 		if(folder.canRead()){
 			try {
@@ -217,7 +217,7 @@ public class TrackWriterService extends Service implements OpenStreetMapConstant
 		final int minDistance = Integer.parseInt(pref.getString("pref_trackwriter_mindistance", "10"));
 
 		mLocationListener = new SampleLocationListener();
-		appendLog("requestLocationUpdates minTime="+minTime+" minDistance="+minDistance);
+//		appendLog("requestLocationUpdates minTime="+minTime+" minDistance="+minDistance);
 		getLocationManager().requestLocationUpdates(GPS, minTime, minDistance, this.mLocationListener);
 		
 		showNotification();
@@ -244,7 +244,7 @@ public class TrackWriterService extends Service implements OpenStreetMapConstant
 
 	@Override
 	public void onDestroy() {
-		appendLog("onDestroy");
+//		appendLog("onDestroy");
 		stopForegroundCompat(R.string.remote_service_started);
 
 		if(mLocationListener != null)
@@ -267,7 +267,7 @@ public class TrackWriterService extends Service implements OpenStreetMapConstant
 	private class SampleLocationListener implements LocationListener {
 		public void onLocationChanged(final Location loc) {
 			if (loc != null){
-				appendLog("onLocationChanged "+loc.toString());
+//				appendLog("onLocationChanged "+loc.toString());
 				
 				addPoint(loc.getLatitude(), loc.getLongitude(), loc.getAltitude(), loc.getSpeed(), loc.getTime());
 				
@@ -286,18 +286,18 @@ public class TrackWriterService extends Service implements OpenStreetMapConstant
 		}
 
 		public void onStatusChanged(String a, int status, Bundle b) {
-			appendLog("onStatusChanged provider="+a+" status="
-					+ (status == LocationProvider.OUT_OF_SERVICE ? "OUT_OF_SERVICE" : status == LocationProvider.TEMPORARILY_UNAVAILABLE ? "TEMPORARILY_UNAVAILABLE" : status == LocationProvider.AVAILABLE ? "AVAILABLE" : "UNKNOWN")
-					+" satellites="+b.getInt("satellites", -1)
-					);
+//			appendLog("onStatusChanged provider="+a+" status="
+//					+ (status == LocationProvider.OUT_OF_SERVICE ? "OUT_OF_SERVICE" : status == LocationProvider.TEMPORARILY_UNAVAILABLE ? "TEMPORARILY_UNAVAILABLE" : status == LocationProvider.AVAILABLE ? "AVAILABLE" : "UNKNOWN")
+//					+" satellites="+b.getInt("satellites", -1)
+//					);
 		}
 
 		public void onProviderEnabled(String a) {
-			appendLog("onProviderEnabled provider="+a);
+//			appendLog("onProviderEnabled provider="+a);
 		}
 
 		public void onProviderDisabled(String a) {
-			appendLog("onProviderDisabled provider="+a);
+//			appendLog("onProviderDisabled provider="+a);
 		}
 	}
 
