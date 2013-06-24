@@ -11,7 +11,12 @@
                 android:icon="@android:drawable/ic_menu_search"
                 android:title="@string/menu_search">
             </item>
-            <item android:id="@+id/menu_show_dashboard" android:title="@string/menu_show_dashboard" /><item
+            <item
+                android:id="@+id/compass"
+                android:icon="@android:drawable/ic_menu_compass"
+                android:title="@string/menu_compass">
+            </item>
+            <item
                 android:id="@+id/measure"
                 android:enabled="true"
                 android:title="@string/menu_measure"
@@ -25,14 +30,12 @@
                 android:id="@+id/findthemap"
                 android:title="@string/menu_findthemap">
             </item>
-            
         </menu>
     </item>
     <item
-        android:id="@+id/compass"
-        android:icon="@android:drawable/ic_menu_compass"
-        android:title="@string/menu_compass">
-    </item>
+        android:id="@+id/menu_show_dashboard"
+        android:icon="@android:drawable/ic_menu_view"
+        android:title="@string/menu_show_dashboard"/>
     <item
         android:id="@+id/poilist"
         android:icon="@android:drawable/ic_menu_myplaces"
@@ -63,7 +66,9 @@
     </item>
     <item
         android:id="@+id/downloadprepared"
-        android:title="@string/menu_downloadprepared" android:enabled="true" android:visible="true">
+        android:enabled="true"
+        android:title="@string/menu_downloadprepared"
+        android:visible="true">
     </item>
     <item
         android:id="@+id/tracks"
