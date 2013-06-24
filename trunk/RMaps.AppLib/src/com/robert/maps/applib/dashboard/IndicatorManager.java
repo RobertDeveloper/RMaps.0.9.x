@@ -187,6 +187,7 @@ public class IndicatorManager implements IndicatorConst {
 	
 	public void Resume(Context ctx) {
 		((LocationManager) ctx.getSystemService(Context.LOCATION_SERVICE)).requestLocationUpdates(GPS, 0, 0, mLocationListener);
+		mLocationListener.onGpsStatusChanged(0);
 		ctx.bindService(new Intent(IRemoteService.class.getName()), mConnection, 0 /*Context.BIND_AUTO_CREATE*/);
 	}
 	
