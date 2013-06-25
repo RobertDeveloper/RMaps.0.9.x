@@ -172,12 +172,22 @@ public class GeoPoint implements MathConstants, GeoConstants {
 		return (double) res[1] < 0.0 ? 360.0 + res[1] : res[1];
 	}
 
+	public double bearingFrom360(final double lat, final double lon) {
+		final float res[] = new float[2];
+		computeDistanceAndBearing(lat, lon, this.mLatitudeE6 / 1E6, this.mLongitudeE6 / 1E6, res);
+		return (double) res[1] < 0.0 ? 360.0 + res[1] : res[1];
+	}
+
 	public double bearingTo(final GeoPoint other) {
 		return bearingTo(other.mLatitudeE6 / 1E6, other.mLongitudeE6 / 1E6);
 	}
 
 	public double bearingTo360(final GeoPoint other) {
 		return bearingTo360(other.mLatitudeE6 / 1E6, other.mLongitudeE6 / 1E6);
+	}
+
+	public double bearingFrom360(final GeoPoint other) {
+		return bearingFrom360(other.mLatitudeE6 / 1E6, other.mLongitudeE6 / 1E6);
 	}
 
 	private static void computeDistanceAndBearing(double lat1, double lon1, double lat2, double lon2, float[] results) {
