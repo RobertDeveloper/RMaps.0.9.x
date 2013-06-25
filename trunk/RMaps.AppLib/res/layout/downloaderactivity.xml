@@ -39,6 +39,16 @@
             android:textAppearance="?android:attr/textAppearanceSmall" />
 
         <TextView
+            android:id="@+id/textError"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="6dp"
+            android:layout_toRightOf="@+id/textTileCnt"
+            android:clickable="true"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:visibility="visible" />
+
+        <TextView
             android:id="@+id/textTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

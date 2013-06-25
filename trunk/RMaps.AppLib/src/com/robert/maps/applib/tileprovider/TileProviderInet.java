@@ -134,6 +134,7 @@ public class TileProviderInet extends TileProviderBase {
 						
 						SendMessageSuccess();
 					} catch (Exception e) {
+						e.printStackTrace();
 						SendMessageFail();
 					} catch (OutOfMemoryError e) {
 						SendMessageFail();

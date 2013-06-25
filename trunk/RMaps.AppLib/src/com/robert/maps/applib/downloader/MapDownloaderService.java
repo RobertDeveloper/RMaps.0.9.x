@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -60,6 +61,7 @@ public class MapDownloaderService extends Service {
 	final RemoteCallbackList<IDownloaderCallback> mCallbacks = new RemoteCallbackList<IDownloaderCallback>();
 	private int mTileCntTotal = 0, mTileCnt = 0, mErrorCnt = 0;
 	private long mStartTime = 0;
+	private String mLogFileName;
 	
 	private final IRemoteService.Stub mBinder = new IRemoteService.Stub() {
 		public void registerCallback(IDownloaderCallback cb) {
@@ -83,7 +85,11 @@ public class MapDownloaderService extends Service {
 	@Override
 	public void onCreate() {
 		super.onCreate();
-		Ut.e("onCreate");
+		
+		mLogFileName = Ut.getRMapsMainDir(this, "").getAbsolutePath()+"/cache/mapdownloaderlog.txt";
+		final File file = new File(mLogFileName);
+		if(file.exists())
+			file.delete();
 		
 		mNM = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 	    try {
@@ -226,8 +232,6 @@ public class MapDownloaderService extends Service {
 
 	@Override
 	public void onDestroy() {
-		Ut.e("downloader.onDestroy");
-		
 		if (mThreadPool != null) {
 			mThreadPool.shutdown();
 			try {
@@ -398,10 +402,16 @@ public class MapDownloaderService extends Service {
 					try {
 						if (mOverwriteFile || mOverwriteTiles || !mOverwriteTiles
 								&& !mMapDatabase.existsTile(tileParam.X, tileParam.Y, tileParam.Z)) {
-							byte[] data = null;
 							
-							in = new BufferedInputStream(new URL(tileParam.TILEURL).openStream(),
-									StreamUtils.IO_BUFFER_SIZE);
+							byte[] data = null;
+							final URL url = new URL(tileParam.TILEURL);
+				        	final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+				            connection.connect();
+
+				            if(connection.getResponseCode() != 200)
+								Ut.appendLog(mLogFileName, String.format("%tc %s\n	Response: %d %s", System.currentTimeMillis(), tileParam.TILEURL, connection.getResponseCode(), connection.getResponseMessage()));
+
+							in = new BufferedInputStream(url.openStream(), StreamUtils.IO_BUFFER_SIZE);
 							
 							final ByteArrayOutputStream dataStream = new ByteArrayOutputStream();
 							out = new BufferedOutputStream(dataStream, StreamUtils.IO_BUFFER_SIZE);
@@ -421,9 +431,12 @@ public class MapDownloaderService extends Service {
 						if (mHandler != null)
 							Message.obtain(mHandler, R.id.tile_done, tileParam).sendToTarget();
 					} catch (Exception e) {
+						e.printStackTrace();
+						Ut.appendLog(mLogFileName, String.format("%tc %s\n	Error: %s", System.currentTimeMillis(), tileParam.TILEURL, e.getMessage()));
 						if (mHandler != null)
 							Message.obtain(mHandler, R.id.tile_error, tileParam).sendToTarget();
 					} catch (OutOfMemoryError e) {
+						Ut.appendLog(mLogFileName, String.format("%tc %s\n	Error: %s", System.currentTimeMillis(), tileParam.TILEURL, e.getMessage()));
 						if (mHandler != null)
 							Message.obtain(mHandler, R.id.tile_error, tileParam).sendToTarget();
 						System.gc();

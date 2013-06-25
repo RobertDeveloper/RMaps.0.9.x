@@ -113,33 +113,6 @@ public class TrackWriterService extends Service implements OpenStreetMapConstant
 //    	
 //    }
 //    
-//    public void appendLog(String text)
-//    {       
-//       File logFile = new File(mLogFileName);
-//       if (!logFile.exists())
-//       {
-//          try
-//          {
-//             logFile.createNewFile();
-//          } 
-//          catch (IOException e)
-//          {
-//             e.printStackTrace();
-//          }
-//       }
-//       try
-//       {
-//          //BufferedWriter for performance, true to set append to file flag
-//          BufferedWriter buf = new BufferedWriter(new FileWriter(logFile, true)); 
-//          buf.append(sdf.format(new Date(System.currentTimeMillis()))+" "+text);
-//          buf.newLine();
-//          buf.close();
-//       }
-//       catch (IOException e)
-//       {
-//          e.printStackTrace();
-//       }
-//    }
     
     @Override
 	public void onCreate() {
