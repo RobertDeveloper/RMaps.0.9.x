@@ -684,6 +684,7 @@ public class MainActivity extends Activity {
 		if(uiState.getBoolean("show_dashboard", true) && mIndicatorManager == null) {
 	        mIndicatorManager = new IndicatorManager(this);
 	        mIndicatorManager.setCenter(mMap.getMapCenter());
+	        mIndicatorManager.setLocation(mMyLocationOverlay.getLastLocation());
 	        mIndicatorManager.setTargetLocation(mMyLocationOverlay.getTargetLocation());
 		}
 		
@@ -905,6 +906,8 @@ public class MainActivity extends Activity {
 				mIndicatorManager.setCenter(mMap.getMapCenter());
 				mIndicatorManager.setMapName(mTileSource.NAME);
 				mIndicatorManager.setZoom(mMap.getZoomLevel());
+		        mIndicatorManager.setLocation(mMyLocationOverlay.getLastLocation());
+		        mIndicatorManager.setTargetLocation(mMyLocationOverlay.getTargetLocation());
 			} else {
 				mIndicatorManager.Dismiss(this);
 				mIndicatorManager = null;

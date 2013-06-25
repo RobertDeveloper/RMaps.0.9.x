@@ -431,7 +431,6 @@ public class MapDownloaderService extends Service {
 						if (mHandler != null)
 							Message.obtain(mHandler, R.id.tile_done, tileParam).sendToTarget();
 					} catch (Exception e) {
-						e.printStackTrace();
 						Ut.appendLog(mLogFileName, String.format("%tc %s\n	Error: %s", System.currentTimeMillis(), tileParam.TILEURL, e.getMessage()));
 						if (mHandler != null)
 							Message.obtain(mHandler, R.id.tile_error, tileParam).sendToTarget();
