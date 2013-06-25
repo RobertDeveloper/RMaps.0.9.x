@@ -10,6 +10,8 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.graphics.Paint;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -46,6 +48,7 @@ public class DownloaderActivity extends Activity {
 	IRemoteService mService = null;
 	private ProgressBar mProgress;
 	private TextView mTextVwTileCnt;
+	private TextView mTextVwError;
 	private TextView mTextVwTime;
 	private int mTileCntTotal;
 	private long mStartTime;
@@ -69,6 +72,9 @@ public class DownloaderActivity extends Activity {
 		mProgress = (ProgressBar) findViewById(R.id.progress);
 		mTextVwTileCnt = (TextView) findViewById(R.id.textTileCnt);
 		mTextVwTime = (TextView) findViewById(R.id.textTime);
+		mTextVwError = (TextView) findViewById(R.id.textError);
+		mTextVwError.setTextColor(mTextVwError.getLinkTextColors());
+		mTextVwError.setPaintFlags(mTextVwError.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
 		
 		mDownloadedAreaOverlay = new DownloadedAreaOverlay();
 		mMap.getOverlays().add(mDownloadedAreaOverlay);
@@ -85,6 +91,15 @@ public class DownloaderActivity extends Activity {
 			
 			public void onClick(View v) {
 				doOpenMap();
+			}
+		});
+		
+		mTextVwError.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				final File file = new File(Ut.getRMapsMainDir(DownloaderActivity.this, "").getAbsolutePath()+"/cache/mapdownloaderlog.txt");
+				final Intent intent = new Intent(Intent.ACTION_VIEW).setDataAndType(Uri.fromFile(file), "text/plain");
+				startActivity(intent);
 			}
 		});
 
@@ -169,6 +184,7 @@ public class DownloaderActivity extends Activity {
 				mTextVwTime.setText(Ut.formatTime(System.currentTimeMillis() - mStartTime));
 				mDownloadedAreaOverlay.downloadDone();
 				mMap.invalidate(); //postInvalidate();
+				
 			} else if(msg.what == R.id.download_start) {
 				Bundle b = (Bundle) msg.obj;
 				mTileCntTotal = b.getInt(CNT);
@@ -206,15 +222,17 @@ public class DownloaderActivity extends Activity {
 				final int tileCnt = ((Bundle) msg.obj).getInt(CNT);
 				final int errorCnt = ((Bundle) msg.obj).getInt(ERRCNT);
 				mProgress.setProgress(tileCnt);
+				
+				mTextVwTileCnt.setText(String.format("%d/%d", tileCnt, mTileCntTotal));
 				if(errorCnt > 0)
-					mTextVwTileCnt.setText(String.format("%d/%d Errors: %d", tileCnt, mTileCntTotal, errorCnt));
-				else
-					mTextVwTileCnt.setText(String.format("%d/%d", tileCnt, mTileCntTotal));
+					mTextVwError.setText(String.format("ERRORS: %d", errorCnt));
+				
 				final long time = System.currentTimeMillis();
 				if(time - mStartTime > 5 * 1000) 
 					mTextVwTime.setText(String.format("%s / %s", Ut.formatTime(time - mStartTime), Ut.formatTime((long)((double)(time - mStartTime) / (1.0f * tileCnt / mTileCntTotal))) ));
 				else
 					mTextVwTime.setText(Ut.formatTime(time - mStartTime));
+				
 				mMap.invalidate(); //postInvalidate();
 			}
 		}

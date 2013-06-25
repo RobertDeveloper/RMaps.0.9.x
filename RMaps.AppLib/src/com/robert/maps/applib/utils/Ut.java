@@ -1,7 +1,9 @@
 package com.robert.maps.applib.utils;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -25,7 +27,6 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.location.Location;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -526,4 +527,33 @@ public class Ut implements OpenStreetMapConstants, OpenStreetMapViewConstants {
             return "";
         }
     }
+
+    public static void appendLog(final String fileName, final String text)
+    {       
+       final File logFile = new File(fileName);
+       if (!logFile.exists())
+       {
+          try
+          {
+             logFile.createNewFile();
+          } 
+          catch (IOException e)
+          {
+             e.printStackTrace();
+          }
+       }
+       try
+       {
+          //BufferedWriter for performance, true to set append to file flag
+          BufferedWriter buf = new BufferedWriter(new FileWriter(logFile, true)); 
+          buf.append(text);
+          buf.newLine();
+          buf.close();
+       }
+       catch (IOException e)
+       {
+          e.printStackTrace();
+       }
+    }
+
 }
