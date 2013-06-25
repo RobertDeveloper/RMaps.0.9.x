@@ -133,7 +133,7 @@ public class IndicatorManager implements IndicatorConst {
 		putIndicator(TRMOVETIME, res.getString(R.string.moving_time), EMPTY);
 		putIndicator(TRAVGMOVESPEED, res.getString(R.string.avg_moving_speed), mDf.formatSpeed2(0));
 		//Target point 
-		putIndicator(TARGETDISTANCE, res.getString(R.string.dashboard_title_target_distance), mDf.formatSpeed2(0));
+		putIndicator(TARGETDISTANCE, res.getString(R.string.dashboard_title_target_distance), mDf.formatDistance2(0));
 		putIndicator(TARGETBEARING, res.getString(R.string.dashboard_title_target_bearing), EMPTY);
 	}
 	
