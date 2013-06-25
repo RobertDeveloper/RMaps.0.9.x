@@ -462,7 +462,7 @@ public class IndicatorManager implements IndicatorConst {
 	private void updateTargetIndicators() {
 		if(mLocation != null && mTargetLocation != null) {
 			mIndicators.put(TARGETDISTANCE, mDf.formatDistance2(mTargetLocation.distanceTo(mLocation.getLatitude(), mLocation.getLongitude())));
-			mIndicators.put(TARGETBEARING, String.format(Locale.UK, "%.1f°", mTargetLocation.bearingTo360(mLocation.getLatitude(), mLocation.getLongitude())));
+			mIndicators.put(TARGETBEARING, String.format(Locale.UK, "%.1f°", mTargetLocation.bearingFrom360(mLocation.getLatitude(), mLocation.getLongitude())));
 		} else {
 			mIndicators.put(TARGETDISTANCE, mDf.formatDistance2(0));
 			mIndicators.put(TARGETBEARING, EMPTY);
