@@ -35,4 +35,7 @@ public interface IndicatorConst {
 	public static final String TRAVGSPEED = "travgspeed";
 	public static final String TRMOVETIME = "trmovetime";
 	public static final String TRAVGMOVESPEED = "travgmovespeed";
+
+	public static final String TARGETDISTANCE = "targetdistance";
+	public static final String TARGETBEARING = "targetbearing";
 }

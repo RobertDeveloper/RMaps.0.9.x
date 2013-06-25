@@ -676,6 +676,7 @@ public class MainActivity extends Activity {
 			mMapId = uiState.getString(MAPNAME, TileSource.MAPNIK);
 		mOverlayId = uiState.getString("OverlayID", "");
 		mShowOverlay = uiState.getBoolean("ShowOverlay", true);
+		mMyLocationOverlay.setTargetLocation(GeoPoint.fromDoubleStringOrNull(uiState.getString("targetlocation", "")));
 		
 		setTileSource(mMapId, mOverlayId, mShowOverlay);
 		mMapId = null;
@@ -683,6 +684,7 @@ public class MainActivity extends Activity {
 		if(uiState.getBoolean("show_dashboard", true) && mIndicatorManager == null) {
 	        mIndicatorManager = new IndicatorManager(this);
 	        mIndicatorManager.setCenter(mMap.getMapCenter());
+	        mIndicatorManager.setTargetLocation(mMyLocationOverlay.getTargetLocation());
 		}
 		
  		mMap.getController().setZoom(uiState.getInt("ZoomLevel", 0));
@@ -755,6 +757,7 @@ public class MainActivity extends Activity {
 			editor.putInt("curShowPoiId", mPoiOverlay.getTapIndex());
 		mSearchResultOverlay.toPref(editor);
 		editor.putBoolean("show_dashboard", mIndicatorManager == null ? false : true);
+		editor.putString("targetlocation", mMyLocationOverlay.getTargetLocation() == null ? "" : mMyLocationOverlay.getTargetLocation().toDoubleString());
 		editor.commit();
 		
 		uiState = getSharedPreferences("MapName", Activity.MODE_PRIVATE);
@@ -1165,6 +1168,9 @@ public class MainActivity extends Activity {
 				} else {
 					menu.add(0, R.id.menu_addpoi, 0, getText(R.string.menu_addpoi));
 					menu.add(0, R.id.menu_i_am_here, 0, getText(R.string.menu_i_am_here));
+					menu.add(0, R.id.menu_add_target_point, 0, getText(R.string.menu_add_target_point));
+					if(mMyLocationOverlay.getTargetLocation() != null)
+						menu.add(0, R.id.menu_remove_target_point, 0, getText(R.string.menu_remove_target_point));
 				}
 			}
 		}
@@ -1201,6 +1207,19 @@ public class MainActivity extends Activity {
 				final IndicatorView iv = info.IndicatorView;
 				mIndicatorManager.removeIndicatorView(this, iv);
 				mMap.invalidate(); //postInvalidate();
+				
+			} else if (item.getItemId() == R.id.menu_add_target_point) {
+				TileView.PoiMenuInfo info = (TileView.PoiMenuInfo) item.getMenuInfo();
+				mMyLocationOverlay.setTargetLocation(info.EventGeoPoint);
+				if(mIndicatorManager != null)
+					mIndicatorManager.setTargetLocation(info.EventGeoPoint);
+				mMap.invalidate();
+				
+			} else if (item.getItemId() == R.id.menu_remove_target_point) {
+				mMyLocationOverlay.setTargetLocation(null);
+				if(mIndicatorManager != null)
+					mIndicatorManager.setTargetLocation(null);
+				mMap.invalidate();
 				
 			} else if (item.getItemId() == R.id.menu_dashboard_add) {
 				final IndicatorViewMenuInfo info = (IndicatorViewMenuInfo) item.getMenuInfo();
@@ -1251,6 +1270,8 @@ public class MainActivity extends Activity {
 
 				mMyLocationOverlay.setLocation(loc);
 				mSearchResultOverlay.setLocation(loc);
+				if(mIndicatorManager != null)
+					mIndicatorManager.setLocation(loc);
 				
 				mMap.invalidate(); //postInvalidate();
 				

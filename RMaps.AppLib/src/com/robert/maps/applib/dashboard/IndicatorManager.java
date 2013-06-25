@@ -67,6 +67,8 @@ public class IndicatorManager implements IndicatorConst {
 	private final SimpleDateFormat sdfDelta;
 	private String mTemplateFileName;
 	private LocationManager mLocationManager;
+	private GeoPoint mTargetLocation;
+	private Location mLocation;
 
     IRemoteService mService = null;
     private ServiceConnection mConnection;
@@ -130,6 +132,9 @@ public class IndicatorManager implements IndicatorConst {
 		putIndicator(TRAVGSPEED, res.getString(R.string.avg_speed), mDf.formatSpeed2(0));
 		putIndicator(TRMOVETIME, res.getString(R.string.moving_time), EMPTY);
 		putIndicator(TRAVGMOVESPEED, res.getString(R.string.avg_moving_speed), mDf.formatSpeed2(0));
+		//Target point 
+		putIndicator(TARGETDISTANCE, res.getString(R.string.dashboard_title_target_distance), mDf.formatSpeed2(0));
+		putIndicator(TARGETBEARING, res.getString(R.string.dashboard_title_target_bearing), EMPTY);
 	}
 	
 	private void putIndicator(String tag, String title, Object initValue) {
@@ -178,6 +183,16 @@ public class IndicatorManager implements IndicatorConst {
 		mIndicators.put(MAPNAME, name);
 		
 		updateIndicatorViewValues();
+	}
+	
+	public void setTargetLocation(final GeoPoint geo) {
+		mTargetLocation = geo;
+		updateTargetIndicators();
+	}
+	
+	public void setLocation(final Location loc) {
+		mLocation = loc;
+		updateTargetIndicators();
 	}
 	
 	public void Pause(Context ctx) {
@@ -249,6 +264,8 @@ public class IndicatorManager implements IndicatorConst {
 
 		@Override
 		public void onLocationChanged(Location location) {
+			mLocation = location;
+			
 			if(location != null) {
 				mIndicators.put(GPSACCURACY, mDf.formatDistance2(location.getAccuracy()));
 				mIndicators.put(GPSELEV, mDf.formatDistance2(location.getAltitude()));
@@ -261,6 +278,8 @@ public class IndicatorManager implements IndicatorConst {
 				
 				updateIndicator();
 			}
+			
+			updateTargetIndicators();
 		}
 
 		@Override
@@ -438,6 +457,18 @@ public class IndicatorManager implements IndicatorConst {
 		}
 			
 		ll.addView(addIndicatorView(ctx, R.layout.indicator_simple, tag, EMPTY, EMPTY), ll.getChildCount(), new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT, 1));
+	}
+	
+	private void updateTargetIndicators() {
+		if(mLocation != null && mTargetLocation != null) {
+			mIndicators.put(TARGETDISTANCE, mDf.formatDistance2(mTargetLocation.distanceTo(mLocation.getLatitude(), mLocation.getLongitude())));
+			mIndicators.put(TARGETBEARING, String.format(Locale.UK, "%.1f°", mTargetLocation.bearingTo360(mLocation.getLatitude(), mLocation.getLongitude())));
+		} else {
+			mIndicators.put(TARGETDISTANCE, mDf.formatDistance2(0));
+			mIndicators.put(TARGETBEARING, EMPTY);
+		}
+		
+		updateIndicatorViewValues();
 	}
 	
 	public void updateIndicatorViewValues() {
