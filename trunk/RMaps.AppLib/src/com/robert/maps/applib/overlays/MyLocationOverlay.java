@@ -26,11 +26,6 @@ import com.robert.maps.applib.view.TileView;
 import com.robert.maps.applib.view.TileView.OpenStreetMapViewProjection;
 import com.robert.maps.applib.view.TileViewOverlay;
 
-/**
- *
- * @author Nicolas Gramlich
- *
- */
 public class MyLocationOverlay extends TileViewOverlay {
 	// ===========================================================
 	// Constants
@@ -44,9 +39,11 @@ public class MyLocationOverlay extends TileViewOverlay {
 
 	protected Bitmap PERSON_ICON2 = null;
 	private Bitmap mArrow = null;
+	protected Bitmap TARGET_ICON = null;
 
 	private Context mCtx;
 	protected GeoPoint mLocation;
+	protected GeoPoint mTargetLocation;
 	private float mAccuracy;
 	private int mPrefAccuracy;
 	private float mBearing;
@@ -129,6 +126,13 @@ public class MyLocationOverlay extends TileViewOverlay {
 		return mArrow == null ? false : true;
 	}
 	
+	private boolean getTargetIcon(){
+		if(TARGET_ICON == null)
+			this.TARGET_ICON = IconManager.getInstance(mCtx).getTargetIcon();
+
+		return TARGET_ICON == null ? false : true;
+	}
+
 	public GeoPoint getLastGeoPoint() {
 		return mLocation;
 	}
@@ -150,6 +154,14 @@ public class MyLocationOverlay extends TileViewOverlay {
 		this.mAccuracy = 0;
 		this.mBearing = 0;
 		this.mSpeed = 0;
+	}
+	
+	public void setTargetLocation(final GeoPoint geopoint) {
+		this.mTargetLocation = geopoint;
+	}
+	
+	public GeoPoint getTargetLocation() {
+		return mTargetLocation;
 	}
 
 	// ===========================================================
@@ -203,7 +215,7 @@ public class MyLocationOverlay extends TileViewOverlay {
 				c.drawLine(screenCoords.x, screenCoords.y, osmv.getWidth() / 2, osmv.getHeight() / 2, mPaintLineToGPS);
 				final GeoPoint geo = pj.fromPixels(osmv.getWidth() / 2, osmv.getHeight() / 2);
 				final float dist = this.mLocation.distanceTo(geo);
-				final String lbl = String.format(Locale.UK, "%s %.1f°", mDf.formatDistance(dist), mLocation.bearingTo(geo));
+				final String lbl = String.format(Locale.UK, "%s %.1f°", mDf.formatDistance(dist), mLocation.bearingTo360(geo));
 				
 				mLabelVw.setText(lbl);
 				mLabelVw.measure(0, 0);
@@ -212,6 +224,13 @@ public class MyLocationOverlay extends TileViewOverlay {
 				c.translate(osmv.getWidth() / 2 - (screenCoords.x < osmv.getWidth() / 2 ? 0 : mLabelVw.getMeasuredWidth()), osmv.getHeight() / 2);
 				mLabelVw.draw(c);
 				c.restore();
+			}
+			
+			if(mTargetLocation != null) {
+				final Point screenCoordsTarg = new Point();
+				pj.toPixels(this.mTargetLocation, screenCoordsTarg);
+				
+				c.drawLine(screenCoords.x, screenCoords.y, screenCoordsTarg.x, screenCoordsTarg.y, mPaintLineToGPS);
 			}
 
 			c.save();
@@ -230,6 +249,15 @@ public class MyLocationOverlay extends TileViewOverlay {
 
 		}
 		
+		if(mTargetLocation != null) {
+			final OpenStreetMapViewProjection pj = osmv.getProjection();
+			final Point screenCoordsTarg = new Point();
+			pj.toPixels(this.mTargetLocation, screenCoordsTarg);
+			
+			if(getTargetIcon())
+				c.drawBitmap(TARGET_ICON, screenCoordsTarg.x - (int)(TARGET_ICON.getWidth()/2), screenCoordsTarg.y - (int)(TARGET_ICON.getHeight() / 2), mPaint);
+		}
+
 		final int x = osmv.getWidth() / 2;
 		final int y = osmv.getHeight() / 2;
 

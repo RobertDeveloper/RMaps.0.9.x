@@ -51,6 +51,10 @@
     </item>
     <item android:id="@+id/menu_i_am_here">
     </item>
+    <item android:id="@+id/menu_add_target_point">
+    </item>
+    <item android:id="@+id/menu_remove_target_point">
+    </item>
     <item android:id="@+id/dashboard_area">
     </item>
     <item android:id="@+id/right_area">

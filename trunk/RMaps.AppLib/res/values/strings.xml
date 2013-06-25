@@ -275,6 +275,8 @@ How to and FAQ you can find on http://robertdeveloper.blogspot.com/\n</string>
     <string name="menu_show_dashboard">Dashboard</string>
     <string name="menu_i_am_here">I am here</string>
     <string name="menu_dashboard_add_line">Add line</string>
+    <string name="menu_add_target_point">Add target point</string>
+    <string name="menu_remove_target_point">Remove target point</string>
     <string name="dashboard_message_cant_remove_last_indicator">Can\'t remove last indicator</string>
     
     <string name="dashboard_title_gps_latitude">GPS Latitude</string>
@@ -290,6 +292,9 @@ How to and FAQ you can find on http://robertdeveloper.blogspot.com/\n</string>
     <string name="dashboard_title_map_center_lat">Center Latitude</string>
     <string name="dashboard_title_map_center_lon">Center Longitude</string>
     <string name="dashboard_title_map_zoom">Zoom</string>
+
+    <string name="dashboard_title_target_distance">Distance2Target</string>
+    <string name="dashboard_title_target_bearing">Bearing2Target</string>
     
     <string name="pref_show_autofollow_button">Auto-Follow button</string>
     <string name="pref_show_autofollow_button_summary">Show auto-follow button on the screen</string>

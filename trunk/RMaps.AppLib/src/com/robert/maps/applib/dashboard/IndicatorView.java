@@ -63,6 +63,7 @@ public class IndicatorView extends RelativeLayout implements OnCreateContextMenu
 					|| mIndicatorTag.equalsIgnoreCase(IndicatorConst.TRMAXSPEED)
 					|| mIndicatorTag.equalsIgnoreCase(IndicatorConst.TRAVGSPEED)
 					|| mIndicatorTag.equalsIgnoreCase(IndicatorConst.TRAVGMOVESPEED)
+					|| mIndicatorTag.equalsIgnoreCase(IndicatorConst.TARGETDISTANCE)
 					) {
 				final String[] val = (String[]) indicatorManager.getIndicators().get(mIndicatorTag);
 				((TextView)findViewById(R.id.data_value)).setText(val[0]);

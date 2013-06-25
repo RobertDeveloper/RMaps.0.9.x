@@ -43,6 +43,14 @@ public class IconManager {
 		else
 			return getBitmap(R.drawable.arrow);
 	}
+
+	public Bitmap getTargetIcon() {
+		final Bitmap bmp = getBitmapFileFromProp("pref_target_icon", "icons/cursors");
+		if(bmp != null)
+			return bmp;
+		else
+			return getBitmap(R.drawable.r_mark);
+	}
 	
 	
 	
