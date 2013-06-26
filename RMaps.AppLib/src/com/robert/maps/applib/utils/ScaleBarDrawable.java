@@ -92,7 +92,7 @@ public class ScaleBarDrawable extends Drawable {
 		pj.toPixels(c2, p);
 		mWidth = p.x - mOsmv.getWidth() / 2;
    		mWidth2 = (int) mWidth / 2;
-
+   		
         canvas.drawRect(margin+0, 0, margin+mWidth+2, 4, mPaint2);
         canvas.drawRect(margin+0, 0, margin+4, h+2, mPaint2);
         canvas.drawRect(margin+mWidth+2-4, 0, margin+mWidth+2, h+2, mPaint2);
