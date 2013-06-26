@@ -224,7 +224,7 @@ public class SearchResultOverlay extends TileViewOverlay {
 			.append(mCf.convertLon(mLocation.getLongitude()))
 			.append("\n").append(ALT).append(": ")
 			.append(mElevation == 0.0 ? "n/a" : mDf.formatElevation(mElevation))
-			.append(mCurrLocation == null ? "" : String.format(Locale.UK, "\n%s: %.1f°", AZIMUT, mCurrLocation.bearingTo(mLocation))+"\n"+DIST+": "+mDf.formatDistance(mCurrLocation.distanceTo(mLocation)))
+			.append(mCurrLocation == null ? "" : String.format(Locale.UK, "\n%s: %.1f°", AZIMUT, mCurrLocation.bearingTo360(mLocation))+"\n"+DIST+": "+mDf.formatDistance(mCurrLocation.distanceTo(mLocation)))
 			.toString();				
 	}
 
