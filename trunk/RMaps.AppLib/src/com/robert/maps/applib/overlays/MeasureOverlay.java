@@ -209,7 +209,7 @@ public class MeasureOverlay extends TileViewOverlay {
 		pt = new DistPoint(pj.fromPixels(x, y, tileView.getBearing()));
 		pt.Dist2Prev = points.size() > 0 ? points.get(points.size() - 1).Point.distanceTo(pt.Point) : 0;
 		pt.Dist2Start = mDistance + pt.Dist2Prev;
-		pt.Bearing = points.size() > 0 ? points.get(points.size() - 1).Point.bearingTo(pt.Point) : 0;
+		pt.Bearing = points.size() > 0 ? points.get(points.size() - 1).Point.bearingTo360(pt.Point) : 0;
 		if(mShowInfoBubble)
 			mLocation = pt;
 		
