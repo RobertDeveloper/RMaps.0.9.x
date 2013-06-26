@@ -163,7 +163,8 @@ public class CurrentTrackOverlay extends TileViewOverlay {
 			c.translate(screenCoords.x - mBaseCoords.x, screenCoords.y - mBaseCoords.y);
 			c.scale((float)osmv.mTouchScale, (float)osmv.mTouchScale, mBaseCoords.x, mBaseCoords.y);
 		};
-		c.drawPath(mPath, mPaint);
+		if(mPath != null)
+			c.drawPath(mPath, mPaint);
 		c.restore();
 	}
 
