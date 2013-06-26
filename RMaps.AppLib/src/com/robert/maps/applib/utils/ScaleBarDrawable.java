@@ -30,13 +30,15 @@ public class ScaleBarDrawable extends Drawable {
     private int mWidth2 = 100;
     private int mIntrinsicHeight;
     private int mIntrinsicWidth;
+    private int mScaleCorretion;
 
-    private static final int SCALE[][] = {{25000000,15000000,8000000,4000000,2000000,1000000,500000,250000,100000,50000,25000,15000,8000,4000,2000,1000,500,250,100,50}
-    ,{15000,8000,4000,2000,1000,500,250,100,50,25,15,8,21120,10560,5280,3000,1500,500,250,100}};
+    private static final int SCALE[][] = {{25000000,15000000,8000000,4000000,2000000,1000000,500000,250000,100000,50000,25000,15000,8000,4000,2000,1000,500,250,100,50,25,10,5}
+    ,{15000,8000,4000,2000,1000,500,250,100,50,25,15,8,21120,10560,5280,3000,1500,500,250,100,50,25,10}};
 
     public ScaleBarDrawable(Context ctx, MapView osmv, int units) {
     	mOsmv = osmv;
     	mUnits = units;
+    	mScaleCorretion = 0;
 
         mPaint.setColor(ctx.getResources().getColor(android.R.color.black));
         mPaint2.setColor(ctx.getResources().getColor(android.R.color.white));
@@ -65,7 +67,7 @@ public class ScaleBarDrawable extends Drawable {
 		final OpenStreetMapViewProjection pj = mOsmv.getTileView().getProjection();
 		final GeoPoint center = mOsmv.getMapCenter();
 		
-		int dist = SCALE[mUnits][Math.max(0, Math.min(19, mZoomLevel + 1 + (int)(mTouchScale > 1 ? Math.round(mTouchScale)-1 : -Math.round(1/mTouchScale)+1)))];
+		int dist = SCALE[mUnits][Math.max(0, Math.min(19, mZoomLevel + 1 + (int)(mTouchScale > 1 ? Math.round(mTouchScale)-1 : -Math.round(1/mTouchScale)+1)) + mScaleCorretion)];
    		
 		if(mUnits == 0){
     		if(dist > 999) {
@@ -104,6 +106,12 @@ public class ScaleBarDrawable extends Drawable {
         canvas.drawText(mDist, margin+7-1, 2+mPaint3.getTextSize()-1, mPaint4);
         canvas.drawText(mDist, margin+7+1, 2+mPaint3.getTextSize()+1, mPaint4);
         canvas.drawText(mDist, margin+7, 2+mPaint3.getTextSize(), mPaint3);
+    }
+    
+    public void correctScale(double sizeFactor, double sizeFactorGoogle) {
+    	mScaleCorretion = Math.max(0, ((int) sizeFactor) - 1) + Math.max(0, ((int) sizeFactorGoogle) - 1);
+    	if(mScaleCorretion < 0)
+    		mScaleCorretion = 0;
     }
 
     @Override

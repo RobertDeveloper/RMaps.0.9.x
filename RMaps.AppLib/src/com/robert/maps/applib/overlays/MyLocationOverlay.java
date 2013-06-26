@@ -8,7 +8,6 @@ import org.andnav.osm.util.TypeConverter;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Point;
@@ -64,6 +63,7 @@ public class MyLocationOverlay extends TileViewOverlay {
 	private TextView mLabelVw;
 
 	private int mZoomLevel;
+	private int mScaleCorretion;
 
     private static final int SCALE[][] = {{25000000,15000000,8000000,4000000,2000000,1000000,500000,250000,100000,50000,25000,15000,8000,4000,2000,1000,500,250,100,50}
     ,{15000,8000,4000,2000,1000,500,250,100,50,25,15,8,21120,10560,5280,3000,1500,500,250,100}};
@@ -101,6 +101,7 @@ public class MyLocationOverlay extends TileViewOverlay {
 		mLineToGPS = pref.getBoolean("pref_line_gps", false);
 		mUnits = Integer.parseInt(pref.getString("pref_units", "0"));
 		mDf = new DistanceFormatter(ctx);
+		mScaleCorretion = 0;
 		
 		if(mLineToGPS) {
 			mLabelVw = (TextView) LayoutInflater.from(ctx).inflate(R.layout.label_map, null);
@@ -164,6 +165,12 @@ public class MyLocationOverlay extends TileViewOverlay {
 		return mTargetLocation;
 	}
 
+    public void correctScale(double sizeFactor, double sizeFactorGoogle) {
+    	mScaleCorretion = Math.max(0, ((int) sizeFactor) - 1) + Math.max(0, ((int) sizeFactorGoogle) - 1);
+    	if(mScaleCorretion < 0)
+    		mScaleCorretion = 0;
+    }
+
 	// ===========================================================
 	// Methods from SuperClass/Interfaces
 	// ===========================================================
@@ -183,7 +190,7 @@ public class MyLocationOverlay extends TileViewOverlay {
 	        if(mNeedCircleDistance) {
 	        	mZoomLevel = osmv.getZoomLevel();
 	        	mTouchScale = osmv.mTouchScale;
-	    		int dist = SCALE[mUnits][Math.max(0, Math.min(19, mZoomLevel + 1 + (int)(mTouchScale > 1 ? Math.round(mTouchScale)-1 : -Math.round(1/mTouchScale)+1)))];
+	    		int dist = SCALE[mUnits][Math.max(0, Math.min(19, mZoomLevel + 1 + (int)(mTouchScale > 1 ? Math.round(mTouchScale)-1 : -Math.round(1/mTouchScale)+1)) + mScaleCorretion)];
 	    		final GeoPoint center = osmv.getMapCenter();
 	    		if(mUnits == 1){
 	    			if(mZoomLevel < 11){

@@ -16,12 +16,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.LinearLayout.LayoutParams;
 
 import com.robert.maps.applib.R;
 import com.robert.maps.applib.tileprovider.TileSource;
 import com.robert.maps.applib.utils.ScaleBarDrawable;
-import com.robert.maps.applib.utils.Ut;
 
 public class MapView extends RelativeLayout {
 	public static final int ZOOM_CONTROL_HIDE = 0;
@@ -34,6 +32,7 @@ public class MapView extends RelativeLayout {
 	private IMoveListener mMoveListener;
 	private boolean mStopBearing = false;
 	private boolean mUseVolumeControl;
+	private ScaleBarDrawable mScaleBarDrawable;
 
 	public MapView(Context context, int sideInOutButtons, int scaleBarVisible) {
 		super(context);
@@ -66,8 +65,8 @@ public class MapView extends RelativeLayout {
 
 		if (scaleBarVisible == 1) {
 	        final ImageView ivScaleBar = new ImageView(getContext());
-			final ScaleBarDrawable dr = new ScaleBarDrawable(context, this, Integer.parseInt(pref.getString("pref_units","0")));
-			ivScaleBar.setImageDrawable(dr);
+			mScaleBarDrawable = new ScaleBarDrawable(context, this, Integer.parseInt(pref.getString("pref_units","0")));
+			ivScaleBar.setImageDrawable(mScaleBarDrawable);
 			ivScaleBar.setId(R.id.scale_bar);
 			final RelativeLayout.LayoutParams scaleParams = new RelativeLayout.LayoutParams(
 					RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
@@ -120,8 +119,8 @@ public class MapView extends RelativeLayout {
 
 		if (a.getInt(R.styleable.MapView_SideInOutButtons, 0) == 1) {
 	        final ImageView ivScaleBar = new ImageView(getContext());
-			final ScaleBarDrawable dr = new ScaleBarDrawable(context, this, Integer.parseInt(pref.getString("pref_units","0")));
-			ivScaleBar.setImageDrawable(dr);
+			mScaleBarDrawable = new ScaleBarDrawable(context, this, Integer.parseInt(pref.getString("pref_units","0")));
+			ivScaleBar.setImageDrawable(mScaleBarDrawable);
 			final RelativeLayout.LayoutParams scaleParams = new RelativeLayout.LayoutParams(
 					RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
 			scaleParams.addRule(RelativeLayout.RIGHT_OF, R.id.whatsnew);
@@ -163,6 +162,8 @@ public class MapView extends RelativeLayout {
 	
 	public void setTileSource(TileSource tilesource) {
 		mTileView.setTileSource(tilesource);
+		if(mScaleBarDrawable != null && tilesource != null)
+			mScaleBarDrawable.correctScale(tilesource.MAPTILE_SIZE_FACTOR, tilesource.GOOGLESCALE_SIZE_FACTOR);
 	}
 	
 	public TileSource getTileSource() {

@@ -59,7 +59,7 @@ public class TileSourceBase {
 	MAP_TYPE,
 	PROJECTION; // 1-меркатор на сфероид, 2- на эллипсоид, 3- OSGB 36 British national grid reference system
 	public boolean LAYER, mOnlineMapCacheEnabled, GOOGLESCALE = false, TIMEDEPENDENT = false;
-	public double MAPTILE_SIZE_FACTOR = 1;
+	public double MAPTILE_SIZE_FACTOR = 1.0, GOOGLESCALE_SIZE_FACTOR = 1.0;
 	public double OFFSET_LAT = 0, OFFSET_LON = 0;
 	
 	public TileSourceBase(Context ctx, String aId) throws SQLiteException, RException {
@@ -159,8 +159,10 @@ public class TileSourceBase {
 					this.MAPTILE_SIZE_FACTOR = Double.parseDouble(pref.getString(MainPreferences.PREF_PREDEFMAPS_ + this.ID + STRETCH_, STRING_1));
 					this.MAPTILE_SIZEPX = (int) (this.MAPTILE_SIZEPX * this.MAPTILE_SIZE_FACTOR);
 					if(this.GOOGLESCALE) {
-						final double GOOGLESCALE_SIZE_FACTOR = Double.parseDouble(pref.getString(MainPreferences.PREF_PREDEFMAPS_ + this.ID + GOOGLESCALE_, STRING_1));
+						GOOGLESCALE_SIZE_FACTOR = Double.parseDouble(pref.getString(MainPreferences.PREF_PREDEFMAPS_ + this.ID + GOOGLESCALE_, STRING_1));
 						this.MAPTILE_SIZEPX = (int) (this.MAPTILE_SIZEPX * GOOGLESCALE_SIZE_FACTOR);
+					} else {
+						GOOGLESCALE_SIZE_FACTOR = 1.0;
 					}
 				}
 			} catch (Exception e) {
