@@ -252,7 +252,6 @@ public class IndicatorManager implements IndicatorConst {
 	private class SampleLocationListener implements LocationListener, GpsStatus.Listener {
 		private int mFix = 0;
 		private int mSat = 0;
-		private int mSat2 = 0;
 		private int mStatus = 0;
 		private String mProvider = "";
 		private GpsStatus mGpsStatus;
@@ -301,7 +300,6 @@ public class IndicatorManager implements IndicatorConst {
 		@Override
 		public void onStatusChanged(String provider, int status, Bundle extras) {
 			if(provider.equalsIgnoreCase(LocationManager.GPS_PROVIDER)) {
-				mSat = extras.getInt("satellites", 0);
 				mStatus = status;
 				updateIndicator();
 			}
@@ -310,9 +308,10 @@ public class IndicatorManager implements IndicatorConst {
 		@Override
 		public void onGpsStatusChanged(int event) {
 			mGpsStatus = mLocationManager.getGpsStatus(mGpsStatus);
-			mFix = 0;
+			mFix = 0; mSat = 0;
 			Iterator<GpsSatellite> it = mGpsStatus.getSatellites().iterator();
 			while(it.hasNext()) {
+				mSat++;
 				if(it.next().usedInFix())
 					mFix++;
 			}
@@ -321,7 +320,7 @@ public class IndicatorManager implements IndicatorConst {
 		
 		private void updateIndicator() {
 			if(mProvider.equalsIgnoreCase(GPS))
-				mIndicators.put(GPSPROVIDER, String.format(Locale.UK, "%s %d %d/%d", mProvider, mStatus, mSat, mFix));
+				mIndicators.put(GPSPROVIDER, String.format(Locale.UK, "%s %d/%d", mProvider, mFix, mSat));
 			else
 				mIndicators.put(GPSPROVIDER, mProvider);
 			updateIndicatorViewValues();

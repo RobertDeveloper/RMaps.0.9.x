@@ -909,6 +909,7 @@ public class MainActivity extends Activity {
 				mIndicatorManager.setZoom(mMap.getZoomLevel());
 		        mIndicatorManager.setLocation(mMyLocationOverlay.getLastLocation());
 		        mIndicatorManager.setTargetLocation(mMyLocationOverlay.getTargetLocation());
+		        mIndicatorManager.Resume(this);
 			} else {
 				mIndicatorManager.Dismiss(this);
 				mIndicatorManager = null;
