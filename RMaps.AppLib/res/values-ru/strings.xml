@@ -270,7 +270,7 @@ http://c.tile.openstreetmap.org/{z}/{x}/{y}.png\n
   <string name="toprev">до Предид</string>
   <string name="menu_showinfo">Показывать данные точки</string>
   <string name="menu_showlineinfo">Показывать данные на линии</string>
-  <string name="menu_show_dashboard">Панель индикаторов</string>
+  <string name="menu_show_dashboard">Панель</string>
   <string name="menu_i_am_here">Я здесь</string>
   <string name="menu_dashboard_add_line">Добавить с новой строки</string>
   <string name="menu_add_target_point">Добавить целевую точку</string>
