@@ -29,7 +29,7 @@
   <string name="pref_showtitle">ウィンドウタイトルの表示</string>
   <string name="pref_showstatusbar_summary">マップモードでステータスバーを非表示にする</string>
   <string name="pref_showstatusbar">ステータスバーを表示</string>
-  <string name="pref_turnoffautoreindex">インデックスの自動再構築をオフ</string>
+  <string name="pref_turnoffautoreindex">インデックス自動再構築オフ</string>
   <string name="pref_turnoffautoreindex_summary">マップファイルのサイズと更新日時のチェックをオフにする</string>
   <string name="pref_gpsfastupdate">高速GPSデータ更新</string>
   <string name="pref_gpsfastupdate_summary">バッテリーの消費量が増加</string>
@@ -49,10 +49,10 @@
   <string name="pref_main_usermaps_summary">/sdcard/rmaps/maps に保存された地図</string>
   <string name="prefcat_main_predefinedmaps">地図</string>
   <string name="prefcat_main_predefinedoverlays">オーバーレイ</string>
-  <string name="btn_clear_cache_title">キャッシュのクリア</string>
+  <string name="btn_clear_cache_title">キャッシュをクリア</string>
   <string name="pref_internalcache_title">内部キャッシュ</string>
-  <string name="pref_internalcache_summary">マップタイルの一時的な保存に使用。サイズ: %dKB/4MB</string>
-  <string name="pref_index_title">インデックスデータベース</string>
+  <string name="pref_internalcache_summary">マップタイルの一時的な保存に使用 - サイズ: %dKB/4MB</string>
+  <string name="pref_index_title">インデックス</string>
   <string name="pref_index_summary">オフラインマップのタイルインデックス - サイズ: %dkb</string>
   <string name="pref_showscalebar_summary">左下隅にスケールバーを表示する</string>
   <string name="pref_showscalebar">スケールバーを表示</string>
@@ -61,7 +61,7 @@
   <string name="pref_onlinecacheclear">オンラインキャッシュ</string>
   <string name="pref_onlinecacheclear_summary">.sqlitedb * サイズ: %dkb</string>
   <string name="pref_googlescale">タイルサイズ係数</string>
-  <string name="pref_googlescale_summary">Googleから拡大タイルを取得。パラメーターを変更した後、キャッシュをクリアすることをお勧めします。</string>
+  <string name="pref_googlescale_summary">Googleから拡大タイルを取得します。パラメーターを変更した後、キャッシュをクリアすることをお勧めします。</string>
   <string name="pref_locale">表示言語</string>
   <string name="pref_locale_summary">システム設定と独立した表示言語</string>
   <string name="menu_settings">設定</string>
@@ -109,8 +109,8 @@ How to and FAQ you can find on http://robertdeveloper.blogspot.com/\n
   <string name="message_locationunavailable">GPSとネットワークの検出が無効です。一時的に現在位置の特定ができません。</string>
   <string name="message_lastknownlocation">GPSとネットワークの検出が無効です。最後に特定した現在位置を表示します。</string>
   <string name="message_corruptindex">インデックスデータが破損しています。インデックスデータのクリアをお勧めします。</string>
-  <string name="message_updateminmax">マップファイルの最小最大ズームデータを更新</string>
-  <string name="message_saved">アイテムを保存しました。</string>
+  <string name="message_updateminmax">マップファイルの最小最大ズームデータを更新中...</string>
+  <string name="message_saved">POIを保存しました。</string>
   <string name="menu_done">完了</string>
   <string name="menu_doNotSave">元に戻す</string>
   <string name="menu_edit">編集</string>
@@ -149,8 +149,8 @@ How to and FAQ you can find on http://robertdeveloper.blogspot.com/\n
   <string name="menu_toradar">Radar</string>
   <string name="message_noradar">Radarが見つかりません。Google Playからインストールしてください。</string>
   <string name="message_nogpsstatus">GPS Statusが見つかりません。Google Playからインストールしてください。</string>
-  <string name="menu_exporttogpx">GPXファイルにエクスポート</string>
-  <string name="menu_exporttokml">KMLファイルにエクスポート</string>
+  <string name="menu_exporttogpx">GPXにエクスポート</string>
+  <string name="menu_exporttokml">KMLにエクスポート</string>
   <string name="message_trackexported">トラックをエクスポート </string>
   <string name="message_cantstarttrackwriter">トラックを書き込むことができないため、Track Writerを開始できませんでした。</string>
   <string name="message_error">エラー: %s</string>
@@ -159,7 +159,7 @@ How to and FAQ you can find on http://robertdeveloper.blogspot.com/\n
 レポートの作成をタップして、エラーレポートをプログラムの作者に送ってください。
 レポートを送信する前にメッセージを読むことができます。</string>
   <string name="error_send">レポートを作成</string>
-  <string name="pref_onlinecache">オンラインマップのキャッシュ</string>
+  <string name="pref_onlinecache">オンラインマップキャッシュ</string>
   <string name="pref_onlinecache_summary">オンラインマップのタイルをSDカードに保存</string>
   <string name="message_wait">しばらくお待ちください。</string>
   <string name="pref_dir">ディレクトリ</string>
@@ -257,7 +257,7 @@ How to and FAQ you can find on http://robertdeveloper.blogspot.com/\n
   <string name="menu_measure">測定</string>
   <string name="menu_join">トラックに参加</string>
   <string name="menu_undo">やり直し</string>
-  <string name="menu_reload">画面のタイルの再読み込み</string>
+  <string name="menu_reload">地図の再読み込み</string>
   <string name="menu_findthemap">地図を検索</string>
   <string name="menu_tools">ツール</string>
   <string name="menu_downloadprepared">既存の地図をダウンロード</string>
@@ -270,4 +270,34 @@ How to and FAQ you can find on http://robertdeveloper.blogspot.com/\n
   <string name="tostart">始点から</string>
   <string name="toend">終点から</string>
   <string name="toprev">前の地点から</string>
+  <string name="menu_showinfo">Show info bubble</string>
+  <string name="menu_showlineinfo">Show info under line</string>
+  <string name="menu_show_dashboard">ダッシュ ボード</string>
+  <string name="menu_i_am_here">現在地</string>
+  <string name="menu_dashboard_add_line">Add line</string>
+  <string name="menu_add_target_point">ターゲットポイントを追加</string>
+  <string name="menu_remove_target_point">ターゲットポイントを削除</string>
+  <string name="dashboard_message_cant_remove_last_indicator">最後のインジケーターを削除することはできません。</string>
+  <string name="dashboard_title_gps_latitude">GPSの緯度</string>
+  <string name="dashboard_title_gps_longitude">GPSの経度</string>
+  <string name="dashboard_title_gps_accuracy">GPSの精度</string>
+  <string name="dashboard_title_gps_altitude">GPSの高度</string>
+  <string name="dashboard_title_gps_bearing">GPS Bearing</string>
+  <string name="dashboard_title_gps_time">GPSのタイムスタンプ</string>
+  <string name="dashboard_title_gps_provider">Loc Provider</string>
+  <string name="dashboard_title_gps_speed">GPSの速度</string>
+  <string name="dashboard_title_map_name">Map Name</string>
+  <string name="dashboard_title_map_center_lat">Center Latitude</string>
+  <string name="dashboard_title_map_center_lon">Center Longitude</string>
+  <string name="dashboard_title_map_zoom">ズーム</string>
+  <string name="dashboard_title_target_distance">Distance2Target</string>
+  <string name="dashboard_title_target_bearing">Bearing2Target</string>
+  <string name="pref_show_autofollow_button">Auto-Follow button</string>
+  <string name="pref_show_autofollow_button_summary">Show auto-follow button on the screen</string>
+  <string name="load_tiles_to_online_cache">タイルをオンラインキャッシュに読み込む</string>
+  <string name="pref_use_volume_controls">Volume controls</string>
+  <string name="pref_use_volume_controls_summary">Use volume controls to zooming the map</string>
+  <string name="pref_person_icon">ロケーションカーソル</string>
+  <string name="pref_arrow_icon">ディレクションカーソル</string>
+  <string name="pref_icon_summary">File from ..rmaps/icons/cursors/*.png</string>
 </resources>

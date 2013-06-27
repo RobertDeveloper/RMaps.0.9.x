@@ -275,6 +275,8 @@
         <item>Deutsch</item>
         <item>Chinese Simplified</item>
         <item>Chinese Traditional</item>
+        <item>Danish</item>
+        <item>Mongolian</item>
     </string-array>
     <string-array name="pref_locale_values">
         <item></item>
@@ -287,6 +289,8 @@
         <item>de</item>
         <item>zh_CN</item>
         <item>zh_TW</item>
+        <item>da</item>
+        <item>mn</item>
     </string-array>
 
 </resources>
