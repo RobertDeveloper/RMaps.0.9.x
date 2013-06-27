@@ -77,7 +77,7 @@
   <string name="menu_categorylist">类别</string>
   <string name="menu_import">导入</string>
   <string name="menu_deleteall">删除所有</string>
-  <string name="menu_area_selector">可脱机使用</string>
+  <string name="menu_area_selector">制作离线地图</string>
   <string name="no_traffic">在此缩放下流量信息不可用</string>
   <string name="auto_follow_enabled">自动追踪启用</string>
   <string name="auto_follow_disabled">自动追踪禁用</string>
@@ -97,7 +97,7 @@ Christoffer Blindheim\n
 Vitek Fedra CZ\n
 Blast IT\n
 Mike DE\n
-Robin HE\n
+Robin He[中文简体]\n
 \n
 保留所有权利\n
 \n
@@ -264,7 +264,7 @@ http://c.tile.openstreetmap.org/{z}/{x}/{y}.png\n
   <string name="menu_reload">重新加载屏幕图块</string>
   <string name="menu_findthemap">查找地图</string>
   <string name="menu_tools">工具</string>
-  <string name="menu_downloadprepared">下载已制作的地图</string>
+  <string name="menu_downloadprepared">下载已有离线图</string>
   <string name="pref_circle_distance">环形区域</string>
   <string name="pref_circle_distance_summary">在当前位置的周围显示一个圆环，类似刻度指示。</string>
   <string name="pref_coordformat">坐标格式</string>
@@ -274,4 +274,34 @@ http://c.tile.openstreetmap.org/{z}/{x}/{y}.png\n
   <string name="tostart">到起点</string>
   <string name="toend">到终点</string>
   <string name="toprev">到前一个</string>
+  <string name="menu_showinfo">显示信息泡泡</string>
+  <string name="menu_showlineinfo">显示信息下划线</string>
+  <string name="menu_show_dashboard">仪表板</string>
+  <string name="menu_i_am_here">我在这里</string>
+  <string name="menu_dashboard_add_line">添加直线</string>
+  <string name="menu_add_target_point">添加目标点</string>
+  <string name="menu_remove_target_point">删除目标点</string>
+  <string name="dashboard_message_cant_remove_last_indicator">不能删除最后一个指示符</string>
+  <string name="dashboard_title_gps_latitude">GPS 纬度</string>
+  <string name="dashboard_title_gps_longitude">GPS 经度</string>
+  <string name="dashboard_title_gps_accuracy">GPS 精度</string>
+  <string name="dashboard_title_gps_altitude">GPS 海拔高度</string>
+  <string name="dashboard_title_gps_bearing">GPS 轴承</string>
+  <string name="dashboard_title_gps_time">GPS 时间戳</string>
+  <string name="dashboard_title_gps_provider">Loc 提供商</string>
+  <string name="dashboard_title_gps_speed">GPS 速度</string>
+  <string name="dashboard_title_map_name">地图名称</string>
+  <string name="dashboard_title_map_center_lat">中心纬度</string>
+  <string name="dashboard_title_map_center_lon">中心经度</string>
+  <string name="dashboard_title_map_zoom">缩放</string>
+  <string name="dashboard_title_target_distance">至目标距离</string>
+  <string name="dashboard_title_target_bearing">至目标轴向</string>
+  <string name="pref_show_autofollow_button">自动跟踪按钮</string>
+  <string name="pref_show_autofollow_button_summary">在屏幕上显示自动跟踪按钮</string>
+  <string name="load_tiles_to_online_cache">加载图块到在线缓存</string>
+  <string name="pref_use_volume_controls">音量控制</string>
+  <string name="pref_use_volume_controls_summary">使用音量控制键缩放地图</string>
+  <string name="pref_person_icon">位置光标</string>
+  <string name="pref_arrow_icon">方向光标</string>
+  <string name="pref_icon_summary">来自 ...rmaps/icons/cursors/*.png 的文件</string>
 </resources>
