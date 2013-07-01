@@ -74,7 +74,7 @@
         android:id="@+id/tracks"
         android:title="@string/menu_tracks">
     </item>
-    <item
+    <item android:id="@+id/routes" android:title="@string/menu_routes"></item><item
         android:id="@+id/gpsstatus"
         android:title="@string/menu_gpsstatus">
     </item>
@@ -94,5 +94,6 @@
         android:title="@string/menu_exit"
         android:visible="true">
     </item>
+    
 
 </menu>

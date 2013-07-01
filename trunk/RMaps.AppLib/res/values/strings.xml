@@ -304,4 +304,5 @@ How to and FAQ you can find on http://robertdeveloper.blogspot.com/\n</string>
     <string name="pref_person_icon">Location cursor</string>
     <string name="pref_arrow_icon">Direction cursor</string>
     <string name="pref_icon_summary">File from ..rmaps/icons/cursors/*.png</string>
+    <string name="menu_routes">Routes</string>
 </resources>

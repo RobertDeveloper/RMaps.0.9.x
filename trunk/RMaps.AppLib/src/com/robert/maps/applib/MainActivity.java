@@ -86,6 +86,7 @@ import com.robert.maps.applib.kml.PoiActivity;
 import com.robert.maps.applib.kml.PoiListActivity;
 import com.robert.maps.applib.kml.PoiManager;
 import com.robert.maps.applib.kml.PoiPoint;
+import com.robert.maps.applib.kml.RouteListActivity;
 import com.robert.maps.applib.kml.Track;
 import com.robert.maps.applib.kml.TrackListActivity;
 import com.robert.maps.applib.kml.XMLparser.PredefMapsParser;
@@ -950,6 +951,9 @@ public class MainActivity extends Activity {
 			return true;
 		} else if (item.getItemId() == R.id.tracks) {
 			startActivityForResult(new Intent(this, TrackListActivity.class), R.id.tracks);
+			return true;
+		} else if (item.getItemId() == R.id.routes) {
+			startActivityForResult(new Intent(this, RouteListActivity.class), R.id.routes);
 			return true;
 		} else if (item.getItemId() == R.id.search) {
 			onSearchRequested();

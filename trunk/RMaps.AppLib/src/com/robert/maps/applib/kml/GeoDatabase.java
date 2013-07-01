@@ -186,7 +186,7 @@ public class GeoDatabase implements PoiConstants{
 	}
 
 	protected class GeoDatabaseHelper extends RSQLiteOpenHelper {
-		private final static int mCurrentVersion = 21;
+		private final static int mCurrentVersion = 22;
 		
 		public GeoDatabaseHelper(final Context context, final String name) {
 			super(context, name, null, mCurrentVersion);
@@ -201,6 +201,7 @@ public class GeoDatabase implements PoiConstants{
 			db.execSQL(PoiConstants.SQL_CREATE_tracks);
 			db.execSQL(PoiConstants.SQL_CREATE_trackpoints);
 			db.execSQL(PoiConstants.SQL_CREATE_maps);
+			db.execSQL(PoiConstants.SQL_CREATE_routes);
 			LoadActivityListFromResource(db);
 		}
 
@@ -255,6 +256,9 @@ public class GeoDatabase implements PoiConstants{
 			}
 			if (oldVersion < 21) {
 				db.execSQL(PoiConstants.SQL_CREATE_maps);
+			}
+			if (oldVersion < 22) {
+				db.execSQL(PoiConstants.SQL_CREATE_routes);
 			}
 		}
 
