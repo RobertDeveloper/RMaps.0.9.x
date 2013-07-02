@@ -102,8 +102,14 @@ public class IndicatorManager implements IndicatorConst {
 		
 		initView(ctx, (ViewGroup) ctx.findViewById(R.id.dashboard_area));
 		
-		mLocationManager.requestLocationUpdates(GPS, 0, 0, mLocationListener);
-		mLocationManager.addGpsStatusListener(mLocationListener);
+		try {
+			mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, mLocationListener);
+		} catch (Exception e) {
+		}
+		try {
+			mLocationManager.addGpsStatusListener(mLocationListener);
+		} catch (Exception e) {
+		}
 		
 		ctx.bindService(new Intent(IRemoteService.class.getName()), mConnection, 0 /*Context.BIND_AUTO_CREATE*/);
 	}
@@ -201,7 +207,10 @@ public class IndicatorManager implements IndicatorConst {
 	}
 	
 	public void Resume(Context ctx) {
-		((LocationManager) ctx.getSystemService(Context.LOCATION_SERVICE)).requestLocationUpdates(GPS, 0, 0, mLocationListener);
+		try {
+			((LocationManager) ctx.getSystemService(Context.LOCATION_SERVICE)).requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, mLocationListener);
+		} catch (Exception e) {
+		}
 		mLocationListener.onGpsStatusChanged(0);
 		ctx.bindService(new Intent(IRemoteService.class.getName()), mConnection, 0 /*Context.BIND_AUTO_CREATE*/);
 	}
