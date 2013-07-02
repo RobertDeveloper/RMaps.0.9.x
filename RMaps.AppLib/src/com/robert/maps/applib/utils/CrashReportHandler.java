@@ -10,6 +10,7 @@ import android.os.Process;
 
 public class CrashReportHandler implements UncaughtExceptionHandler {
 	private Activity m_context;
+	private String mLogFileName;
 
 	public static void attach(Activity context) {
 		Thread.setDefaultUncaughtExceptionHandler(
@@ -21,6 +22,7 @@ public class CrashReportHandler implements UncaughtExceptionHandler {
 
 	private CrashReportHandler(Activity context) {
 		m_context=context;
+		mLogFileName = Ut.getRMapsMainDir(context, "")+"/log.txt";
 	}
 
 	public void uncaughtException(Thread thread, Throwable exception) {
@@ -31,6 +33,9 @@ public class CrashReportHandler implements UncaughtExceptionHandler {
 		SharedPreferences.Editor editor = uiState.edit();
 		editor.putString("error", stackTrace.toString());
 		editor.commit();
+		
+		Ut.appendLog(mLogFileName, String.format("%tc", System.currentTimeMillis()));
+		Ut.appendLog(mLogFileName, stackTrace.toString());
 
 		// from RuntimeInit.crash()
 		Process.killProcess(Process.myPid());
