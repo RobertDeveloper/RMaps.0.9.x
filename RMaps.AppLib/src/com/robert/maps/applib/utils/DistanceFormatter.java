@@ -58,14 +58,14 @@ public class DistanceFormatter {
 				str[1] = mUnitKM;
 			}
 		} else {
-			if(dist < FT_IN_ML) {
-				str[0] = String.format("%.0f", dist);
+			if(dist * FT_IN_M < FT_IN_ML) {
+				str[0] = String.format("%.0f", dist * FT_IN_M);
 				str[1] = mUnitM;
-			} else if(dist/FT_IN_ML < 100) {
-				str[0] = String.format("%.2f", dist/FT_IN_ML);
+			} else if(dist * FT_IN_M / FT_IN_ML < 100) {
+				str[0] = String.format("%.2f", dist * FT_IN_M / FT_IN_ML);
 				str[1] = mUnitKM;
 			} else {
-				str[0] = String.format("%.0f", dist/FT_IN_ML);
+				str[0] = String.format("%.0f", dist * FT_IN_M / FT_IN_ML);
 				str[1] = mUnitKM;
 			}
 		}
