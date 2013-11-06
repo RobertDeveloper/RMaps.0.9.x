@@ -186,7 +186,7 @@ public class Ut implements OpenStreetMapConstants, OpenStreetMapViewConstants {
 		return dir;
 	}
 	
-	private static String EXTERNAL_SD = "/storage/sdcard1";
+	private static String EXTERNAL_SD = "/storage/extSdCard";
 	private static String SIGNAL_FILE_NAME = "/RMapsOnSDCard";
 	
 	public static String getExternalStorageDirectory() {
