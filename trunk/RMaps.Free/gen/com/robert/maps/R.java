@@ -228,250 +228,254 @@ containing a value of this type.
         public static final int zoom_out=0x7f020022;
     }
     public static final class id {
-        public static final int Activity=0x7f08007b;
-        public static final int Alt=0x7f080061;
-        public static final int Descr=0x7f080063;
-        public static final int FileName=0x7f080040;
-        public static final int GridInt=0x7f08006d;
-        public static final int Hidden=0x7f080064;
-        public static final int ImageIcon=0x7f08006a;
-        public static final int ImportBtn=0x7f080044;
-        public static final int Lat=0x7f08005d;
+        public static final int Activity=0x7f08007c;
+        public static final int Alt=0x7f080062;
+        public static final int Descr=0x7f080064;
+        public static final int FileName=0x7f080041;
+        public static final int GridInt=0x7f08006e;
+        public static final int Hidden=0x7f080065;
+        public static final int ImageIcon=0x7f08006b;
+        public static final int ImportBtn=0x7f080045;
+        public static final int Lat=0x7f08005e;
         public static final int LayerArea=0x7f080028;
         public static final int LayerArea1=0x7f080029;
         public static final int LayerArea2=0x7f08002a;
-        public static final int LinearLayout01=0x7f0800b5;
-        public static final int LinearLayout02=0x7f0800b6;
+        public static final int LinearLayout01=0x7f0800b6;
+        public static final int LinearLayout02=0x7f0800b7;
         public static final int LinearLayout1=0x7f08002b;
-        public static final int Lon=0x7f08005f;
-        public static final int MinZoom=0x7f08006c;
-        public static final int Name=0x7f080079;
-        public static final int RelativeLayout1=0x7f080046;
-        public static final int ScrollView01=0x7f080072;
-        public static final int ScrollView1=0x7f080051;
-        public static final int SelectFileBtn=0x7f080041;
-        public static final int TableLayout1=0x7f080074;
-        public static final int TableRow01=0x7f0800a5;
-        public static final int TableRow02=0x7f0800a1;
-        public static final int TableRow03=0x7f08009d;
-        public static final int TableRow04=0x7f080099;
-        public static final int TableRow05=0x7f080095;
-        public static final int TableRow06=0x7f080091;
-        public static final int TextActivity=0x7f08007a;
-        public static final int TextAlt=0x7f080060;
-        public static final int TextDescr=0x7f080062;
-        public static final int TextFileName=0x7f08003f;
-        public static final int TextIcon=0x7f080069;
-        public static final int TextLat=0x7f08005c;
-        public static final int TextLon=0x7f08005e;
-        public static final int TextMinZoom=0x7f08006b;
-        public static final int TextPoiCategoryTitle=0x7f080042;
-        public static final int TextTitle=0x7f08005a;
-        public static final int TextView01=0x7f080073;
-        public static final int TextView02=0x7f08008e;
-        public static final int TextView05=0x7f0800a6;
-        public static final int TextView07=0x7f0800a2;
-        public static final int TextView09=0x7f08009e;
-        public static final int TextView11=0x7f08009a;
-        public static final int TextView13=0x7f080096;
-        public static final int TextView15=0x7f080092;
-        public static final int Title=0x7f08005b;
-        public static final int about=0x7f0800e8;
-        public static final int add=0x7f080056;
+        public static final int Lon=0x7f080060;
+        public static final int MinZoom=0x7f08006d;
+        public static final int Name=0x7f08007a;
+        public static final int RelativeLayout1=0x7f080047;
+        public static final int ScrollView01=0x7f080073;
+        public static final int ScrollView1=0x7f080052;
+        public static final int SelectFileBtn=0x7f080042;
+        public static final int TableLayout1=0x7f080075;
+        public static final int TableRow01=0x7f0800a6;
+        public static final int TableRow02=0x7f0800a2;
+        public static final int TableRow03=0x7f08009e;
+        public static final int TableRow04=0x7f08009a;
+        public static final int TableRow05=0x7f080096;
+        public static final int TableRow06=0x7f080092;
+        public static final int TextActivity=0x7f08007b;
+        public static final int TextAlt=0x7f080061;
+        public static final int TextDescr=0x7f080063;
+        public static final int TextFileName=0x7f080040;
+        public static final int TextIcon=0x7f08006a;
+        public static final int TextLat=0x7f08005d;
+        public static final int TextLon=0x7f08005f;
+        public static final int TextMinZoom=0x7f08006c;
+        public static final int TextPoiCategoryTitle=0x7f080043;
+        public static final int TextTitle=0x7f08005b;
+        public static final int TextView01=0x7f080074;
+        public static final int TextView02=0x7f08008f;
+        public static final int TextView05=0x7f0800a7;
+        public static final int TextView07=0x7f0800a3;
+        public static final int TextView09=0x7f08009f;
+        public static final int TextView11=0x7f08009b;
+        public static final int TextView13=0x7f080097;
+        public static final int TextView15=0x7f080093;
+        public static final int Title=0x7f08005c;
+        public static final int about=0x7f0800ec;
+        public static final int add=0x7f080057;
         public static final int add_dualmap=0x7f080012;
         public static final int add_ownsourcemap=0x7f080013;
-        public static final int add_shadow_box=0x7f0800af;
-        public static final int add_yandex_bookmark=0x7f0800bc;
+        public static final int add_shadow_box=0x7f0800b0;
+        public static final int add_yandex_bookmark=0x7f0800bd;
         public static final int alignBounds=0x7f080000;
         public static final int alignMargins=0x7f080001;
-        public static final int area_selector=0x7f0800e3;
-        public static final int avgpace_data=0x7f080093;
-        public static final int avgpace_unit=0x7f080094;
-        public static final int avgspeed_data=0x7f08008f;
-        public static final int avgspeed_unit=0x7f080090;
+        public static final int area_selector=0x7f0800e6;
+        public static final int avgpace_data=0x7f080094;
+        public static final int avgpace_unit=0x7f080095;
+        public static final int avgspeed_data=0x7f080090;
+        public static final int avgspeed_unit=0x7f080091;
         public static final int back=0x7f08002c;
-        public static final int bottom_area=0x7f08004b;
-        public static final int btn=0x7f080038;
-        public static final int btnClear=0x7f08006e;
-        public static final int button_pick=0x7f08003c;
-        public static final int chart=0x7f0800a9;
+        public static final int bottom_area=0x7f08004c;
+        public static final int btn=0x7f080039;
+        public static final int btnClear=0x7f08006f;
+        public static final int button_pick=0x7f08003d;
+        public static final int chart=0x7f0800aa;
         public static final int checkbox=0x7f080006;
         public static final int clear=0x7f08001d;
-        public static final int close=0x7f080054;
+        public static final int close=0x7f080055;
         public static final int cmdbar=0x7f08001c;
-        public static final int color=0x7f0800ab;
+        public static final int color=0x7f0800ac;
         public static final int color_picker_view=0x7f08002e;
-        public static final int colorshadow=0x7f0800b2;
-        public static final int compass=0x7f0800de;
-        public static final int coord=0x7f080068;
-        public static final int dashboard_area=0x7f0800d1;
-        public static final int data_header=0x7f080047;
+        public static final int colorshadow=0x7f0800b3;
+        public static final int compass=0x7f0800dd;
+        public static final int coord=0x7f080069;
+        public static final int dashboard_area=0x7f0800d4;
+        public static final int data_header=0x7f080048;
         public static final int data_header1=0x7f080007;
         public static final int data_header2=0x7f08000a;
         public static final int data_header3=0x7f08000d;
-        public static final int data_unit=0x7f080049;
+        public static final int data_unit=0x7f08004a;
         public static final int data_unit1=0x7f080009;
         public static final int data_unit2=0x7f08000c;
         public static final int data_unit3=0x7f08000f;
-        public static final int data_value=0x7f080048;
+        public static final int data_value=0x7f080049;
         public static final int data_value1=0x7f080008;
         public static final int data_value2=0x7f08000b;
         public static final int data_value3=0x7f08000e;
         public static final int descr=0x7f080004;
-        public static final int dialog_wait=0x7f0800be;
-        public static final int discardButton=0x7f080045;
-        public static final int distance_data=0x7f080088;
-        public static final int distance_unit=0x7f080089;
+        public static final int dialog_wait=0x7f0800bf;
+        public static final int discardButton=0x7f080046;
+        public static final int distance_data=0x7f080089;
+        public static final int distance_unit=0x7f08008a;
         public static final int done=0x7f080014;
         public static final int download_start=0x7f080017;
         public static final int downloader_service=0x7f080018;
-        public static final int downloadprepared=0x7f0800e4;
-        public static final int duration_data=0x7f080084;
-        public static final int duration_unit=0x7f080085;
-        public static final int empty=0x7f08003a;
-        public static final int empty_text=0x7f08003b;
-        public static final int error=0x7f0800bb;
-        public static final int exit=0x7f0800e9;
-        public static final int expandableListView1=0x7f080052;
+        public static final int downloadprepared=0x7f0800e7;
+        public static final int duration_data=0x7f080085;
+        public static final int duration_unit=0x7f080086;
+        public static final int empty=0x7f08003b;
+        public static final int empty_text=0x7f08003c;
+        public static final int error=0x7f0800bc;
+        public static final int exit=0x7f0800ed;
+        public static final int expandableListView1=0x7f080053;
         public static final int fileNameTitle=0x7f080024;
-        public static final int findthemap=0x7f0800dd;
-        public static final int gps_text=0x7f08004f;
-        public static final int gpsstatus=0x7f0800e6;
+        public static final int findthemap=0x7f0800e0;
+        public static final int gps_text=0x7f080050;
+        public static final int gpsstatus=0x7f0800ea;
         public static final int hide_overlay=0x7f080011;
-        public static final int imageView1=0x7f080076;
-        public static final int imageView2=0x7f080077;
-        public static final int info=0x7f08003e;
+        public static final int imageView1=0x7f080077;
+        public static final int imageView2=0x7f080078;
+        public static final int info=0x7f08003f;
         public static final int isoverlay=0x7f080010;
-        public static final int left_text=0x7f08004d;
-        public static final int line_width=0x7f0800ad;
-        public static final int linearLayout1=0x7f080066;
-        public static final int linearLayoutData=0x7f0800b7;
-        public static final int main=0x7f080080;
+        public static final int left_text=0x7f08004e;
+        public static final int line_width=0x7f0800ae;
+        public static final int linearLayout1=0x7f080067;
+        public static final int linearLayoutData=0x7f0800b8;
+        public static final int main=0x7f080081;
         public static final int map=0x7f08001b;
         public static final int map_area=0x7f08001a;
         public static final int maps=0x7f08001e;
-        public static final int mapselector=0x7f0800e1;
-        public static final int maxele_data=0x7f0800a7;
-        public static final int maxele_unit=0x7f0800a8;
-        public static final int maxspeed_data=0x7f080097;
-        public static final int maxspeed_unit=0x7f080098;
-        public static final int measure=0x7f0800db;
-        public static final int menu=0x7f080055;
-        public static final int menu_addmeasurepoint=0x7f0800cf;
-        public static final int menu_addpoi=0x7f0800bf;
-        public static final int menu_categorylist=0x7f0800c5;
-        public static final int menu_dashboard_add=0x7f0800d6;
-        public static final int menu_dashboard_add_line=0x7f0800d7;
-        public static final int menu_dashboard_delete=0x7f0800d5;
-        public static final int menu_dashboard_edit=0x7f0800d4;
-        public static final int menu_deleteall=0x7f0800ef;
-        public static final int menu_deletepoi=0x7f0800c1;
-        public static final int menu_editpoi=0x7f0800c0;
-        public static final int menu_exportgpx=0x7f0800f1;
-        public static final int menu_exportkml=0x7f0800f0;
-        public static final int menu_exporttogpxpoi=0x7f0800c7;
-        public static final int menu_exporttokmlpoi=0x7f0800c8;
-        public static final int menu_gotopoi=0x7f0800c2;
-        public static final int menu_group_maps=0x7f0800e2;
-        public static final int menu_hide=0x7f0800c3;
-        public static final int menu_i_am_here=0x7f0800d0;
-        public static final int menu_importpoi=0x7f0800ee;
-        public static final int menu_join=0x7f0800f3;
-        public static final int menu_share=0x7f0800ca;
-        public static final int menu_show=0x7f0800c4;
-        public static final int menu_show_dashboard=0x7f0800da;
-        public static final int menu_showinfo=0x7f0800cd;
-        public static final int menu_showlineinfo=0x7f0800ce;
-        public static final int menu_sort=0x7f0800ea;
-        public static final int menu_sort_category=0x7f0800ec;
-        public static final int menu_sort_coord=0x7f0800ed;
-        public static final int menu_sort_date=0x7f0800f2;
-        public static final int menu_sort_name=0x7f0800eb;
-        public static final int menu_stat=0x7f0800c9;
-        public static final int menu_toradar=0x7f0800c6;
-        public static final int menu_undo=0x7f0800cb;
-        public static final int message=0x7f080036;
-        public static final int message_list=0x7f08004a;
-        public static final int minele_data=0x7f0800a3;
-        public static final int minele_unit=0x7f0800a4;
-        public static final int moveavgspeed_data=0x7f08009f;
-        public static final int moveavgspeed_unit=0x7f0800a0;
-        public static final int movetime_data=0x7f08009b;
-        public static final int movetime_unit=0x7f08009c;
-        public static final int mylocation=0x7f0800e0;
+        public static final int mapselector=0x7f0800e4;
+        public static final int maxele_data=0x7f0800a8;
+        public static final int maxele_unit=0x7f0800a9;
+        public static final int maxspeed_data=0x7f080098;
+        public static final int maxspeed_unit=0x7f080099;
+        public static final int measure=0x7f0800de;
+        public static final int menu=0x7f080056;
+        public static final int menu_add_target_point=0x7f0800d2;
+        public static final int menu_addmeasurepoint=0x7f0800d0;
+        public static final int menu_addpoi=0x7f0800c0;
+        public static final int menu_categorylist=0x7f0800c6;
+        public static final int menu_dashboard_add=0x7f0800d9;
+        public static final int menu_dashboard_add_line=0x7f0800da;
+        public static final int menu_dashboard_delete=0x7f0800d8;
+        public static final int menu_dashboard_edit=0x7f0800d7;
+        public static final int menu_deleteall=0x7f0800f3;
+        public static final int menu_deletepoi=0x7f0800c2;
+        public static final int menu_editpoi=0x7f0800c1;
+        public static final int menu_exportgpx=0x7f0800f5;
+        public static final int menu_exportkml=0x7f0800f4;
+        public static final int menu_exporttogpxpoi=0x7f0800c8;
+        public static final int menu_exporttokmlpoi=0x7f0800c9;
+        public static final int menu_gotopoi=0x7f0800c3;
+        public static final int menu_group_maps=0x7f0800e5;
+        public static final int menu_hide=0x7f0800c4;
+        public static final int menu_i_am_here=0x7f0800d1;
+        public static final int menu_importpoi=0x7f0800f2;
+        public static final int menu_join=0x7f0800f7;
+        public static final int menu_remove_target_point=0x7f0800d3;
+        public static final int menu_share=0x7f0800cb;
+        public static final int menu_show=0x7f0800c5;
+        public static final int menu_show_dashboard=0x7f0800e1;
+        public static final int menu_showinfo=0x7f0800ce;
+        public static final int menu_showlineinfo=0x7f0800cf;
+        public static final int menu_sort=0x7f0800ee;
+        public static final int menu_sort_category=0x7f0800f0;
+        public static final int menu_sort_coord=0x7f0800f1;
+        public static final int menu_sort_date=0x7f0800f6;
+        public static final int menu_sort_name=0x7f0800ef;
+        public static final int menu_stat=0x7f0800ca;
+        public static final int menu_toradar=0x7f0800c7;
+        public static final int menu_undo=0x7f0800cc;
+        public static final int message=0x7f080037;
+        public static final int message_list=0x7f08004b;
+        public static final int minele_data=0x7f0800a4;
+        public static final int minele_unit=0x7f0800a5;
+        public static final int moveavgspeed_data=0x7f0800a0;
+        public static final int moveavgspeed_unit=0x7f0800a1;
+        public static final int movetime_data=0x7f08009c;
+        public static final int movetime_unit=0x7f08009d;
+        public static final int mylocation=0x7f0800e3;
         public static final int name=0x7f080025;
         public static final int new_color_panel=0x7f080030;
         public static final int next=0x7f08001f;
-        public static final int ok=0x7f080059;
+        public static final int ok=0x7f08005a;
         public static final int old_color_panel=0x7f08002f;
         public static final int online_cache=0x7f080023;
-        public static final int open=0x7f080035;
+        public static final int open=0x7f080036;
         public static final int overwritefile=0x7f080026;
         public static final int overwritetiles=0x7f080027;
-        public static final int path=0x7f080039;
-        public static final int pause=0x7f080034;
-        public static final int pauseButton=0x7f08007e;
+        public static final int path=0x7f08003a;
+        public static final int pause=0x7f080035;
+        public static final int pauseButton=0x7f08007f;
         public static final int pic=0x7f080005;
-        public static final int poi_title=0x7f080067;
-        public static final int poilist=0x7f0800df;
-        public static final int points_data=0x7f08008b;
-        public static final int points_unit=0x7f08008c;
-        public static final int progress=0x7f080033;
-        public static final int reload=0x7f0800dc;
-        public static final int right=0x7f08004e;
-        public static final int right_area=0x7f0800d2;
-        public static final int right_panel=0x7f0800cc;
-        public static final int right_text=0x7f080050;
-        public static final int rl1=0x7f080083;
-        public static final int saveButton=0x7f080065;
-        public static final int scale_bar=0x7f0800d3;
-        public static final int screen=0x7f08004c;
-        public static final int screenCellView1=0x7f080078;
+        public static final int poi_title=0x7f080068;
+        public static final int poilist=0x7f0800e2;
+        public static final int points_data=0x7f08008c;
+        public static final int points_unit=0x7f08008d;
+        public static final int progress=0x7f080034;
+        public static final int reload=0x7f0800df;
+        public static final int right=0x7f08004f;
+        public static final int right_area=0x7f0800d5;
+        public static final int right_panel=0x7f0800cd;
+        public static final int right_text=0x7f080051;
+        public static final int rl1=0x7f080084;
+        public static final int routes=0x7f0800e9;
+        public static final int saveButton=0x7f080066;
+        public static final int scale_bar=0x7f0800d6;
+        public static final int screen=0x7f08004d;
+        public static final int screenCellView1=0x7f080079;
         public static final int scrollView1=0x7f080021;
         public static final int sdfg=0x7f080022;
-        public static final int search=0x7f0800d9;
-        public static final int set_title=0x7f0800b9;
-        public static final int settings=0x7f0800e7;
-        public static final int settings_activity_closed=0x7f0800bd;
-        public static final int shadow_color=0x7f0800b0;
-        public static final int shadowradius=0x7f0800b4;
-        public static final int spinnerCategory=0x7f080043;
-        public static final int startButton=0x7f08007d;
+        public static final int search=0x7f0800dc;
+        public static final int set_title=0x7f0800ba;
+        public static final int settings=0x7f0800eb;
+        public static final int settings_activity_closed=0x7f0800be;
+        public static final int shadow_color=0x7f0800b1;
+        public static final int shadowradius=0x7f0800b5;
+        public static final int spinnerCategory=0x7f080044;
+        public static final int startButton=0x7f08007e;
         public static final int start_download=0x7f08002d;
         public static final int step1=0x7f080019;
         public static final int step2=0x7f080020;
-        public static final int stopButton=0x7f08007f;
-        public static final int style_piker_main=0x7f0800aa;
-        public static final int tableLayout1=0x7f080081;
-        public static final int tableRow1=0x7f080075;
-        public static final int tableRow2=0x7f080086;
-        public static final int tableRow3=0x7f08008a;
-        public static final int tableRow4=0x7f08008d;
-        public static final int text=0x7f08003d;
-        public static final int textInfo=0x7f080058;
-        public static final int textName=0x7f08006f;
-        public static final int textOffset=0x7f080057;
+        public static final int stopButton=0x7f080080;
+        public static final int style_piker_main=0x7f0800ab;
+        public static final int tableLayout1=0x7f080082;
+        public static final int tableRow1=0x7f080076;
+        public static final int tableRow2=0x7f080087;
+        public static final int tableRow3=0x7f08008b;
+        public static final int tableRow4=0x7f08008e;
+        public static final int text=0x7f08003e;
+        public static final int textError=0x7f080032;
+        public static final int textInfo=0x7f080059;
+        public static final int textName=0x7f080070;
+        public static final int textOffset=0x7f080058;
         public static final int textTileCnt=0x7f080031;
-        public static final int textTime=0x7f080032;
-        public static final int textUnit=0x7f080071;
-        public static final int textValue=0x7f080070;
-        public static final int textView1=0x7f080082;
-        public static final int textView3=0x7f080087;
-        public static final int text_line_color=0x7f0800ac;
-        public static final int text_line_shadow_color=0x7f0800b1;
-        public static final int text_shadow_width=0x7f0800b3;
+        public static final int textTime=0x7f080033;
+        public static final int textUnit=0x7f080072;
+        public static final int textValue=0x7f080071;
+        public static final int textView1=0x7f080083;
+        public static final int textView3=0x7f080088;
+        public static final int text_line_color=0x7f0800ad;
+        public static final int text_line_shadow_color=0x7f0800b2;
+        public static final int text_shadow_width=0x7f0800b4;
         public static final int tile_done=0x7f080015;
         public static final int tile_error=0x7f080016;
-        public static final int title=0x7f080037;
+        public static final int title=0x7f080038;
         public static final int title1=0x7f080002;
         public static final int title2=0x7f080003;
-        public static final int tools=0x7f0800d8;
-        public static final int tracks=0x7f0800e5;
-        public static final int trackstyle=0x7f08007c;
-        public static final int user_moved_map=0x7f0800b8;
-        public static final int value=0x7f080053;
-        public static final int whatsnew=0x7f0800ba;
-        public static final int width=0x7f0800ae;
+        public static final int tools=0x7f0800db;
+        public static final int tracks=0x7f0800e8;
+        public static final int trackstyle=0x7f08007d;
+        public static final int user_moved_map=0x7f0800b9;
+        public static final int value=0x7f080054;
+        public static final int whatsnew=0x7f0800bb;
+        public static final int width=0x7f0800af;
     }
     public static final class integer {
         public static final int COLOR_BLACK=0x7f0a0000;
@@ -545,9 +549,9 @@ containing a value of this type.
         public static final int about_dialog_whats_new=0x7f0b0054;
         public static final int activity=0x7f0b00a2;
         public static final int add_shadow_box=0x7f0b00a7;
-        public static final int app_name=0x7f0b0112;
-        public static final int app_user_id=0x7f0b0110;
-        public static final int app_user_label=0x7f0b0111;
+        public static final int app_name=0x7f0b011e;
+        public static final int app_user_id=0x7f0b011c;
+        public static final int app_user_label=0x7f0b011d;
         public static final int auto_follow_disabled=0x7f0b004f;
         public static final int auto_follow_enabled=0x7f0b004e;
         public static final int avg_moving_speed=0x7f0b009e;
@@ -561,23 +565,25 @@ containing a value of this type.
         public static final int btn_start=0x7f0b0077;
         public static final int btn_stop=0x7f0b0079;
         public static final int clear=0x7f0b00cc;
-        public static final int dashboard_message_cant_remove_last_indicator=0x7f0b0100;
-        public static final int dashboard_title_gps_accuracy=0x7f0b0103;
-        public static final int dashboard_title_gps_altitude=0x7f0b0104;
-        public static final int dashboard_title_gps_bearing=0x7f0b0105;
-        public static final int dashboard_title_gps_latitude=0x7f0b0101;
-        public static final int dashboard_title_gps_longitude=0x7f0b0102;
-        public static final int dashboard_title_gps_provider=0x7f0b0107;
-        public static final int dashboard_title_gps_speed=0x7f0b0108;
-        public static final int dashboard_title_gps_time=0x7f0b0106;
-        public static final int dashboard_title_map_center_lat=0x7f0b010a;
-        public static final int dashboard_title_map_center_lon=0x7f0b010b;
-        public static final int dashboard_title_map_name=0x7f0b0109;
-        public static final int dashboard_title_map_zoom=0x7f0b010c;
+        public static final int dashboard_message_cant_remove_last_indicator=0x7f0b0102;
+        public static final int dashboard_title_gps_accuracy=0x7f0b0105;
+        public static final int dashboard_title_gps_altitude=0x7f0b0106;
+        public static final int dashboard_title_gps_bearing=0x7f0b0107;
+        public static final int dashboard_title_gps_latitude=0x7f0b0103;
+        public static final int dashboard_title_gps_longitude=0x7f0b0104;
+        public static final int dashboard_title_gps_provider=0x7f0b0109;
+        public static final int dashboard_title_gps_speed=0x7f0b010a;
+        public static final int dashboard_title_gps_time=0x7f0b0108;
+        public static final int dashboard_title_map_center_lat=0x7f0b010c;
+        public static final int dashboard_title_map_center_lon=0x7f0b010d;
+        public static final int dashboard_title_map_name=0x7f0b010b;
+        public static final int dashboard_title_map_zoom=0x7f0b010e;
+        public static final int dashboard_title_target_bearing=0x7f0b0110;
+        public static final int dashboard_title_target_distance=0x7f0b010f;
         public static final int dialog_color_picker=0x7f0b00a4;
         public static final int dist=0x7f0b00f6;
         public static final int distance=0x7f0b0099;
-        public static final int donation=0x7f0b0125;
+        public static final int donation=0x7f0b012f;
         public static final int downloader_notif_text=0x7f0b00c4;
         public static final int downloader_notif_ticket=0x7f0b00c2;
         public static final int downloader_notif_title=0x7f0b00c3;
@@ -585,26 +591,27 @@ containing a value of this type.
         public static final int error=0x7f0b0000;
         public static final int error_diskio=0x7f0b00a3;
         public static final int error_illegalmapid=0x7f0b00ea;
-        public static final int error_other=0x7f0b0127;
+        public static final int error_other=0x7f0b0131;
         public static final int error_send=0x7f0b008b;
         public static final int error_text=0x7f0b008a;
         public static final int error_title=0x7f0b0089;
         public static final int file_name=0x7f0b00ce;
-        public static final int ft=0x7f0b0121;
+        public static final int ft=0x7f0b0127;
         public static final int hidden=0x7f0b006a;
         public static final int hiddencategory=0x7f0b006b;
-        public static final int km=0x7f0b011c;
-        public static final int kmh=0x7f0b011d;
+        public static final int km=0x7f0b0122;
+        public static final int kmh=0x7f0b0123;
         public static final int line_color=0x7f0b00a8;
         public static final int line_width=0x7f0b00a9;
-        public static final int load_tiles_to_online_cache=0x7f0b010f;
-        public static final int m=0x7f0b011f;
+        public static final int load_tiles_to_online_cache=0x7f0b0113;
+        public static final int m=0x7f0b0125;
         public static final int max_elevation=0x7f0b00a0;
         public static final int max_speed=0x7f0b009c;
         public static final int menu_about=0x7f0b0044;
         public static final int menu_add=0x7f0b0046;
         public static final int menu_add_dualmap=0x7f0b00b9;
         public static final int menu_add_ownsourcemap=0x7f0b00ba;
+        public static final int menu_add_target_point=0x7f0b0100;
         public static final int menu_addpoi=0x7f0b0047;
         public static final int menu_area_selector=0x7f0b004c;
         public static final int menu_categorylist=0x7f0b0049;
@@ -622,7 +629,7 @@ containing a value of this type.
         public static final int menu_findthemap=0x7f0b00ef;
         public static final int menu_goto=0x7f0b006c;
         public static final int menu_goto_track=0x7f0b0076;
-        public static final int menu_gpsstatus=0x7f0b0113;
+        public static final int menu_gpsstatus=0x7f0b012e;
         public static final int menu_hide=0x7f0b0062;
         public static final int menu_hide_overlay=0x7f0b00b2;
         public static final int menu_i_am_here=0x7f0b00fe;
@@ -633,6 +640,8 @@ containing a value of this type.
         public static final int menu_mylocation=0x7f0b0041;
         public static final int menu_poilist=0x7f0b0048;
         public static final int menu_reload=0x7f0b00ee;
+        public static final int menu_remove_target_point=0x7f0b0101;
+        public static final int menu_routes=0x7f0b0119;
         public static final int menu_search=0x7f0b0045;
         public static final int menu_settings=0x7f0b003f;
         public static final int menu_share=0x7f0b00e1;
@@ -651,8 +660,8 @@ containing a value of this type.
         public static final int menu_toradar=0x7f0b0081;
         public static final int menu_tracks=0x7f0b0074;
         public static final int menu_undo=0x7f0b00ed;
-        public static final int mercator_ellipsoid=0x7f0b0123;
-        public static final int mercator_spheroid=0x7f0b0122;
+        public static final int mercator_ellipsoid=0x7f0b0129;
+        public static final int mercator_spheroid=0x7f0b0128;
         public static final int message_cantstarttrackwriter=0x7f0b0087;
         public static final int message_corruptindex=0x7f0b005b;
         public static final int message_error=0x7f0b0088;
@@ -668,11 +677,11 @@ containing a value of this type.
         public static final int message_updateminmax=0x7f0b005c;
         public static final int message_wait=0x7f0b008e;
         public static final int min_elevation=0x7f0b009f;
-        public static final int minkm=0x7f0b011e;
-        public static final int ml=0x7f0b0120;
-        public static final int mnm=0x7f0b0114;
+        public static final int minkm=0x7f0b0124;
+        public static final int ml=0x7f0b0126;
+        public static final int mnm=0x7f0b011f;
         public static final int moving_time=0x7f0b009d;
-        public static final int mymap=0x7f0b0126;
+        public static final int mymap=0x7f0b0130;
         public static final int next=0x7f0b00cd;
         public static final int no=0x7f0b00d9;
         public static final int no_inet_conn=0x7f0b0051;
@@ -684,7 +693,7 @@ containing a value of this type.
         public static final int offset_info=0x7f0b00e3;
         public static final int offset_text=0x7f0b00e4;
         public static final int open=0x7f0b00d4;
-        public static final int osgb36=0x7f0b0124;
+        public static final int osgb36=0x7f0b012a;
         public static final int overwrite_existing_file=0x7f0b00cf;
         public static final int overwrite_existing_tiles=0x7f0b00d0;
         public static final int poi=0x7f0b00db;
@@ -692,6 +701,7 @@ containing a value of this type.
         public static final int pref_accuracy=0x7f0b0014;
         public static final int pref_accuracy_summary=0x7f0b0013;
         public static final int pref_addmixmap=0x7f0b00b8;
+        public static final int pref_arrow_icon=0x7f0b0117;
         public static final int pref_circle_distance=0x7f0b00f2;
         public static final int pref_circle_distance_summary=0x7f0b00f3;
         public static final int pref_coordformat=0x7f0b00f4;
@@ -717,6 +727,7 @@ containing a value of this type.
         public static final int pref_gpsfastupdate_summary=0x7f0b001f;
         public static final int pref_hidepoi=0x7f0b0008;
         public static final int pref_hidepoi_summary=0x7f0b0007;
+        public static final int pref_icon_summary=0x7f0b0118;
         public static final int pref_index_summary=0x7f0b0034;
         public static final int pref_index_title=0x7f0b0033;
         public static final int pref_internalcache_summary=0x7f0b0032;
@@ -750,10 +761,11 @@ containing a value of this type.
         public static final int pref_overlay_button_behavior_summary=0x7f0b00c0;
         public static final int pref_overlay_button_visibility=0x7f0b00bd;
         public static final int pref_overlay_button_visibility_summary=0x7f0b00be;
+        public static final int pref_person_icon=0x7f0b0116;
         public static final int pref_screen_orientation=0x7f0b0003;
         public static final int pref_screen_orientation_summary=0x7f0b0004;
-        public static final int pref_show_autofollow_button=0x7f0b010d;
-        public static final int pref_show_autofollow_button_summary=0x7f0b010e;
+        public static final int pref_show_autofollow_button=0x7f0b0111;
+        public static final int pref_show_autofollow_button_summary=0x7f0b0112;
         public static final int pref_showscalebar=0x7f0b0036;
         public static final int pref_showscalebar_summary=0x7f0b0035;
         public static final int pref_showstatusbar=0x7f0b001b;
@@ -774,6 +786,8 @@ containing a value of this type.
         public static final int pref_turnoffautoreindex_summary=0x7f0b001d;
         public static final int pref_units=0x7f0b0038;
         public static final int pref_units_summary=0x7f0b0037;
+        public static final int pref_use_volume_controls=0x7f0b0114;
+        public static final int pref_use_volume_controls_summary=0x7f0b0115;
         public static final int pref_usermap_baseurl=0x7f0b0023;
         public static final int pref_usermap_enabled=0x7f0b0020;
         public static final int pref_usermap_enabled_summary=0x7f0b0021;
@@ -806,10 +820,10 @@ containing a value of this type.
         public static final int set_color_and_style=0x7f0b00a6;
         public static final int shadow_color=0x7f0b00aa;
         public static final int shadow_width=0x7f0b00ab;
-        public static final int sqlitedb=0x7f0b0116;
+        public static final int sqlitedb=0x7f0b0121;
         public static final int start_download=0x7f0b00d2;
         public static final int stop=0x7f0b00d3;
-        public static final int tar=0x7f0b0115;
+        public static final int tar=0x7f0b0120;
         public static final int this_folder_is_empty=0x7f0b0071;
         public static final int toend=0x7f0b00f9;
         public static final int toprev=0x7f0b00fa;
@@ -819,10 +833,10 @@ containing a value of this type.
         public static final int trackwriter_nothing=0x7f0b007a;
         public static final int trackwriter_saved=0x7f0b007b;
         public static final int warning_delete_all_poi=0x7f0b0073;
-        public static final int whats_new_dialog_text=0x7f0b0117;
-        public static final int ya_dialog_button_caption=0x7f0b011a;
-        public static final int ya_dialog_message=0x7f0b0119;
-        public static final int ya_dialog_title=0x7f0b0118;
+        public static final int whats_new_dialog_text=0x7f0b011a;
+        public static final int ya_dialog_button_caption=0x7f0b012d;
+        public static final int ya_dialog_message=0x7f0b012c;
+        public static final int ya_dialog_title=0x7f0b012b;
         public static final int yes=0x7f0b00d8;
     }
     public static final class style {
@@ -851,7 +865,7 @@ containing a value of this type.
            <tr><th>Attribute</th><th>Description</th></tr>
            <tr><td><code>{@link #GridLayout_alignmentMode com.robert.maps:alignmentMode}</code></td><td> When set to alignMargins, causes alignment to take place between the outer
         boundary of a view, as defined by its margins.</td></tr>
-           <tr><td><code>{@link #GridLayout_android_orientation com.robert.maps:android_orientation}</code></td><td> The orientation property is not used during layout.</td></tr>
+           <tr><td><code>{@link #GridLayout_android_orientation android:orientation}</code></td><td> The orientation property is not used during layout.</td></tr>
            <tr><td><code>{@link #GridLayout_columnCount com.robert.maps:columnCount}</code></td><td> The maxmimum number of columns to create when automatically positioning children.</td></tr>
            <tr><td><code>{@link #GridLayout_columnOrderPreserved com.robert.maps:columnOrderPreserved}</code></td><td> When set to true, forces column boundaries to appear in the same order
         as column indices.</td></tr>
@@ -895,7 +909,7 @@ containing a value of this type.
         See {@link android.widget.GridLayout#ALIGN_MARGINS}. </td></tr>
 </table>
           <p>This is a private symbol.
-          @attr name android:alignmentMode
+          @attr name com.robert.maps:alignmentMode
         */
         public static final int GridLayout_alignmentMode = 1;
         /**
@@ -909,8 +923,9 @@ containing a value of this type.
         property may be additionally supplied to force new rows to be created when a
         row is full. The rowCount attribute may be used similarly in the vertical case.
         The default is horizontal. 
-          <p>This corresponds to the global attribute          resource symbol {@link com.robert.maps.R.attr#android_orientation}.
-          @attr name android:android_orientation
+          <p>This corresponds to the global attribute
+          resource symbol {@link android.R.attr#orientation}.
+          @attr name android:orientation
         */
         public static final int GridLayout_android_orientation = 0;
         /**
@@ -926,7 +941,7 @@ theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
           <p>This is a private symbol.
-          @attr name android:columnCount
+          @attr name com.robert.maps:columnCount
         */
         public static final int GridLayout_columnCount = 3;
         /**
@@ -945,7 +960,7 @@ theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
           <p>This is a private symbol.
-          @attr name android:columnOrderPreserved
+          @attr name com.robert.maps:columnOrderPreserved
         */
         public static final int GridLayout_columnOrderPreserved = 6;
         /**
@@ -961,7 +976,7 @@ theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
           <p>This is a private symbol.
-          @attr name android:rowCount
+          @attr name com.robert.maps:rowCount
         */
         public static final int GridLayout_rowCount = 2;
         /**
@@ -980,7 +995,7 @@ theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
           <p>This is a private symbol.
-          @attr name android:rowOrderPreserved
+          @attr name com.robert.maps:rowOrderPreserved
         */
         public static final int GridLayout_rowOrderPreserved = 5;
         /**
@@ -999,7 +1014,7 @@ theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
           <p>This is a private symbol.
-          @attr name android:useDefaultMargins
+          @attr name com.robert.maps:useDefaultMargins
         */
         public static final int GridLayout_useDefaultMargins = 4;
         /** Attributes that can be used with a GridLayout_Layout.
@@ -1008,9 +1023,9 @@ containing a value of this type.
            <colgroup align="left" />
            <colgroup align="left" />
            <tr><th>Attribute</th><th>Description</th></tr>
-           <tr><td><code>{@link #GridLayout_Layout_android_layout_column com.robert.maps:android_layout_column}</code></td><td> The column boundary delimiting the left of the group of cells
+           <tr><td><code>{@link #GridLayout_Layout_android_layout_column android:layout_column}</code></td><td> The column boundary delimiting the left of the group of cells
         occupied by this view.</td></tr>
-           <tr><td><code>{@link #GridLayout_Layout_android_layout_gravity com.robert.maps:android_layout_gravity}</code></td><td> Gravity specifies how a component should be placed in its group of cells.</td></tr>
+           <tr><td><code>{@link #GridLayout_Layout_android_layout_gravity android:layout_gravity}</code></td><td> Gravity specifies how a component should be placed in its group of cells.</td></tr>
            <tr><td><code>{@link #GridLayout_Layout_layout_columnSpan com.robert.maps:layout_columnSpan}</code></td><td> The column span: the difference between the right and left
         boundaries delimiting the group of cells occupied by this view.</td></tr>
            <tr><td><code>{@link #GridLayout_Layout_layout_row com.robert.maps:layout_row}</code></td><td> The row boundary delimiting the top of the group of cells
@@ -1033,8 +1048,9 @@ containing a value of this type.
           @attr description
            The column boundary delimiting the left of the group of cells
         occupied by this view. 
-          <p>This corresponds to the global attribute          resource symbol {@link com.robert.maps.R.attr#android_layout_column}.
-          @attr name android:android_layout_column
+          <p>This corresponds to the global attribute
+          resource symbol {@link android.R.attr#layout_column}.
+          @attr name android:layout_column
         */
         public static final int GridLayout_Layout_android_layout_column = 1;
         /**
@@ -1043,8 +1059,9 @@ containing a value of this type.
            Gravity specifies how a component should be placed in its group of cells.
         The default is LEFT | BASELINE.
         See {@link android.widget.GridLayout.LayoutParams#setGravity(int)}. 
-          <p>This corresponds to the global attribute          resource symbol {@link com.robert.maps.R.attr#android_layout_gravity}.
-          @attr name android:android_layout_gravity
+          <p>This corresponds to the global attribute
+          resource symbol {@link android.R.attr#layout_gravity}.
+          @attr name android:layout_gravity
         */
         public static final int GridLayout_Layout_android_layout_gravity = 0;
         /**
@@ -1063,7 +1080,7 @@ theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
           <p>This is a private symbol.
-          @attr name android:layout_columnSpan
+          @attr name com.robert.maps:layout_columnSpan
         */
         public static final int GridLayout_Layout_layout_columnSpan = 4;
         /**
@@ -1080,7 +1097,7 @@ theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
           <p>This is a private symbol.
-          @attr name android:layout_row
+          @attr name com.robert.maps:layout_row
         */
         public static final int GridLayout_Layout_layout_row = 2;
         /**
@@ -1099,7 +1116,7 @@ theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
           <p>This is a private symbol.
-          @attr name android:layout_rowSpan
+          @attr name com.robert.maps:layout_rowSpan
         */
         public static final int GridLayout_Layout_layout_rowSpan = 3;
         /** Attributes that can be used with a MapView.
@@ -1130,7 +1147,7 @@ containing a value of this type.
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:DisableControl
+          @attr name com.robert.maps:DisableControl
         */
         public static final int MapView_DisableControl = 2;
         /**
@@ -1144,7 +1161,7 @@ containing a value of this type.
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:ScaleBarVisible
+          @attr name com.robert.maps:ScaleBarVisible
         */
         public static final int MapView_ScaleBarVisible = 0;
         /**
@@ -1158,7 +1175,7 @@ containing a value of this type.
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:SideInOutButtons
+          @attr name com.robert.maps:SideInOutButtons
         */
         public static final int MapView_SideInOutButtons = 1;
         /**  Give ourselves access to MarginLayout's styleables 
@@ -1167,11 +1184,11 @@ containing a value of this type.
            <colgroup align="left" />
            <colgroup align="left" />
            <tr><th>Attribute</th><th>Description</th></tr>
-           <tr><td><code>{@link #ViewGroup_MarginLayout_android_layout_margin com.robert.maps:android_layout_margin}</code></td><td></td></tr>
-           <tr><td><code>{@link #ViewGroup_MarginLayout_android_layout_marginBottom com.robert.maps:android_layout_marginBottom}</code></td><td></td></tr>
-           <tr><td><code>{@link #ViewGroup_MarginLayout_android_layout_marginLeft com.robert.maps:android_layout_marginLeft}</code></td><td></td></tr>
-           <tr><td><code>{@link #ViewGroup_MarginLayout_android_layout_marginRight com.robert.maps:android_layout_marginRight}</code></td><td></td></tr>
-           <tr><td><code>{@link #ViewGroup_MarginLayout_android_layout_marginTop com.robert.maps:android_layout_marginTop}</code></td><td></td></tr>
+           <tr><td><code>{@link #ViewGroup_MarginLayout_android_layout_margin android:layout_margin}</code></td><td></td></tr>
+           <tr><td><code>{@link #ViewGroup_MarginLayout_android_layout_marginBottom android:layout_marginBottom}</code></td><td></td></tr>
+           <tr><td><code>{@link #ViewGroup_MarginLayout_android_layout_marginLeft android:layout_marginLeft}</code></td><td></td></tr>
+           <tr><td><code>{@link #ViewGroup_MarginLayout_android_layout_marginRight android:layout_marginRight}</code></td><td></td></tr>
+           <tr><td><code>{@link #ViewGroup_MarginLayout_android_layout_marginTop android:layout_marginTop}</code></td><td></td></tr>
            </table>
            @see #ViewGroup_MarginLayout_android_layout_margin
            @see #ViewGroup_MarginLayout_android_layout_marginBottom
@@ -1184,33 +1201,33 @@ containing a value of this type.
             0x010100fa
         };
         /**
-          <p>This symbol is the offset where the {@link com.robert.maps.R.attr#android_layout_margin}
+          <p>This symbol is the offset where the {@link android.R.attr#layout_margin}
           attribute's value can be found in the {@link #ViewGroup_MarginLayout} array.
-          @attr name android:android_layout_margin
+          @attr name android:layout_margin
         */
         public static final int ViewGroup_MarginLayout_android_layout_margin = 0;
         /**
-          <p>This symbol is the offset where the {@link com.robert.maps.R.attr#android_layout_marginBottom}
+          <p>This symbol is the offset where the {@link android.R.attr#layout_marginBottom}
           attribute's value can be found in the {@link #ViewGroup_MarginLayout} array.
-          @attr name android:android_layout_marginBottom
+          @attr name android:layout_marginBottom
         */
         public static final int ViewGroup_MarginLayout_android_layout_marginBottom = 4;
         /**
-          <p>This symbol is the offset where the {@link com.robert.maps.R.attr#android_layout_marginLeft}
+          <p>This symbol is the offset where the {@link android.R.attr#layout_marginLeft}
           attribute's value can be found in the {@link #ViewGroup_MarginLayout} array.
-          @attr name android:android_layout_marginLeft
+          @attr name android:layout_marginLeft
         */
         public static final int ViewGroup_MarginLayout_android_layout_marginLeft = 1;
         /**
-          <p>This symbol is the offset where the {@link com.robert.maps.R.attr#android_layout_marginRight}
+          <p>This symbol is the offset where the {@link android.R.attr#layout_marginRight}
           attribute's value can be found in the {@link #ViewGroup_MarginLayout} array.
-          @attr name android:android_layout_marginRight
+          @attr name android:layout_marginRight
         */
         public static final int ViewGroup_MarginLayout_android_layout_marginRight = 3;
         /**
-          <p>This symbol is the offset where the {@link com.robert.maps.R.attr#android_layout_marginTop}
+          <p>This symbol is the offset where the {@link android.R.attr#layout_marginTop}
           attribute's value can be found in the {@link #ViewGroup_MarginLayout} array.
-          @attr name android:android_layout_marginTop
+          @attr name android:layout_marginTop
         */
         public static final int ViewGroup_MarginLayout_android_layout_marginTop = 2;
     };
