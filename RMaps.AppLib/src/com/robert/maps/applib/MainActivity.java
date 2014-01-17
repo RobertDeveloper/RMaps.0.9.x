@@ -82,6 +82,7 @@ import com.robert.maps.applib.dashboard.IndicatorView;
 import com.robert.maps.applib.dashboard.IndicatorView.IndicatorViewMenuInfo;
 import com.robert.maps.applib.downloader.AreaSelectorActivity;
 import com.robert.maps.applib.downloader.FileDownloadListActivity;
+import com.robert.maps.applib.geoui.GeoDataActivity;
 import com.robert.maps.applib.kml.PoiActivity;
 import com.robert.maps.applib.kml.PoiListActivity;
 import com.robert.maps.applib.kml.PoiManager;
@@ -953,7 +954,8 @@ public class MainActivity extends Activity {
 			startActivityForResult(new Intent(this, TrackListActivity.class), R.id.tracks);
 			return true;
 		} else if (item.getItemId() == R.id.routes) {
-			startActivityForResult(new Intent(this, RouteListActivity.class), R.id.routes);
+			//startActivityForResult(new Intent(this, RouteListActivity.class), R.id.routes);
+			startActivityForResult((new Intent(this, GeoDataActivity.class)), R.id.poilist);
 			return true;
 		} else if (item.getItemId() == R.id.search) {
 			onSearchRequested();
