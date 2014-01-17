@@ -1,7 +1,6 @@
 package com.robert.maps.applib.kml;
 
 import java.util.Date;
-import java.util.HashMap;
 
 import org.andnav.osm.util.GeoPoint;
 

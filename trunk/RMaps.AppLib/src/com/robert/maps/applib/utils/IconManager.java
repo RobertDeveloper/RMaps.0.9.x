@@ -77,7 +77,29 @@ public class IconManager {
 		return null;
 	}
 	
-	private Drawable getDrawable(int resId) {
+    public static int poi=0x7f02000a;
+    public static int poiblue=0x7f02000c;
+    public static int poigreen=0x7f02000d;
+    public static int poiwhite=0x7f02000e;
+    public static int poiyellow=0x7f02000f;
+
+    public int getPoiIconResId(int id) {
+		if(id == poi) {
+			return R.drawable.poi;
+		} else if(id == poiblue) {
+			return R.drawable.poiblue;
+		} else if(id == poigreen) {
+			return R.drawable.poigreen;
+		} else if(id == poiwhite) {
+			return R.drawable.poiwhite;
+		} else if(id == poiyellow) {
+			return R.drawable.poiyellow;
+		} else {
+			return 0;
+		}
+	}
+	
+ 	private Drawable getDrawable(int resId) {
 		return mAppContext.getResources().getDrawable(resId);
 	}
 	
