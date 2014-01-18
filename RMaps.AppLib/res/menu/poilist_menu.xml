@@ -1,18 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto" >
 
     <item
         android:id="@+id/menu_addpoi"
         android:icon="@android:drawable/ic_menu_add"
         android:title="@string/menu_addpoi">
     </item>
-    <item android:id="@+id/menu_sort" android:title="@string/menu_sort" android:icon="@android:drawable/ic_menu_sort_alphabetically">
+    <item
+        android:id="@+id/menu_sort"
+        android:icon="@android:drawable/ic_menu_sort_alphabetically"
+        android:title="@string/menu_sort"
+        app:showAsAction="always"
+        >
         <menu>
-            <item android:id="@+id/menu_sort_name" android:title="@string/menu_sort_name"/>
-            <item android:id="@+id/menu_sort_category" android:title="@string/menu_sort_category"/>
-            <item android:id="@+id/menu_sort_coord" android:title="@string/menu_sort_coord"/>
+            <item
+                android:id="@+id/menu_sort_name"
+                android:title="@string/menu_sort_name"/>
+            <item
+                android:id="@+id/menu_sort_category"
+                android:title="@string/menu_sort_category"/>
+            <item
+                android:id="@+id/menu_sort_coord"
+                android:title="@string/menu_sort_coord"/>
         </menu>
-    </item><item
+    </item>
+    <item
         android:id="@+id/menu_categorylist"
         android:icon="@drawable/ic_menu_archive"
         android:title="@string/menu_categorylist">
@@ -22,21 +35,5 @@
         android:icon="@drawable/ric_menu_attachment"
         android:title="@string/menu_import">
     </item>
-    <item
-        android:id="@+id/menu_deleteall"
-        android:icon="@android:drawable/ic_menu_delete"
-        android:title="@string/menu_deleteall">
-    </item>
-    <item
-        android:id="@+id/menu_exportkml"
-        android:icon="@android:drawable/ic_menu_upload"
-        android:title="@string/menu_exporttokml">
-    </item>
-    <item
-        android:id="@+id/menu_exportgpx"
-        android:icon="@android:drawable/ic_menu_upload"
-        android:title="@string/menu_exporttogpx">
-    </item>
-    
 
 </menu>
