@@ -135,8 +135,8 @@ public class PoiListActivity extends ListActivity {
 		} else if(item.getItemId() == R.id.menu_importpoi) {
 			startActivity((new Intent(this, ImportPoiActivity.class)));
 			return true;
-		} else if(item.getItemId() == R.id.menu_deleteall) {
-			showDialog(R.id.menu_deleteall);
+		} else if(item.getItemId() == R.id.menu_delete) {
+			showDialog(R.id.menu_delete);
 			return true;
 		} else if(item.getItemId() == R.id.menu_exportgpx) {
 			DoExportGpx();
@@ -327,7 +327,7 @@ public class PoiListActivity extends ListActivity {
 	
 	@Override
 	protected Dialog onCreateDialog(int id) {
-		if(id == R.id.menu_deleteall) {
+		if(id == R.id.menu_delete) {
 			return new AlertDialog.Builder(this)
 				//.setIcon(R.drawable.alert_dialog_icon)
 				.setTitle(R.string.warning_delete_all_poi)
