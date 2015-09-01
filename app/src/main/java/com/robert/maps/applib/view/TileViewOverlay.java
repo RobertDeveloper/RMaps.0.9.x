@@ -43,7 +43,7 @@ public abstract class TileViewOverlay {
 	
 	/**
 	 * By default does nothing (<code>return false</code>). If you handled the Event, return <code>true</code>, otherwise return <code>false</code>.
-	 * If you returned <code>true</code> none of the following Overlays or the underlying {@link } has the chance to handle this event.
+	 * If you returned <code>true</code> none of the following Overlays or the underlying {@link OpenStreetMapView} has the chance to handle this event. 
 	 */
 	public boolean onKeyDown(final int keyCode, KeyEvent event, final TileView mapView) {
 		return false;
@@ -51,7 +51,7 @@ public abstract class TileViewOverlay {
 	
 	/**
 	 * By default does nothing (<code>return false</code>). If you handled the Event, return <code>true</code>, otherwise return <code>false</code>.
-	 * If you returned <code>true</code> none of the following Overlays or the underlying {@link } has the chance to handle this event.
+	 * If you returned <code>true</code> none of the following Overlays or the underlying {@link OpenStreetMapView} has the chance to handle this event. 
 	 */
 	public boolean onKeyUp(final int keyCode, KeyEvent event, final TileView mapView) {
 		return false;
@@ -60,7 +60,7 @@ public abstract class TileViewOverlay {
 	/**
 	 * <b>You can prevent all(!) other Touch-related events from happening!</b><br />
 	 * By default does nothing (<code>return false</code>). If you handled the Event, return <code>true</code>, otherwise return <code>false</code>.
-	 * If you returned <code>true</code> none of the following Overlays or the underlying {@link } has the chance to handle this event.
+	 * If you returned <code>true</code> none of the following Overlays or the underlying {@link OpenStreetMapView} has the chance to handle this event. 
 	 */
 	public boolean onTouchEvent(final MotionEvent event, final TileView mapView) {
 		return false;
@@ -68,7 +68,7 @@ public abstract class TileViewOverlay {
 	
 	/**
 	 * By default does nothing (<code>return false</code>). If you handled the Event, return <code>true</code>, otherwise return <code>false</code>.
-	 * If you returned <code>true</code> none of the following Overlays or the underlying {@link } has the chance to handle this event.
+	 * If you returned <code>true</code> none of the following Overlays or the underlying {@link OpenStreetMapView} has the chance to handle this event. 
 	 */
 	public boolean onTrackballEvent(final MotionEvent event, final TileView mapView) {
 		return false;
@@ -76,7 +76,7 @@ public abstract class TileViewOverlay {
 
 	/**
 	 * By default does nothing (<code>return false</code>). If you handled the Event, return <code>true</code>, otherwise return <code>false</code>.
-	 * If you returned <code>true</code> none of the following Overlays or the underlying {@link } has the chance to handle this event.
+	 * If you returned <code>true</code> none of the following Overlays or the underlying {@link OpenStreetMapView} has the chance to handle this event. 
 	 */
 	public boolean onSingleTapUp(MotionEvent e, TileView openStreetMapView) {
 		return false;
@@ -84,7 +84,7 @@ public abstract class TileViewOverlay {
 
 	/**
 	 * By default does nothing (<code>return false</code>). If you handled the Event, return <code>true</code>, otherwise return <code>false</code>.
-	 * If you returned <code>true</code> none of the following Overlays or the underlying {@link } has the chance to handle this event.
+	 * If you returned <code>true</code> none of the following Overlays or the underlying {@link OpenStreetMapView} has the chance to handle this event. 
 	 */
 	public int onLongPress(MotionEvent e, TileView openStreetMapView) {
 		return 0;

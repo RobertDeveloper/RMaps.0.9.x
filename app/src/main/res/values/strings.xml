@@ -99,7 +99,8 @@ All rights reserved\n
 \n
 Questions, sentences mail to robertk506@gmail.com\n
 \n
-How to and FAQ you can find on http://robertdeveloper.blogspot.com/\n</string>
+How to and FAQ you can find on http://robertdeveloper.blogspot.com/\n
+</string>
     <string name="about_dialog_whats_new">What\'s new&#8230;</string>
     <string name="about_dialog_close">Close</string>
     <string name="search_label">Address:</string>
@@ -212,7 +213,8 @@ How to and FAQ you can find on http://robertdeveloper.blogspot.com/\n</string>
     <string name="pref_custommap_dialogmessage">For example:\n
 	    http://c.tile.openstreetmap.org/{z}/{x}/{y}.png\n
 	    Addition to the obvious {z}, {x}, {y} you can use {galileo} for Google maps\n
-	    Write me to email if you need to extends this list of parameters.\n	</string>
+	    Write me to email if you need to extends this list of parameters.\n
+	</string>
     <string name="downloader_notif_ticket">Downloading started&#8230;</string>
     <string name="downloader_notif_title">RMaps tile downloader</string>
     <string name="downloader_notif_text">Downloading in progress</string>
