@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="whats_new_dialog_text">
+<b>Do you like RMaps?\n
+Buy RMaps.Donation on Google Play Store</b>\n
+\n
+Do you want to help me translate the app interface? Write me to email robertk506@gmail.com\n
+\n
+v.0.9.4\n
++ Dashboard. Use Menu - Dashboard. Long press on dashboard to add or change value\n
++ I am here: Long press on the screen to point your location without GPS\n  
++ Target point (use the map context menu)\n
++ Dashboard indicators: distance to target, initial bearing to target\n
++ Ability to use volume controls to zoom map\n
++ Ability to export import POI category with the POI\n
++ Ability to use custom cursors\n
++ Ability to download online map directly to online cache\n
++ Updated URL: Soviet Military Map, Yandex, Google\n
+- Improving downloader service, Track writer service\n
+- Fixed some GPX importing bugs\n
+\n
+v.0.9.3\n
++ Much improved measure tool. When you click on each point of the measurement line you can see the coordinates, distance, azimuth\n
++ Ability to use the app on devices without GPS\n
++ Long press on the map now shows the coordinates, altitude (online only), bearing and distance from your current position. Clicking on a black bubble shows the context menu.\n
++ Coordinates formatting preference\n
++ Ability to set Zoom controls at the right\n
++ Ability to download layers offline\n
++ Built-in ability to download Geology and Geophysics offline maps from www.dpi.nsw.gov.au/minerals\n
+- Fixed scale bar bug\n
+- Fixed some POI bug\n
+\n
+v.0.9.2\n
++ Opened Google Community RMaps on Google+\n
++ Measuring distances (Menu - Tools - Measure)\n
++ Distance circles around current location\n
++ Joining multiple tracks into one\n
++ New Relief map\n
++ Reload/update tiles tool on the screen online map (Menu - Tools - Reload screen tiles)\n
++ OSGB 36 for offline Ordnance Survey Map\n
+- Compass fix?\n
+- Loading circles after download fix\n
+- White POI on SONY fix\n
+- Google.Land, Google.Satellite fix\n
+\n
+v.0.9.1\n
++ BING maps (Roag, Aerial , Hydrid)\n
++ USA Topo maps, ArcGIS USA maps, USGS Topo maps\n
++ Improve usability of POI category list\n
++ Improve usability of maps list in settings\n
++ Line between current GPS location and center of screen\n
++ Share POI function\n
++ Altitude field in POI activity\n
++ Map offset function (useful for chinese users)\n
++ Stretch factor of map, ability to enlarge picture of any map\n
+- Offline maps bug fix\n
+\n
+v.0.9.0\n
++ Tile downloader\n
++ Sort POI, tracks\n
+\n
+v.0.8.12\n
++ New overlay feature (add overlay layer above map by one touch, create your own map+overlay pairs, flexibility overlay button on the map)\n
++ New ability to add your own map source\n
+\n
+v.0.8.11\n
++ New maps Cloudmade (OSM data) with comfort label size\n
++ Google scale factor. You can enlarge size of the labels on the map. See the preference of the map\n
++ Language preference. You can set UI language independent of system\n
++ Imperial units in statistic view\n
++ Track color, width, shadow\n
++ Multiple tracks on the map\n
+\n
+v.0.8.10.2\n
++ Support geo intents. You can tap address in calendar app and show it in RMaps\n
+- Bugfix support MNM files and c:geo app\n
+\n
+v.0.8.10\n
++ UI updates\n
++ Maps URL updates\n
+\n
+v.0.8.9\n
++ Crosshair on centre of the map\n
++ Added new map maps.refuges.info\n
+\n
+v.0.8.8\n
++ Update maps URL\n
+- UI improvement for high res screens\n
+\n
+v.0.8.7\n
++ New preference Directory\n
++ Now RMaps stores tiles of online maps on sdcard in sqlite format\n
+\n
+v.0.8.6\n
++ New maps: VFR (avcharts.com), MyTopo, OSM MTB Mapa Česká republika\n
++ Error report (please, send me message about force close)\n
+- Bug fix: Mutlitouch, Scale bar, more\n
+\n
+v.0.8.5\n
++ Scale bar, Units property\n
+\n
+v.0.8.4\n
+-  Mutlitouch zooming\n
++ Zoom buttons settings: top, bottom, hide\n
+\n
+v.0.8.3.2\n
++ Ready to install to SD card\n
++ Update maps URL\n
+- Bug fix: Force close on Stop trackwriter on Froyo\n
+- Bug fix: Wrong date time on tracks. New tracks will be OK\n
+\n
+v.0.8.3\n
++ Export track to GPX, KML file\n
+\n
+v.0.8.2\n
++ Drawing of a current written track\n
+\n
+v.0.8.1\n
++ Track writer\n
++ Integration with Radar programs\n
++ New maps for USA aviators: VFR Chart, IFR Low, IFR High\n
+\n
+v.0.8.0\n
++ Import tracks from KML, GPX files\n
+\n
+v.0.7.7.1\n
+- Bug fix: Import some poi files\n
++ Delete all poi confirm dialog\n
+\n
+v.0.7.7\n
++ Import POI from KML, GPX files\n
++ Optimisation of drawing of POI\n
++ Update Yandex.Map URL, Google.Map URL\n
+\n
+v.0.7.6\n
++ Add localisation of Google Maps. See Preference\n
++ Added new online maps (Topographic map of Norway, Sea map of Norway)\n
++ Add screen orientation preference\n
++ Update Yandex.Map URL, Google.Map URL\n
+\n
+v.0.7.5\n
++ POI category\n
++ The back button close the search result window\n
+- Bug fix: OS Map\n
+\n
+v.0.7.4\n
++ Added new online maps (Docelu.pl Poland, Freemap.sk Slovakia, Slovakia Hiking, Slovakia Hiking HillShade)\n
+Do you want to add new online map? Write to me.\n
+\n
+v.0.7.3\n
+- Bug fix: 100 value zoom in sqlitedb format maps\n
++ Added new online maps (Microsoft Maps, Maps China, Virtual Earth, Hybrid, OSM Hiking Germany, OSM Public Transport, Outdooractive.com, Cykloatlas CZ, UMP-pcPL Poland)\n
+\n
+v.0.7.0\n
++ Minimum POI functionality\n
++ Integration with GPS Status by Rudolf Hornig\n
++ Move index data of offline maps to sdcard\n
++ Added buttons for clearing internal cache and index database to preference\n
++ Update Yandex.Map URL, Google.Map URL\n
+- Bug fix: Wrong compass orientation on landscape mode\n
+\n
+	</string>
+</resources>

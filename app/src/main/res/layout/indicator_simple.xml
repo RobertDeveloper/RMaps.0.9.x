@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.robert.maps.applib.dashboard.IndicatorView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/RelativeLayout1"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="#dd000000"
+    android:paddingBottom="4dp"
+    android:paddingLeft="4dp"
+    android:paddingRight="4dp"
+    android:paddingTop="4dp" >
+
+    <TextView
+        android:id="@+id/data_header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:includeFontPadding="false"
+        android:maxLines="1"
+        android:text="@string/points_cnt"
+        android:textAppearance="@style/data_header" >
+
+    </TextView>
+
+    <TextView
+        android:id="@+id/data_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/data_header"
+        android:includeFontPadding="false"
+        android:maxLines="1"
+        android:text="452"
+        android:textAppearance="@style/data_value" >
+
+    </TextView>
+
+    <TextView
+        android:id="@+id/data_unit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/data_value"
+        android:layout_toRightOf="@+id/data_value"
+        android:includeFontPadding="false"
+        android:maxLines="1"
+        android:paddingLeft="5.0px"
+        android:text="km"
+        android:textAppearance="@style/data_unit" >
+
+    </TextView>
+
+</com.robert.maps.applib.dashboard.IndicatorView>

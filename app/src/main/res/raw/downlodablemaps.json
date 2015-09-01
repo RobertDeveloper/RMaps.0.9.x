@@ -1,0 +1,42 @@
+[
+    {
+        "id": "1",
+        "listtitle": "NSW Geology (160 MB)",
+        "mapname": "NSW Geology",
+        "filename": "NSWGeology.sqlitedb",
+        "source": "http://dwh.minerals.nsw.gov.au/CI/download.php?filename=NSWGeology&extension=sqlitedb&info=ANDROD",
+        "owner": "NSW Geological Survey http://www.dpi.nsw.gov.au/minerals", 
+        "center": "-32.379378,146.781712",
+        "zoom": "6"
+    },
+    {
+        "id": "2",
+        "listtitle": "NSW Radiometrics (270 MB)",
+        "mapname": "NSW Radiometrics",
+        "filename": "NSWRadiometrics.sqlitedb",
+        "source": "http://dwh.minerals.nsw.gov.au/CI/download.php?filename=NSWRadiometrics&extension=sqlitedb&info=ANDROD",
+        "owner": "NSW Geological Survey http://www.dpi.nsw.gov.au/minerals",
+        "center": "-32.379378,146.781712",
+        "zoom": "6"
+    },
+    {
+        "id": "3",
+        "listtitle": "NSW Magnetics (320 MB)",
+        "mapname": "NSW Magnetics",
+        "filename": "NSWMagnetics.sqlitedb",
+        "source": "http://dwh.minerals.nsw.gov.au/CI/download.php?filename=NSWMagnetics&extension=sqlitedb&info=ANDROD",
+        "owner": "NSW Geological Survey http://www.dpi.nsw.gov.au/minerals",
+        "center": "-32.379378,146.781712",
+        "zoom": "6"
+    },
+    {
+        "id": "4",
+        "listtitle": "NSW Magnetics-1VD (330 MB)",
+        "mapname": "NSW Magnetics-1VD",
+        "filename": "NSWMagnetics-1VD.sqlitedb",
+        "source": "http://dwh.minerals.nsw.gov.au/CI/download.php?filename=NSWMagnetics-1VD&extension=sqlitedb&info=ANDROD",
+        "owner": "NSW Geological Survey http://www.dpi.nsw.gov.au/minerals",
+        "center": "-32.379378,146.781712",
+        "zoom": "6"
+    }
+]

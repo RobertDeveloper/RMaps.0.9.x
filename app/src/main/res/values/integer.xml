@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<integer name="COLOR_BLACK">0xff000000</integer>
+	<integer name="COLOR_GREEN">0xff00ff00</integer>
+	<dimen name="label_map_padding">4dp</dimen>
+	<dimen name="measuretool_label_size">12dp</dimen>
+	<dimen name="scale_descr_text_size">12dp</dimen>
+	<dimen name="scalebar_width">210dp</dimen>
+</resources>

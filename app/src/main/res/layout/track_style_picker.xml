@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     Copyright (C) 2010 Daniel Nilsson
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+  
+          http://www.apache.org/licenses/LICENSE-2.0
+  
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions an-->
+     
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/style_piker_main"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content" >
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp" >
+
+        <com.robert.maps.applib.view.MapView
+            android:id="@+id/map"
+            android:layout_width="fill_parent"
+            android:layout_height="100dp"
+            android:layout_margin="2dp"
+            android:minHeight="230dp" >
+        </com.robert.maps.applib.view.MapView>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3dp" >
+
+            <net.margaritov.preference.colorpicker.ColorPickerPanelView
+                android:id="@+id/color"
+                android:layout_width="150dp"
+                android:layout_height="40dp"
+                android:layout_alignParentRight="true"
+                android:layout_margin="2dp" />
+
+            <TextView
+                android:id="@+id/text_line_color"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:text="@string/line_color"
+                android:textAppearance="@android:style/TextAppearance.Large" />
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/line_width"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text="@string/line_width"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <SeekBar
+            android:id="@+id/width"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:max="20" />
+
+        <CheckBox
+            android:id="@+id/add_shadow_box"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/add_shadow_box"
+            android:textAppearance="@android:style/TextAppearance.Large" />
+
+        <LinearLayout
+            android:id="@+id/shadow_color"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/text_line_shadow_color"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="10dp"
+                android:text="@string/shadow_color"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+
+            <net.margaritov.preference.colorpicker.ColorPickerPanelView
+                android:id="@+id/colorshadow"
+                android:layout_width="150dp"
+                android:layout_height="40dp"
+                android:layout_margin="2dp" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/text_shadow_width"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text="@string/shadow_width"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <SeekBar
+            android:id="@+id/shadowradius"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:max="200" />
+
+        <TextView
+            android:id="@+id/empty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" >
+
+            <Button
+                android:id="@+id/saveButton"
+                android:layout_width="0px"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"
+                android:text="@string/menu_done" />
+
+            <Button
+                android:id="@+id/discardButton"
+                android:layout_width="0px"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"
+                android:text="@string/menu_doNotSave" />
+        </LinearLayout>
+        <!-- android:layerType="software" -->
+
+    </LinearLayout>
+
+</ScrollView>

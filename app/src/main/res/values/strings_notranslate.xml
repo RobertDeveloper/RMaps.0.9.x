@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="blank"></string>
+    <string name="app_user_id" />
+    <string name="app_user_label">Robert.Developer</string>
+    <string name="app_name">RMaps</string>
+    <string name="mnm">.mnm</string>
+    <string name="tar">.tar</string>
+    <string name="sqlitedb">.sqlitedb</string>
+    <string name="km">km</string>
+    <string name="kmh">km/h</string>
+    <string name="minkm">min/km</string>
+    <string name="m">m</string>
+    <string name="ml">ml</string>
+    <string name="ft">ft</string>
+    <string name="mercator_spheroid">Mercator Spheroid</string>
+    <string name="mercator_ellipsoid">Mercator Ellipsoid</string>
+    <string name="osgb36">OSGB 36 British national grid reference system</string>
+    <string name="ya_dialog_title">Яндекс Пробки</string>
+    <string name="ya_dialog_message">В знак уважения и благодарности фирме Яндекс за предоставленную информацию о пробках предлагаю Вам добавить закладку на страницу Мобильный Яндекс. Это сообщение ни к чему Вас не обязывает и больше появляться не будет.</string>
+    <string name="ya_dialog_button_caption">OK</string>
+    <string name="menu_gpsstatus">GPS Status</string>
+    <string name="donation">RMaps.Donation&#8230;</string>
+    <string name="mymap">MyMapFileName</string>
+    <string name="error_other">%s</string>
+</resources>

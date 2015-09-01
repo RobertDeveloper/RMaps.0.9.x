@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="MapView">
+        <attr name="ScaleBarVisible" format="integer" />
+        <attr name="SideInOutButtons" format="integer" />
+        <attr name="DisableControl" format="boolean" />
+        </declare-styleable>
+
+</resources>
